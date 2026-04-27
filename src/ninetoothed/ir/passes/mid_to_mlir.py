@@ -240,6 +240,26 @@ def _strip_arange_from_expr(node):
     return None
 
 
+def _flatten_plus_chain(node):
+    """Flatten a chain of ``MidBinOp('+', ...)`` into a list of non-plus operands.
+
+    ``MidBinOp('+', A, MidBinOp('+', B, C))`` → ``[A, B, C]``.
+    """
+    if isinstance(node, MidBinOp) and node.op == "+":
+        return _flatten_plus_chain(node.lhs) + _flatten_plus_chain(node.rhs)
+    return [node]
+
+
+def _elem_of_ptr_type(ptr_type_str: str) -> str:
+    """Extract the element type from a pointer type string.
+
+    ``"!tt.ptr<f32>"`` → ``"f32"``.  Returns ``"f32"`` as default.
+    """
+    if ptr_type_str and "!tt.ptr<" in ptr_type_str:
+        return ptr_type_str.split("<")[1].rstrip(">")
+    return "f32"
+
+
 def _replace_tensor_elem(tensor_type: str, new_elem: str) -> str:
     """Replace the element type in a tensor type string.
 
@@ -1001,17 +1021,18 @@ class MidIRToMLIRPass:
         # Evaluate value first so we can check its rank.
         val_val, val_ty = self._visit_expr_builder_typed(stmt.value, api)
 
-        # Detect 1D-pointer / 2D-value shape mismatch early.
-        needs_2d_ptr = False
+        # Detect pointer / value shape mismatch: if the value is N-D (N >= 1),
+        # reconstruct an N-D pointer via _fix_nd_store_ptr.
+        needs_nd_ptr = False
         if val_val is not None and val_ty is not None:
             val_dims = _shape_of(val_ty)
-            if val_dims is not None and len(val_dims) >= 2:
-                needs_2d_ptr = True
+            if val_dims is not None and len(val_dims) >= 1:
+                needs_nd_ptr = True
 
-        if needs_2d_ptr:
+        if needs_nd_ptr:
             # Skip the original 1D pointer/mask evaluation entirely to avoid
             # emitting invalid ops into the module.
-            ptr_val, mask_val = self._fix_2d_store_ptr(
+            ptr_val, mask_val = self._fix_nd_store_ptr(
                 stmt, None, None, api, val_dims
             )
             ptr_ty = None
@@ -1024,18 +1045,7 @@ class MidIRToMLIRPass:
                 mask_val, _ = self._visit_expr_builder_typed(stmt.mask, api)
 
         if ptr_val is not None and val_val is not None:
-            if mask_val is not None:
-                api.builder.create_masked_store(
-                    ptr_val, val_val, mask_val,
-                    api._tl_ir.CACHE_MODIFIER.NONE,
-                    api._tl_ir.EVICTION_POLICY.NORMAL,
-                )
-            else:
-                api.builder.create_store(
-                    ptr_val, val_val,
-                    api._tl_ir.CACHE_MODIFIER.NONE,
-                    api._tl_ir.EVICTION_POLICY.NORMAL,
-                )
+            self._emit_store(ptr_val, val_val, mask_val, api)
 
     # -- expression visitors (builder) ------------------------------------
 
@@ -1046,8 +1056,6 @@ class MidIRToMLIRPass:
 
     def _visit_expr_builder_typed(self, expr, api: _BuilderAPI):  # noqa: C901
         """Visit an expression, returning (native_value, type_string) or (None, None)."""
-        if isinstance(expr, MidCall):
-            pass  # handled by _call_builder below
         if isinstance(expr, MidName):
             bv = self._bv(expr.name)
             if bv is not None:
@@ -1225,6 +1233,38 @@ class MidIRToMLIRPass:
             return scalar_val, tensor_type
         splatted = api.builder.create_splat(ir_tensor_ty, scalar_val)
         return splatted, tensor_type
+
+    def _emit_load(self, ptr_val, mask_val, result_type, elem_type, api):
+        """Emit a load (masked or unmasked) with default cache/eviction settings."""
+        if mask_val is not None:
+            other_ir_ty = api.get_ir_type(result_type)
+            zero = api.create_float_constant(0.0, elem_type)
+            other_splat = api.builder.create_splat(other_ir_ty, zero)
+            return api.builder.create_masked_load(
+                ptr_val, mask_val, other_splat,
+                api._tl_ir.CACHE_MODIFIER.NONE,
+                api._tl_ir.EVICTION_POLICY.NORMAL, False,
+            )
+        return api.builder.create_load(
+            ptr_val,
+            api._tl_ir.CACHE_MODIFIER.NONE,
+            api._tl_ir.EVICTION_POLICY.NORMAL, False,
+        )
+
+    def _emit_store(self, ptr_val, val_val, mask_val, api):
+        """Emit a store (masked or unmasked) with default cache/eviction settings."""
+        if mask_val is not None:
+            api.builder.create_masked_store(
+                ptr_val, val_val, mask_val,
+                api._tl_ir.CACHE_MODIFIER.NONE,
+                api._tl_ir.EVICTION_POLICY.NORMAL,
+            )
+        else:
+            api.builder.create_store(
+                ptr_val, val_val,
+                api._tl_ir.CACHE_MODIFIER.NONE,
+                api._tl_ir.EVICTION_POLICY.NORMAL,
+            )
 
     def _reshape_1d_to_2d_builder(self, api: _BuilderAPI, val, type_str: str,
                                    target_dims: List[int]) -> Tuple:
@@ -1410,7 +1450,6 @@ class MidIRToMLIRPass:
             return api.create_sub(lhs, rhs, is_float), result_type
         if op == "*":
             return api.create_mul(lhs, rhs, is_float), result_type
-            return api.create_mul(lhs, rhs, is_float), result_type
         if op == "/":
             if is_float:
                 return api.create_div(lhs, rhs, True), result_type
@@ -1581,11 +1620,11 @@ class MidIRToMLIRPass:
     # -- load / pointer / mask builders -----------------------------------
 
     def _load_builder(self, expr: MidLoad, api: _BuilderAPI) -> Tuple:
-        # Try 2D decomposition from the pointer expression structure.
+        # Try N-D decomposition from the pointer expression structure.
         # This correctly handles loop variables (e.g. k in matmul).
-        decomp = self._decompose_2d_pointer(expr.pointer)
-        if decomp is not None and len(decomp[1]) == 2:
-            result = self._load_2d_builder(expr, api, decomp)
+        decomp = self._decompose_nd_pointer(expr.pointer)
+        if decomp is not None and len(decomp[1]) >= 1:
+            result = self._load_nd_builder(expr, api, decomp)
             if result[0] is not None:
                 return result
 
@@ -1624,12 +1663,12 @@ class MidIRToMLIRPass:
 
     # -- 2D pointer decomposition helpers --------------------------------
 
-    def _decompose_2d_pointer(self, pointer_expr):
-        """Decompose a 2D pointer expression into per-dimension components.
+    def _decompose_nd_pointer(self, pointer_expr):
+        """Decompose an N-D pointer expression into per-dimension components.
 
         Expected structure::
 
-            base_pointers + (dim0_off * stride_0) + (dim1_off * stride_1)
+            base_pointers + (dim0_off * stride_0) + (dim1_off * stride_1) + ...
 
         where each ``dim_off = start_expr * block_size + arange(block_size)``.
 
@@ -1652,12 +1691,11 @@ class MidIRToMLIRPass:
         if base_name is None or offsets_expr is None:
             return None
 
-        # overall_offsets = dim0_term + dim1_term
-        if not isinstance(offsets_expr, MidBinOp) or offsets_expr.op != "+":
-            return None
+        # Flatten the + chain to extract all dim_off * stride terms.
+        terms = _flatten_plus_chain(offsets_expr)
 
         dims = []
-        for term in [offsets_expr.lhs, offsets_expr.rhs]:
+        for term in terms:
             if not isinstance(term, MidBinOp) or term.op != "*":
                 return None
             # term = dim_off * stride  (or stride * dim_off)
@@ -1690,27 +1728,46 @@ class MidIRToMLIRPass:
 
             dims.append((start_expr, block_size, stride_name))
 
+        if not dims:
+            return None
+
         return base_name, dims
 
-    def _load_2d_builder(self, expr: MidLoad, api: _BuilderAPI,
-                         decomp: tuple) -> Tuple:
-        """Generate a 2D block load using decomposed pointer components.
+    def _expand_to_nd(self, tensor_1d, dim_idx, ndim, api):
+        """Expand a 1D tensor to N-D by inserting singleton dimensions.
 
-        *decomp* is the result of :meth:`_decompose_2d_pointer`:
+        Result shape: ``(1,...,1, s, 1,...,1)`` with *s* at position *dim_idx*.
+
+        Strategy: insert *dim_idx* singletons at ``axis=0``, then
+        ``ndim - 1 - dim_idx`` singletons at ``axis=dim_idx + 1``.
+        """
+        t = tensor_1d
+        for _ in range(dim_idx):
+            t = api.builder.create_expand_dims(t, 0)
+        for _ in range(ndim - 1 - dim_idx):
+            t = api.builder.create_expand_dims(t, dim_idx + 1)
+        return t
+
+    def _load_nd_builder(self, expr: MidLoad, api: _BuilderAPI,
+                         decomp: tuple) -> Tuple:
+        """Generate an N-D block load using decomposed pointer components.
+
+        *decomp* is the result of :meth:`_decompose_nd_pointer`:
         ``(base_name, [(start_expr, block_size, stride_name), ...])``.
         """
         base_name, dims = decomp
-        tile_m = dims[0][1]
-        tile_n = dims[1][1]
-        stride_0_name = dims[0][2]
-        stride_1_name = dims[1][2]
+        ndim = len(dims)
+        tile_sizes = [d[1] for d in dims]
+        full_shape = tile_sizes
 
-        # Look up base pointer and strides
+        # Look up base pointer and strides.
         ptr_bv = self._bv(base_name)
-        stride_0_bv = self._bv(stride_0_name)
-        stride_1_bv = self._bv(stride_1_name)
+        stride_bvs = [self._bv(d[2]) for d in dims]
 
-        # Resolve tensor index for size lookups
+        if ptr_bv is None or any(v is None for v in stride_bvs):
+            return None, None
+
+        # Resolve tensor index for size lookups.
         target_idx = None
         for inv in (self._mid_func.invariants or []):
             inv_name = inv.target if isinstance(inv.target, str) else str(inv.target)
@@ -1722,106 +1779,78 @@ class MidIRToMLIRPass:
                         target_idx = candidate
                 break
 
-        size_0_bv = None
-        size_1_bv = None
+        size_bvs = [None] * ndim
         if target_idx is not None:
-            size_0_bv = self._bv(
-                f"ninetoothed_ninetoothed_tensor_{target_idx}_size_0"
-            )
-            size_1_bv = self._bv(
-                f"ninetoothed_ninetoothed_tensor_{target_idx}_size_1"
-            )
+            for d in range(ndim):
+                size_bvs[d] = self._bv(
+                    f"ninetoothed_ninetoothed_tensor_{target_idx}_size_{d}"
+                )
 
-        if any(v is None for v in [ptr_bv, stride_0_bv, stride_1_bv]):
-            return None, None
-
-        elem_type = "f32"
-        if ptr_bv.type_str and "!tt.ptr<" in ptr_bv.type_str:
-            elem_type = ptr_bv.type_str.split("<")[1].rstrip(">")
+        elem_type = _elem_of_ptr_type(ptr_bv.type_str)
 
         # Evaluate per-dimension start expressions as scalars.
         # These naturally include loop variables (e.g. k) when inside a loop.
-        dim0_start_val, _ = self._visit_expr_builder_typed(dims[0][0], api)
-        dim1_start_val, _ = self._visit_expr_builder_typed(dims[1][0], api)
-        if dim0_start_val is None or dim1_start_val is None:
-            return None, None
+        start_vals = []
+        for d in range(ndim):
+            sv, _ = self._visit_expr_builder_typed(dims[d][0], api)
+            if sv is None:
+                return None, None
+            start_vals.append(sv)
 
-        # Row indices: (dim0_start + arange(0, tile_m)) → [tile_m, 1]
-        row_ir_ty = api.get_ir_type(f"tensor<{tile_m}xi32>")
-        row_arange = api.create_make_range(0, tile_m)
-        row_splat = api.builder.create_splat(row_ir_ty, dim0_start_val)
-        row_idx_1d = api.builder.create_add(row_splat, row_arange)
-        row_idx_2d = api.builder.create_expand_dims(row_idx_1d, 1)
+        # Build per-dim 1D indices: start + arange(0, block_size).
+        idx_1ds = []
+        for d in range(ndim):
+            bs = tile_sizes[d]
+            ir_ty = api.get_ir_type(f"tensor<{bs}xi32>")
+            arange = api.create_make_range(0, bs)
+            splat = api.builder.create_splat(ir_ty, start_vals[d])
+            idx_1d = api.builder.create_add(splat, arange)
+            idx_1ds.append(idx_1d)
 
-        # Col indices: (dim1_start + arange(0, tile_n)) → [1, tile_n]
-        col_ir_ty = api.get_ir_type(f"tensor<{tile_n}xi32>")
-        col_arange = api.create_make_range(0, tile_n)
-        col_splat = api.builder.create_splat(col_ir_ty, dim1_start_val)
-        col_idx_1d = api.builder.create_add(col_splat, col_arange)
-        col_idx_2d = api.builder.create_expand_dims(col_idx_1d, 0)
+        # Accumulate total offset across all dimensions.
+        total_off = None
+        for d in range(ndim):
+            bs = tile_sizes[d]
+            idx_nd = self._expand_to_nd(idx_1ds[d], d, ndim, api)
+            # Splat stride to match the expanded index shape.
+            stride_shape = [1] * ndim
+            stride_shape[d] = bs
+            stride_ir_ty = api.get_ir_type(_tensor_type(stride_shape, "i32"))
+            stride_splat = api.builder.create_splat(stride_ir_ty, stride_bvs[d].value)
+            dim_off = api.builder.create_mul(idx_nd, stride_splat)
+            dim_off_bc = api.builder.create_broadcast(dim_off, full_shape)
+            if total_off is None:
+                total_off = dim_off_bc
+            else:
+                total_off = api.builder.create_add(total_off, dim_off_bc)
 
-        # 2D offsets: stride splatted to match 2D index shapes, then broadcast
-        row_ty = api.get_ir_type(f"tensor<{tile_m}x1xi32>")
-        col_ty = api.get_ir_type(f"tensor<1x{tile_n}xi32>")
-        s0_splat = api.builder.create_splat(row_ty, stride_0_bv.value)
-        s1_splat = api.builder.create_splat(col_ty, stride_1_bv.value)
-        row_off = api.builder.create_mul(row_idx_2d, s0_splat)
-        col_off = api.builder.create_mul(col_idx_2d, s1_splat)
-        row_off_bc = api.builder.create_broadcast(row_off, [tile_m, tile_n])
-        col_off_bc = api.builder.create_broadcast(col_off, [tile_m, tile_n])
-        total_off = api.builder.create_add(row_off_bc, col_off_bc)
-
-        # 2D pointer tensor
-        ptr_tensor_type = f"tensor<{tile_m}x{tile_n}x!tt.ptr<{elem_type}>>"
+        # N-D pointer tensor: splat base ptr → addptr.
+        ptr_tensor_type = _ptr_tensor_type(elem_type, full_shape)
         ptr_tensor, _ = self._splat_builder(
             api, ptr_bv.value, ptr_bv.type_str or f"!tt.ptr<{elem_type}>",
             ptr_tensor_type,
         )
         final_ptr = api.builder.create_addptr(ptr_tensor, total_off)
 
-        # 2D boundary mask: check actual element indices (start + arange) < size
+        # N-D boundary mask: AND of per-dim (idx_1d < size) broadcast to full shape.
         mask_val = None
-        if size_0_bv is not None or size_1_bv is not None:
-            row_mask = None
-            if size_0_bv is not None:
-                sz_ty = api.get_ir_type(f"tensor<{tile_m}xi32>")
-                sz_splat = api.builder.create_splat(sz_ty, size_0_bv.value)
-                row_mask_1d = api.builder.create_icmpSLT(row_idx_1d, sz_splat)
-                row_mask = api.builder.create_expand_dims(row_mask_1d, 1)
+        for d in range(ndim):
+            if size_bvs[d] is None:
+                continue
+            bs = tile_sizes[d]
+            sz_ty = api.get_ir_type(f"tensor<{bs}xi32>")
+            sz_splat = api.builder.create_splat(sz_ty, size_bvs[d].value)
+            dim_mask_1d = api.builder.create_icmpSLT(idx_1ds[d], sz_splat)
+            dim_mask_nd = self._expand_to_nd(dim_mask_1d, d, ndim, api)
+            dim_mask_bc = api.builder.create_broadcast(dim_mask_nd, full_shape)
+            if mask_val is None:
+                mask_val = dim_mask_bc
+            else:
+                mask_val = api.builder.create_and(mask_val, dim_mask_bc)
 
-            col_mask = None
-            if size_1_bv is not None:
-                sz_ty = api.get_ir_type(f"tensor<{tile_n}xi32>")
-                sz_splat = api.builder.create_splat(sz_ty, size_1_bv.value)
-                col_mask_1d = api.builder.create_icmpSLT(col_idx_1d, sz_splat)
-                col_mask = api.builder.create_expand_dims(col_mask_1d, 0)
-
-            if row_mask is not None and col_mask is not None:
-                row_mask_bc = api.builder.create_broadcast(row_mask, [tile_m, tile_n])
-                col_mask_bc = api.builder.create_broadcast(col_mask, [tile_m, tile_n])
-                mask_val = api.builder.create_and(row_mask_bc, col_mask_bc)
-            elif row_mask is not None:
-                mask_val = api.builder.create_broadcast(row_mask, [tile_m, tile_n])
-            elif col_mask is not None:
-                mask_val = api.builder.create_broadcast(col_mask, [tile_m, tile_n])
-
-        # Load
-        result_type = f"tensor<{tile_m}x{tile_n}x{elem_type}>"
-        if mask_val is not None:
-            other_ir_ty = api.get_ir_type(result_type)
-            zero = api.create_float_constant(0.0, elem_type)
-            other_splat = api.builder.create_splat(other_ir_ty, zero)
-            loaded = api.builder.create_masked_load(
-                final_ptr, mask_val, other_splat,
-                api._tl_ir.CACHE_MODIFIER.NONE,
-                api._tl_ir.EVICTION_POLICY.NORMAL, False,
-            )
-        else:
-            loaded = api.builder.create_load(
-                final_ptr,
-                api._tl_ir.CACHE_MODIFIER.NONE,
-                api._tl_ir.EVICTION_POLICY.NORMAL, False,
-            )
+        # Load.
+        result_type = _tensor_type(full_shape, elem_type)
+        loaded = self._emit_load(final_ptr, mask_val, result_type, elem_type, api)
 
         if loaded is None:
             return None, None
@@ -1855,9 +1884,7 @@ class MidIRToMLIRPass:
             return None, None
 
         # Determine element type from pointer type
-        elem_type = "f32"
-        if ptr_bv.type_str and "!tt.ptr<" in ptr_bv.type_str:
-            elem_type = ptr_bv.type_str.split("<")[1].rstrip(">")
+        elem_type = _elem_of_ptr_type(ptr_bv.type_str)
 
         # Detect dimensionality and determine result shape
         is_2d = stride_1_bv is not None
@@ -1909,32 +1936,18 @@ class MidIRToMLIRPass:
             mask_val = api.builder.create_icmpSLT(arange, sz_splat)
 
         # Load
-        if mask_val is not None:
-            other_ir_ty = api.get_ir_type(result_type)
-            zero = api.create_float_constant(0.0, elem_type)
-            other_splat = api.builder.create_splat(other_ir_ty, zero)
-            loaded = api.builder.create_masked_load(
-                final_ptr, mask_val, other_splat,
-                api._tl_ir.CACHE_MODIFIER.NONE,
-                api._tl_ir.EVICTION_POLICY.NORMAL, False,
-            )
-        else:
-            loaded = api.builder.create_load(
-                final_ptr,
-                api._tl_ir.CACHE_MODIFIER.NONE,
-                api._tl_ir.EVICTION_POLICY.NORMAL, False,
-            )
+        loaded = self._emit_load(final_ptr, mask_val, result_type, elem_type, api)
 
         if loaded is None:
             return None, None
 
         return loaded, result_type
 
-    def _fix_2d_store_ptr(self, stmt, old_ptr, old_ptr_ty, api: _BuilderAPI,
+    def _fix_nd_store_ptr(self, stmt, old_ptr, old_ptr_ty, api: _BuilderAPI,
                            val_dims=None):
-        """Recompute the store pointer and mask for a 2D value.
+        """Recompute the store pointer and mask for an N-D value.
 
-        Returns (pointer, mask) where mask is a 2D boundary mask (or None
+        Returns (pointer, mask) where mask is an N-D boundary mask (or None
         if no boundary check is needed).
         """
         # Determine which tensor this store targets from the pointer expression.
@@ -1956,264 +1969,116 @@ class MidIRToMLIRPass:
             return None, None
 
         tile_size = self._tile_size or 1024
-        idx_0_bv = self._bv(f"ninetoothed_tensor_{target_idx}_index_0")
-        idx_1_bv = self._bv(f"ninetoothed_tensor_{target_idx}_index_1")
-        stride_0_bv = self._bv(
-            f"ninetoothed_ninetoothed_tensor_{target_idx}_stride_0"
-        )
-        stride_1_bv = self._bv(
-            f"ninetoothed_ninetoothed_tensor_{target_idx}_stride_1"
-        )
-        ptr_bv = self._bv(f"ninetoothed_tensor_{target_idx}_pointers")
-        size_0_bv = self._bv(
-            f"ninetoothed_ninetoothed_tensor_{target_idx}_size_0"
-        )
-        size_1_bv = self._bv(
-            f"ninetoothed_ninetoothed_tensor_{target_idx}_size_1"
-        )
+        ndim = len(val_dims) if val_dims else 1
+        full_shape = list(val_dims) if val_dims else [tile_size]
 
-        if any(v is None for v in [ptr_bv, idx_0_bv, idx_1_bv, stride_0_bv, stride_1_bv]):
+        # Look up per-dimension indices, strides, sizes, and base pointer.
+        ptr_bv = self._bv(f"ninetoothed_tensor_{target_idx}_pointers")
+        index_bvs = []
+        stride_bvs = []
+        size_bvs = []
+        for d in range(ndim):
+            index_bvs.append(self._bv(f"ninetoothed_tensor_{target_idx}_index_{d}"))
+            stride_bvs.append(
+                self._bv(f"ninetoothed_ninetoothed_tensor_{target_idx}_stride_{d}")
+            )
+            size_bvs.append(
+                self._bv(f"ninetoothed_ninetoothed_tensor_{target_idx}_size_{d}")
+            )
+
+        if ptr_bv is None or any(v is None for v in index_bvs) or any(v is None for v in stride_bvs):
             return None, None
 
-        elem_type = "f32"
-        if ptr_bv.type_str and "!tt.ptr<" in ptr_bv.type_str:
-            elem_type = ptr_bv.type_str.split("<")[1].rstrip(">")
+        elem_type = _elem_of_ptr_type(ptr_bv.type_str)
 
-        # Use actual value dimensions for the 2D pointer shape.
-        tile_m = val_dims[0] if val_dims and len(val_dims) >= 2 else tile_size
-        tile_n = val_dims[1] if val_dims and len(val_dims) >= 2 else tile_size
+        # Build per-dim 1D indices: index_d * tile_size_d + arange(0, tile_size_d).
+        idx_1ds = []
+        for d in range(ndim):
+            bs = full_shape[d]
+            ir_ty = api.get_ir_type(f"tensor<{bs}xi32>")
+            arange = api.create_make_range(0, bs)
+            block_val = api.create_int_constant(bs, 32)
+            start = api.builder.create_mul(index_bvs[d].value, block_val)
+            idx_1d = api.builder.create_add(
+                api.builder.create_splat(ir_ty, start), arange
+            )
+            idx_1ds.append(idx_1d)
 
-        row_ir_ty = api.get_ir_type(f"tensor<{tile_m}xi32>")
-        col_ir_ty = api.get_ir_type(f"tensor<{tile_n}xi32>")
-        row_arange = api.create_make_range(0, tile_m)
-        col_arange = api.create_make_range(0, tile_n)
-        row_block = api.create_int_constant(tile_m, 32)
-        col_block = api.create_int_constant(tile_n, 32)
+        # Accumulate total offset across all dimensions.
+        total_off = None
+        for d in range(ndim):
+            bs = full_shape[d]
+            idx_nd = self._expand_to_nd(idx_1ds[d], d, ndim, api)
+            # Splat stride to match the expanded index shape.
+            stride_shape = [1] * ndim
+            stride_shape[d] = bs
+            stride_ir_ty = api.get_ir_type(_tensor_type(stride_shape, "i32"))
+            stride_splat = api.builder.create_splat(stride_ir_ty, stride_bvs[d].value)
+            dim_off = api.builder.create_mul(idx_nd, stride_splat)
+            dim_off_bc = api.builder.create_broadcast(dim_off, full_shape)
+            if total_off is None:
+                total_off = dim_off_bc
+            else:
+                total_off = api.builder.create_add(total_off, dim_off_bc)
 
-        # Row indices: (row_block * tile_m + arange) expanded to [tile_m, 1]
-        row_start = api.builder.create_mul(idx_0_bv.value, row_block)
-        row_idx_1d = api.builder.create_add(
-            api.builder.create_splat(row_ir_ty, row_start), row_arange
-        )
-        row_idx_2d = api.builder.create_expand_dims(row_idx_1d, 1)
-
-        # Col indices: (col_block * tile_n + arange) expanded to [1, tile_n]
-        col_start = api.builder.create_mul(idx_1_bv.value, col_block)
-        col_idx_1d = api.builder.create_add(
-            api.builder.create_splat(col_ir_ty, col_start), col_arange
-        )
-        col_idx_2d = api.builder.create_expand_dims(col_idx_1d, 0)
-
-        # 2D offsets: splat strides to match 2D index shapes for arith.muli
-        row_ty = api.get_ir_type(f"tensor<{tile_m}x1xi32>")
-        col_ty = api.get_ir_type(f"tensor<1x{tile_n}xi32>")
-        s0_splat = api.builder.create_splat(row_ty, stride_0_bv.value)
-        s1_splat = api.builder.create_splat(col_ty, stride_1_bv.value)
-        row_off = api.builder.create_mul(row_idx_2d, s0_splat)
-        col_off = api.builder.create_mul(col_idx_2d, s1_splat)
-        # Broadcast both to full tile_m x tile_n before adding
-        row_off_bc = api.builder.create_broadcast(row_off, [tile_m, tile_n])
-        col_off_bc = api.builder.create_broadcast(col_off, [tile_m, tile_n])
-        total_off = api.builder.create_add(row_off_bc, col_off_bc)
-
-        # 2D pointer tensor
-        ptr_tensor_type = f"tensor<{tile_m}x{tile_n}x!tt.ptr<{elem_type}>>"
+        # N-D pointer tensor: splat base ptr → addptr.
+        ptr_tensor_type = _ptr_tensor_type(elem_type, full_shape)
         ptr_tensor, _ = self._splat_builder(
             api, ptr_bv.value, ptr_bv.type_str or f"!tt.ptr<{elem_type}>",
             ptr_tensor_type,
         )
         ptr_val = api.builder.create_addptr(ptr_tensor, total_off)
 
-        # 2D boundary mask: check actual element indices (start + arange) < size
+        # N-D boundary mask: AND of per-dim (idx_1d < size) broadcast to full shape.
         mask_val = None
-        if size_0_bv is not None or size_1_bv is not None:
-            row_mask = None
-            if size_0_bv is not None:
-                s0_sz = api.builder.create_splat(row_ir_ty, size_0_bv.value)
-                row_mask_1d = api.builder.create_icmpSLT(row_idx_1d, s0_sz)
-                row_mask = api.builder.create_expand_dims(row_mask_1d, 1)
-
-            col_mask = None
-            if size_1_bv is not None:
-                s1_sz = api.builder.create_splat(col_ir_ty, size_1_bv.value)
-                col_mask_1d = api.builder.create_icmpSLT(col_idx_1d, s1_sz)
-                col_mask = api.builder.create_expand_dims(col_mask_1d, 0)
-
-            if row_mask is not None and col_mask is not None:
-                # Broadcast to full 2D before AND
-                row_mask_bc = api.builder.create_broadcast(row_mask, [tile_m, tile_n])
-                col_mask_bc = api.builder.create_broadcast(col_mask, [tile_m, tile_n])
-                mask_val = api.builder.create_and(row_mask_bc, col_mask_bc)
-            elif row_mask is not None:
-                mask_val = api.builder.create_broadcast(row_mask, [tile_m, tile_n])
-            elif col_mask is not None:
-                mask_val = api.builder.create_broadcast(col_mask, [tile_m, tile_n])
+        for d in range(ndim):
+            if size_bvs[d] is None:
+                continue
+            bs = full_shape[d]
+            sz_ty = api.get_ir_type(f"tensor<{bs}xi32>")
+            sz_splat = api.builder.create_splat(sz_ty, size_bvs[d].value)
+            dim_mask_1d = api.builder.create_icmpSLT(idx_1ds[d], sz_splat)
+            dim_mask_nd = self._expand_to_nd(dim_mask_1d, d, ndim, api)
+            dim_mask_bc = api.builder.create_broadcast(dim_mask_nd, full_shape)
+            if mask_val is None:
+                mask_val = dim_mask_bc
+            else:
+                mask_val = api.builder.create_and(mask_val, dim_mask_bc)
 
         return ptr_val, mask_val
 
     def _try_store_tensor(self, name: str, val, api: _BuilderAPI) -> None:
-        """Emit a store for a tensor param referenced by *name*."""
+        """Emit a store for a tensor param referenced by *name*.
+
+        Delegates to :meth:`_fix_nd_store_ptr` with a synthetic stmt.
+        """
         idx = self._tensor_name_to_idx.get(name)
         if idx is None:
             return
 
         tile_size = self._tile_size or 1024
 
-        ptr_bv = self._bv(f"ninetoothed_tensor_{idx}_pointers")
-        idx_0_bv = self._bv(f"ninetoothed_tensor_{idx}_index_0")
-        idx_1_bv = self._bv(f"ninetoothed_tensor_{idx}_index_1")
+        # Determine dimensionality from available strides.
         stride_0_bv = self._bv(f"ninetoothed_ninetoothed_tensor_{idx}_stride_0")
         stride_1_bv = self._bv(f"ninetoothed_ninetoothed_tensor_{idx}_stride_1")
-        size_0_bv = self._bv(f"ninetoothed_ninetoothed_tensor_{idx}_size_0")
-        size_1_bv = self._bv(f"ninetoothed_ninetoothed_tensor_{idx}_size_1")
 
-        if ptr_bv is None or idx_0_bv is None:
-            return
-
-        elem_type = "f32"
-        if ptr_bv.type_str and "!tt.ptr<" in ptr_bv.type_str:
-            elem_type = ptr_bv.type_str.split("<")[1].rstrip(">")
-
-        is_2d = stride_1_bv is not None
-        arange = api.create_make_range(0, tile_size)
-        arange_type = f"tensor<{tile_size}xi32>"
-        ir_ty = api.get_ir_type(arange_type)
-
-        # Check if the output is truly 2D (both tile dims > 1)
-        is_truly_2d = is_2d and idx_1_bv is not None
-
-        if is_truly_2d and stride_0_bv is not None and stride_1_bv is not None:
-            # --- 2D store: compute 2D offset grid --------------------------
-            tile_m = tile_size
-            tile_n = tile_size
-
-            # Row indices: (row_block * tile_m + arange(0, tile_m))
-            block_m_val = api.create_int_constant(tile_m, 32)
-            row_start = api.builder.create_mul(idx_0_bv.value, block_m_val)
-            row_idx_1d = api.builder.create_add(
-                api.builder.create_splat(ir_ty, row_start), arange
-            )  # tensor<tile_m xi32>
-            row_idx_2d = api.builder.create_expand_dims(row_idx_1d, 1)
-            # tensor<tile_m x 1 xi32>
-
-            # Col indices: (col_block * tile_n + arange(0, tile_n))
-            block_n_val = api.create_int_constant(tile_n, 32)
-            col_start = api.builder.create_mul(idx_1_bv.value, block_n_val)
-            col_idx_1d = api.builder.create_add(
-                api.builder.create_splat(ir_ty, col_start), arange
-            )  # tensor<tile_n xi32>
-            col_idx_2d = api.builder.create_expand_dims(col_idx_1d, 0)
-            # tensor<1 x tile_n xi32>
-
-            # Offsets: splat strides to match 2D index shapes for arith.muli
-            row_ty = api.get_ir_type(f"tensor<{tile_m}x1xi32>")
-            col_ty = api.get_ir_type(f"tensor<1x{tile_n}xi32>")
-            s0_splat = api.builder.create_splat(row_ty, stride_0_bv.value)
-            s1_splat = api.builder.create_splat(col_ty, stride_1_bv.value)
-            row_off_2d = api.builder.create_mul(row_idx_2d, s0_splat)
-            # tensor<tile_m x 1 xi32>
-            col_off_2d = api.builder.create_mul(col_idx_2d, s1_splat)
-            # tensor<1 x tile_n xi32>
-            # Broadcast both to full tile_m x tile_n before adding
-            row_off_bc = api.builder.create_broadcast(row_off_2d, [tile_m, tile_n])
-            col_off_bc = api.builder.create_broadcast(col_off_2d, [tile_m, tile_n])
-            total_off = api.builder.create_add(row_off_bc, col_off_bc)
-            # tensor<tile_m x tile_n xi32>
-
-            # 2D pointer tensor
-            ptr_tensor_type = (
-                f"tensor<{tile_m}x{tile_n}x!tt.ptr<{elem_type}>>"
-            )
-            ptr_tensor, _ = self._splat_builder(
-                api,
-                ptr_bv.value,
-                ptr_bv.type_str or f"!tt.ptr<{elem_type}>",
-                ptr_tensor_type,
-            )
-            final_ptr = api.builder.create_addptr(ptr_tensor, total_off)
-
-            # 2D mask
-            mask_val = None
-            if size_0_bv is not None or size_1_bv is not None:
-                row_arange_2d = api.builder.create_expand_dims(arange, 1)
-                col_arange_2d = api.builder.create_expand_dims(arange, 0)
-
-                row_mask = None
-                if size_0_bv is not None:
-                    s0_sz = api.builder.create_splat(ir_ty, size_0_bv.value)
-                    row_mask_1d = api.builder.create_icmpSLT(arange, s0_sz)
-                    row_mask = api.builder.create_expand_dims(row_mask_1d, 1)
-
-                col_mask = None
-                if size_1_bv is not None:
-                    s1_sz = api.builder.create_splat(ir_ty, size_1_bv.value)
-                    col_mask_1d = api.builder.create_icmpSLT(arange, s1_sz)
-                    col_mask = api.builder.create_expand_dims(col_mask_1d, 0)
-
-                if row_mask is not None and col_mask is not None:
-                    row_mask_bc = api.builder.create_broadcast(row_mask, [tile_m, tile_n])
-                    col_mask_bc = api.builder.create_broadcast(col_mask, [tile_m, tile_n])
-                    mask_val = api.builder.create_and(row_mask_bc, col_mask_bc)
-                elif row_mask is not None:
-                    mask_val = api.builder.create_broadcast(row_mask, [tile_m, tile_n])
-                elif col_mask is not None:
-                    mask_val = api.builder.create_broadcast(col_mask, [tile_m, tile_n])
-
-        elif is_2d and stride_0_bv is not None and stride_1_bv is not None:
-            # --- Effectively 1D (first dim is 1): 1D offsets ---------------
-            row_off = api.builder.create_mul(idx_0_bv.value, stride_0_bv.value)
-            row_splat = api.builder.create_splat(ir_ty, row_off)
-            s1_splat = api.builder.create_splat(ir_ty, stride_1_bv.value)
-            col_off = api.builder.create_mul(arange, s1_splat)
-            total_off = api.builder.create_add(row_splat, col_off)
-
-            ptr_tensor_type = f"tensor<{tile_size}x!tt.ptr<{elem_type}>>"
-            ptr_tensor, _ = self._splat_builder(
-                api,
-                ptr_bv.value,
-                ptr_bv.type_str or f"!tt.ptr<{elem_type}>",
-                ptr_tensor_type,
-            )
-            final_ptr = api.builder.create_addptr(ptr_tensor, total_off)
-
-            mask_val = None
-            if size_1_bv is not None:
-                sz_splat = api.builder.create_splat(ir_ty, size_1_bv.value)
-                mask_val = api.builder.create_icmpSLT(arange, sz_splat)
-
-        elif stride_0_bv is not None:
-            block_val = api.create_int_constant(tile_size, 32)
-            idx_t = api.builder.create_mul(idx_0_bv.value, block_val)
-            idx_splat = api.builder.create_splat(ir_ty, idx_t)
-            off = api.builder.create_add(idx_splat, arange)
-            s0_splat = api.builder.create_splat(ir_ty, stride_0_bv.value)
-            total_off = api.builder.create_mul(off, s0_splat)
-
-            ptr_tensor_type = f"tensor<{tile_size}x!tt.ptr<{elem_type}>>"
-            ptr_tensor, _ = self._splat_builder(
-                api,
-                ptr_bv.value,
-                ptr_bv.type_str or f"!tt.ptr<{elem_type}>",
-                ptr_tensor_type,
-            )
-            final_ptr = api.builder.create_addptr(ptr_tensor, total_off)
-
-            mask_val = None
+        if stride_1_bv is not None and self._bv(f"ninetoothed_tensor_{idx}_index_1") is not None:
+            val_dims = [tile_size, tile_size]
         else:
-            return
+            val_dims = [tile_size]
 
-        if mask_val is not None:
-            api.builder.create_masked_store(
-                final_ptr, val, mask_val,
-                api._tl_ir.CACHE_MODIFIER.NONE,
-                api._tl_ir.EVICTION_POLICY.NORMAL,
-            )
-        else:
-            api.builder.create_store(
-                final_ptr, val,
-                api._tl_ir.CACHE_MODIFIER.NONE,
-                api._tl_ir.EVICTION_POLICY.NORMAL,
-            )
+        # Build a minimal MidStore with a pointer expression that encodes
+        # the target tensor name, so _fix_nd_store_ptr can resolve target_idx.
+        class _SynthStore:
+            def __init__(self, pointer):
+                self.pointer = pointer
+        synth = _SynthStore(
+            MidBinOp("+", MidName(f"ninetoothed_tensor_{idx}_pointers"), MidConstant(0))
+        )
+
+        ptr_val, mask_val = self._fix_nd_store_ptr(synth, None, None, api, val_dims)
+        if ptr_val is not None:
+            self._emit_store(ptr_val, val, mask_val, api)
 
     def _pointer_builder(self, expr: MidPointerExpr, api: _BuilderAPI) -> Tuple:
         base_val, base_type = self._visit_expr_builder_typed(expr.base, api)
