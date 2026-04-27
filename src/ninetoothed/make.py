@@ -14,6 +14,7 @@ def make(
     num_warps=None,
     num_stages=None,
     max_num_configs=None,
+    use_mlir=False,
 ):
     """Integrate the arrangement and the application of the tensors.
 
@@ -27,6 +28,8 @@ def make(
     :param num_stages: The number of pipeline stages.
     :param max_num_configs: The maximum number of auto-tuning
         configurations to use.
+    :param use_mlir: If True, use the MLIR pipeline instead of the
+        legacy Triton Python pipeline.
     :return: A handle to the compute kernel.
     """
 
@@ -44,6 +47,7 @@ def make(
             num_warps=num_warps,
             num_stages=num_stages,
             max_num_configs=max_num_configs,
+            use_mlir=use_mlir,
         )
 
     return aot(

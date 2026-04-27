@@ -13,6 +13,7 @@ def jit(
     num_warps=None,
     num_stages=None,
     max_num_configs=None,
+    use_mlir=False,
     _prettify=False,
 ):
     """A decorator for generating compute kernels.
@@ -24,6 +25,8 @@ def jit(
     :param num_stages: The number of pipeline stages.
     :param max_num_configs: The maximum number of auto-tuning
         configurations to use.
+    :param use_mlir: If True, use the MLIR pipeline instead of the
+        legacy Triton Python pipeline.
     :param _prettify: Whether to prettify the generated code.
     :return: A handle to the compute kernel.
 
@@ -33,13 +36,19 @@ def jit(
         the generated code.
     """
 
-    default_num_warps, default_num_stages = calculate_default_configs()
+    if use_mlir or (num_warps is not None and num_stages is not None):
+        _need_gpu_configs = not use_mlir
+    else:
+        _need_gpu_configs = True
 
-    if num_warps is None:
-        num_warps = default_num_warps
+    if _need_gpu_configs:
+        default_num_warps, default_num_stages = calculate_default_configs()
 
-    if num_stages is None:
-        num_stages = default_num_stages
+        if num_warps is None:
+            num_warps = default_num_warps
+
+        if num_stages is None:
+            num_stages = default_num_stages
 
     def wrapper(func):
         return JIT(
@@ -49,6 +58,7 @@ def jit(
             num_warps=num_warps,
             num_stages=num_stages,
             max_num_configs=max_num_configs,
+            use_mlir=use_mlir,
             _prettify=_prettify,
         )()
 
@@ -67,6 +77,7 @@ class JIT:
         num_warps,
         num_stages,
         max_num_configs,
+        use_mlir=False,
         _prettify=False,
     ):
         self.func = func
@@ -84,9 +95,14 @@ class JIT:
 
         self._max_num_configs = max_num_configs
 
+        self._use_mlir = use_mlir
+
         self._prettify = _prettify
 
     def __call__(self):
+        if self._use_mlir:
+            return self._run_mlir_pipeline()
+
         code_generator = CodeGenerator()
         source_file = code_generator(
             self.func,
@@ -107,6 +123,21 @@ class JIT:
         )
 
         return handle
+
+    def _run_mlir_pipeline(self):
+        from ninetoothed.ir.pipeline import IRPipeline
+
+        pipeline = IRPipeline(
+            self.func,
+            use_mlir=True,
+            caller=self._caller,
+            kernel_name=self._kernel_name,
+            num_warps=self._num_warps,
+            num_stages=self._num_stages,
+            max_num_configs=self._max_num_configs,
+            _prettify=self._prettify,
+        )
+        return pipeline.run()
 
 
 def import_from_path(module_name, file_path):
