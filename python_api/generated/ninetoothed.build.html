@@ -435,31 +435,8 @@
 <h1>ninetoothed.build<a class="headerlink" href="#ninetoothed-build" title="Link to this heading">#</a></h1>
 <dl class="py function">
 <dt class="sig sig-object py" id="ninetoothed.build">
-<span class="sig-prename descclassname"><span class="pre">ninetoothed.</span></span><span class="sig-name descname"><span class="pre">build</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">premake</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">configs</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">meta_parameters</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">caller</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">kernel_name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">output_dir</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lazy</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ninetoothed.build" title="Link to this definition">#</a></dt>
-<dd><p>Build a kernel from a <code class="docutils literal notranslate"><span class="pre">premake</span></code> function and <code class="docutils literal notranslate"><span class="pre">configs</span></code>.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>premake</strong> – A callable that returns the <code class="docutils literal notranslate"><span class="pre">arrangement</span></code>,
-<code class="docutils literal notranslate"><span class="pre">application</span></code>, and <code class="docutils literal notranslate"><span class="pre">tensors</span></code> for a given configuration.</p></li>
-<li><p><strong>configs</strong> – An iterable of configurations where each
-configuration is a tuple of
-<code class="docutils literal notranslate"><span class="pre">(args,</span> <span class="pre">kwargs,</span> <span class="pre">compilation_configs)</span></code>.
-<code class="docutils literal notranslate"><span class="pre">args</span></code> and <code class="docutils literal notranslate"><span class="pre">kwargs</span></code> are passed to <code class="docutils literal notranslate"><span class="pre">premake</span></code>, and
-<code class="docutils literal notranslate"><span class="pre">compilation_configs</span></code> contains compilation configurations for
-<code class="docutils literal notranslate"><span class="pre">ninetoothed.make</span></code> (e.g., <code class="docutils literal notranslate"><span class="pre">num_warps</span></code> and <code class="docutils literal notranslate"><span class="pre">num_stages</span></code>).</p></li>
-<li><p><strong>meta_parameters</strong> – An iterable of meta-parameters that should
-be auto-tuned.</p></li>
-<li><p><strong>caller</strong> – Who will call the compute kernel.</p></li>
-<li><p><strong>kernel_name</strong> – The name for the generated kernel.</p></li>
-<li><p><strong>output_dir</strong> – The directory to store the generated files.</p></li>
-<li><p><strong>lazy</strong> – If <code class="docutils literal notranslate"><span class="pre">True</span></code>, defer the actual build until the returned
-kernel is first called. Use this when <code class="docutils literal notranslate"><span class="pre">build</span></code> is invoked at
-module import time and its <code class="docutils literal notranslate"><span class="pre">ProcessPoolExecutor</span></code> would
-otherwise deadlock on the Python import lock.</p></li>
-</ul>
-</dd>
-</dl>
+<span class="sig-prename descclassname"><span class="pre">ninetoothed.</span></span><span class="sig-name descname"><span class="pre">build</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">premake</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">configs</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">backend</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">caller</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'cuda'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">output_dir</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">kernel_name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">meta_parameters</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lazy</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pipeline</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pass_options</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">backend_options</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ninetoothed.build" title="Link to this definition">#</a></dt>
+<dd><p>Compile configured variants and return a common callable dispatcher.</p>
 </dd></dl>
 
 </section>
