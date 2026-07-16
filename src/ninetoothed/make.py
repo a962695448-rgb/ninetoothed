@@ -1,7 +1,6 @@
-import inspect
+"""Compatibility wrapper for the historical :mod:`ninetoothed.make` API."""
 
-from ninetoothed.aot import aot
-from ninetoothed.jit import jit
+from ninetoothed.compiler.driver import make as _compiler_make
 
 
 def make(
@@ -14,42 +13,28 @@ def make(
     num_warps=None,
     num_stages=None,
     max_num_configs=None,
+    *,
+    backend=None,
+    pipeline=None,
+    pass_options=None,
+    **backend_options,
 ):
-    """Integrate the arrangement and the application of the tensors.
-
-    :param arrangement: The arrangement of the tensors.
-    :param application: The application of the tensors.
-    :param tensors: The tensors.
-    :param caller: Who will call the compute kernel.
-    :param kernel_name: The name for the generated kernel.
-    :param output_dir: The directory to store the generated files.
-    :param num_warps: The number of warps to use.
-    :param num_stages: The number of pipeline stages.
-    :param max_num_configs: The maximum number of auto-tuning
-        configurations to use.
-    :return: A handle to the compute kernel.
-    """
-    params = inspect.signature(application).parameters
-    types = arrangement(*tensors)
-    types = types if isinstance(types, tuple) else (types,)
-    annotations = {param: type for param, type in zip(params, types)}
-    application.__annotations__ = annotations
-
-    if caller == "torch":
-        return jit(
-            application,
-            caller=caller,
-            kernel_name=kernel_name,
-            num_warps=num_warps,
-            num_stages=num_stages,
-            max_num_configs=max_num_configs,
-        )
-
-    return aot(
+    """Compile using SSA while preserving the legacy positional parameters."""
+    return _compiler_make(
+        arrangement,
         application,
+        tensors,
+        backend=backend,
         caller=caller,
         kernel_name=kernel_name,
         output_dir=output_dir,
         num_warps=num_warps,
         num_stages=num_stages,
+        max_num_configs=max_num_configs,
+        pipeline=pipeline,
+        pass_options=pass_options,
+        **backend_options,
     )
+
+
+__all__ = ["make"]
