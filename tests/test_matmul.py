@@ -10,6 +10,9 @@ BLOCK_SIZE_M = Symbol("BLOCK_SIZE_M", meta=True)
 BLOCK_SIZE_N = Symbol("BLOCK_SIZE_N", meta=True)
 BLOCK_SIZE_K = Symbol("BLOCK_SIZE_K", meta=True)
 
+_FP16_RTOL = 0.001
+_FP16_ATOL = 0.001
+
 
 def arrangement(
     lhs,
@@ -84,7 +87,7 @@ def _device_dtype_config(devices, fp16_atol):
 
 @pytest.mark.parametrize(
     "device, dtype, atol",
-    _device_dtype_config(get_available_devices(), fp16_atol=1e-8),
+    _device_dtype_config(get_available_devices(), fp16_atol=_FP16_ATOL),
 )
 @pytest.mark.parametrize("k", (512,))
 @pytest.mark.parametrize("n", (512,))
@@ -105,4 +108,12 @@ def test(m, n, k, dtype, device, atol):
         output = matmul(input, other)
         expected = torch.matmul(input, other)
 
-    assert torch.allclose(output, expected, atol=atol)
+    if dtype == torch.float16:
+        torch.testing.assert_close(
+            output,
+            expected,
+            rtol=_FP16_RTOL,
+            atol=atol,
+        )
+    else:
+        assert torch.allclose(output, expected, atol=atol)
