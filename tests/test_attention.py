@@ -1,6 +1,5 @@
 import pytest
 import torch
-import torch.nn.functional as F
 
 import ninetoothed
 import ninetoothed.language as ntl
@@ -9,6 +8,21 @@ from tests.utils import get_available_devices
 
 BLOCK_SIZE_M = ninetoothed.block_size(lower_bound=64, upper_bound=128)
 BLOCK_SIZE_N = ninetoothed.block_size(lower_bound=32, upper_bound=64)
+
+
+def _reference_attention(q, k, v, is_causal):
+    q_cpu = q.detach().cpu().double()
+    k_cpu = k.detach().cpu().double()
+    v_cpu = v.detach().cpu().double()
+    scores = q_cpu @ k_cpu.transpose(-1, -2)
+
+    if is_causal:
+        mask = torch.ones(scores.shape[-2:], dtype=torch.bool).triu(1)
+        scores.masked_fill_(mask, float("-inf"))
+
+    output = torch.softmax(scores, dim=-1) @ v_cpu
+
+    return output.to(device=v.device, dtype=v.dtype)
 
 
 def arrangement(
@@ -106,12 +120,13 @@ def attention(q, k, v, is_causal=False):
 @pytest.mark.parametrize("num_heads", (4,))
 @pytest.mark.parametrize("batch_size", (2,))
 def test(batch_size, num_heads, seq_len, emb_dim, dtype, device, is_causal, rtol, atol):
+    torch.manual_seed(20260722)
     q, k, v = (
         torch.randn(batch_size, num_heads, seq_len, emb_dim, dtype=dtype, device=device)
         for _ in range(3)
     )
 
     output = attention(q, k, v, is_causal=is_causal)
-    expected = F.scaled_dot_product_attention(q, k, v, is_causal=is_causal, scale=1)
+    expected = _reference_attention(q, k, v, is_causal)
 
-    assert torch.allclose(output, expected, rtol=rtol, atol=atol)
+    torch.testing.assert_close(output, expected, rtol=rtol, atol=atol)
