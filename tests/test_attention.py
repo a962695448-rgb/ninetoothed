@@ -57,14 +57,13 @@ def arrangement(
 
 
 def application(q, k, v, is_causal, o):
-    q_loaded = (q * 1.44269504089).to(q.dtype)
-
     acc = ntl.zeros((q.shape[-2], q.shape[-1]), dtype=ntl.float32)
     l_i = ntl.full((q.shape[-2],), 1, dtype=ntl.float32)
     m_i = ntl.full((q.shape[-2],), float("-inf"), dtype=ntl.float32)
 
     for i in range(k.shape[0]):
-        qk = ntl.dot(q_loaded, ntl.trans(k[i]))
+        qk = ntl.dot(q, ntl.trans(k[i]))
+        qk = qk * 1.44269504089
         qk = ntl.where(k[i].offsets(-2) < k.source.shape[-2], qk, float("-inf"))
 
         if is_causal:
@@ -108,6 +107,22 @@ def attention(q, k, v, is_causal=False):
     attention_kernel(q, k, v, is_causal, o)
 
     return o
+
+
+@pytest.mark.parametrize("is_causal", (False, True))
+@pytest.mark.parametrize("device", get_available_devices())
+def test_fp16_post_dot_scaling_regression(device, is_causal):
+    torch.manual_seed(74)
+    q, k, v = (
+        torch.randn(2, 4, 1024, 64, dtype=torch.float16, device=device)
+        for _ in range(3)
+    )
+    q, k, v = (tensor[1:2, 1:2, :324, :] for tensor in (q, k, v))
+
+    output = attention(q, k, v, is_causal=is_causal)
+    expected = _reference_attention(q, k, v, is_causal)
+
+    torch.testing.assert_close(output, expected, rtol=0.01, atol=0.01)
 
 
 @pytest.mark.parametrize("is_causal", (False, True))
