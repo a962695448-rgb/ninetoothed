@@ -108,12 +108,5 @@ def test(m, n, k, dtype, device, atol):
         output = matmul(input, other)
         expected = torch.matmul(input, other)
 
-    if dtype == torch.float16:
-        assert torch.allclose(
-            output,
-            expected,
-            rtol=_FP16_RTOL,
-            atol=atol,
-        )
-    else:
-        assert torch.allclose(output, expected, atol=atol)
+    rtol = _FP16_RTOL if dtype == torch.float16 else 1e-5
+    assert torch.allclose(output, expected, rtol=rtol, atol=atol)
