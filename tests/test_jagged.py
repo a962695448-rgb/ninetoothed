@@ -120,8 +120,7 @@ def test_to_padded_tensor(ndim, jagged_dim, num_batches, padding, device):
 
     expected = _padded_from_batches(batches, padding, jagged_dim)
 
-    assert output.shape == expected.shape
-    torch.testing.assert_close(output, expected)
+    assert output.shape == expected.shape and torch.allclose(output, expected)
 
 
 class Copy:
@@ -216,4 +215,6 @@ def test_expand(ndim, jagged_dim, num_batches, device):
 
     expected = _expanded_values_from_batches(batches, src, jagged_dim)
 
-    torch.testing.assert_close(dst.values(), expected)
+    assert dst.values().shape == expected.shape and torch.allclose(
+        dst.values(), expected
+    )
