@@ -981,6 +981,7 @@ def _runtime_wrapper(
     specs=(),
     binding_overrides=None,
     prepare_invocation=None,
+    validate_bindings=None,
 ):
     overrides = dict(binding_overrides or {})
 
@@ -997,6 +998,9 @@ def _runtime_wrapper(
                 owner_refs=_runtime_owner_refs(args, kwargs),
                 empty=True,
             )
+
+        if validate_bindings is not None:
+            validate_bindings(bound_public)
 
         values, _keepalive = _bound_values(abi, bound_public, scalar_mode="value")
         bindings = abi.kernel_args
@@ -1087,9 +1091,14 @@ def _runtime_wrapper(
         if _empty_launch(abi, public):
             return _first_output(abi, public)
 
+        bound_public = dict(public) | overrides
+
+        if validate_bindings is not None:
+            validate_bindings(bound_public)
+
         values, keepalive = _bound_values(
             abi,
-            dict(public) | overrides,
+            bound_public,
             scalar_mode="value",
         )
 
@@ -1182,6 +1191,20 @@ def _validate_tensor_contract(spec, value, expected_device):
             f"Kernel argument `{spec.name}` has rank {len(shape)}; "
             f"expected {source_ndim}."
         )
+
+    for axis, (actual, expected) in enumerate(
+        zip(shape, spec.attrs.get("source_shape", ()), strict=False)
+    ):
+        try:
+            expected = int(expected)
+        except (TypeError, ValueError):
+            continue
+
+        if actual != expected:
+            raise TypeError(
+                f"Kernel argument `{spec.name}` has shape {tuple(shape)}; "
+                f"expected dimension {axis} to be {expected}."
+            )
 
     device = getattr(value, "device", None)
 
