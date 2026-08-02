@@ -2,6 +2,7 @@
 
 import ctypes
 import functools
+import math
 import os
 import re
 import shutil
@@ -47,11 +48,6 @@ class TritonMaterializer(Materializer):
         return _materialize(compilation)
 
     def aot_build(self, compilation, *, output_dir: str | Path):
-        if len(compilation.launch_plan.tuning_candidates) > 1:
-            raise ValueError(
-                "Triton AOT accepts one launch configuration; use build() to "
-                "benchmark and package multiple explicit configurations."
-            )
         return _aot_materialize(compilation, output_dir=output_dir)
 
     def load_built_artifact(self, built: BuiltArtifact):
@@ -69,12 +65,18 @@ class TritonMaterializer(Materializer):
         )
         specs = _runtime_specs(built.source)
 
+        abi = _launch_abi_from_dict(built.abi)
+
         return _aot_wrapper(
             function,
             enter,
             leave,
-            _launch_abi_from_dict(built.abi),
+            abi,
             specs,
+            validate_bindings=_runtime_layout_transfer_validator(
+                built.source.metadata,
+                abi,
+            ),
         )
 
 
@@ -119,7 +121,7 @@ def _materialize(compilation):
     launch = getattr(module, artifact.entrypoint)
     kernel = getattr(module, f"{artifact.kernel_name}_kernel", None)
     candidates = tuple(compilation.launch_plan.tuning_candidates)
-    validate_bindings = _runtime_vector_validator(compilation)
+    validate_bindings = _runtime_binding_validator(compilation)
     candidate_launches = tuple(
         _candidate_launch(compilation, launch, kernel, candidate, validate_bindings)
         for candidate in candidates
@@ -165,6 +167,7 @@ def _materialize(compilation):
             by_launch,
             handle,
             compilation,
+            validate_bindings,
         )
 
     return handle
@@ -178,8 +181,13 @@ def _candidate_launch(compilation, launch, kernel, candidate, validate_bindings)
         str(bindings[name].source): value
         for name, value in dict(candidate.get("meta_parameters", {})).items()
     }
+    private_meta = {
+        f"_ninetoothed_{name.lower()}": value
+        for name, value in dict(candidate.get("private_meta_parameters", {})).items()
+    }
     function = functools.partial(
         launch,
+        **private_meta,
         _ninetoothed_num_warps=int(candidate["num_warps"]),
         _ninetoothed_num_stages=int(candidate["num_stages"]),
     )
@@ -498,7 +506,13 @@ def _runtime_alias_signature(abi, public):
     return tuple(aliases)
 
 
-def _tuned_runtime_launch(tuner, candidates_by_launch, handle, compilation):
+def _tuned_runtime_launch(
+    tuner,
+    candidates_by_launch,
+    handle,
+    compilation,
+    validate_bindings=None,
+):
     from ninetoothed.compiler.runtime import (
         _arm_prepared_runtime_launch,
         _empty_launch,
@@ -595,6 +609,9 @@ def _tuned_runtime_launch(tuner, candidates_by_launch, handle, compilation):
         )
 
         if _empty_launch(compilation.launch_abi, public):
+            if validate_bindings is not None:
+                validate_bindings(public)
+
             return _first_output(compilation.launch_abi, public)
 
         key = tuner._make_arg_key(args, kwargs)
@@ -719,6 +736,189 @@ def _runtime_validator(compilation, validate_bindings):
     return validate
 
 
+def _runtime_binding_validator(compilation):
+    validators = tuple(
+        validator
+        for validator in (
+            _runtime_vector_validator(compilation),
+            _runtime_layout_transfer_validator(
+                getattr(compilation.artifact, "metadata", {}),
+                compilation.launch_abi,
+            ),
+        )
+        if validator is not None
+    )
+
+    if not validators:
+        return None
+
+    def validate(public):
+        for validator in validators:
+            validator(public)
+
+    return validate
+
+
+def _runtime_layout_transfer_validator(metadata, abi):
+    transfer = dict(metadata.get("layout_transfer", {}))
+
+    if not transfer:
+        return None
+
+    import sympy
+
+    permutation = tuple(int(axis) for axis in transfer.get("permutation", ()))
+
+    physical_constraints = tuple(
+        (sympy.sympify(str(left)), sympy.sympify(str(right)))
+        for left, right in transfer.get("physical_constraints", ())
+    )
+    program_constraints = tuple(
+        (
+            tuple(sympy.sympify(str(value)) for value in actual),
+            tuple(sympy.sympify(str(value)) for value in expected),
+        )
+        for actual, expected in transfer.get("program_constraints", ())
+    )
+    value_constraints = tuple(
+        (
+            tuple(sympy.sympify(str(value)) for value in actual),
+            tuple(sympy.sympify(str(value)) for value in expected),
+        )
+        for actual, expected in transfer.get("value_constraints", ())
+    )
+    expressions = (
+        *(expression for pair in physical_constraints for expression in pair),
+        *(
+            expression
+            for constraint in value_constraints
+            for shape in constraint
+            for expression in shape
+        ),
+        *(
+            expression
+            for constraint in program_constraints
+            for shape in constraint
+            for expression in shape
+        ),
+    )
+    bindings = {binding.name: binding for binding in abi.kernel_args}
+
+    try:
+        symbols = tuple(
+            (symbol, bindings[str(symbol)])
+            for symbol in sorted(
+                set().union(*(expression.free_symbols for expression in expressions)),
+                key=str,
+            )
+        )
+        source_binding = bindings[str(transfer["source_binding"])]
+        destination_binding = bindings[str(transfer["destination_binding"])]
+    except KeyError as exc:
+        raise ValueError(
+            f"Serialized Triton layout transfer references unknown binding "
+            f"`{exc.args[0]}`."
+        ) from exc
+
+    from ninetoothed.compiler.runtime import _binding_value
+
+    def validate(public):
+        source = _binding_value(source_binding, public)
+        destination = _binding_value(destination_binding, public)
+
+        if (
+            len(permutation) != len(source.shape)
+            or len(permutation) != len(destination.shape)
+            or set(permutation) != set(range(len(permutation)))
+            or any(
+                source.shape[source_axis] != destination.shape[destination_axis]
+                for destination_axis, source_axis in enumerate(permutation)
+            )
+        ):
+            raise ValueError("Triton layout transfer physical shapes do not match.")
+
+        if not _tensor_has_non_overlapping_strides(destination):
+            raise ValueError(
+                "Triton layout transfer requires non-overlapping destination strides."
+            )
+
+        substitutions = {
+            symbol: _binding_value(binding, public) for symbol, binding in symbols
+        }
+
+        def resolve(expression):
+            resolved = expression.subs(substitutions)
+
+            if resolved.free_symbols:
+                names = ", ".join(sorted(map(str, resolved.free_symbols)))
+                raise ValueError(f"Unresolved Triton layout symbols: {names}.")
+            return int(resolved)
+
+        for left, right in physical_constraints:
+            if resolve(left) != resolve(right):
+                raise ValueError("Triton layout transfer physical shapes do not match.")
+
+        for actual, expected in value_constraints:
+            if len(actual) != len(expected) or any(
+                resolve(left) != resolve(right) for left, right in zip(actual, expected)
+            ):
+                raise ValueError("Triton layout transfer value domains do not match.")
+
+        for actual, expected in program_constraints:
+            if len(actual) != len(expected) or any(
+                resolve(left) != resolve(right) for left, right in zip(actual, expected)
+            ):
+                raise ValueError("Triton layout transfer program domains do not match.")
+
+        if source is destination or _memory_spans_overlap(
+            _tensor_memory_span(source),
+            _tensor_memory_span(destination),
+        ):
+            raise ValueError(
+                "Triton layout transfer requires non-overlapping source and "
+                "destination storage."
+            )
+
+    return validate
+
+
+def _tensor_has_non_overlapping_strides(value):
+    try:
+        shape = tuple(int(size) for size in value.shape)
+        strides = tuple(abs(int(stride)) for stride in value.stride())
+    except (AttributeError, RuntimeError, TypeError, ValueError):
+        return False
+
+    if any(size == 0 for size in shape):
+        return True
+
+    dimensions = tuple(
+        (stride, size) for size, stride in zip(shape, strides) if size > 1
+    )
+
+    if any(stride == 0 for stride, _size in dimensions):
+        return False
+
+    if len(dimensions) == 2:
+        (first_stride, first_size), (second_stride, second_size) = dimensions
+        divisor = math.gcd(first_stride, second_stride)
+
+        return not (
+            second_stride // divisor < first_size
+            and first_stride // divisor < second_size
+        )
+
+    dimensions = sorted(dimensions)
+    occupied_span = 1
+
+    for stride, size in dimensions:
+        if stride < occupied_span:
+            return False
+
+        occupied_span += (size - 1) * stride
+    return True
+
+
 def _runtime_vector_validator(compilation):
     metadata = getattr(compilation.artifact, "metadata", {})
     limit = metadata.get("vector_numel_limit")
@@ -819,6 +1019,7 @@ def _runtime_vector_validator(compilation):
 def _aot_materialize(compilation, *, output_dir):
     from ninetoothed.compiler.runtime import Handle, _publish_library
 
+    compilation = _select_aot_candidate(compilation)
     artifact = compilation.artifact
     cache_key = compilation_cache_key(compilation)
     source = write_source(
@@ -852,6 +1053,10 @@ def _aot_materialize(compilation, *, output_dir):
         leave,
         compilation.launch_abi,
         compilation.kernel.tensors,
+        validate_bindings=_runtime_layout_transfer_validator(
+            getattr(artifact, "metadata", {}),
+            compilation.launch_abi,
+        ),
     )
     handle = Handle(compilation, function, wrapped, source, library_path)
     write_manifest(
@@ -860,6 +1065,34 @@ def _aot_materialize(compilation, *, output_dir):
     )
 
     return handle
+
+
+def _select_aot_candidate(compilation):
+    launch_plan = getattr(compilation, "launch_plan", None)
+
+    if launch_plan is None:
+        return compilation
+
+    candidates = tuple(launch_plan.tuning_candidates)
+
+    if len(candidates) <= 1:
+        return compilation
+
+    metadata = getattr(compilation.artifact, "metadata", {})
+
+    if not metadata.get("layout_transfer"):
+        raise ValueError(
+            "Triton AOT accepts one launch configuration; use build() to "
+            "benchmark and package multiple explicit configurations."
+        )
+
+    return replace(
+        compilation,
+        launch_plan=replace(
+            compilation.launch_plan,
+            tuning_candidates=(candidates[0],),
+        ),
+    )
 
 
 def _ensure_aot_library(compilation, source: Path, library: Path) -> None:
@@ -1142,6 +1375,13 @@ def _compile_signature(compilation) -> str:
         else:
             values.append("i64")
 
+    private_meta = _private_meta_values(compilation)
+    values.extend(
+        str(private_meta[name])
+        for name in dict(compilation.artifact.metadata.get("layout_transfer", {})).get(
+            "private_meta_parameters", ()
+        )
+    )
     values.append(str(_compile_block(compilation)))
 
     return ",".join(values)
@@ -1276,14 +1516,46 @@ def _specialized_grid_total(compilation) -> str:
         for binding in compilation.launch_abi.kernel_args
         if binding.kind in {"meta", "constexpr"} and binding.value is not None
     }
+    replacements.update(
+        {
+            f"_ninetoothed_{name.lower()}": str(value)
+            for name, value in _private_meta_values(compilation).items()
+        }
+    )
 
     return replace_symbols(expression, replacements)
 
 
+def _private_meta_values(compilation) -> dict[str, int]:
+    candidates = tuple(compilation.launch_plan.tuning_candidates)
+
+    if not candidates:
+        return {}
+
+    return {
+        str(name): int(value)
+        for name, value in dict(
+            candidates[0].get("private_meta_parameters", {})
+        ).items()
+    }
+
+
 def _compile_schedule(compilation) -> tuple[int, int]:
     schedule = dict(compilation.artifact.metadata.get("ssa_schedule", {}))
-    warps = compilation.request.num_warps or schedule.get("num_warps") or 4
-    stages = compilation.request.num_stages or schedule.get("num_stages") or 3
+    candidates = tuple(compilation.launch_plan.tuning_candidates)
+    selected = dict(candidates[0]) if candidates else {}
+    warps = (
+        compilation.request.num_warps
+        or selected.get("num_warps")
+        or schedule.get("num_warps")
+        or 4
+    )
+    stages = (
+        compilation.request.num_stages
+        or selected.get("num_stages")
+        or schedule.get("num_stages")
+        or 3
+    )
 
     if isinstance(warps, tuple):
         warps = warps[0]
@@ -1293,7 +1565,15 @@ def _compile_schedule(compilation) -> tuple[int, int]:
     return int(warps), int(stages)
 
 
-def _aot_wrapper(function, enter, leave, abi, tensor_specs):
+def _aot_wrapper(
+    function,
+    enter,
+    leave,
+    abi,
+    tensor_specs,
+    *,
+    validate_bindings=None,
+):
     from ninetoothed.compiler.runtime import (
         KernelLaunchError,
         _bound_values,
@@ -1318,6 +1598,9 @@ def _aot_wrapper(function, enter, leave, abi, tensor_specs):
 
         public = _public_values(abi, args, kwargs, specs=tensor_specs)
         _validate_aot_constants(abi, public)
+
+        if validate_bindings is not None:
+            validate_bindings(public)
 
         if _empty_launch(abi, public):
             return _first_output(abi, public)

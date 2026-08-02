@@ -158,6 +158,9 @@ def emit(kernel: Kernel, target: EmitterTarget) -> Artifact:
         "ssa_metadata": dict(kernel.ssa.metadata),
         "ssa_pass_trace": tuple(kernel.ssa.metadata.get("pass_trace", ())),
         "ssa_schedule": dict(kernel.ssa.metadata.get("schedule", {})),
+        "ssa_schedule_candidates": tuple(
+            kernel.ssa.metadata.get("schedule_candidates", ())
+        ),
         "ssa_pipeline_selection": dict(
             kernel.ssa.metadata.get("pipeline_selection", {})
         ),
@@ -172,6 +175,8 @@ def emit(kernel: Kernel, target: EmitterTarget) -> Artifact:
         },
         "vector_numel_limit": target.max_vector_numel,
     }
+
+    metadata.update(dict(render_context.scheduled_metadata))
 
     return Artifact(
         backend=backend,
@@ -502,6 +507,7 @@ def _render_source(
         ),
         scalar_program=vector_scalar_program,
     )
+    context = target.schedule_context(context)
 
     return target.render_module(context), context
 

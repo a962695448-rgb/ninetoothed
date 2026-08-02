@@ -991,6 +991,9 @@ def _runtime_wrapper(
 
         bound_public = dict(public) | overrides
 
+        if validate_bindings is not None:
+            validate_bindings(bound_public)
+
         if _empty_launch(abi, public):
             return _PreparedRuntimeLaunch(
                 guard=_VerifiedRuntimeCall.from_call(abi, args, kwargs),
@@ -998,9 +1001,6 @@ def _runtime_wrapper(
                 owner_refs=_runtime_owner_refs(args, kwargs),
                 empty=True,
             )
-
-        if validate_bindings is not None:
-            validate_bindings(bound_public)
 
         values, _keepalive = _bound_values(abi, bound_public, scalar_mode="value")
         bindings = abi.kernel_args
@@ -1087,14 +1087,13 @@ def _runtime_wrapper(
 
     def launch(*args, **kwargs):
         public = _public_values(abi, args, kwargs, specs=specs)
-
-        if _empty_launch(abi, public):
-            return _first_output(abi, public)
-
         bound_public = dict(public) | overrides
 
         if validate_bindings is not None:
             validate_bindings(bound_public)
+
+        if _empty_launch(abi, public):
+            return _first_output(abi, public)
 
         values, keepalive = _bound_values(
             abi,

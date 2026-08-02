@@ -2,13 +2,46 @@
 
 import math
 import re
-from dataclasses import dataclass
+from dataclasses import dataclass, replace
 from typing import Any
 
 from ninetoothed.backends.core import Target
 from ninetoothed.backends.emitters import ssa as common
 from ninetoothed.backends.emitters.base import EmitterTarget, ModuleRenderContext
+from ninetoothed.backends.emitters.expressions import replace_symbols
+from ninetoothed.compiler.layout import LayoutTransfer
 from ninetoothed.ir import Kernel, ssa
+from ninetoothed.naming import is_meta
+
+
+def _legal_pre_tiled_block(shape, *, max_numel):
+    static_numel = 1
+
+    for extent in shape:
+        if extent.op == "constant":
+            value = int(extent.value)
+
+            if value <= 0 or value & (value - 1):
+                return False
+
+            static_numel *= value
+            continue
+
+        symbols = _index_symbols(extent)
+
+        if not symbols or any(not is_meta(symbol) for symbol in symbols):
+            return False
+
+    return max_numel is None or static_numel <= max_numel
+
+
+def _index_symbols(expression):
+    if expression.op == "symbol":
+        return frozenset({str(expression.value)})
+
+    return frozenset().union(
+        *(_index_symbols(operand) for operand in expression.operands)
+    )
 
 
 @dataclass(frozen=True, kw_only=True)
@@ -200,10 +233,176 @@ class TritonTarget(EmitterTarget):
             "tensor.full",
         }
 
+    def schedule_context(self, context: ModuleRenderContext) -> ModuleRenderContext:
+        program = context.kernel.ssa
+        schedule = program.metadata.get("schedule", {}) if program is not None else {}
+        transfer = schedule.get("layout_transfer")
+
+        if (
+            schedule.get("granularity") != "layout-transfer"
+            or not isinstance(transfer, LayoutTransfer)
+            or not transfer.schedulable
+        ):
+            return context
+
+        value_shape = (
+            transfer.source.layout.application_shape
+            if transfer.requires_tiling
+            else transfer.destination.layout.application_shape
+        )
+
+        if len(value_shape) != 2:
+            return context
+
+        if not transfer.requires_tiling and not _legal_pre_tiled_block(
+            value_shape,
+            max_numel=self.max_vector_numel,
+        ):
+            return context
+
+        rows, columns = (_render_index_expr(value) for value in value_shape)
+        program_shape = tuple(
+            _render_index_expr(value)
+            for value in transfer.destination.layout.view_shape
+        )
+        private_meta: tuple[tuple[str, int], ...] = ()
+        lines = ["transfer_program = tl.program_id(0)"]
+
+        if transfer.requires_tiling:
+            tile = dict(schedule.get("tile", {}))
+            tile_m = int(tile.get("block_m", 16))
+            tile_n = int(tile.get("block_n", 16))
+            private_meta = (("TILE_M", tile_m), ("TILE_N", tile_n))
+            lines.extend(
+                (
+                    f"transfer_tile_columns = ({columns} + TILE_N - 1) // TILE_N",
+                    "transfer_tile_row = transfer_program // transfer_tile_columns",
+                    "transfer_tile_column = transfer_program % transfer_tile_columns",
+                    "destination_value_0 = transfer_tile_row * TILE_M + "
+                    "tl.arange(0, TILE_M)[:, None]",
+                    "destination_value_1 = transfer_tile_column * TILE_N + "
+                    "tl.arange(0, TILE_N)[None, :]",
+                    "source_value_0 = transfer_tile_row * TILE_M + "
+                    "tl.arange(0, TILE_M)[None, :]",
+                    "source_value_1 = transfer_tile_column * TILE_N + "
+                    "tl.arange(0, TILE_N)[:, None]",
+                )
+            )
+            grid_total = (
+                f"(({rows} + _ninetoothed_tile_m - 1) // "
+                f"_ninetoothed_tile_m) * (({columns} + "
+                "_ninetoothed_tile_n - 1) // _ninetoothed_tile_n)"
+            )
+        else:
+            lines.extend(
+                (
+                    f"destination_value_0 = tl.arange(0, {rows})[:, None]",
+                    f"destination_value_1 = tl.arange(0, {columns})[None, :]",
+                    f"source_value_0 = tl.arange(0, {rows})[None, :]",
+                    f"source_value_1 = tl.arange(0, {columns})[:, None]",
+                )
+            )
+            grid_total = common.product(program_shape)
+
+        destination_flat = f"(destination_value_0 * ({columns}) + destination_value_1)"
+        source_flat = f"(source_value_0 * ({columns}) + source_value_1)"
+        source_replacements = {
+            "outer_index": "transfer_program",
+            "index": source_flat,
+            "value_0": "source_value_0",
+            "value_1": "source_value_1",
+        }
+        destination_replacements = {
+            "outer_index": "transfer_program",
+            "index": destination_flat,
+            "value_0": "destination_value_0",
+            "value_1": "destination_value_1",
+        }
+        source_index = _render_access_expression(
+            transfer.source.access_map.linear_index, source_replacements
+        )
+        destination_index = _render_access_expression(
+            transfer.destination.access_map.linear_index,
+            destination_replacements,
+        )
+        source_predicate = _render_access_expression(
+            transfer.source.access_map.predicate, source_replacements
+        )
+        destination_predicate = _render_access_expression(
+            transfer.destination.access_map.predicate, destination_replacements
+        )
+        source_mask = (
+            f"({source_predicate}) & (source_value_0 < ({rows})) & "
+            f"(source_value_1 < ({columns}))"
+        )
+        destination_mask = (
+            f"({destination_predicate}) & (destination_value_0 < ({rows})) & "
+            f"(destination_value_1 < ({columns}))"
+        )
+        lines.extend(
+            (
+                f"transfer_value = {self.load(transfer.source_binding, source_index, mask=source_mask)}",
+                "transfer_value = tl.trans(transfer_value)",
+                self.store(
+                    transfer.destination_binding,
+                    destination_index,
+                    "transfer_value",
+                    mask=destination_mask,
+                ),
+            )
+        )
+        metadata = {
+            "layout_transfer": {
+                "source_binding": transfer.source_binding,
+                "destination_binding": transfer.destination_binding,
+                "permutation": transfer.permutation,
+                "requires_tiling": transfer.requires_tiling,
+                "block_shape": (
+                    ("TILE_M", "TILE_N")
+                    if transfer.requires_tiling
+                    else tuple(value.render() for value in value_shape)
+                ),
+                "value_constraints": tuple(
+                    (
+                        tuple(value.render() for value in actual),
+                        tuple(value.render() for value in expected),
+                    )
+                    for actual, expected in transfer.value_constraints
+                ),
+                "physical_constraints": tuple(
+                    (left.render(), right.render())
+                    for left, right in transfer.physical_constraints
+                ),
+                "program_constraints": tuple(
+                    (
+                        tuple(value.render() for value in actual),
+                        tuple(value.render() for value in expected),
+                    )
+                    for actual, expected in transfer.program_constraints
+                ),
+                "private_meta_parameters": tuple(name for name, _value in private_meta),
+            }
+        }
+
+        return replace(
+            context,
+            total=common.product((rows, columns)),
+            body="\n".join(lines),
+            outer_axes=program_shape,
+            grid_total=grid_total,
+            axes=(rows, columns),
+            vector_program=False,
+            block_program=True,
+            scalar_program=False,
+            private_meta_parameters=private_meta,
+            scheduled_metadata=metadata,
+        )
+
     def render_module(self, context: ModuleRenderContext) -> str:
         kernel = context.kernel
         body = common.rewrite_index_math(context.body, c_style=False)
         runtime_params = set(kernel.metadata.get("runtime_shape_params", ()))
+        private_meta = tuple(context.private_meta_parameters)
         params = ",\n    ".join(
             (
                 *context.variables,
@@ -212,6 +411,7 @@ class TritonTarget(EmitterTarget):
                     axis if axis in runtime_params else f"{axis}: tl.constexpr"
                     for axis in context.shape_params
                 ],
+                *[f"{name}: tl.constexpr" for name, _value in private_meta],
                 "BLOCK: tl.constexpr",
             )
         )
@@ -222,6 +422,9 @@ class TritonTarget(EmitterTarget):
         )
         kernel_args = ",\n        ".join(
             (*context.variables, *context.outputs, *context.shape_params)
+        )
+        private_kernel_args = "\n        ".join(
+            f"{name}=_ninetoothed_{name.lower()}," for name, _value in private_meta
         )
         offsets = (
             "0"
@@ -259,6 +462,10 @@ class TritonTarget(EmitterTarget):
         launch_params = ", ".join(
             (
                 *public_launch_params,
+                *[
+                    f"_ninetoothed_{name.lower()}={value}"
+                    for name, value in private_meta
+                ],
                 f"_ninetoothed_num_warps={num_warps}",
                 f"_ninetoothed_num_stages={num_stages}",
             )
@@ -299,12 +506,24 @@ def launch_{kernel.kernel_name}({launch_params}):
     grid = ({context.grid_total},) if {active_grid!r} else (triton.cdiv({context.grid_total}, block),)
     {kernel.kernel_name}_kernel[grid](
         {kernel_args},
+        {private_kernel_args}
         BLOCK=block,
         num_warps=_ninetoothed_num_warps,
         num_stages=_ninetoothed_num_stages,
     )
     return {result}
 '''
+
+
+def _render_index_expr(expression) -> str:
+    return common.rewrite_index_math(expression.render(), c_style=False)
+
+
+def _render_access_expression(expression, replacements) -> str:
+    return common.rewrite_index_math(
+        replace_symbols(expression.render(), replacements),
+        c_style=False,
+    )
 
 
 TARGET = TritonTarget()

@@ -662,6 +662,16 @@ def _triton_tuning_candidates(
     arranged,
 ) -> tuple[Mapping[str, Any], ...]:
     schedule = dict(metadata.get("ssa_schedule", {}))
+
+    if schedule.get("granularity") == "layout-transfer" and metadata.get(
+        "layout_transfer"
+    ):
+        return _triton_layout_transfer_candidates(
+            metadata,
+            request,
+            arranged,
+        )
+
     warps = _configuration_values(
         request.num_warps,
         schedule.get("num_warps"),
@@ -707,6 +717,119 @@ def _triton_tuning_candidates(
             candidates[index * len(candidates) // limit] for index in range(limit)
         ]
     return tuple(candidates)
+
+
+def _triton_layout_transfer_candidates(
+    metadata: Mapping[str, Any],
+    request: CompileRequest,
+    arranged,
+) -> tuple[Mapping[str, Any], ...]:
+    schedule_candidates = tuple(metadata.get("ssa_schedule_candidates", ()))
+    layout_transfer = dict(metadata.get("layout_transfer", {}))
+
+    if not schedule_candidates:
+        schedule_candidates = (
+            {
+                "name": "transpose-default",
+                "schedule": dict(metadata.get("ssa_schedule", {})),
+            },
+        )
+
+    candidates = []
+
+    for scheduled in schedule_candidates:
+        candidate_schedule = dict(scheduled.get("schedule", {}))
+        tile = dict(candidate_schedule.get("tile", {}))
+        private_meta = {}
+
+        if layout_transfer.get("requires_tiling"):
+            private_meta = {
+                "TILE_M": int(tile.get("block_m", 16)),
+                "TILE_N": int(tile.get("block_n", 16)),
+            }
+
+        warps = _configuration_values(
+            request.num_warps,
+            candidate_schedule.get("num_warps"),
+            default=4,
+        )
+        stages = _configuration_values(
+            request.num_stages,
+            candidate_schedule.get("num_stages"),
+            default=1,
+        )
+
+        for meta, num_warps, num_stages in itertools.product(
+            _meta_parameter_configurations(arranged), warps, stages
+        ):
+            parts = [
+                str(scheduled.get("name", "layout-transfer-default")),
+                *(f"{remove_prefixes(name)}-{value}" for name, value in meta.items()),
+                f"warps-{num_warps}",
+                f"stages-{num_stages}",
+            ]
+            candidate = {
+                "id": "_".join(parts),
+                "num_warps": num_warps,
+                "num_stages": num_stages,
+            }
+
+            if meta:
+                candidate["meta_parameters"] = meta
+
+            if private_meta:
+                candidate["private_meta_parameters"] = private_meta
+
+            if (
+                _layout_transfer_candidate_is_legal(
+                    layout_transfer,
+                    meta,
+                    private_meta,
+                )
+                and candidate not in candidates
+            ):
+                candidates.append(candidate)
+
+    if not candidates:
+        raise ValueError(
+            "No legal Triton layout-transfer configuration satisfies the block "
+            "shape and tensor-size constraints."
+        )
+
+    limit = request.max_num_configs
+
+    if limit is not None and len(candidates) > limit:
+        candidates = [
+            candidates[index * len(candidates) // limit] for index in range(limit)
+        ]
+    return tuple(candidates)
+
+
+def _layout_transfer_candidate_is_legal(layout_transfer, meta, private_meta):
+    import sympy
+
+    block_shape = tuple(layout_transfer.get("block_shape", ()))
+
+    if len(block_shape) != 2:
+        return False
+
+    substitutions = dict(meta) | dict(private_meta)
+    numel = 1
+
+    for extent in block_shape:
+        specialized = sympy.sympify(str(extent)).subs(substitutions)
+
+        if specialized.free_symbols or not specialized.is_integer:
+            return False
+
+        value = int(specialized)
+
+        if value <= 0 or value & (value - 1):
+            return False
+
+        numel *= value
+
+    return numel <= 1 << 20
 
 
 def _meta_parameter_configurations(arranged) -> tuple[dict[str, int], ...]:
