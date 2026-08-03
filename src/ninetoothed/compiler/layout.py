@@ -51,6 +51,34 @@ class LayoutTransfer:
         return self.failure_reason is None
 
 
+def serialize_layout_transfer(transfer: LayoutTransfer) -> dict[str, object]:
+    """Serialize a proven transfer without adding backend scheduling details."""
+    return {
+        "source_binding": transfer.source_binding,
+        "destination_binding": transfer.destination_binding,
+        "permutation": transfer.permutation,
+        "requires_tiling": transfer.requires_tiling,
+        "value_constraints": tuple(
+            (
+                tuple(value.render() for value in actual),
+                tuple(value.render() for value in expected),
+            )
+            for actual, expected in transfer.value_constraints
+        ),
+        "physical_constraints": tuple(
+            (left.render(), right.render())
+            for left, right in transfer.physical_constraints
+        ),
+        "program_constraints": tuple(
+            (
+                tuple(value.render() for value in actual),
+                tuple(value.render() for value in expected),
+            )
+            for actual, expected in transfer.program_constraints
+        ),
+    }
+
+
 def analyze_layout_transfer(program: ssa.Program, tensors=()) -> LayoutTransfer | None:
     """Return the unique proven direct rank-2 permutation in the program."""
     store = _sole_top_level_store(program)

@@ -6,11 +6,9 @@ import torch
 
 import ninetoothed
 from ninetoothed import Tensor, block_size
-from ninetoothed.backends.materializers.triton import (
-    _aot_wrapper,
-    _runtime_layout_transfer_validator,
-)
+from ninetoothed.backends.materializers.triton import _aot_wrapper
 from ninetoothed.compiler import load_built_artifact
+from ninetoothed.compiler.layout_runtime import build_layout_transfer_validator
 from ninetoothed.ir import LaunchABI, LaunchBinding
 from tests.utils import get_available_devices
 
@@ -62,7 +60,7 @@ def test_layout_transfer_runtime_contract_and_aot_wiring():
     metadata = _metadata()
     x = torch.empty((2, 3))
     out = torch.empty((3, 2))
-    validate = _runtime_layout_transfer_validator(metadata, abi)
+    validate = build_layout_transfer_validator(metadata, abi)
 
     validate({"x": x, "out": out})
 
@@ -73,7 +71,7 @@ def test_layout_transfer_runtime_contract_and_aot_wiring():
     )
 
     with pytest.raises(ValueError, match="physical shapes"):
-        _runtime_layout_transfer_validator(provenance_only, abi)(
+        build_layout_transfer_validator(provenance_only, abi)(
             {"x": x, "out": torch.empty((2, 3))}
         )
 
@@ -96,7 +94,7 @@ def test_layout_transfer_runtime_contract_and_aot_wiring():
         ),
     ):
         with pytest.raises(ValueError, match=expected):
-            _runtime_layout_transfer_validator(
+            build_layout_transfer_validator(
                 _metadata(**{constraint: replacement}), abi
             )({"x": x, "out": out})
 
@@ -123,7 +121,7 @@ def test_layout_transfer_runtime_contract_and_aot_wiring():
         lambda: None,
         abi,
         (),
-        validate_bindings=_runtime_layout_transfer_validator(
+        validate_bindings=build_layout_transfer_validator(
             _metadata(program_constraints=((("sx0",), ("dy0",)),)), abi
         ),
     )

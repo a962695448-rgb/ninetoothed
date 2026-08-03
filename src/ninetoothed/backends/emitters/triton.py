@@ -9,7 +9,7 @@ from ninetoothed.backends.core import Target
 from ninetoothed.backends.emitters import ssa as common
 from ninetoothed.backends.emitters.base import EmitterTarget, ModuleRenderContext
 from ninetoothed.backends.emitters.expressions import replace_symbols
-from ninetoothed.compiler.layout import LayoutTransfer
+from ninetoothed.compiler.layout import LayoutTransfer, serialize_layout_transfer
 from ninetoothed.ir import Kernel, ssa
 from ninetoothed.naming import is_meta
 
@@ -352,33 +352,12 @@ class TritonTarget(EmitterTarget):
             )
         )
         metadata = {
-            "layout_transfer": {
-                "source_binding": transfer.source_binding,
-                "destination_binding": transfer.destination_binding,
-                "permutation": transfer.permutation,
-                "requires_tiling": transfer.requires_tiling,
+            "layout_transfer": serialize_layout_transfer(transfer)
+            | {
                 "block_shape": (
                     ("TILE_M", "TILE_N")
                     if transfer.requires_tiling
                     else tuple(value.render() for value in value_shape)
-                ),
-                "value_constraints": tuple(
-                    (
-                        tuple(value.render() for value in actual),
-                        tuple(value.render() for value in expected),
-                    )
-                    for actual, expected in transfer.value_constraints
-                ),
-                "physical_constraints": tuple(
-                    (left.render(), right.render())
-                    for left, right in transfer.physical_constraints
-                ),
-                "program_constraints": tuple(
-                    (
-                        tuple(value.render() for value in actual),
-                        tuple(value.render() for value in expected),
-                    )
-                    for actual, expected in transfer.program_constraints
                 ),
                 "private_meta_parameters": tuple(name for name, _value in private_meta),
             }
