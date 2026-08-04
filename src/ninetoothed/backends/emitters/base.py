@@ -28,6 +28,7 @@ class ModuleRenderContext:
     vector_program: bool
     block_program: bool
     scalar_program: bool
+    cooperative_reduction_program: bool = False
     private_meta_parameters: tuple[tuple[str, int], ...] = ()
     scheduled_metadata: Mapping[str, Any] = field(default_factory=dict)
 
@@ -104,6 +105,26 @@ class EmitterTarget(ABC):
         return None
 
     def emit_reduction_loop(self, local, operation, context):
+        del local, operation, context
+
+        return None
+
+    def supports_cooperative_reduction(self, schedule: Mapping[str, Any]) -> bool:
+        del schedule
+
+        return False
+
+    def thread_id(self) -> str:
+        raise NotImplementedError(
+            f"Emitter {type(self).__name__} has no thread-id expression."
+        )
+
+    def thread_count(self) -> str:
+        raise NotImplementedError(
+            f"Emitter {type(self).__name__} has no thread-count expression."
+        )
+
+    def emit_cooperative_reduction(self, local, operation, context):
         del local, operation, context
 
         return None

@@ -50,18 +50,21 @@ def scheduled_meta_defaults(
 
 
 def specialize_schedule_tiles(kernel: Kernel) -> Kernel:
-    """Materialize deterministic backend tile choices before source emission."""
+    """Materialize runtime symbols and backend tile choices before emission."""
     if kernel.ssa is None:
         return kernel
 
     schedule = dict(kernel.ssa.metadata.get("schedule", {}))
     defaults = dict(kernel.metadata.get("meta_defaults", {}))
     tile = dict(schedule.get("tile", {}))
-    values = {
-        name: int(tile[schedule_name])
-        for name in defaults
-        if (schedule_name := _schedule_tile_name(name)) in tile
-    }
+    values = dict(kernel.metadata.get("specialization_values", {}))
+    values.update(
+        {
+            name: int(tile[schedule_name])
+            for name in defaults
+            if (schedule_name := _schedule_tile_name(name)) in tile
+        }
+    )
 
     if not values:
         return kernel

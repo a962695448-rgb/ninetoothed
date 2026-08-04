@@ -1125,7 +1125,7 @@ def scalarized_index_application(x, indices, y):
             "triton": ("ssa-unified-triton-emitter", "tl.sum("),
             "cuda": (
                 "ssa-unified-cuda-emitter",
-                "a[(index) * (cols) + (v1_i)] * x[v1_i]",
+                "__shfl_down_sync",
             ),
             "tilelang": ("ssa-unified-tilelang-emitter", "for v1_i in T.serial(cols):"),
         }

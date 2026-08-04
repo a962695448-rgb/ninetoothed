@@ -295,6 +295,7 @@ def _compile_kernel(request: CompileRequest) -> Compilation:
             "ssa_ir_source": "application_ast",
             "ssa_tensor_ir_source": "arrangement_views",
             "runtime_shape_params": _runtime_shape_params(specs),
+            "specialization_values": specialization_values,
             "generation_py_fallback": False,
             "meta_defaults": meta_defaults,
         },
