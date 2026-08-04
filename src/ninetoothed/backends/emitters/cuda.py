@@ -460,13 +460,16 @@ def _cuda_reduction_update(operator: str, lhs: str, rhs: str, dtype: str) -> str
 
     if dtype == "float32":
         function = "fmaxf" if operator == "max" else "fminf"
+
         return f"{function}({lhs}, {rhs})"
 
     if dtype == "float64":
         function = "fmax" if operator == "max" else "fmin"
+
         return f"{function}({lhs}, {rhs})"
 
     comparison = ">" if operator == "max" else "<"
+
     return f"(({lhs}) {comparison} ({rhs}) ? ({lhs}) : ({rhs}))"
 
 
