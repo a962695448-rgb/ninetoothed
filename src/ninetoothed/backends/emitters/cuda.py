@@ -18,13 +18,16 @@ _dtype_level = common.dtype_level
 _emit_element = common.emit_element
 _emit_loop_bound = common.emit_loop_bound
 _emit_value = common.emit_value
+_fresh_temp = common.fresh_temp
 _indent_lines = common.indent_lines
 _linearized_index = common.linearized_index
 _load_other = common.load_other
 _local_symbol = common.local_symbol
 _materialize_bool_expr = common.materialize_bool_expr
 _materialize_index_expr = common.materialize_index_expr
+_nested_local_suffix = common.nested_local_suffix
 _normalize_dtype = common.normalize_dtype
+_reduction_identity = common.reduction_identity
 _source_index_for_value = common.source_index_for_value
 _target_index_expr = common.target_index_expr
 _value_axes = common.value_axes
@@ -134,6 +137,32 @@ class CudaTarget(EmitterTarget):
         function = functions.get(name, name)
 
         return f"{function}({', '.join(args)})"
+
+    def supports_cooperative_reduction(self, schedule):
+        try:
+            threads = int(schedule.get("threads", 256))
+        except (TypeError, ValueError):
+            return False
+
+        return bool(
+            schedule.get("cuda_cooperative_reduction")
+            and 32 <= threads <= 256
+            and threads % 32 == 0
+        )
+
+    def program_id(self, axis=0):
+        if axis != 0:
+            raise ValueError("CUDA cooperative reduction uses a one-dimensional grid.")
+        return "static_cast<int64_t>(blockIdx.x)"
+
+    def thread_id(self):
+        return "static_cast<int64_t>(threadIdx.x)"
+
+    def thread_count(self):
+        return "static_cast<int64_t>(blockDim.x)"
+
+    def emit_cooperative_reduction(self, local, operation, context):
+        return _emit_cuda_cooperative_reduction(local, operation, context)
 
     def local_decl(self, type_: ssa.Type, name: str, expr: str) -> str:
         if type_.kind == "pointer":
@@ -252,6 +281,9 @@ class CudaTarget(EmitterTarget):
     bool nt_matrix_active = nt_matrix_row < ({context.axes[0]}) && nt_matrix_col < ({context.axes[1]});
 {common.indent_block(body, "    ")}"""
             blocks_expr = grid_total
+        elif context.cooperative_reduction_program:
+            kernel_prelude = body
+            blocks_expr = grid_total
         else:
             kernel_prelude = f"""    int64_t {self.index_name} = static_cast<int64_t>(blockIdx.x) * blockDim.x + threadIdx.x;
     if ({self.index_name} < {total}) {{
@@ -297,6 +329,148 @@ extern "C" int launch_{kernel.kernel_name}(
     return static_cast<int>(cudaGetLastError());
 }}
 """
+
+
+def _emit_cuda_cooperative_reduction(
+    local: str, operation: ssa.Operation, ctx: _EmitContext
+) -> str:
+    schedule = dict(ctx.reduction_schedule or {})
+    axis = int(schedule["axis"]) if "axis" in schedule else None
+
+    if axis is None or not operation.operands or not operation.results:
+        raise ValueError("Malformed CUDA cooperative reduction operation.")
+
+    operator = operation.opcode[len("reduce.") :]
+    operand = operation.operands[0]
+    operand_axes = _value_axes(operand, ctx)
+    extent = str(schedule.get("extent", operand_axes[axis]))
+    operand_type = ctx.value_types.get(operand)
+    result_dtype = _normalize_dtype(operation.results[0].type.dtype or "float32")
+    operand_dtype = _normalize_dtype(
+        operand_type.dtype if operand_type is not None else result_dtype
+    )
+    accumulator_dtype = _cuda_reduction_accumulator_dtype(operand_dtype, result_dtype)
+    accumulator_type = ssa.Type(kind="scalar", dtype=accumulator_dtype)
+    accumulator = _fresh_temp(ctx, "nt_reduce_acc")
+    reduction_index = _fresh_temp(ctx, "nt_reduce_index")
+    shuffle_offset = _fresh_temp(ctx, "nt_reduce_offset")
+    shared = _fresh_temp(ctx, "nt_reduce_shared")
+    identity = _reduction_identity(operator, accumulator_type, ctx.target)
+    coordinates = list(ctx.coordinate_exprs)
+    coordinates[axis] = reduction_index
+    coordinates = tuple(coordinates)
+    linear = _target_index_expr(
+        ctx.target, _linearized_index(coordinates, operand_axes)
+    )
+    body_lines: list[str] = []
+    body = ctx.child(
+        lines=body_lines,
+        memo=dict(ctx.memo),
+        coordinate_exprs=coordinates,
+        index_expr=linear,
+        inner_index_expr=linear,
+        reduce_axis=axis,
+        reduce_index=reduction_index,
+        mask_expr=None,
+        local_suffix=_nested_local_suffix(ctx, accumulator),
+    )
+    term = _emit_element(operand, coordinates, body)
+    term = ctx.target.cast(accumulator_dtype, term)
+    body_lines.append(
+        f"{accumulator} = "
+        f"{_cuda_reduction_update(operator, accumulator, term, accumulator_dtype)};"
+    )
+
+    ctx.lines.append(ctx.target.local_decl(accumulator_type, accumulator, identity))
+    ctx.lines.append(
+        ctx.target.loop_header(
+            reduction_index,
+            ctx.target.thread_id(),
+            extent,
+            ctx.target.thread_count(),
+        )
+    )
+    ctx.lines.extend(_indent_lines(body_lines, ctx.target))
+    ctx.lines.append("}")
+    ctx.lines.append(
+        f"for (int {shuffle_offset} = 16; {shuffle_offset} > 0; "
+        f"{shuffle_offset} >>= 1) {{"
+    )
+    shuffle = f"__shfl_down_sync(0xffffffffu, {accumulator}, {shuffle_offset})"
+    ctx.lines.append(
+        f"    {accumulator} = "
+        f"{_cuda_reduction_update(operator, accumulator, shuffle, accumulator_dtype)};"
+    )
+    ctx.lines.append("}")
+    ctx.lines.append(
+        f"__shared__ {ctx.target.type_name(accumulator_dtype)} {shared}[8];"
+    )
+    ctx.lines.append(
+        f"if ((threadIdx.x & 31) == 0) {{ "
+        f"{shared}[threadIdx.x >> 5] = {accumulator}; }}"
+    )
+    ctx.lines.append("__syncthreads();")
+    ctx.lines.append("if (threadIdx.x < 32) {")
+    ctx.lines.append(
+        f"    {accumulator} = threadIdx.x < ((blockDim.x + 31) / 32) "
+        f"? {shared}[threadIdx.x] : {identity};"
+    )
+    ctx.lines.append(
+        f"    for (int {shuffle_offset} = 16; {shuffle_offset} > 0; "
+        f"{shuffle_offset} >>= 1) {{"
+    )
+    shuffle = f"__shfl_down_sync(0xffffffffu, {accumulator}, {shuffle_offset})"
+    ctx.lines.append(
+        f"        {accumulator} = "
+        f"{_cuda_reduction_update(operator, accumulator, shuffle, accumulator_dtype)};"
+    )
+    ctx.lines.append("    }")
+    ctx.lines.append(f"    if (threadIdx.x == 0) {{ {shared}[0] = {accumulator}; }}")
+    ctx.lines.append("}")
+    ctx.lines.append("__syncthreads();")
+    result_type = ssa.Type(kind="scalar", dtype=result_dtype)
+    ctx.lines.append(
+        ctx.target.local_decl(
+            result_type,
+            local,
+            ctx.target.cast(result_dtype, f"{shared}[0]"),
+        )
+    )
+
+    return local
+
+
+def _cuda_reduction_accumulator_dtype(operand_dtype: str, result_dtype: str) -> str:
+    if operand_dtype in {
+        "float8_e4m3fn",
+        "float8_e5m2",
+        "float16",
+        "bfloat16",
+    }:
+        return "float32"
+
+    if operand_dtype == "bool":
+        return "int32"
+    return result_dtype
+
+
+def _cuda_reduction_update(operator: str, lhs: str, rhs: str, dtype: str) -> str:
+    if operator == "sum":
+        return f"({lhs}) + ({rhs})"
+
+    if dtype == "float32":
+        function = "fmaxf" if operator == "max" else "fminf"
+
+        return f"{function}({lhs}, {rhs})"
+
+    if dtype == "float64":
+        function = "fmax" if operator == "max" else "fmin"
+
+        return f"{function}({lhs}, {rhs})"
+
+    comparison = ">" if operator == "max" else "<"
+
+    return f"(({lhs}) {comparison} ({rhs}) ? ({lhs}) : ({rhs}))"
 
 
 def _curand_support(context: ModuleRenderContext) -> tuple[str, str]:

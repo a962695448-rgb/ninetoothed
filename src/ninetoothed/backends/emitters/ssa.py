@@ -170,6 +170,7 @@ def emit(kernel: Kernel, target: EmitterTarget) -> Artifact:
         "launch_block": _launch_block(kernel),
         "program_mode": {
             "block": render_context.block_program,
+            "cooperative_reduction": render_context.cooperative_reduction_program,
             "scalar": render_context.scalar_program,
             "vector": render_context.vector_program,
         },
@@ -235,6 +236,71 @@ def _static_integer(value) -> int | None:
         return int(str(value))
     except (TypeError, ValueError):
         return None
+
+
+def _reduction_program_domain(schedule, target, reduction_coordinate):
+    axes = tuple(str(axis) for axis in schedule.get("value_shape", ()))
+    reduction_axis = int(schedule["axis"])
+    parallel_shape = tuple(str(axis) for axis in schedule.get("parallel_shape", ()))
+    parallel_total = _product(parallel_shape)
+    program_index = target.program_id(0)
+    parallel_index = (
+        "0"
+        if _is_one_expr(parallel_total)
+        else _target_index_expr(target, f"({program_index}) % ({parallel_total})")
+    )
+    coordinates = []
+    parallel_dim = 0
+
+    for dim in range(len(axes)):
+        if dim == reduction_axis:
+            coordinates.append(reduction_coordinate)
+            continue
+
+        coordinates.append(
+            _axis_offset_expr(parallel_shape, parallel_dim, parallel_index, target)
+        )
+        parallel_dim += 1
+
+    coordinates = tuple(coordinates)
+    outer_shape = tuple(str(axis) for axis in schedule.get("program_shape", ()))
+    outer_index = (
+        "0"
+        if not outer_shape
+        else program_index
+        if _is_one_expr(parallel_total)
+        else _target_index_expr(target, f"floor(({program_index})/({parallel_total}))")
+    )
+
+    return (
+        axes,
+        _target_index_expr(target, str(schedule["extent"])),
+        _target_index_expr(target, _product((*outer_shape, *parallel_shape))),
+        outer_index,
+        _linearized_index(coordinates, axes),
+        coordinates,
+    )
+
+
+def _cooperative_program_supported(operations, schedule, value_types):
+    value_shape = tuple(str(dim) for dim in schedule.get("value_shape", ()))
+    result_shape = tuple(str(dim) for dim in schedule.get("result_shape", ()))
+
+    if not value_shape:
+        return False
+
+    for operation in operations:
+        if not _is_top_level_effect(operation):
+            continue
+
+        if operation.opcode != "mem.store" or not operation.operands:
+            return False
+
+        value_axes = _value_type_axes(value_types.get(operation.operands[0]))
+
+        if value_axes not in {value_shape, result_shape}:
+            return False
+    return True
 
 
 def _render_source(
@@ -345,10 +411,18 @@ def _render_source(
     vector_scalar_program = bool(
         target.vector_value_semantics and primary_atomic is not None and not value_axes
     )
+    cooperative_reduction_program = bool(
+        reduction_schedule is not None
+        and target.supports_cooperative_reduction(program.metadata.get("schedule", {}))
+        and _cooperative_program_supported(
+            block.operations, reduction_schedule, value_types
+        )
+    )
     vector_reduction_program = bool(
         target.vector_value_semantics
         and reduction_schedule is not None
         and not vector_block_program
+        and not cooperative_reduction_program
     )
     native_block_program = bool(
         target.native_block_matmul
@@ -370,56 +444,19 @@ def _render_source(
         grid_total = _target_index_expr(target, _product(outer_axes))
         outer_index_expr = target.program_id(0)
         inner_index_expr = "0"
-    elif vector_reduction_program:
-        axes = value_axes
-        reduction_axis = int(reduction_schedule["axis"])
-        parallel_shape = tuple(
-            str(axis) for axis in reduction_schedule.get("parallel_shape", ())
-        )
-        parallel_total = _product(parallel_shape)
-        program_index = target.program_id(0)
-        parallel_index = (
-            "0"
-            if _is_one_expr(parallel_total)
-            else _target_index_expr(target, f"({program_index}) % ({parallel_total})")
-        )
-        coordinate_exprs = []
-        parallel_dim = 0
-
-        for dim in range(len(value_axes)):
-            if dim == reduction_axis:
-                coordinate_exprs.append("offsets")
-                continue
-
-            coordinate_exprs.append(
-                _axis_offset_expr(
-                    parallel_shape,
-                    parallel_dim,
-                    parallel_index,
-                    target,
-                )
-            )
-            parallel_dim += 1
-
-        coordinate_exprs = tuple(coordinate_exprs)
-        total = _target_index_expr(target, str(reduction_schedule["extent"]))
-        outer_program_shape = tuple(
-            str(axis) for axis in reduction_schedule.get("program_shape", ())
-        )
-        grid_total = _target_index_expr(
+    elif vector_reduction_program or cooperative_reduction_program:
+        (
+            axes,
+            total,
+            grid_total,
+            outer_index_expr,
+            inner_index_expr,
+            coordinate_exprs,
+        ) = _reduction_program_domain(
+            reduction_schedule,
             target,
-            _product((*outer_program_shape, *parallel_shape)),
+            "offsets" if vector_reduction_program else "0",
         )
-        outer_index_expr = (
-            "0"
-            if not outer_program_shape
-            else program_index
-            if _is_one_expr(parallel_total)
-            else _target_index_expr(
-                target, f"floor(({program_index})/({parallel_total}))"
-            )
-        )
-        inner_index_expr = _linearized_index(coordinate_exprs, value_axes)
     elif native_block_program:
         axes = value_axes
         total = _target_index_expr(target, _product(value_axes))
@@ -465,8 +502,17 @@ def _render_source(
         block_program=vector_block_program,
         native_block_program=native_block_program,
         vector_program=vector_reduction_program,
-        coordinate_exprs=(coordinate_exprs if vector_reduction_program else ()),
-        reduction_schedule=(reduction_schedule if vector_reduction_program else None),
+        coordinate_exprs=(
+            coordinate_exprs
+            if vector_reduction_program or cooperative_reduction_program
+            else ()
+        ),
+        reduction_schedule=(
+            reduction_schedule
+            if vector_reduction_program or cooperative_reduction_program
+            else None
+        ),
+        cooperative_reduction_program=cooperative_reduction_program,
     )
     body = _with_contiguous_1d_fast_path(
         kernel,
@@ -483,6 +529,7 @@ def _render_source(
         block_program=vector_block_program,
         native_block_program=native_block_program,
         vector_program=vector_reduction_program,
+        cooperative_reduction_program=cooperative_reduction_program,
     )
 
     context = ModuleRenderContext(
@@ -506,6 +553,7 @@ def _render_source(
             else native_block_program
         ),
         scalar_program=vector_scalar_program,
+        cooperative_reduction_program=cooperative_reduction_program,
     )
     context = target.schedule_context(context)
 
@@ -542,10 +590,11 @@ def _with_contiguous_1d_fast_path(
     block_program: bool,
     native_block_program: bool,
     vector_program: bool,
+    cooperative_reduction_program: bool,
 ) -> str:
     logical_infos = tuple(tensor_infos[tensor.name] for tensor in kernel.tensors)
 
-    if vector_program:
+    if vector_program or cooperative_reduction_program:
         return generic_body
 
     if not logical_infos or any(
@@ -666,11 +715,14 @@ def _render_body(
     vector_program: bool = False,
     coordinate_exprs: tuple[str, ...] = (),
     reduction_schedule: Mapping[str, Any] | None = None,
+    cooperative_reduction_program: bool = False,
 ) -> str:
     output = outputs[0] if outputs else "out"
     lines: list[str] = []
     enable_index_cse = (
-        not target.vector_value_semantics and outer_index_expr != inner_index_expr
+        not target.vector_value_semantics
+        and not cooperative_reduction_program
+        and outer_index_expr != inner_index_expr
     )
 
     if block_program:
@@ -747,10 +799,19 @@ def _render_body(
         layout_contiguous=layout_contiguous,
         vector_program=vector_program,
         reduction_lane="offsets" if reduction_schedule is not None else None,
+        cooperative_reduction_program=cooperative_reduction_program,
         scheduled_reductions=frozenset(
             str(result) for result in (reduction_schedule or {}).get("reductions", ())
         ),
+        reduction_schedule=reduction_schedule,
     )
+
+    if cooperative_reduction_program:
+        _emit_cooperative_reduction_program(operations, ctx)
+
+        if not ctx.lines:
+            ctx.lines.append("/* no-op */")
+        return "\n".join(ctx.lines)
 
     for op in operations:
         if _is_top_level_effect(op):
@@ -759,6 +820,104 @@ def _render_body(
     if not ctx.lines:
         ctx.lines.append("pass" if not target.c_style_syntax else "/* no-op */")
     return "\n".join(ctx.lines)
+
+
+def _emit_cooperative_reduction_program(
+    operations: tuple[ssa.Operation, ...], ctx: _EmitContext
+) -> None:
+    schedule = dict(ctx.reduction_schedule or {})
+    value_shape = tuple(str(dim) for dim in schedule.get("value_shape", ()))
+    result_shape = tuple(str(dim) for dim in schedule.get("result_shape", ()))
+    axis = int(schedule["axis"]) if "axis" in schedule else None
+
+    if axis is None or not value_shape:
+        raise ValueError("Cooperative reduction requires a row-vector domain.")
+
+    for result in schedule.get("reductions", ()):
+        _emit_value(str(result), ctx)
+
+    for operation in operations:
+        if not _is_top_level_effect(operation):
+            continue
+
+        if operation.opcode != "mem.store":
+            raise ValueError(
+                "Cooperative reduction only supports SSA programs whose "
+                "top-level effects are stores."
+            )
+
+        value_axes = _value_axes(operation.operands[0], ctx)
+
+        if value_axes == value_shape:
+            _emit_cooperative_full_store(operation, value_shape, axis, ctx)
+        elif value_axes == result_shape:
+            _emit_cooperative_scalar_store(operation, result_shape, axis, ctx)
+        else:
+            raise ValueError(
+                "Cooperative reduction store domain must match either the "
+                "reduction input or result domain."
+            )
+
+
+def _emit_cooperative_full_store(
+    operation: ssa.Operation,
+    value_shape: tuple[str, ...],
+    axis: int,
+    ctx: _EmitContext,
+) -> None:
+    lane = _fresh_temp(ctx, "nt_lane")
+    coordinates = list(ctx.coordinate_exprs)
+    coordinates[axis] = lane
+    coordinates = tuple(coordinates)
+    linear = _target_index_expr(ctx.target, _linearized_index(coordinates, value_shape))
+    body_lines: list[str] = []
+    body = ctx.child(
+        lines=body_lines,
+        memo=dict(ctx.memo),
+        coordinate_exprs=coordinates,
+        index_expr=linear,
+        inner_index_expr=linear,
+        row_expr=coordinates[0] if coordinates else None,
+        col_expr=coordinates[1] if len(coordinates) > 1 else None,
+        local_suffix=_nested_local_suffix(ctx, lane),
+    )
+    _emit_operation(operation, body)
+    ctx.lines.append(
+        ctx.target.loop_header(
+            lane,
+            ctx.target.thread_id(),
+            value_shape[axis],
+            ctx.target.thread_count(),
+        )
+    )
+    ctx.lines.extend(_indent_lines(body_lines, ctx.target))
+    ctx.lines.append("}")
+
+
+def _emit_cooperative_scalar_store(
+    operation: ssa.Operation,
+    result_shape: tuple[str, ...],
+    axis: int,
+    ctx: _EmitContext,
+) -> None:
+    coordinates = tuple(
+        coordinate for dim, coordinate in enumerate(ctx.coordinate_exprs) if dim != axis
+    )
+    linear = _target_index_expr(
+        ctx.target, _linearized_index(coordinates, result_shape)
+    )
+    body_lines: list[str] = []
+    body = ctx.child(
+        lines=body_lines,
+        memo=dict(ctx.memo),
+        index_expr=linear,
+        inner_index_expr=linear,
+        local_suffix=_nested_local_suffix(ctx, "reduced_store"),
+    )
+    _emit_operation(operation, body)
+    ctx.lines.append(f"if ({ctx.target.thread_id()} == 0) {{")
+    ctx.lines.extend(_indent_lines(body_lines, ctx.target))
+    ctx.lines.append("}")
 
 
 def _is_top_level_effect(op: ssa.Operation) -> bool:
@@ -946,6 +1105,19 @@ def _emit_value(name: str, ctx: _EmitContext) -> str:
             ctx.memo[name] = operand
 
             return operand
+
+        if ctx.cooperative_reduction_program and name in ctx.scheduled_reductions:
+            result = ctx.target.emit_cooperative_reduction(local, op, ctx)
+
+            if result is None:
+                raise ValueError(
+                    f"Backend `{ctx.target.backend.value}` selected cooperative "
+                    f"reduction but did not consume `{name}`."
+                )
+
+            ctx.memo[name] = result
+
+            return result
 
         if ctx.vector_program and name in ctx.scheduled_reductions:
             operator = op.opcode[len("reduce.") :]
@@ -1473,7 +1645,7 @@ def _emit_element(name: str, coords: tuple[str, ...], ctx: _EmitContext) -> str:
         )
 
     if op.opcode.startswith("reduce."):
-        if ctx.block_program or ctx.vector_program:
+        if ctx.block_program or ctx.vector_program or ctx.cooperative_reduction_program:
             return _emit_value(name, ctx)
         return _emit_reduce_element(op, coords, ctx)
 
@@ -1958,9 +2130,11 @@ def _current_coords(axes: tuple[str, ...], ctx: _EmitContext) -> tuple[str, ...]
             _axis_offset_expr(output_axes, dim, ctx.inner_index_expr, ctx.target)
             for dim in range(len(output_axes))
         )
-        vector_reduction_axis = (
+        scheduled_reduction_axis = (
             output_coords.index(ctx.reduction_lane)
             if ctx.vector_program and ctx.reduction_lane in output_coords
+            else int(ctx.reduction_schedule["axis"])
+            if ctx.cooperative_reduction_program and ctx.reduction_schedule is not None
             else None
         )
         coords: tuple[str, ...] | None = None
@@ -1970,11 +2144,11 @@ def _current_coords(axes: tuple[str, ...], ctx: _EmitContext) -> tuple[str, ...]
                 "0" if axis == "1" else output_coords[index]
                 for index, axis in enumerate(axes)
             )
-        elif vector_reduction_axis is not None and len(axes) == len(output_axes) - 1:
+        elif scheduled_reduction_axis is not None and len(axes) == len(output_axes) - 1:
             parallel_dims = tuple(
                 index
                 for index in range(len(output_axes))
-                if index != vector_reduction_axis
+                if index != scheduled_reduction_axis
             )
 
             if axes == tuple(output_axes[index] for index in parallel_dims):
@@ -3808,6 +3982,7 @@ emit_element = _emit_element
 emit_loop_bound = _emit_loop_bound
 emit_operation = _emit_operation
 emit_value = _emit_value
+fresh_temp = _fresh_temp
 indent_block = _indent_block
 indent_lines = _indent_lines
 linearized_index = _linearized_index
@@ -3816,8 +3991,10 @@ local_symbol = _local_symbol
 logical_ssa_audit = _logical_ssa_audit
 materialize_bool_expr = _materialize_bool_expr
 materialize_index_expr = _materialize_index_expr
+nested_local_suffix = _nested_local_suffix
 normalize_dtype = _normalize_dtype
 product = _product
+reduction_identity = _reduction_identity
 resolved_dot_operand_dtype = _resolved_dot_operand_dtype
 rewrite_index_math = _rewrite_index_math
 schedule_int = _schedule_int
@@ -3841,6 +4018,7 @@ __all__ = [
     "emit_loop_bound",
     "emit_operation",
     "emit_value",
+    "fresh_temp",
     "indent_block",
     "indent_lines",
     "linearized_index",
@@ -3849,8 +4027,10 @@ __all__ = [
     "logical_ssa_audit",
     "materialize_bool_expr",
     "materialize_index_expr",
+    "nested_local_suffix",
     "normalize_dtype",
     "product",
+    "reduction_identity",
     "resolved_dot_operand_dtype",
     "rewrite_index_math",
     "schedule_int",

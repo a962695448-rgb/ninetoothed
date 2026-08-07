@@ -84,6 +84,34 @@ class CudaOptimizeSchedule(OptimizeSchedule):
     ) -> tuple[ScheduleCandidate, ...]:
         del context
 
+        reduction = schedule.get("reduction", {})
+
+        if (
+            schedule.get("granularity") == "parallel-reduction"
+            and isinstance(reduction, Mapping)
+            and reduction.get("mode") == "row-vector"
+        ):
+            extent = _static_extent(reduction.get("extent"))
+
+            if extent is not None and extent <= 32:
+                thread_counts = (32, 128, 256)
+            elif extent is not None and extent <= 128:
+                thread_counts = (128, 256, 32)
+            else:
+                thread_counts = (256, 128, 32)
+
+            return tuple(
+                ScheduleCandidate(
+                    name=f"cooperative-reduction-{threads}",
+                    schedule={
+                        "cuda_cooperative_reduction": True,
+                        "threads": threads,
+                    },
+                    tags=("cooperative-reduction",),
+                )
+                for threads in thread_counts
+            )
+
         if schedule.get("granularity") != "blocked-linalg" or not analysis.get(
             "dot_supports_low_precision_intrinsic", False
         ):
@@ -124,6 +152,13 @@ class CudaOptimizeSchedule(OptimizeSchedule):
 
             return {"preserve_linalg": preserve_linalg}
         return {}
+
+
+def _static_extent(value: Any) -> int | None:
+    try:
+        return int(str(value))
+    except (TypeError, ValueError):
+        return None
 
 
 def register_ssa_passes(registry: "Registry") -> None:

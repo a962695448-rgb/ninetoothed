@@ -66,7 +66,9 @@ class EmitContext:
     layout_contiguous: bool = False
     vector_program: bool = False
     reduction_lane: str | None = None
+    cooperative_reduction_program: bool = False
     scheduled_reductions: frozenset[str] = frozenset()
+    reduction_schedule: Mapping[str, Any] | None = None
 
     def child(
         self,
@@ -107,7 +109,9 @@ class EmitContext:
             "layout_contiguous": self.layout_contiguous,
             "vector_program": self.vector_program,
             "reduction_lane": self.reduction_lane,
+            "cooperative_reduction_program": self.cooperative_reduction_program,
             "scheduled_reductions": self.scheduled_reductions,
+            "reduction_schedule": self.reduction_schedule,
         }
         data.update(kwargs)
 
