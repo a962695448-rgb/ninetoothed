@@ -14,6 +14,7 @@ from ninetoothed.backends.core import (
     Target,
 )
 from ninetoothed.backends.emitters.triton import emit
+from ninetoothed.compiler.layout import LayoutTransfer
 from ninetoothed.compiler.passes import (
     Context,
     OptimizeSchedule,
@@ -52,6 +53,32 @@ class TritonOptimizeSchedule(OptimizeSchedule):
         schedule: Mapping[str, Any],
         context: Context,
     ) -> tuple[ScheduleCandidate, ...]:
+        if schedule.get("granularity") == "layout-transfer":
+            transfer = schedule.get("layout_transfer")
+
+            if not isinstance(transfer, LayoutTransfer) or not transfer.requires_tiling:
+                return ()
+            return (
+                ScheduleCandidate(
+                    name="transpose-16x16",
+                    schedule={
+                        "tile": {"block_m": 16, "block_n": 16},
+                        "num_warps": 4,
+                        "num_stages": 1,
+                    },
+                    tags=("layout-transfer", "default"),
+                ),
+                ScheduleCandidate(
+                    name="transpose-32x32",
+                    schedule={
+                        "tile": {"block_m": 32, "block_n": 32},
+                        "num_warps": 8,
+                        "num_stages": 1,
+                    },
+                    tags=("layout-transfer", "throughput"),
+                ),
+            )
+
         del analysis, context
 
         if schedule.get("granularity") != "blocked-linalg":
@@ -100,6 +127,17 @@ class TritonOptimizeSchedule(OptimizeSchedule):
             return {
                 "schedule": {"num_warps": 4, "num_stages": 2},
             }
+
+        if granularity == "layout-transfer":
+            defaults = {}
+
+            if "num_warps" not in schedule:
+                defaults["num_warps"] = 4
+
+            if "num_stages" not in schedule:
+                defaults["num_stages"] = 1
+
+            return {"schedule": defaults}
 
         if granularity == "blocked-linalg":
             preserve_linalg = bool(

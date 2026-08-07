@@ -20,6 +20,7 @@ from dataclasses import dataclass, field
 from typing import Any, Mapping
 
 from ninetoothed.backends.core import Target, normalize_target
+from ninetoothed.compiler.layout import LayoutTransfer, analyze_layout_transfer
 from ninetoothed.compiler.reductions import analyze_reductions
 from ninetoothed.ir import ssa
 
@@ -279,6 +280,7 @@ class AnalyzeEffects(Pass):
         loops = sum(1 for opcode in opcodes if opcode == "scf.for")
         dot_input_dtypes = _linalg_input_dtypes(program)
         reduction_analysis = analyze_reductions(program, context.tensors)
+        layout_transfer = analyze_layout_transfer(program, context.tensors)
 
         return _with_metadata(
             program,
@@ -294,6 +296,7 @@ class AnalyzeEffects(Pass):
                 "has_exp_reduction_dot_pattern": _has_exp_reduction_dot_pattern(
                     opcodes
                 ),
+                "layout_transfer": layout_transfer,
                 **reduction_analysis,
             },
         )
@@ -349,6 +352,7 @@ class SelectSchedule(Pass):
             "parallelism": "program-blocks",
         }
         reduction = analysis.get("reduction_schedule")
+        layout_transfer = analysis.get("layout_transfer")
 
         if "reduction" in options:
             raise ValueError(
@@ -360,6 +364,13 @@ class SelectSchedule(Pass):
 
         if isinstance(reduction, Mapping):
             schedule["reduction"] = dict(reduction)
+
+        if (
+            schedule.get("granularity") == "layout-transfer"
+            and isinstance(layout_transfer, LayoutTransfer)
+            and layout_transfer.schedulable
+        ):
+            schedule["layout_transfer"] = layout_transfer
 
         return _with_metadata(program, schedule=schedule)
 
@@ -388,6 +399,12 @@ class OptimizeSchedule(Pass):
             else:
                 rejected.append(candidate.as_metadata() | {"reason": reason})
 
+        selected = self.select_candidate(tuple(legal), context)
+
+        if selected is not None:
+            legal.remove(selected)
+            legal.insert(0, selected)
+
         max_num_configs = context.compiler_options.get("max_num_configs")
 
         if max_num_configs is not None:
@@ -401,7 +418,6 @@ class OptimizeSchedule(Pass):
 
         candidates = tuple(legal)
         rejected = tuple(rejected)
-        selected = self.select_candidate(candidates, context)
 
         if selected is not None:
             schedule = _merge_nested(schedule, selected.schedule)
@@ -895,6 +911,11 @@ def _has_exp_reduction_dot_pattern(opcodes: tuple[str, ...]) -> bool:
 
 
 def _schedule_granularity(analysis: Mapping[str, Any]) -> str:
+    layout_transfer = analysis.get("layout_transfer")
+
+    if isinstance(layout_transfer, LayoutTransfer) and layout_transfer.schedulable:
+        return "layout-transfer"
+
     if analysis.get("has_exp_reduction_dot_pattern"):
         return "exp-reduction-dot-region"
 

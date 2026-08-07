@@ -1,7 +1,7 @@
 """Contracts shared by SSA backend source emitters."""
 
 from abc import ABC, abstractmethod
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from typing import Any, Mapping
 
 from ninetoothed.backends.core import Target
@@ -28,6 +28,8 @@ class ModuleRenderContext:
     vector_program: bool
     block_program: bool
     scalar_program: bool
+    private_meta_parameters: tuple[tuple[str, int], ...] = ()
+    scheduled_metadata: Mapping[str, Any] = field(default_factory=dict)
 
 
 @dataclass(frozen=True, kw_only=True)
@@ -142,6 +144,9 @@ class EmitterTarget(ABC):
         del mutable
 
         return f"{name} = {value}"
+
+    def schedule_context(self, context: ModuleRenderContext) -> ModuleRenderContext:
+        return context
 
     @abstractmethod
     def literal(self, value: Any) -> str: ...

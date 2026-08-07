@@ -1182,19 +1182,26 @@ def scalarized_index_application(x, indices, y):
             assert transpose.operands == ("x",)
 
         expected = {
-            "triton": (
-                "ssa-unified-triton-emitter",
-                "tl.load(x + (v2) * (cols) + (v1)",
-            ),
             "cuda": ("ssa-unified-cuda-emitter", "x[(v2) * (cols) + (v1)]"),
             "tilelang": ("ssa-unified-tilelang-emitter", "x_buf[(v2) * (cols) + (v1)]"),
         }
 
-        for backend, (route, source_fragment) in expected.items():
-            artifact = emit_kernel(kernel, backend)
-            _assert_ssa_artifact(artifact, route=route)
+        for frontend_kernel in (kernel, attribute_kernel):
+            artifact = emit_kernel(frontend_kernel, "triton")
+            _assert_ssa_artifact(
+                artifact,
+                route="ssa-unified-triton-emitter",
+            )
             assert "linalg.transpose" not in str(artifact.metadata["ssa"])
-            assert source_fragment in artifact.primary_source
+            assert (
+                "transfer_value = tl.trans(transfer_value)" in artifact.primary_source
+            )
+
+            for backend, (route, source_fragment) in expected.items():
+                artifact = emit_kernel(frontend_kernel, backend)
+                _assert_ssa_artifact(artifact, route=route)
+                assert "linalg.transpose" not in str(artifact.metadata["ssa"])
+                assert source_fragment in artifact.primary_source
 
     def test_from_source_emits_store_inside_scf_for_without_operator_dispatch(self):
         kernel = _ssa_kernel(
