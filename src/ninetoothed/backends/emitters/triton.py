@@ -1,5 +1,6 @@
 """Triton syntax hooks for the common SSA emitter."""
 
+import keyword
 import math
 import re
 from dataclasses import dataclass, replace
@@ -96,6 +97,93 @@ class TritonTarget(EmitterTarget):
 
     def cast(self, dtype, value):
         return f"{value}.to(tl.{common.normalize_dtype(dtype)})"
+
+    def coerce_dot_args(self, operation, args, context):
+        target = dict(context.kernel.compiler_options.get("target", {}))
+        profile = dict(target.get("profile", {}))
+        metadata = dict(profile.get("metadata", {}))
+        coercions = {}
+
+        for source, destination in dict(
+            metadata.get("triton_dot_operand_coercions", {})
+        ).items():
+            if (
+                not isinstance(source, str)
+                or not source.strip()
+                or not isinstance(destination, str)
+                or not destination.strip()
+            ):
+                raise ValueError(
+                    "Triton dot operand coercion metadata requires dtype names."
+                )
+
+            source = common.normalize_dtype(source)
+            destination = common.normalize_dtype(destination)
+
+            if any(
+                not dtype.isidentifier() or keyword.iskeyword(dtype)
+                for dtype in (source, destination)
+            ):
+                raise ValueError(
+                    "Triton dot operand coercion metadata requires valid dtype names."
+                )
+
+            existing = coercions.get(source)
+
+            if existing is not None and existing != destination:
+                raise ValueError(f"Conflicting Triton dot coercion for `{source}`.")
+
+            coercions[source] = destination
+
+        if not coercions:
+            return args
+
+        result = []
+
+        for index, value in enumerate(args):
+            operand = (
+                operation.operands[index] if index < len(operation.operands) else None
+            )
+            type_ = context.value_types.get(operand) if operand is not None else None
+            source_dtype = (
+                common.normalize_dtype(type_.dtype)
+                if type_ is not None and type_.dtype is not None
+                else None
+            )
+            target_dtype = coercions.get(source_dtype)
+
+            if target_dtype is not None:
+                result.append(self.cast(target_dtype, value))
+                continue
+
+            if source_dtype is not None:
+                result.append(value)
+                continue
+
+            if context.temp_counter is None:
+                context.temp_counter = [0]
+
+            occupied = {self.symbol(name) for name in context.reserved_symbols}
+
+            while True:
+                temporary = f"ninetoothed_dot_arg_{context.temp_counter[0]}"
+                context.temp_counter[0] += 1
+
+                if temporary not in occupied:
+                    break
+
+            context.lines.append(f"{temporary} = {value}")
+            runtime_value = temporary
+
+            for runtime_source, runtime_target in reversed(sorted(coercions.items())):
+                runtime_value = (
+                    f"({temporary}.to(tl.{runtime_target}) "
+                    f"if {temporary}.dtype == tl.{runtime_source} else {runtime_value})"
+                )
+
+            result.append(runtime_value)
+
+        return tuple(result)
 
     def where(self, cond, yes, no):
         return f"tl.where({cond}, {yes}, {no})"
@@ -380,6 +468,21 @@ class TritonTarget(EmitterTarget):
     def render_module(self, context: ModuleRenderContext) -> str:
         kernel = context.kernel
         body = common.rewrite_index_math(context.body, c_style=False)
+        target = dict(kernel.compiler_options.get("target", {}))
+        profile = dict(target.get("profile", {}))
+        target_metadata = dict(profile.get("metadata", {}))
+        grid_limit = target_metadata.get("triton_grid_limit")
+        block_size = int(target_metadata.get("triton_block_size", 256))
+
+        if block_size < 1 or block_size & (block_size - 1):
+            raise ValueError("Triton block size must be a positive power of two.")
+
+        if grid_limit is not None:
+            grid_limit = int(grid_limit)
+
+            if grid_limit < 1:
+                raise ValueError("Triton grid limit must be positive.")
+
         runtime_params = set(kernel.metadata.get("runtime_shape_params", ()))
         private_meta = tuple(context.private_meta_parameters)
         params = ",\n    ".join(
@@ -405,21 +508,22 @@ class TritonTarget(EmitterTarget):
         private_kernel_args = "\n        ".join(
             f"{name}=_ninetoothed_{name.lower()}," for name, _value in private_meta
         )
+        program_id = "tl.program_id(0)"
         offsets = (
             "0"
             if context.block_program
-            else "tl.program_id(0)"
+            else program_id
             if context.scalar_program
             else "tl.arange(0, BLOCK)"
             if context.vector_program
-            else "tl.program_id(0) * BLOCK + tl.arange(0, BLOCK)"
+            else f"{program_id} * BLOCK + tl.arange(0, BLOCK)"
         )
         block = (
             "1"
             if context.block_program or context.scalar_program
             else f"triton.next_power_of_2({context.total})"
             if context.vector_program
-            else "256"
+            else str(block_size)
         )
         schedule = kernel.ssa.metadata.get("schedule", {}) if kernel.ssa else {}
         num_warps_value = kernel.compiler_options.get("num_warps") or schedule.get(
@@ -452,6 +556,21 @@ class TritonTarget(EmitterTarget):
         active_grid = bool(
             context.vector_program or context.block_program or context.scalar_program
         )
+        launch_grid = f"({context.grid_total},)"
+
+        if not active_grid:
+            program_count = f"triton.cdiv({context.grid_total}, block)"
+
+            if grid_limit is not None:
+                program_id = f"(tl.program_id(0) + tl.program_id(1) * {grid_limit})"
+                offsets = f"{program_id} * BLOCK + tl.arange(0, BLOCK)"
+                launch_grid = (
+                    f"(min({program_count}, {grid_limit}), "
+                    f"triton.cdiv({program_count}, {grid_limit}))"
+                )
+            else:
+                launch_grid = f"({program_count},)"
+
         mask = (
             "True"
             if context.block_program or context.scalar_program
@@ -482,7 +601,7 @@ def {kernel.kernel_name}_kernel(
 
 def launch_{kernel.kernel_name}({launch_params}):
     block = {block}
-    grid = ({context.grid_total},) if {active_grid!r} else (triton.cdiv({context.grid_total}, block),)
+    grid = {launch_grid}
     {kernel.kernel_name}_kernel[grid](
         {kernel_args},
         {private_kernel_args}
