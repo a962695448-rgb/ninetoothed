@@ -375,6 +375,10 @@ def test_platform_profiles_apply_declared_compiler_constraints(compiler_registry
         constraints={"compiler_options": {"triton": {"max_num_configs": 1}}},
         metadata={"triton_grid_limit": 65535},
     )
+    plain_profile = PlatformProfile(
+        name="plain-grid",
+        backend_modes={"triton": frozenset({"jit"})},
+    )
     block_profile = PlatformProfile(
         name="fixed-block",
         backend_modes={"triton": frozenset({"jit"})},
@@ -382,7 +386,7 @@ def test_platform_profiles_apply_declared_compiler_constraints(compiler_registry
         metadata={"triton_block_size": 512},
     )
 
-    for profile in (schedule_profile, grid_profile, block_profile):
+    for profile in (schedule_profile, grid_profile, plain_profile, block_profile):
         compiler_registry.register(profile)
 
     compilation = DEFAULT_COMPILER.compile(
@@ -428,12 +432,27 @@ def test_platform_profiles_apply_declared_compiler_constraints(compiler_registry
 
     assert grid.request.max_num_configs == 1
     assert len(grid.launch_plan.tuning_candidates) == 1
-    assert "tl.program_id(1) * 65535" in grid.artifact.primary_source
-    assert (
-        "(tl.program_id(0) + tl.program_id(1) * 65535) * BLOCK"
-        in grid.artifact.primary_source
+    grid_source = grid.artifact.primary_source
+    assert "tl.program_id(1)" not in grid_source
+    assert "tl.range(tl.program_id(0)" in grid_source
+    assert "tl.num_programs(0)" in grid_source
+    assert "max(1, 65535 // _ninetoothed_num_warps)" in grid_source
+    assert "if _ninetoothed_num_warps > 65535:" in grid_source
+
+    unchanged = DEFAULT_COMPILER.compile(
+        CompileRequest(
+            arrangement=_arrangement,
+            application=_application,
+            tensors=(Tensor(1), Tensor(1), Tensor(1)),
+            backend="triton",
+            platform=plain_profile.name,
+            max_num_configs=50,
+        )
     )
-    assert "min(triton.cdiv(" in grid.artifact.primary_source
+    unchanged_source = unchanged.artifact.primary_source
+    assert "tl.range(tl.program_id(0)" not in unchanged_source
+    assert "tl.num_programs(0)" not in unchanged_source
+    assert "tl.program_id(1)" not in unchanged_source
 
     block = DEFAULT_COMPILER.compile(
         CompileRequest(
