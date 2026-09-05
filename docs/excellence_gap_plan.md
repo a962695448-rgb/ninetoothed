@@ -1,6 +1,6 @@
 # 九齿优秀项目差距与执行计划
 
-审查日期：2026-09-05。当前已公开源码为 `5b377252cc4452b5ccc48c46ff1ae07a4e5e0e8a`。初轮专项证据对应 `76ca6464fc921bc1419700b22f730b4084b3035b`；后续兼容性定向回归和无 Torch/Triton 的 CPU 验证对应 `5b37725`，分别记录，不将旧结果归于新提交。本文是待执行计划，不是新增功能或验收完成声明。
+审查日期：2026-09-05。本次完整 GPU 测试源码为 `5b377252cc4452b5ccc48c46ff1ae07a4e5e0e8a`，RTX 4090 上得到 **591 passed、2 skipped，退出码 0**。初轮专项对应 `76ca6464fc921bc1419700b22f730b4084b3035b`；兼容性定向回归和无 Torch/Triton CPU 验证对应 `5b37725`；独立副本的演示改进另有 39 项 CPU 回归。各范围与版本分别记录，不将 `5b37725` 全量结果归于后续提交。A100 与下列加分缺口仍待完成。
 
 规则依据：训练营[九齿 CPU 参考解释器与差分调试器任务](https://gxtctab8no8.feishu.cn/wiki/GxhWwiz0iiAhKkk7CFhcLTCyn2b)的 2026-09-05 本地阅读快照；实施依据为本仓库源码、测试、[4090 证据报告](cpu_interpreter_validation_4090.md)与 [贡献规范](../CONTRIBUTING.md)。
 
@@ -20,7 +20,7 @@
 
 | 标准 | 当前证据 | 差距与合格证据 |
 |---|---|---|
-| 原有测试、风格、文档保持可用 | `76ca646` 专项 224 项通过；旧全量 11 failed、574 passed、2 skipped；`5b37725` 定向 254 passed、1 skipped | `5b37725` 一次含 coverage 全量以 SIGSEGV 结束；去掉额外 faulthandler timeout 的完整重跑仍运行。取得冻结源码最终汇总，再检查当前改动的风格与文档 |
+| 原有测试、风格、文档保持可用 | `5b37725` RTX 4090 完整重跑 591 passed、2 skipped、退出码 0；日志/JUnit/coverage 已归档；独立副本另有 39 项 CPU 回归及风格/文档检查 | 两个 skip 均要求至少双卡，SIGSEGV 历史原因未定；整合演示改进后按新源码验证，不能继承旧提交的全量结果 |
 | CPU-only 与五类应用、三种必需 dtype | `76ca646` 隐藏 CUDA 后 209 passed；`5b37725` 的 WSL 无 Torch/Triton 环境 206 passed、14 deselected；应用与 dtype 对照见验收说明 | 两轮依赖、源码和选择范围不同。新 CPU 记录未验证 PyTorch CPU Tensor 适配；广泛收集时的缺包错误另保留，不能将 206 与 209 相加或直接比较 |
 | 默认 pass 前后至少三个程序一致与 A100 差分 | 4090 报告包含 8 个程序、14 项四方比较；发射 SSA 和默认 pass 可追溯 | A100 相同合同下实际运行，报告设备/代码 SHA/SSA SHA/布局/种子/误差；至少三个不同程序明确覆盖默认 pass |
 | dot/matmul、softmax 和扩展能力 | softmax 已有真实 GPU 对照；直接 dot 与单 program 分解有 CPU 测试；已支持 strided 视图等 | 多 program 分块 dot 被明确拒绝，GPU runner 排除了优化后 dot；补齐真实默认管线中的代表性矩阵乘法 |
@@ -30,11 +30,11 @@
 | 可扩展、复用 | operation handlers 与 frontend/运行时接口已分离 | 用一个独立新增 operation 的局部实现示例验证扩展接口，并保留 unsupported 报错 |
 | 合并主分支 | 已有用户 fork 与分支 | 尚未创建上游 PR；合并取决于维护者，必须预留设计讨论、CI、修改与审查时间 |
 
-224 项已经包含 14 项 GPU 对照，不能相加为 238 项。209 是初轮 CPU 子集；206 是另一环境与提交的明确选定范围；254 是兼容性定向回归。各轮不相加，参数组合数也不能当成独立功能数量。完整命令和证据入口见 [验证报告](cpu_interpreter_validation_4090.md)与 [验收及提交说明](cpu_interpreter_acceptance.md)。
+224 项已经包含 14 项 GPU 对照，不能相加为 238 项。209 是初轮 CPU 子集；206 是另一环境与提交的明确选定范围；254 是兼容性定向回归；591 是 `5b37725` 完整运行的通过数，另有 2 skipped；39 是独立副本的 CPU 回归。各轮不相加，参数组合数也不能当成独立功能数量。完整命令和证据入口见 [验证报告](cpu_interpreter_validation_4090.md)与 [验收及提交说明](cpu_interpreter_acceptance.md)。
 
 ## P0：先关闭验收缺口
 
-1. 保存正在运行的 `5b37725` 全库日志及退出状态，期间保持服务器源码冻结。旧全量失败、定向回归、SIGSEGV 和两个 FP8 单例运行已分轮归档；SIGSEGV 原因仍未确定，单例通过不证明全量问题已修复。重跑结束后按实际失败定位，再决定必要修复和回归。
+1. `5b37725` 完整运行已完成并归档：591 passed、2 skipped、退出码 0，归档时 HEAD 正确且已跟踪文件无修改。[完整运行清单](../results/full_suite_rtx4090_5b37725/manifest.json)已核验，演示改进 `4a680a6` 已整合；核心、依赖和测试配置未变，修改文件与39项定向验证的散列一致，故不重复整轮4090测试。旧失败、SIGSEGV与FP8单例保留；本轮成功没有确定SIGSEGV根因。
 2. 在 A100 上运行 CPU 专项、真实 GPU 差分与完整套件。CPU 与 GPU 使用相同 arrangement/application、布局、输入、种子和默认 pass，分别与独立 NumPy 参考比较。float32 保持 `rtol=1e-3, atol=1e-3`，int32/bool 保持完全相等。
 3. 记录实际机器、软件版本、commit、运行命令、原始日志/JSON、散列和可解释的跳过项。单卡导致的双卡测试跳过要逐项说明，不能写无条件全覆盖。
 4. 保留当前可工作的最小主线，尽早整理设计说明和可评审改动；不能等所有可选功能完成才开始上游评审。

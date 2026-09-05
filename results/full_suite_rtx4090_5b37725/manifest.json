@@ -1,0 +1,107 @@
+{
+  "code_commit": "5b377252cc4452b5ccc48c46ff1ae07a4e5e0e8a",
+  "job": "nine_full_ci_no_timeout_5b37725",
+  "exit_code": 0,
+  "args": [
+    "/data/infinitensor-2026/.venv/bin/python",
+    "-m",
+    "pytest",
+    "-p",
+    "pytest_cov",
+    "--color=no",
+    "-v",
+    "--tb=short",
+    "-ra",
+    "--doctest-modules",
+    "--junitxml=/data/infinitensor-2026/runs/20260905-081227/nine_full_ci_no_timeout_5b37725.xml",
+    "--cov=ninetoothed",
+    "--cov-report=xml:/data/infinitensor-2026/runs/20260905-081227/nine_coverage_no_timeout_5b37725.xml"
+  ],
+  "captured_at_utc": "2026-09-05T14:28:39.657247+00:00",
+  "git_diff_at_capture": "",
+  "junit_suites": [
+    {
+      "name": "pytest",
+      "errors": "0",
+      "failures": "0",
+      "skipped": "2",
+      "tests": "593",
+      "time": "6036.095",
+      "timestamp": "2026-09-05T12:19:35.391638",
+      "hostname": "0dee90f8378a"
+    }
+  ],
+  "skips": [
+    {
+      "name": "test_add[True-45327-dtype0-bf16-cuda]",
+      "class": "tests.test_aot",
+      "reason": "multi-device testing requires at least 2 devices"
+    },
+    {
+      "name": "test_triton_aot_handle_is_reusable_across_cuda_contexts",
+      "class": "tests.test_built_artifact_reload",
+      "reason": "Triton multi-context testing requires at least 2 CUDA devices"
+    }
+  ],
+  "coverage": {
+    "version": "7.16.0",
+    "timestamp": "1788616810243",
+    "lines-valid": "10578",
+    "lines-covered": "9178",
+    "line-rate": "0.8676",
+    "branches-covered": "0",
+    "branches-valid": "0",
+    "branch-rate": "0",
+    "complexity": "0"
+  },
+  "artifacts": {
+    "nine_full_ci_no_timeout_5b37725.log": {
+      "bytes": 67023,
+      "sha256": "a859bd4a2d5bf0a249c06dd0248c266c29ead53cfccd42660777d8dc89b23dfe",
+      "compressed_file": "nine_full_ci_no_timeout_5b37725.log.gz",
+      "compressed_bytes": 9182,
+      "compressed_sha256": "7576c80de3aafd0d59b1d879b488fed2012387fef30e9728132e60ad204a1f28"
+    },
+    "nine_full_ci_no_timeout_5b37725.xml": {
+      "bytes": 81024,
+      "sha256": "9c9f25df9653a1fc96d165ce3ed4cede0564f70b8d5420f4d95d919a51c01c65",
+      "compressed_file": "nine_full_ci_no_timeout_5b37725.xml.gz",
+      "compressed_bytes": 10236,
+      "compressed_sha256": "e173d81c8a0efcf948a6cf3933e12010fc825ce0bf6de343a52a86480911d9e8"
+    },
+    "nine_coverage_no_timeout_5b37725.xml": {
+      "bytes": 393568,
+      "sha256": "a60f5b195e595f1f5fd58cd3e73b4381fff1ea8d6970e4d07d247908b382e7c0",
+      "compressed_file": "nine_coverage_no_timeout_5b37725.xml.gz",
+      "compressed_bytes": 26175,
+      "compressed_sha256": "1e44e1ee3b705d1faf51353dac40bdf8cae0fbe6e81b5e853725f82fcbd54309"
+    }
+  },
+  "environment": {
+    "gpu": "NVIDIA GeForce RTX 4090",
+    "compute_capability": [
+      8,
+      9
+    ],
+    "python": "3.12.3",
+    "torch": "2.6.0a0+ecf3bae40a.nv25.01",
+    "triton": "3.1.0",
+    "numpy": "1.26.4",
+    "sympy": "1.13.1",
+    "pytest": "8.1.1",
+    "pytest_cov": "7.1.0",
+    "tilelang": "0.1.14",
+    "CUDA_TOOLKIT": "12.8.61",
+    "driver": "570.124.06",
+    "PYTEST_DISABLE_PLUGIN_AUTOLOAD": "1",
+    "PYTHONPATH": "/data/infinitensor-2026/ninetoothed/src",
+    "MPLBACKEND": "Agg"
+  },
+  "summary": "591 passed, 2 skipped in 6036.09s (1:40:36)",
+  "limitations": [
+    "This RTX 4090 result is not A100 acceptance.",
+    "Both skips require at least two GPUs; no claim of passing multi-device coverage.",
+    "Earlier SIGSEGV remains unexplained; this success does not identify its cause.",
+    "Coverage reflects the whole repository, not an interpreter-specific coverage percentage."
+  ]
+}

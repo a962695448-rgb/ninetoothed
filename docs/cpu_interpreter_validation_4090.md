@@ -1,6 +1,6 @@
 # CPU 参考解释器：RTX 4090 验证记录
 
-更新日期：2026-09-05。`76ca646` 初轮解释器专项通过；旧完整套件随后发现 11 项失败。修复后的 `5b37725` 在 RTX 4090 上定向回归 **254 passed、1 skipped**，但一次含 coverage 的全量进程以 SIGSEGV 结束，去掉额外 faulthandler timeout 的完整重跑仍在运行。**尚无新版本完整套件通过结论，A100 验证尚未运行。**
+更新日期：2026-09-05。冻结源码 `5b377252cc4452b5ccc48c46ff1ae07a4e5e0e8a` 在 RTX 4090 上完成含 doctest 与 coverage 的完整重跑：**591 passed、2 skipped，6036.09 s，退出码 0**。归档时服务器 HEAD 与该提交一致，已跟踪文件无修改。两个跳过项均要求同机至少两张 GPU。**此结论仅属于 `5b37725` 的本轮运行，不覆盖后续演示与测试改进的完整套件；A100 验证尚未运行。**旧完整套件的 11 项失败和一次 SIGSEGV 记录保留，SIGSEGV 原因仍未确定。
 
 ## 第一轮：`76ca646` 专项与完整套件
 
@@ -28,9 +28,13 @@
 | 含 doctest、coverage 与额外 `faulthandler_timeout=120` 的完整运行 | SIGSEGV；进程返回 -11；没有 pytest 最终汇总 | [异常日志](../results/rtx4090_compatibility_20260905/nine_full_ci_5b37725.log.gz) |
 | FP8 addmm 单例，无 coverage、无额外 timeout | 1 passed，183.80 s；退出码 0 | [单例日志](../results/rtx4090_compatibility_20260905/nine_fp8_isolated_no_coverage.log.gz) |
 | 同一 FP8 addmm 单例，有 coverage、无额外 timeout | 1 passed，6.68 s；退出码 0 | [coverage 单例日志](../results/rtx4090_compatibility_20260905/nine_fp8_with_coverage.log.gz) |
-| 含 doctest、coverage、去掉额外 timeout 的完整重跑 | **运行中；等待最终汇总及退出状态** | 完成后另存完整日志及 JUnit/coverage 产物 |
+| 含 doctest、coverage、去掉额外 timeout 的完整重跑 | **591 passed、2 skipped，6036.09 s；退出码 0** | [完整运行清单](../results/full_suite_rtx4090_5b37725/manifest.json)、[日志](../results/full_suite_rtx4090_5b37725/nine_full_ci_no_timeout_5b37725.log.gz)、[归档说明](../results/full_suite_rtx4090_5b37725/README.md) |
 
-SIGSEGV 原因未定。单例成功仅能说明该用例在列出的两次条件下成功，不能据此归因为 OOM、认定 timeout 是根因或宣称全量问题已修复。不同运行的编译缓存状态也可能影响用时，不据这些时长给出性能结论。完整测试期间保持服务器源码冻结，不使用测试进行中的阶段性百分比替代最终结果。
+完整运行的 [JUnit](../results/full_suite_rtx4090_5b37725/nine_full_ci_no_timeout_5b37725.xml.gz) 记录 593 个测试条目、0 errors、0 failures、2 skipped，与 591 passed 的日志汇总一致。跳过项为 `tests.test_aot::test_add[True-45327-dtype0-bf16-cuda]`（`multi-device testing requires at least 2 devices`）和 `tests.test_built_artifact_reload::test_triton_aot_handle_is_reusable_across_cuda_contexts`（`Triton multi-context testing requires at least 2 CUDA devices`）。单卡运行没有证明这两个跨设备场景通过。
+
+[Coverage XML](../results/full_suite_rtx4090_5b37725/nine_coverage_no_timeout_5b37725.xml.gz) 报告全仓库 line-rate 为 **86.76%**，记录 9178 条已覆盖行、10578 条有效行；这是该次全库运行的行覆盖率，不是解释器专项覆盖率。XML 的 branch 数据没有提供有效分支覆盖计数，不据此宣称分支覆盖完成。
+
+SIGSEGV 原因未定。本次去掉额外 timeout 的完整重跑成功是独立事实，不能据此归因为 OOM、认定 timeout 是根因或宣称 SIGSEGV 已被定位修复。两个 FP8 单例也只证明各自记录的运行条件。不同运行的编译缓存状态可能影响用时，不据这些时长给出性能结论。测试期间源码保持冻结，完整日志、JUnit、coverage 的原文与压缩散列均已归档。
 
 ## 第三轮：`5b37725` 无 Torch/Triton 的 CPU 验证
 
@@ -44,7 +48,7 @@ SIGSEGV 原因未定。单例成功仅能说明该用例在列出的两次条件
 
 ## 第四轮：独立副本的演示与默认 pass 验证
 
-在 `5b37725` 上新增演示和测试，保持解释器核心及正在全量运行的服务器源码不变。服务器隔离副本隐藏 CUDA 后，演示、debugger、单步和逐默认 pass 回归 **39 passed，3.80 s**；其中包含四类应用在 Triton/CUDA 两条默认管线中的 8 个 CPU 用例。Sphinx HTML 构建、脚本式单步演示及新进程独立回放均返回 0。准确修改文件的 SHA-256、命令与日志见 [本轮清单](../results/interpreter_debug_replay_20260905/manifest.json)。这些是 CPU 验证，不是新增 GPU 或 A100 对照。
+在 `5b37725` 基础上独立新增演示和测试，开发时保持解释器核心及当时全量运行的服务器源码不变。服务器隔离副本隐藏 CUDA 后，演示、debugger、单步和逐默认 pass 回归 **39 passed，3.80 s**；其中包含四类应用在 Triton/CUDA 两条默认管线中的 8 个 CPU 用例。Sphinx HTML 构建、脚本式单步演示及新进程独立回放均返回 0。准确修改文件的 SHA-256、命令与日志见 [本轮清单](../results/interpreter_debug_replay_20260905/manifest.json)。这些是 CPU 验证，不是新增 GPU 或 A100 对照；后续改进提交不能继承 `5b37725` 的 591 项全量通过记录。
 
 演示现在同时保存正确 reference 和注入常量错误的 candidate；独立回放核对 NumPy 参考，并再次观察 `entry:0:arith.constant` 的差异。测试还用正确 SSA 替换 candidate，要求回放返回非零，防止只导出正确程序却宣称复现故障。[完整演示包与步骤](../results/interpreter_debug_replay_20260905/README.md)已归档。该例明确属于教学故障注入，回放不声称重新执行了 pass 定位。
 
@@ -87,20 +91,20 @@ CUDA_VISIBLE_DEVICES="" python -m pytest -q --color=no \
 - 调试器导出回放修复了数组 strides 和可写权限保留，避免把非连续视图的布局问题在回放时“变没了”。
 - 有符号整数 `//` 与 `%` 统一为向负无穷取整及与除数同号的余数语义，并加入混合正负整数尾块的真实 GPU 对照。
 - 旧上游 `test_aot.py` 的 stream 上下文写法改为 `torch.cuda.stream(torch.cuda.Stream(...))`，兼容当前 PyTorch。保留原测试断言，没有放宽误差阈值。
-- `5b37725` 修复程序域重排、不规则展开与后端能力接口的兼容性问题，新增 6 项 CPU 回归；其验证范围由第二轮定向日志限定，完整回归结论仍待补齐。
+- `5b37725` 修复程序域重排、不规则展开与后端能力接口的兼容性问题，新增 6 项 CPU 回归；先完成 254 passed、1 skipped 定向验证，随后完整重跑得到 591 passed、2 skipped。两轮范围分别记录，不相加。
 
 ## 当前边界与下一步
 
 直接 `linalg.dot`/`linalg.matmul` 和受限的单逻辑 program 标量分解已有 CPU 支持；多 program 分块标量分解等场景仍明确不支持。**当前 GPU runner 未纳入优化后 dot 的对照**，不能把这 14 项通过写成“所有矩阵乘法路径通过”。完整边界见 [CPU 解释器文档](source/cpu_interpreter.rst)。
 
-下一步先补齐当前完整套件的最终汇总，再在真实 A100 上重跑专项报告和完整套件，检查原始证据后准备向 `InfiniTensor/ninetoothed:master` 提交 PR。上游评审、合并与训练营评选均尚未完成。
+演示与测试改进 `4a680a6` 已在完整测试取证之后整合。与 `5b37725` 相比，解释器核心、依赖及测试配置没有变化；修改文件的 Git 内容与先前39项定向验证的散列一致，因此不重复整轮4090运行，也不改写旧证据的源码SHA。下一步在真实 A100 上按冻结源码运行专项报告和完整套件，再结合设计说明准备向 `InfiniTensor/ninetoothed:master` 提交 PR。上游评审、合并与训练营评选均尚未完成。
 
 ## 历史代码与文档检查
 
-`c9de134` 整理文档和风格时，新增及修改的 Python 文件通过 Ruff 0.16.6 的全库 check、format 检查（125 个文件）和仓库贡献风格检查。纯格式调整的 AST 保持一致；另按贡献规则调整了 17 条诊断消息的大小写或标点，相关回归为 78 passed、14 项 GPU 用例取消选择，计算与控制逻辑未变。当时服务器全量固定在 `76ca646`，该历史检查不自动覆盖后续提交；当前服务器重跑固定在 `5b37725`。
+`c9de134` 整理文档和风格时，新增及修改的 Python 文件通过 Ruff 0.16.6 的全库 check、format 检查（125 个文件）和仓库贡献风格检查。纯格式调整的 AST 保持一致；另按贡献规则调整了 17 条诊断消息的大小写或标点，相关回归为 78 passed、14 项 GPU 用例取消选择，计算与控制逻辑未变。当时服务器全量固定在 `76ca646`；后续已完成的完整重跑固定在 `5b37725`。各历史检查不自动覆盖后续提交。
 
 服务器 Sphinx HTML 构建成功。最初缺少系统 `python3-tk`，补齐后通过；构建报告的两个标题下划线长度警告已在本次文档中修正。源码 doctest 收集没有发现用例（退出码 5），不计为新增通过的测试。正式 PR 还需使用仓库规定的 kebab-case 分支名，并附实际 pytest 输出。
 
 完整套件早期有一项 TileLang 重载测试因缺少可选依赖失败；保持 NumPy 1.26.4 和原有 PyTorch，补装 TileLang 0.1.14 与 ml-dtypes 0.5.4 后，该原测试单独复测 1 passed。原全量日志保留失败，不把这一复测改写成已经全量通过。
 
-初轮原始记录的 SHA-256 与字节数见 [初轮证据清单](../results/interpreter_rtx4090_manifest.json)；后续记录分别见 [兼容性清单](../results/rtx4090_compatibility_20260905/manifest.json)和 [无 GPU 包 CPU 清单](../results/cpu_no_gpu_packages_20260905/manifest.json)。`results/.gitattributes` 禁止原始记录的自动换行转换。每项结论只适用于相应的提交、依赖与命令。
+初轮原始记录的 SHA-256 与字节数见 [初轮证据清单](../results/interpreter_rtx4090_manifest.json)；后续记录分别见 [兼容性清单](../results/rtx4090_compatibility_20260905/manifest.json)、[无 GPU 包 CPU 清单](../results/cpu_no_gpu_packages_20260905/manifest.json)和 [`5b37725` 完整运行清单](../results/full_suite_rtx4090_5b37725/manifest.json)。`results/.gitattributes` 禁止原始记录的自动换行转换。每项结论只适用于相应的提交、依赖与命令。
