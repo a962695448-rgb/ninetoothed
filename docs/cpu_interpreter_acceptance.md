@@ -1,8 +1,8 @@
 # CPU 参考解释器：验收与提交说明
 
-本说明整理截至 2026-09-05 的已有证据和剩余验收步骤。源码 `5b377252cc4452b5ccc48c46ff1ae07a4e5e0e8a` 在 RTX 4090 完整运行得到 **591 passed、2 skipped，6036.09 s，退出码 0**，已保存日志、JUnit 与 coverage。独立副本演示改进的 39 项 CPU 回归另行记录；后续提交须重新标注源码 SHA 与验证范围，不能沿用 `5b37725` 全量通过结论。当前没有 A100 验证记录，也尚未创建上游 PR。
+本说明整理截至 2026-09-06 的已有证据和剩余验收步骤。源码 **`b5a3206f8351e5a138d16ee13f6d6ef9c620044b`** 已在实际 A100-SXM4-40GB 上完成 **14/14 真实 GPU 差分**和 **180 passed 的解释器专项**，退出码均为 0；A100 完整套件已收集 602 项，仍在运行，没有最终结论。历史 `5b37725` 的 RTX 4090 全量为 591 passed、2 skipped，独立副本的 39 项 CPU 回归另行记录，不将历史结果归于新提交或 A100。尚未创建上游 PR，也不宣称整项目官方验收完成。
 
-项目通过共享 arrangement/frontend/SSA 管线执行 NumPy 参考语义，帮助检查编译变换后的结果。设计、接口、支持操作和限制见 [CPU 解释器文档](source/cpu_interpreter.rst)，分轮结果与环境见 [验证报告](cpu_interpreter_validation_4090.md)，加分项计划见 [差距计划](excellence_gap_plan.md)。
+项目通过共享 arrangement/frontend/SSA 管线执行 NumPy 参考语义，帮助检查编译变换后的结果。设计、接口、支持操作和限制见 [CPU 解释器文档](source/cpu_interpreter.rst)，最新硬件记录见 [A100 报告](cpu_interpreter_validation_a100.md)，历史分轮结果见 [4090 报告](cpu_interpreter_validation_4090.md)，加分项计划见 [差距计划](excellence_gap_plan.md)。
 
 ## 验收要求与证据入口
 
@@ -14,17 +14,19 @@
 | 五类 application | [应用测试](../tests/test_interpreter_applications.py)：`test_elementwise_and_nondivisible_tail`、`test_broadcast_reuses_bias_for_each_row`、`test_row_reduction_ignores_padded_lanes`、`test_nested_if_and_for_carry_values` | 分别覆盖逐元素、广播、非整除尾块、行归约、分支/循环；尾块也是独立验收类别 |
 | float32、int32、bool | 同一应用测试文件中的 dtype 参数与 `test_bool_results_are_exact`；[GPU 用例](../tests/test_interpreter_gpu.py) 的 `GPU_CASES` | float32 使用 `rtol=1e-3, atol=1e-3`；整数与布尔完全相等 |
 | 无可见 CUDA 的独立运行 | `test_cpu_path_does_not_import_gpu_backends`；[无 Torch/Triton CPU 清单](../results/cpu_no_gpu_packages_20260905/manifest.json) | `5b37725` 的 206 passed、14 deselected；未选择 Torch 适配文件，不等于全仓库无依赖运行 |
-| 至少三个程序默认 pass 前后一致并与 A100 差分 | `test_gpu_fixtures_match_oracle_before_and_after_lowering_on_cpu`、[逐阶段测试](../tests/test_interpreter_default_pipeline.py)、`run_gpu_case`、[GPU runner](../scripts/verify_interpreter_gpu.py) | 初轮 4090 JSON 记录 8 个程序、14 个用例的四方比较；新逐阶段测试在 CPU 上执行四类应用 × 两个后端的真实默认管线。A100 仍待运行 |
+| 至少三个程序默认 pass 前后一致并与 A100 差分 | `test_gpu_fixtures_match_oracle_before_and_after_lowering_on_cpu`、[逐阶段测试](../tests/test_interpreter_default_pipeline.py)、`run_gpu_case`、[GPU runner](../scripts/verify_interpreter_gpu.py) | `b5a3206` A100 上 8 个程序、14 个用例四方比较全部通过，记录真实 Triton 默认 5 pass；逐阶段 CPU 检查包含于 180 项专项。硬件专项已取得证据，完整套件与官方整体验收仍待完成 |
 | mask 与 trace 正确；unsupported 显式失败 | [SSA 测试](../tests/test_interpreter_ssa.py) 中 masked load/store、trace 一致性、unsupported operation/dtype 用例 | mask 排除地址不解引用；诊断包含 operation 位置。支持边界见接口文档 |
 | 单步、断点、watch、program/opcode 过滤 | [单步测试](../tests/test_interpreter_step_debugger.py)、`StepDebugger`、[演示](cpu_interpreter_demo.py) | 暂停发生在操作完成之后；交互观察不能代替计算正确性检查 |
 | 首个错误 pass/operation 与差分复现 | [调试器测试](../tests/test_interpreter_debugger.py)、`check_passes`、`compare_programs`、`export_reproducer` | 结构和执行次序可对齐时定位对应 operation；结构重写缺少来源映射时不猜位置。故障注入与真实历史缺陷必须分别标注 |
 | 扩展接口与完整应用 | `handlers` 扩展测试、softmax 与直接/受限分解 dot 测试 | 多 program 分块标量 dot 仍拒绝；GPU runner 排除优化后 dot。没有自动样例缩减承诺 |
-| 原测试、风格、文档、主分支合并 | 完整 pytest、Ruff、贡献风格检查、Sphinx、上游审查 | `5b37725` 4090 全量 591 passed、2 skipped；两个跳过项需双卡。独立副本另有 39 项 CPU 回归与风格/文档检查。旧失败及未定原因的 SIGSEGV 均保留；上游合并未完成 |
+| 原测试、风格、文档、主分支合并 | 完整 pytest、Ruff、贡献风格检查、Sphinx、上游审查 | `b5a3206` A100 专项 180 passed；A100 全量 602 项仍运行。历史 `5b37725` 4090 全量 591 passed、2 skipped，两个跳过项需双卡；旧失败及未定原因的 SIGSEGV 保留。上游合并未完成 |
 
 ## 复查已完成的运行
 
 同一测试可能在多个范围中出现。`224` 包含 `14` 项 GPU 对照，`209` 为旧提交在安装 Torch 的服务器上隐藏 CUDA 的子集，`206` 为 `5b37725` 在无 Torch/Triton 环境的选定范围，`254` 为该提交的兼容性定向回归，`591` 为该提交完整运行的通过数（另有 2 skipped），`39` 为独立副本的 CPU 回归，不能累计。
 
+- [A100 真实 GPU 清单](../results/a100_20260906/gpu-report/manifest.json)与 [GPU JSON](../results/a100_20260906/gpu-report/interpreter_gpu_validation.json)：`b5a3206`，14/14、8 程序、9 类别、退出码 0；设备与计算能力确认实际 A100。JSON 中旧静态模板提示的含义见 [A100 说明](cpu_interpreter_validation_a100.md)，原文及散列保持不变。
+- [A100 专项清单](../results/a100_20260906/specialist/manifest.json)：180 passed、7.95 s、退出码 0，包含 GPU、应用、SSA、调试、逐 pass、回放与 Torch 适配范围。首次 [smoke 失败](../results/a100_20260906/smoke/manifest.json)与 [修正 libcuda 路径后 1 passed](../results/a100_20260906/smoke-libcuda/manifest.json)分别保留；smoke 属于 14 项，14 项又包含于 180 项，不相加。
 - [初轮 4090 清单](../results/interpreter_rtx4090_manifest.json)：`76ca646` 专项、隐藏 CUDA 子集与独立 GPU JSON。
 - [后续 4090 清单](../results/rtx4090_compatibility_20260905/manifest.json)：旧全量失败、新提交定向回归、SIGSEGV、两个 FP8 单例；各条含源码 SHA、命令参数、进程返回值、原文与压缩文件散列。
 - [`5b37725` 完整运行清单](../results/full_suite_rtx4090_5b37725/manifest.json)：591 passed、2 skipped，退出码 0；JUnit 593 条目、0 errors、0 failures、2 skipped。归档时 HEAD 与测试 SHA 一致、已跟踪文件无修改。全库 coverage XML 的 line-rate 为 86.76%（9178/10578 行），不是解释器专项覆盖率；跳过项和核验方法见 [归档说明](../results/full_suite_rtx4090_5b37725/README.md)。
@@ -55,24 +57,13 @@ python -m pytest -q --color=no -ra --tb=short \
 
 `tests/test_interpreter_gpu.py` 同时包含 CPU 可执行的发射/布局验证和真实 GPU 测试，因此保留该文件并明确取消选择后者。包元数据仍依赖 Triton；此处是 source checkout 的 CPU 验证路径，不是已发布的 CPU-only wheel 安装说明。
 
-## 剩余硬件验收
+## A100 已完成专项与剩余完整测试
 
 `5b37725` 的 RTX 4090 全量与原文产物已归档，结果为 591 passed、2 skipped、退出码 0。两项跨设备测试因只有一张 GPU 而跳过，不构成跨设备验证。演示与测试改进 `4a680a6` 已在完整测试取证之后整合，其核心、依赖和测试配置未变，修改文件与39项CPU验证记录的散列一致，因此不重复整轮4090运行；39项CPU检查与 `5b37725` 完整GPU结果分别保留。早先SIGSEGV的原因仍未确定，本轮成功不解释该异常。
 
-获得实际 A100 后，在冻结源码上记录 GPU 名称/计算能力、软件版本、源码 SHA、完整命令、输入种子、dtype、布局、默认 pass、发射 SSA 散列、误差与 skip 原因，再运行解释器专项、独立 GPU 报告及完整兼容性套件。复现参考命令如下，`RUN_DIR` 必须指向本次运行的新目录，依赖包含 pytest-cov，且 CUDA 可见：
+当前实际设备为 A100-SXM4-40GB、compute capability 8.0、MIG Disabled，测试源码固定为 `b5a3206`。14 项独立 GPU 差分和 180 项解释器专项已完成，源码前后检查、设备、依赖、精确 argv、误差和散列均保存；可移植复现命令及项目内 libcuda 符号链接修正见 [A100 报告](cpu_interpreter_validation_a100.md)。这项修正指向真实 ELF64 驱动库，并设置 `TRITON_LIBCUDA_PATH`/`LIBRARY_PATH`，首次失败记录没有被覆盖。
 
-```bash
-export PYTHONPATH=src
-export PYTEST_DISABLE_PLUGIN_AUTOLOAD=1
-python -m pytest -q --color=no tests/test_interpreter*.py tests/test_ssa*.py
-python scripts/verify_interpreter_gpu.py --device 0 \
-  --report "$RUN_DIR/interpreter_gpu.json"
-python -m pytest -p pytest_cov --color=no -v --tb=short -ra \
-  --doctest-modules --junitxml="$RUN_DIR/full-suite.xml" \
-  --cov=ninetoothed --cov-report="xml:$RUN_DIR/coverage.xml"
-```
-
-上述命令是未来验收步骤，不是已完成的 A100 结果。单卡导致的双卡用例跳过应逐项说明；A100 分区的接受情况须依据训练营要求另行核对。dot、跨结构 operation 来源定位和上游合并等缺口不会因更换 GPU 自动关闭。
+A100 全量已经启动并收集 602 项；继续保持运行源码不变，不重复启动。完成后才能记录该次完整结果与覆盖率；若有单卡导致的双卡 skip，应逐项说明，若有失败，应按实际原因处理。dot、跨结构 operation 来源定位和上游合并等缺口仍在，A100 专项通过不等于整项目官方验收完成。
 
 ## PR 与官网提交材料
 

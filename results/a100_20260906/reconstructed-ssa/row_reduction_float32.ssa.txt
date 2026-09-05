@@ -1,0 +1,10 @@
+ssa @gpu_validation_row_reduction_float32 {
+  inputs:
+    x : tensor<1x512>xfloat32
+    out : tensor<1>xfloat32
+  outputs:
+    out : tensor<1>xfloat32
+  ^entry:
+    %0 = reduce.sum x {axis=1}
+    mem.store %0, out {target='out'}
+}

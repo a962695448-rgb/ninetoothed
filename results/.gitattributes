@@ -9,3 +9,4 @@ interpreter_debug_replay_20260905/*.log -text -whitespace
 interpreter_debug_replay_20260905/*.xml -text -whitespace
 interpreter_debug_replay_20260905/*.zip -text -whitespace
 full_suite_rtx4090_5b37725/*.gz -text -whitespace
+a100_20260906/** -text -whitespace

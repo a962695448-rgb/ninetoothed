@@ -1,0 +1,11 @@
+ssa @gpu_validation_masked_int32_tail {
+  inputs:
+    x : tensor<256>xint32
+    y : tensor<256>xint32
+    out : tensor<256>xint32
+  outputs:
+    out : tensor<256>xint32
+  ^entry:
+    %0 = arith.add x, y
+    mem.store %0, out {target='out'}
+}

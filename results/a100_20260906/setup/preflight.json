@@ -1,0 +1,120 @@
+{
+  "created_at_utc": "2026-09-05T17:07:20.062610+00:00",
+  "purpose": "Environment inventory; this is not a validation PASS.",
+  "python": "3.12.7 | packaged by Anaconda, Inc. | (main, Oct  4 2024, 13:27:36) [GCC 11.2.0]",
+  "python_executable": "/home/vipuser/infinitensor-2026/.venv/bin/python",
+  "os": "Linux",
+  "os_release": "6.2.0-37-generic",
+  "architecture": "x86_64",
+  "cpu_count": 16,
+  "repo": "/home/vipuser/infinitensor-2026/ninetoothed",
+  "disk_free_bytes": 159199592448,
+  "git_head": {
+    "args": [
+      "git",
+      "-C",
+      "/home/vipuser/infinitensor-2026/ninetoothed",
+      "rev-parse",
+      "HEAD"
+    ],
+    "returncode": 0,
+    "stdout": "b5a3206f8351e5a138d16ee13f6d6ef9c620044b",
+    "stderr": ""
+  },
+  "git_tracked_status": {
+    "args": [
+      "git",
+      "-C",
+      "/home/vipuser/infinitensor-2026/ninetoothed",
+      "status",
+      "--porcelain",
+      "--untracked-files=no"
+    ],
+    "returncode": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  "packages": {
+    "ninetoothed": null,
+    "torch": "2.5.0",
+    "triton": "3.1.0",
+    "numpy": "2.1.3",
+    "sympy": "1.13.1",
+    "pytest": "8.1.1",
+    "pytest-cov": "7.1.0",
+    "coverage": "7.16.0",
+    "tilelang": "0.1.14",
+    "matplotlib": "3.11.1",
+    "pandas": "3.0.5",
+    "jupyter": "1.1.1",
+    "jupytext": "1.19.5",
+    "nbconvert": "7.17.1",
+    "ipykernel": "7.3.0"
+  },
+  "available_executables": {
+    "nvcc": "/usr/local/cuda/bin/nvcc",
+    "gcc": "/usr/bin/gcc",
+    "g++": "/usr/bin/g++",
+    "nvidia-smi": "/usr/bin/nvidia-smi",
+    "jupyter": "/home/vipuser/infinitensor-2026/.venv/bin/jupyter",
+    "jupytext": "/home/vipuser/infinitensor-2026/.venv/bin/jupytext"
+  },
+  "tkinter_module_found": true,
+  "gpu_kernels_launched": false,
+  "memory_kib": {
+    "MemTotal": 49287732,
+    "MemAvailable": 47445108,
+    "SwapTotal": 6191100
+  },
+  "nvidia_smi": {
+    "args": [
+      "nvidia-smi",
+      "--query-gpu=index,name,memory.total,driver_version,mig.mode.current",
+      "--format=csv,noheader,nounits"
+    ],
+    "returncode": 0,
+    "stdout": "0, NVIDIA A100-SXM4-40GB, 40960, 550.127.05, Disabled",
+    "stderr": ""
+  },
+  "nvcc": {
+    "args": [
+      "nvcc",
+      "--version"
+    ],
+    "returncode": 0,
+    "stdout": "nvcc: NVIDIA (R) Cuda compiler driver\nCopyright (c) 2005-2024 NVIDIA Corporation\nBuilt on Tue_Feb_27_16:19:38_PST_2024\nCuda compilation tools, release 12.4, V12.4.99\nBuild cuda_12.4.r12.4/compiler.33961263_0",
+    "stderr": ""
+  },
+  "gcc": {
+    "args": [
+      "gcc",
+      "--version"
+    ],
+    "returncode": 0,
+    "stdout": "gcc (Ubuntu 11.4.0-1ubuntu1~22.04) 11.4.0\nCopyright (C) 2021 Free Software Foundation, Inc.\nThis is free software; see the source for copying conditions.  There is NO\nwarranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.",
+    "stderr": ""
+  },
+  "numpy_import_version": "2.1.3",
+  "torch_import_version": "2.5.0+cu124",
+  "torch_cuda_build_version": "12.4",
+  "torch_cuda_available": true,
+  "torch_float8_e5m2_attribute": true,
+  "cuda_devices": [
+    {
+      "index": 0,
+      "name": "NVIDIA A100-SXM4-40GB",
+      "compute_capability": [
+        8,
+        0
+      ],
+      "total_memory_bytes": 42285268992,
+      "multiprocessor_count": 108
+    }
+  ],
+  "notes": [
+    "Torch device properties initialize CUDA but do not execute kernels.",
+    "A float8_e5m2 Python attribute does not establish GPU FP8 support.",
+    "b5a3206 matmul/addmm FP8 parametrization has no capability skip.",
+    "Required interpreter GPU cases use float32/int32/bool, not FP8."
+  ]
+}

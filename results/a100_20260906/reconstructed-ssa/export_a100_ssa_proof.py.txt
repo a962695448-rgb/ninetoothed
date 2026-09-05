@@ -1,0 +1,169 @@
+#!/usr/bin/env python3
+"""Rebuild emitted SSA on CPU and compare it with an existing A100 report."""
+
+import argparse
+import contextlib
+import hashlib
+import importlib.metadata
+import importlib.util
+import io
+import json
+import os
+import platform
+import subprocess
+import sys
+import tarfile
+import traceback
+from datetime import datetime, timezone
+from pathlib import Path
+
+EXPECTED_SHA = "b5a3206f8351e5a138d16ee13f6d6ef9c620044b"
+
+
+def digest(data):
+    return hashlib.sha256(data).hexdigest()
+
+
+def git(repo, *args):
+    return subprocess.check_output(["git", "-C", str(repo), *args])
+
+
+def source_snapshot(repo):
+    actual_head = git(repo, "rev-parse", "HEAD").decode().strip()
+    if actual_head != EXPECTED_SHA:
+        raise RuntimeError(f"Expected frozen source {EXPECTED_SHA}, found {actual_head}.")
+    archive = git(repo, "archive", EXPECTED_SHA, "--", "src", "tests", "pyproject.toml", "scripts/verify_interpreter_gpu.py")
+    files = []
+    with tarfile.open(fileobj=io.BytesIO(archive), mode="r:") as source:
+        for member in source.getmembers():
+            if not member.isfile():
+                continue
+            expected = source.extractfile(member).read()
+            path = repo / member.name
+            actual = path.read_bytes()
+            text_file = path.suffix in {".py", ".h", ".toml", ".txt"}
+            normalized = actual.replace(b"\r\n", b"\n") if text_file else actual
+            normalized_expected = expected.replace(b"\r\n", b"\n") if text_file else expected
+            if normalized != normalized_expected:
+                raise RuntimeError(f"Source content differs from frozen Git blob: {member.name}.")
+            files.append({
+                "path": member.name,
+                "working_bytes_sha256": digest(actual),
+                "git_blob_bytes_sha256": digest(expected),
+                "comparison_sha256": digest(normalized),
+                "comparison": "CRLF-to-LF only" if text_file else "exact bytes",
+            })
+    return {"head": actual_head, "files": files}
+
+
+def main():
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("--repo", type=Path, required=True)
+    parser.add_argument("--gpu-report", type=Path, required=True)
+    parser.add_argument("--out", type=Path, required=True)
+    args = parser.parse_args()
+    repo = args.repo.resolve()
+    report_path = args.gpu_report.resolve()
+    out = args.out.resolve()
+    if out.exists():
+        parser.error("Output directory exists; choose a new directory.")
+    out.mkdir(parents=True, exist_ok=False)
+    sys.dont_write_bytecode = True
+    sys.path[:0] = [str(repo / "src"), str(repo)]
+    os.environ["NINETOOTHED_CACHE_DIR"] = str(out / "unused-compiler-cache")
+    manifest = {
+        "status": "UNVERIFIED", "created_at_utc": datetime.now(timezone.utc).isoformat(),
+        "provenance": "Independent CPU reconstruction matching hashes already recorded by an A100 run; not a new GPU run or a contemporaneous dump.",
+        "argv": [sys.executable, *sys.argv],
+        "python": sys.version, "system": platform.system(),
+        "expected_source_sha": EXPECTED_SHA,
+        "export_script_sha256": digest(Path(__file__).read_bytes()),
+        "gpu_report_sha256": digest(report_path.read_bytes()),
+        "gpu_report_path": str(report_path), "cases": [],
+        "gpu_work_executed": False,
+    }
+    exit_code = 2
+    stdout_path = out / "reconstruction.stdout.log"
+    stderr_path = out / "reconstruction.stderr.log"
+    with stdout_path.open("x", encoding="utf-8") as stdout, stderr_path.open("x", encoding="utf-8") as stderr:
+        with contextlib.redirect_stdout(stdout), contextlib.redirect_stderr(stderr):
+            try:
+                present = {name: importlib.util.find_spec(name) is not None for name in ("torch", "triton")}
+                manifest["gpu_packages_installed"] = present
+                if any(present.values()):
+                    raise RuntimeError("This proof requires an environment without Torch and Triton installed.")
+                manifest["source_before"] = source_snapshot(repo)
+                reference = json.loads(report_path.read_text(encoding="utf-8"))
+                if reference.get("status") != "PASS" or "A100" not in reference.get("gpu_name", "") or reference.get("compute_capability") != [8, 0]:
+                    raise RuntimeError("Input must be the preserved passing A100 8.0 report.")
+                from tests import test_interpreter_gpu as fixture
+                from ninetoothed.ir import ssa
+
+                if Path(fixture.__file__).resolve() != repo / "tests/test_interpreter_gpu.py":
+                    raise RuntimeError("Imported fixture did not come from the verified repository.")
+                manifest["packages"] = {name: importlib.metadata.version(name) for name in ("numpy", "sympy", "pytest")}
+                manifest["construction"] = [
+                    "tests.test_interpreter_gpu._compile_case(case)",
+                    "tests.test_interpreter_gpu._program_from_metadata(compilation.artifact.metadata['ssa'])",
+                    "ninetoothed.ir.ssa.render(lowered).encode('utf-8')",
+                ]
+                recorded_cases = reference["cases"]
+                if [case.name for case in fixture.GPU_CASES] != [case["name"] for case in recorded_cases] or len(recorded_cases) != 14:
+                    raise RuntimeError("Recorded cases do not exactly match the 14 frozen fixtures.")
+                for case, recorded in zip(fixture.GPU_CASES, recorded_cases):
+                    compilation, _inputs, _expected = fixture._compile_case(case)
+                    if compilation.request.pipeline is not None or compilation.request.pass_options is not None:
+                        raise RuntimeError("Fixture unexpectedly overrides the default pass pipeline.")
+                    metadata = compilation.artifact.metadata
+                    if metadata["lowering_ir"] != "ssa.Program" or metadata["generation_py_fallback"] is not False:
+                        raise RuntimeError("Compilation did not use the required genuine SSA lowering path.")
+                    lowered = fixture._program_from_metadata(metadata["ssa"])
+                    rendered = ssa.render(lowered).encode("utf-8")
+                    actual_hash = digest(rendered)
+                    passed = recorded["status"] == "PASS" and actual_hash == recorded["emitted_ssa_sha256"] and list(compilation.pass_trace) == recorded["pass_trace"]
+                    result = {
+                        "name": case.name, "program": recorded["program"],
+                        "recorded_a100_ssa_sha256": recorded["emitted_ssa_sha256"],
+                        "reconstructed_ssa_sha256": actual_hash,
+                        "pass_trace": list(compilation.pass_trace),
+                        "status": "MATCH" if passed else "MISMATCH",
+                    }
+                    manifest["cases"].append(result)
+                    if not passed:
+                        raise RuntimeError(f"SSA hash or pass trace differs for {case.name}; stopped without changing source or pipeline.")
+                    filename = f"{case.name}.ssa.txt"
+                    with (out / filename).open("xb") as output:
+                        output.write(rendered)
+                    if digest((out / filename).read_bytes()) != recorded["emitted_ssa_sha256"]:
+                        raise RuntimeError(f"Written SSA bytes failed verification: {filename}.")
+                    result["file"] = filename
+                    result["bytes"] = len(rendered)
+                    print(f"MATCH: {case.name}: {actual_hash}", flush=True)
+                if source_snapshot(repo) != manifest["source_before"]:
+                    raise RuntimeError("Source changed during reconstruction.")
+                if digest(report_path.read_bytes()) != manifest["gpu_report_sha256"]:
+                    raise RuntimeError("Original A100 report changed during reconstruction.")
+                manifest["source_unchanged_after"] = True
+                manifest["gpu_packages_imported"] = [name for name in sys.modules if name.split(".", 1)[0] in {"torch", "triton"}]
+                if manifest["gpu_packages_imported"]:
+                    raise RuntimeError("A GPU package was unexpectedly imported.")
+                manifest["matched_cases"] = len(manifest["cases"])
+                manifest["status"] = "ALL_RECORDED_HASHES_MATCH"
+                exit_code = 0
+                print("14/14 independent CPU reconstructions match recorded A100 hashes.", flush=True)
+            except Exception as error:
+                manifest["status"] = "RECONSTRUCTION_FAILED"
+                manifest["error"] = f"{type(error).__name__}: {error}"
+                traceback.print_exc()
+    manifest["exit_code"] = exit_code
+    manifest["artifacts"] = [
+        {"path": path.name, "bytes": path.stat().st_size, "sha256": digest(path.read_bytes())}
+        for path in sorted(out.iterdir()) if path.is_file()
+    ]
+    (out / "manifest.json").write_text(json.dumps(manifest, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
+    print(f"{manifest['status']}: {out / 'manifest.json'}")
+    return exit_code
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())

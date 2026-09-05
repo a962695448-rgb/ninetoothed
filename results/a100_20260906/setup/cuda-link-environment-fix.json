@@ -1,0 +1,8 @@
+{
+  "actual_driver_library": "/usr/lib/x86_64-linux-gnu/libcuda.so.550.127.05",
+  "elf_class": 64,
+  "link_directory": "/home/vipuser/infinitensor-2026/.driver-libs",
+  "TRITON_LIBCUDA_PATH": "/home/vipuser/infinitensor-2026/.driver-libs",
+  "LIBRARY_PATH": "/home/vipuser/infinitensor-2026/.driver-libs",
+  "initial_runner_sha256": "5e14e1159fec262ce1b4820931db50fbb24e03c91cab220afda287a64b7609d0"
+}

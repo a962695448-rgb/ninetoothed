@@ -1,0 +1,1 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites><testsuite name="pytest" errors="0" failures="0" skipped="0" tests="1" time="2.315" timestamp="2026-09-06T01:00:02.193733" hostname="ubuntu22"><testcase classname="tests.test_interpreter_gpu" name="test_cpu_interpreter_matches_actual_triton_gpu[elementwise_float32_aligned]" time="2.035" /></testsuite></testsuites>

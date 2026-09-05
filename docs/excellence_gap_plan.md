@@ -1,14 +1,14 @@
 # 九齿优秀项目差距与执行计划
 
-审查日期：2026-09-05。本次完整 GPU 测试源码为 `5b377252cc4452b5ccc48c46ff1ae07a4e5e0e8a`，RTX 4090 上得到 **591 passed、2 skipped，退出码 0**。初轮专项对应 `76ca6464fc921bc1419700b22f730b4084b3035b`；兼容性定向回归和无 Torch/Triton CPU 验证对应 `5b37725`；独立副本的演示改进另有 39 项 CPU 回归。各范围与版本分别记录，不将 `5b37725` 全量结果归于后续提交。A100 与下列加分缺口仍待完成。
+审查日期：2026-09-06。源码 **`b5a3206f8351e5a138d16ee13f6d6ef9c620044b`** 已在实际 A100-SXM4-40GB 上完成 **14/14 真实 GPU 差分**与 **180 passed 的解释器专项**，退出码均为 0；A100 完整测试收集 602 项后仍在运行。历史 `5b37725` 的 RTX 4090 全量为 591 passed、2 skipped，其他初轮与 CPU 子范围分别归档，不累加也不改写版本。A100 专项已有证据，完整套件、官方整体验收与下列加分缺口仍需推进。
 
-规则依据：训练营[九齿 CPU 参考解释器与差分调试器任务](https://gxtctab8no8.feishu.cn/wiki/GxhWwiz0iiAhKkk7CFhcLTCyn2b)的 2026-09-05 本地阅读快照；实施依据为本仓库源码、测试、[4090 证据报告](cpu_interpreter_validation_4090.md)与 [贡献规范](../CONTRIBUTING.md)。
+规则依据：训练营[九齿 CPU 参考解释器与差分调试器任务](https://gxtctab8no8.feishu.cn/wiki/GxhWwiz0iiAhKkk7CFhcLTCyn2b)的 2026-09-05 本地阅读快照；实施依据为本仓库源码、测试、[A100 证据报告](cpu_interpreter_validation_a100.md)、[4090 历史报告](cpu_interpreter_validation_4090.md)与 [贡献规范](../CONTRIBUTING.md)。
 
 ## 最优先补齐的条件
 
-需要一张实际可用的 NVIDIA A100 完成题目指定验收。单卡即可；现有专项测试没有要求 80 GB 或 NVLink，40 GB 可以执行这些用例。整卡 Linux 环境、可安装兼容依赖、保留运行结果，比显存容量更关键。仅能提供 A100 分区时，应记录分区信息并先核对训练营是否接受该形式。
+实际 A100 已到位并完成硬件专项：A100-SXM4-40GB、compute capability 8.0、MIG Disabled；GPU 差分 14/14，解释器专项 180 passed。当前优先事项是等待已启动的完整测试结束并归档，不能将 602 项收集数写成通过数。首次 smoke 因兼容 libcuda 链接缺失而失败，项目内链接真实 ELF64 驱动并设置库路径后，同一用例重跑通过；全过程见 [A100 报告](cpu_interpreter_validation_a100.md)。
 
-建议资源配置为 16 个 CPU 核、64 GB 主存、100 GB 以上可用持久磁盘；这是为了全库编译、自动调优、缓存和日志的工程余量，不是题目规定的最低参数。允许按内存调整编译并行度，无需为了本项目训练大模型。环境应提供可用的 PyTorch、Triton、CUDA 编译工具及项目可选后端依赖，能从官方源获取固定版本。
+本轮使用 Python 3.12.7、PyTorch 2.5.0+cu124、Triton 3.1.0、NumPy 2.1.3、SymPy 1.13.1，具体环境与依赖一致性检查已记录。保持运行中的源码与环境不变，保留编译/调优缓存及独立日志，不因专项已通过而更换配置或重复启动全量。
 
 单 A100 不会自动解决多 program 标量分解和跨结构 pass 追踪；这两项主要需要开发时间和可审查设计。
 
@@ -20,22 +20,22 @@
 
 | 标准 | 当前证据 | 差距与合格证据 |
 |---|---|---|
-| 原有测试、风格、文档保持可用 | `5b37725` RTX 4090 完整重跑 591 passed、2 skipped、退出码 0；日志/JUnit/coverage 已归档；演示改进已整合，文件散列与39项CPU回归及风格/文档检查对应 | 两个 skip 均要求至少双卡，SIGSEGV 历史原因未定；新提交不能直接继承旧提交的全量运行结论 |
+| 原有测试、风格、文档保持可用 | `b5a3206` A100 专项 180 passed；历史 `5b37725` RTX 4090 完整重跑 591 passed、2 skipped；演示改进与风格/文档检查已有对应记录 | A100 全量收集 602 项仍在运行；历史双卡 skip 与 SIGSEGV 原因未定均保留，不把历史全量结论重标为新 A100 运行 |
 | CPU-only 与五类应用、三种必需 dtype | `76ca646` 隐藏 CUDA 后 209 passed；`5b37725` 的 WSL 无 Torch/Triton 环境 206 passed、14 deselected；应用与 dtype 对照见验收说明 | 两轮依赖、源码和选择范围不同。新 CPU 记录未验证 PyTorch CPU Tensor 适配；广泛收集时的缺包错误另保留，不能将 206 与 209 相加或直接比较 |
-| 默认 pass 前后至少三个程序一致与 A100 差分 | 4090 报告包含 8 个程序、14 项四方比较；发射 SSA 和默认 pass 可追溯 | A100 相同合同下实际运行，报告设备/代码 SHA/SSA SHA/布局/种子/误差；至少三个不同程序明确覆盖默认 pass |
-| dot/matmul、softmax 和扩展能力 | softmax 已有真实 GPU 对照；直接 dot 与单 program 分解有 CPU 测试；已支持 strided 视图等 | 多 program 分块 dot 被明确拒绝，GPU runner 排除了优化后 dot；补齐真实默认管线中的代表性矩阵乘法 |
+| 默认 pass 前后至少三个程序一致与 A100 差分 | `b5a3206` A100 已完成 8 程序、14 项四方比较，记录设备、源码/SSA SHA、shape、dtype、种子、误差与实际 Triton 默认 5 pass；布局由固定输入构造及 SSA 对应 | 硬件专项缺口已取得证据；原 GPU JSON 的旧静态提示保持原文，由 A100 报告解释。继续等待完整套件并准备官方审查，不把专项通过等同整体验收 |
+| dot/matmul、softmax 和扩展能力 | softmax 已有 A100 真实 GPU 对照，最大绝对差约 `8.94e-8`；直接 dot 与单 program 分解有 CPU 测试；已支持 strided 视图等 | 多 program 分块 dot 被明确拒绝，A100 GPU runner 仍排除优化后 dot；补齐真实默认管线中的代表性矩阵乘法 |
 | trace 过滤、单步、断点、watch | 有实现与自动化测试；新增 reference/candidate 独立回放、负向控制和公开演示包，服务器 CPU 定向 39 passed | 现有完整演示是故障注入；继续补真实历史缺陷的前后对照，保持跨 program/循环作用域及 trace 一致性验证 |
 | 自动定位首个错误 pass 和 operation | 每个 pass 可与原始程序比对；结构与事件一致时能定位 operation | 重构 pass 后缺少来源映射，operation 位置会明确为空；不能宣传普遍精确定位，需要限定合同或补来源追踪 |
 | 导出 SSA、输入、shape、dtype、seed | JSON/NPZ 和回放代码已有实现；保存 strides、权限与同对象别名 | 用一个真实历史缺陷导出并独立回放，证明输入布局问题没有在复制时消失；自动缩减不是规则明确必需项 |
 | 可扩展、复用 | operation handlers 与 frontend/运行时接口已分离 | 用一个独立新增 operation 的局部实现示例验证扩展接口，并保留 unsupported 报错 |
 | 合并主分支 | 已有用户 fork 与分支 | 尚未创建上游 PR；合并取决于维护者，必须预留设计讨论、CI、修改与审查时间 |
 
-224 项已经包含 14 项 GPU 对照，不能相加为 238 项。209 是初轮 CPU 子集；206 是另一环境与提交的明确选定范围；254 是兼容性定向回归；591 是 `5b37725` 完整运行的通过数，另有 2 skipped；39 是独立副本的 CPU 回归。各轮不相加，参数组合数也不能当成独立功能数量。完整命令和证据入口见 [验证报告](cpu_interpreter_validation_4090.md)与 [验收及提交说明](cpu_interpreter_acceptance.md)。
+224 项已经包含历史 14 项 GPU 对照；209、206、254、591、39 各属前述不同范围。本次 A100 smoke 是 14 项 GPU 差分中的一个用例，14 项又包含于 180 项解释器专项，不能相加为更多独立测试。602 仅是仍在运行的 A100 全量收集数。准确命令和证据入口见 [A100 报告](cpu_interpreter_validation_a100.md)、[4090 报告](cpu_interpreter_validation_4090.md)与 [验收及提交说明](cpu_interpreter_acceptance.md)。
 
 ## P0：先关闭验收缺口
 
 1. `5b37725` 完整运行已完成并归档：591 passed、2 skipped、退出码 0，归档时 HEAD 正确且已跟踪文件无修改。[完整运行清单](../results/full_suite_rtx4090_5b37725/manifest.json)已核验，演示改进 `4a680a6` 已整合；核心、依赖和测试配置未变，修改文件与39项定向验证的散列一致，故不重复整轮4090测试。旧失败、SIGSEGV与FP8单例保留；本轮成功没有确定SIGSEGV根因。
-2. 在 A100 上运行 CPU 专项、真实 GPU 差分与完整套件。CPU 与 GPU 使用相同 arrangement/application、布局、输入、种子和默认 pass，分别与独立 NumPy 参考比较。float32 保持 `rtol=1e-3, atol=1e-3`，int32/bool 保持完全相等。
+2. A100 独立 GPU 差分与解释器专项已完成：14/14、180 passed，源码为 `b5a3206`。继续等待已运行的完整套件，结束后核对真实退出状态、错误/skip、JUnit 和 coverage，再处理确切缺口。已实测 CPU/GPU 使用相同 arrangement/application、布局、输入、种子和默认 pass；float32 按 `rtol=1e-3, atol=1e-3`，int32/bool 完全相等。
 3. 记录实际机器、软件版本、commit、运行命令、原始日志/JSON、散列和可解释的跳过项。单卡导致的双卡测试跳过要逐项说明，不能写无条件全覆盖。
 4. 保留当前可工作的最小主线，尽早整理设计说明和可评审改动；不能等所有可选功能完成才开始上游评审。
 
@@ -77,7 +77,7 @@ CPU 执行速度不是本题目标，不优先做多线程 CPU kernel、GPU 并�
 
 ## 提交流程与优秀评选风险
 
-贡献规范要求 kebab-case 分支；合规提交分支 `add-cpu-reference-interpreter` 与开发分支 `feat/cpu-reference-interpreter` 均已建立并推送，现已整合演示改进与完整测试归档。正式 PR 使用前者，发布前以远端引用核对确切提交；完整测试的冻结版本仍按证据记录为 `5b37725`。既有历史保留，无需改写已发布提交。
+贡献规范要求 kebab-case 分支；合规提交分支 `add-cpu-reference-interpreter` 与开发分支 `feat/cpu-reference-interpreter` 均已建立并推送，已整合演示改进与 4090 完整测试归档。正式 PR 使用前者，发布前以远端引用核对确切提交；4090 完整运行的源码仍记为 `5b37725`，本次 A100 的已完成专项及进行中全量固定为 `b5a3206`。既有历史保留，无需改写已发布提交。
 
 用户要求中文 commit 备注，后续保留该偏好，不重写已推送的中文提交。`.githooks/commit-msg` 是需在本地显式启用的 hook，其英文首字母要求不能直接解释为远端对历史 commit 的检查。实际远端 `.github/workflows/contributing.yml` 通过 `--event` 检查 PR 的 title、head branch 和正文中的 pytest 输出，没有遍历历史 commit messages。PR 标题按英文大写开头、命令式、无结尾标点的规则准备，正文可用中文并附实际 pytest 输出；不修改上游规则，也不以本地 hook 惯例覆盖用户语言偏好。
 

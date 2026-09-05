@@ -1,0 +1,16 @@
+ssa @gpu_validation_softmax_float32 {
+  inputs:
+    x : tensor<1x512>xfloat32
+    out : tensor<1x512>xfloat32
+  outputs:
+    out : tensor<1x512>xfloat32
+  ^entry:
+    %0 = reduce.max x {axis=1}
+    %1 = tensor.view %0 {subscript='(:, None)', source=False}
+    %2 = arith.sub x, %1
+    %3 = math.exp %2 {callee='ntl.exp'}
+    %4 = reduce.sum %3 {axis=1}
+    %5 = tensor.view %4 {subscript='(:, None)', source=False}
+    %6 = arith.div %3, %5
+    mem.store %6, out {target='out'}
+}

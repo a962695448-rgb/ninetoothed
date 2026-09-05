@@ -1,0 +1,23 @@
+ssa @gpu_validation_if_for_true {
+  inputs:
+    x : tensor<256>xfloat32
+    positive : scalarxbool
+    out : tensor<256>xfloat32
+  outputs:
+    out : tensor<256>xfloat32
+  ^entry:
+    %0 = arith.constant {value=0}
+    %1 = arith.constant {value=3}
+    %2 = arith.constant {value=1}
+    %accumulator_6 = scf.for %0, %1, %2, x {induction='%i', iter_args=(FrozenMap({'name': 'accumulator', 'initial': 'x', 'block_arg': '%accumulator_iter'})), python_target='i'}
+      ^loop(%i: index, %accumulator_iter: tensor<256>xfloat32):
+        %accumulator_5 = scf.if positive {assigned=('accumulator')}
+          ^then:
+            %3 = arith.add %accumulator_iter, %i
+            scf.yield %3
+          ^else:
+            %4 = arith.sub %accumulator_iter, %i
+            scf.yield %4
+        scf.yield %accumulator_5
+    mem.store %accumulator_6, out {target='out'}
+}

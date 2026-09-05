@@ -1,0 +1,28 @@
+{
+  "command": [
+    "/home/vipuser/infinitensor-2026/.venv/bin/python",
+    "-m",
+    "pip",
+    "install",
+    "--disable-pip-version-check",
+    "--timeout",
+    "20",
+    "--retries",
+    "2",
+    "-c",
+    "/home/vipuser/infinitensor-2026/tools/fixed-core.txt",
+    "pytest-cov==7.1.0",
+    "matplotlib>=3.9.0",
+    "pandas",
+    "jupytext",
+    "jupyter",
+    "nbconvert",
+    "ipykernel",
+    "tilelang==0.1.14",
+    "sphinx==9.1.0",
+    "pydata-sphinx-theme==0.21.0"
+  ],
+  "index": "https://pypi.tuna.tsinghua.edu.cn/simple",
+  "exit_code": 0,
+  "core_constraints": "torch==2.5.0\ntriton==3.1.0\nnumpy==2.1.3\nsympy==1.13.1\n"
+}

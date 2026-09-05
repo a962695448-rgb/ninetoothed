@@ -1,0 +1,11 @@
+ssa @gpu_validation_elementwise_float32_aligned {
+  inputs:
+    x : tensor<256>xfloat32
+    y : tensor<256>xfloat32
+    out : tensor<256>xfloat32
+  outputs:
+    out : tensor<256>xfloat32
+  ^entry:
+    %0 = arith.add x, y
+    mem.store %0, out {target='out'}
+}
