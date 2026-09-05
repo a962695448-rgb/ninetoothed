@@ -11,7 +11,7 @@ import re
 from dataclasses import replace
 from typing import Any, Mapping
 
-from ninetoothed.backends.core import Artifact, Target
+from ninetoothed.backends.core import Artifact
 from ninetoothed.backends.emitters.analysis import (
     atomic_output_tensors as _atomic_output_tensors,
 )
@@ -1403,22 +1403,21 @@ def _binary_expr(operator: str, op: ssa.Operation, ctx: _EmitContext) -> str:
 def _floor_divmod_expr(
     operator: str, op: ssa.Operation, args: tuple[str, ...], ctx: _EmitContext
 ) -> str:
-    """Preserve SSA/Python floor division on signed Triton tensor operands."""
+    """Preserve SSA floor division when target integers truncate toward zero."""
     lhs, rhs = (f"({arg})" for arg in args)
     division_symbol = "/" if ctx.target.c_style_syntax else "//"
     quotient = f"({lhs} {division_symbol} {rhs})"
     remainder = f"({lhs} % {rhs})"
     dtype = _normalize_dtype(ctx.target.arithmetic_result_type(op, ctx).dtype)
 
-    if ctx.target.backend == Target.TRITON and dtype in {
+    if ctx.target.signed_division_rounds_to_zero and dtype in {
         "int8",
         "int16",
         "int32",
         "int64",
     }:
-        # Triton tensor // and % truncate toward zero. Correct a nonzero
-        # remainder whose sign differs from the divisor. Using the remainder's
-        # sign also leaves compile-time scalar Python arithmetic unchanged.
+        # Correct a truncating remainder whose sign differs from the divisor.
+        # Testing its sign also leaves compile-time Python scalars unchanged.
         correction = f"(({remainder} != 0) & (({remainder} < 0) != ({rhs} < 0)))"
 
         if operator == "floordiv":
@@ -3300,14 +3299,30 @@ def _tensor_outer_index(info: _TensorInfo | None, ctx: _EmitContext) -> str:
     if info is None or output is None or info.name == output.name:
         return ctx.outer_index_expr
 
-    axes = tuple(info.shape)
-    output_axes = tuple(output.shape)
+    # Expanded dense views can contain a jagged tensor's logical sequence
+    # symbol. Program domains use the padded launch extent, before per-batch
+    # lengths are bound by the access template.
+    extents = _jagged_extent_replacements(ctx)
+    axes = tuple(_replace_symbols(axis, extents) for axis in info.shape)
+    output_axes = tuple(_replace_symbols(axis, extents) for axis in output.shape)
 
     if not axes:
         return "0"
 
     if len(axes) > len(output_axes) or axes == output_axes:
         return ctx.outer_index_expr
+
+    pairs = tuple(zip(axes, output_axes[-len(axes) :]))
+    compatibility = []
+
+    for axis, output_axis in pairs:
+        if _is_one_expr(axis) or axis == output_axis:
+            continue
+
+        if axis.isdecimal() and output_axis.isdecimal():
+            return ctx.outer_index_expr
+
+        compatibility.append(f"((({axis}) == 1) | (({axis}) == ({output_axis})))")
 
     output_coords = _coords_from_linear(ctx.outer_index_expr, output_axes, ctx.target)
     coords = tuple(
@@ -3319,7 +3334,16 @@ def _tensor_outer_index(info: _TensorInfo | None, ctx: _EmitContext) -> str:
         for axis, coordinate in zip(axes, output_coords[-len(axes) :])
     )
 
-    return _target_index_expr(ctx.target, _linearized_index(coords, axes))
+    mapped = _target_index_expr(ctx.target, _linearized_index(coords, axes))
+
+    if compatibility:
+        # Flattened debug outputs and other reshaped domains share a flat
+        # program ID without having a right-aligned broadcasting relation.
+        # Preserve that ID unless the runtime extents prove broadcasting.
+        valid = " & ".join(compatibility)
+
+        return ctx.target.where(valid, mapped, ctx.outer_index_expr)
+    return mapped
 
 
 def _access_template(info: _TensorInfo | None, level: int) -> Mapping[str, Any] | None:
