@@ -10,7 +10,7 @@ import pytest
 import ninetoothed.language as ntl
 from ninetoothed import Tensor, interpret
 from ninetoothed.compiler.passes import lower_for_target
-from ninetoothed.interpreter import InterpretationError
+from ninetoothed.interpreter import UnsupportedOperationError
 
 
 def _vectors(x, y, out):
@@ -43,6 +43,10 @@ def _row_tiles(x, out):
 
 def _row_sum(x, out):
     out = ntl.sum(x, 1)  # noqa: F841
+
+
+def _squeezed_row_tiles(x, out):
+    return x.tile((1, 512)), out.tile((1,))
 
 
 def _nested_row_tiles(x, out):
@@ -86,6 +90,22 @@ def _matrix_tiles(a, b, out):
 
 def _dot(a, b, out):
     out = ntl.dot(a, b)  # noqa: F841
+
+
+def _whole_matrices(a, b, out):
+    return a, b, out
+
+
+def _transpose_tiles(x, out):
+    return x.tile((4, 4)), out.tile((4, 4))
+
+
+def _whole_transpose(x, out):
+    return x, out
+
+
+def _transpose(x, out):
+    out = ntl.trans(x)  # noqa: F841
 
 
 def _descriptor(ndim, name, dtype="float32", **kwargs):
@@ -180,6 +200,23 @@ def test_row_reduction_ignores_padded_lanes(dtype):
         ),
     )
     expected = np.sum(x, axis=1, keepdims=True, dtype=dtype)
+    _run_and_compare(handle, [x, out], expected, optimize=True)
+
+
+@pytest.mark.parametrize("dtype", (np.float32, np.int32))
+def test_row_reduction_maps_singleton_program_axes_to_a_vector_output(dtype):
+    rng = np.random.default_rng(2026)
+    x = rng.integers(-10, 10, size=(7, 257)).astype(dtype)
+    out = np.full(7, -731, dtype=dtype)
+    handle = interpret(
+        _squeezed_row_tiles,
+        _row_sum,
+        (
+            _descriptor(2, "x", np.dtype(dtype).name, other=0),
+            _descriptor(1, "out", np.dtype(dtype).name),
+        ),
+    )
+    expected = np.sum(x, axis=1, dtype=dtype)
     _run_and_compare(handle, [x, out], expected, optimize=True)
 
 
@@ -347,21 +384,108 @@ def test_high_level_backend_option_executes_the_real_pass_pipeline(backend):
 
 
 @pytest.mark.parametrize("backend", ("cuda", "triton"))
-def test_tiled_dot_exposes_the_existing_target_pipeline_limitation(backend):
-    # The existing decomposition invents an undefined k for these fixed tiles.
-    # This rejection check is not a successful optimized-dot execution test.
-    with pytest.raises(InterpretationError) as caught:
-        interpret(
-            _matrix_tiles,
-            _dot,
-            (
-                _descriptor(2, "a", other=0),
-                _descriptor(2, "b", other=0),
-                _descriptor(2, "out"),
-            ),
-            backend=backend,
+@pytest.mark.parametrize("dtype", (np.float32, np.int32))
+@pytest.mark.parametrize("shape", ((3, 1, 2), (3, 3, 2), (2, 4, 3)))
+def test_fixed_k_tiled_dot_matches_numpy_after_target_decomposition(
+    backend, dtype, shape
+):
+    rows, inner, columns = shape
+    rng = np.random.default_rng(2026)
+    a = rng.integers(-7, 8, size=(rows, inner)).astype(dtype)
+    b = rng.integers(-7, 8, size=(inner, columns)).astype(dtype)
+    if dtype == np.float32:
+        a /= 3
+        b /= 5
+    expected = a @ b
+    tensors = (
+        _descriptor(2, "a", np.dtype(dtype).name, other=0),
+        _descriptor(2, "b", np.dtype(dtype).name, other=0),
+        _descriptor(2, "out", np.dtype(dtype).name),
+    )
+    raw = interpret(_matrix_tiles, _dot, tensors)
+    raw_out = np.empty_like(expected)
+    raw(a, b, raw_out)
+    _check(raw_out, expected)
+    handle = interpret(_matrix_tiles, _dot, tensors, backend=backend, trace=True)
+    assert handle.program.metadata["linalg_decomposed"]
+    operations = handle.program.blocks[0].operations
+    assert any(op.opcode == "shape.dim" and op.attrs["dim"] == -1 for op in operations)
+    assert not any(op.opcode == "linalg.dot" for op in operations)
+    backing = np.full(expected.size + 2, -731, dtype=dtype)
+    out = backing[1:-1].reshape(expected.shape)
+    result = handle(a, b, out)
+    _check(out, expected)
+    np.testing.assert_array_equal(backing[[0, -1]], np.array([-731, -731], dtype=dtype))
+    stores = [event for event in result.trace if event.opcode == "mem.store"]
+    assert len(stores) == rows * columns
+    assert {event.lane for event in stores} == set(np.ndindex(expected.shape))
+    for event in stores:
+        mask = np.asarray(event.mask["value"])
+        assert mask.sum() == 1
+        assert mask[event.lane]
+    repeated = handle(a, b, np.full_like(expected, -731))
+    assert result.trace == repeated.trace
+
+
+@pytest.mark.parametrize("backend", ("cuda", "triton"))
+@pytest.mark.parametrize("dtype", (np.float32, np.int32))
+@pytest.mark.parametrize("inner", (1, 3, 7))
+def test_untiled_non_square_dot_executes_every_output_lane(backend, dtype, inner):
+    a = (np.arange(3 * inner).reshape(3, inner) - 4).astype(dtype)
+    b = (np.arange(inner * 2).reshape(inner, 2) + 2).astype(dtype)
+    out = np.full((3, 2), -731, dtype=dtype)
+    handle = interpret(
+        _whole_matrices,
+        _dot,
+        tuple(_descriptor(2, name, np.dtype(dtype).name) for name in ("a", "b", "out")),
+        backend=backend,
+    )
+    handle(a, b, out)
+    _check(out, a @ b)
+
+
+@pytest.mark.parametrize("backend", ("cuda", "triton"))
+@pytest.mark.parametrize("arrangement", (_transpose_tiles, _whole_transpose))
+@pytest.mark.parametrize("dtype", (np.float32, np.int32))
+def test_non_square_transpose_matches_numpy_after_decomposition(
+    backend, arrangement, dtype
+):
+    x = np.arange(6, dtype=dtype).reshape(3, 2)
+    out = np.full((2, 3), -731, dtype=dtype)
+    handle = interpret(
+        arrangement,
+        _transpose,
+        (
+            _descriptor(2, "x", np.dtype(dtype).name),
+            _descriptor(2, "out", np.dtype(dtype).name),
+        ),
+        backend=backend,
+    )
+    handle(x, out)
+    _check(out, x.T)
+
+
+@pytest.mark.parametrize("backend", ("cuda", "triton"))
+@pytest.mark.parametrize("shape", ((7, 4, 3), (3, 5, 2)))
+def test_multi_program_dot_decomposition_is_rejected_without_partial_writes(
+    backend, shape
+):
+    rows, inner, columns = shape
+    out = np.full((rows, columns), -731, dtype=np.float32)
+    handle = interpret(
+        _matrix_tiles,
+        _dot,
+        (
+            _descriptor(2, "a", other=0),
+            _descriptor(2, "b", other=0),
+            _descriptor(2, "out"),
+        ),
+        backend=backend,
+    )
+    with pytest.raises(UnsupportedOperationError, match="multiple arranged programs"):
+        handle(
+            np.ones((rows, inner), dtype=np.float32),
+            np.ones((inner, columns), dtype=np.float32),
+            out,
         )
-    assert backend in str(caught.value)
-    assert "invalid SSA" in str(caught.value)
-    assert "undefined values: k" in str(caught.value)
-    assert "entry:5:scf.for" in str(caught.value)
+    np.testing.assert_array_equal(out, np.full(out.shape, -731, dtype=np.float32))

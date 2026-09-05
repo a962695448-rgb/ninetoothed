@@ -163,7 +163,7 @@ show its latest observed snapshot. ``quit``/``q`` raises ``DebuggerQuit``.
 An empty command steps; an exhausted scripted command stream continues.
 
 ``debugger.inspect(name)`` returns the latest observed snapshot. The ``values``
-cache resets for each program ID; it does not claim that a previously observed
+cache resets for each program ID and scalar output lane; it does not claim that a previously observed
 region-local name remains in scope. Dynamic watch names are requested from the
 execution engine at each event. Avoid trace filters during full debugging if
 all intermediate definitions should remain observable.
@@ -231,16 +231,25 @@ Current boundaries
 The basic subset includes arithmetic, comparison, cast, selection, broadcasting,
 masked memory, sum/max/min reductions, structured control flow and program IDs.
 Direct ``linalg.dot``/``linalg.matmul`` and the exp/max/sum composition used for
-softmax are also implemented. Scalar-lane matmul/transpose decompositions emitted
-by some pass configurations require a different execution domain and currently
-raise an explicit unsupported error; they are never silently run as one tile
-value. Atomics, random-number operations, jagged layouts and arbitrary external
-calls are not part of the validated subset.
+softmax are also implemented. Scalar matmul/transpose decompositions execute the
+actual SSA operations and region loops once per valid rank-2 output lane. This
+supports one output store and a single logical program, either a whole untiled
+matrix or one arranged tile with masked tails. The ``TraceEvent.lane`` field
+identifies the output coordinate; normal vector execution has ``lane=None``.
+Inactive output lanes are never executed or written. This is a diagnostic CPU
+path, not a fast matrix multiplication implementation.
 
-Some tiled matmul cases also fail the existing backend pass verifier before
-execution (for example, an undefined reduction symbol). The high-level API
-reports this as an invalid backend SSA error with the original verification
-cause. Such a failure is not counted as a successful optimized matmul test.
+Multi-program tiled scalar decompositions and combinations with other output
+stores remain explicitly unsupported, because their global-versus-local lane
+domain must first be defined. Direct/undecomposed linalg operations retain their
+normal vector semantics. Atomics, random-number operations, jagged layouts and
+arbitrary external calls are not part of the validated subset.
+
+The decomposition pass now derives a fixed or compound reduction extent through
+``shape.dim(lhs, -1)`` from the arranged operand, instead of referring to an
+undefined fallback ``k`` symbol. The symbolic-K path is preserved. Invalid SSA
+from any pipeline still reports the original verification cause, with no
+fallback to the frontend program.
 
 CPU tests cannot establish agreement with A100 hardware or measure GPU speed.
 That requires the separate real-GPU differential run on matching kernels,

@@ -12,6 +12,7 @@ import pytest
 from ninetoothed import Tensor, interpret
 from ninetoothed.interpreter import interpret_program
 from ninetoothed.interpreter.debugger import (
+    StepDebugger,
     check_passes,
     compare_programs,
     export_reproducer,
@@ -244,3 +245,76 @@ def test_reproducer_rejects_object_arrays_without_pickle(tmp_path):
             tmp_path / "object", kernel.program, inputs, tensors=kernel.tensors
         )
     assert not (tmp_path / "object" / "inputs.npz").exists()
+
+
+def _dot_arrangement(a, b, out):
+    return a.tile((4, 4)), b.tile((4, 4)), out.tile((4, 4))
+
+
+def _dot_application(a, b, out):
+    out = a @ b  # noqa: F841
+
+
+def _decomposed_dot():
+    return interpret(
+        _dot_arrangement,
+        _dot_application,
+        (
+            Tensor(2, name="a", dtype="float32", other=0),
+            Tensor(2, name="b", dtype="float32", other=0),
+            Tensor(2, name="out", dtype="float32"),
+        ),
+        backend="triton",
+    )
+
+
+def _dot_inputs():
+    return {
+        "a": np.arange(9, dtype=np.float32).reshape(3, 3),
+        "b": np.arange(6, dtype=np.float32).reshape(3, 2),
+        "out": np.full((3, 2), -731, dtype=np.float32),
+    }
+
+
+def test_decomposed_dot_difference_identifies_the_output_lane():
+    kernel = _decomposed_dot()
+    block = kernel.program.blocks[0]
+    operations = tuple(
+        replace(operation, attrs=dict(operation.attrs, value=1.0))
+        if operation.opcode == "arith.constant"
+        and operation.results[0].type.dtype == "float32"
+        and operation.attrs["value"] == 0.0
+        else operation
+        for operation in block.operations
+    )
+    candidate = replace(kernel.program, blocks=(replace(block, operations=operations),))
+    comparison = compare_programs(
+        kernel.program, candidate, _dot_inputs(), tensors=kernel.tensors
+    )
+    assert not comparison.equal
+    assert comparison.traces_aligned
+    assert comparison.first_operation.opcode == "arith.constant"
+    assert comparison.first_operation.program_id == (0, 0, 0)
+    assert comparison.first_operation.lane == (0, 0)
+
+
+def test_step_debugger_discards_values_from_the_previous_output_lane():
+    kernel = _decomposed_dot()
+    debugger = StepDebugger(commands=(), stop_on_entry=False, output=lambda _line: None)
+    inspected_transition = []
+
+    def callback(event):
+        debugger(event)
+        if event.opcode == "index.offset" and event.lane == (0, 1):
+            with pytest.raises(KeyError):
+                debugger.inspect("%acc_iter")
+            inspected_transition.append(event.lane)
+
+    inputs = _dot_inputs()
+    result = interpret_program(
+        kernel.program, inputs, tensors=kernel.tensors, callback=callback
+    )
+    assert inspected_transition
+    np.testing.assert_allclose(
+        result.outputs["out"], inputs["a"] @ inputs["b"], rtol=1e-3, atol=1e-3
+    )

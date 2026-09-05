@@ -87,10 +87,10 @@ class StepDebugger:
         self._stepping = False
 
     def __call__(self, event):
-        if (
-            self.last_event is not None
-            and self.last_event.program_id != event.program_id
-        ):
+        if self.last_event is not None and (
+            self.last_event.program_id,
+            self.last_event.lane,
+        ) != (event.program_id, event.lane):
             self.values.clear()
         self.last_event = event
         self.events_seen += 1
@@ -107,7 +107,7 @@ class StepDebugger:
             return
         self.pauses.append(event)
         self.output(
-            f"paused {event.program_id} {event.location} iteration={event.iteration}"
+            f"paused {event.program_id} {event.location} lane={event.lane} iteration={event.iteration}"
         )
         for name in self._watch:
             if name in self.values:
@@ -160,6 +160,7 @@ class OperationDifference:
     opcode: str
     result_name: str
     iteration: tuple
+    lane: tuple | None = None
 
 
 @dataclass(frozen=True)
@@ -275,7 +276,13 @@ def compare_programs(
         for left, right in zip(first.trace, second.trace):
 
             def key(event):
-                return (event.program_id, event.location, event.opcode, event.iteration)
+                return (
+                    event.program_id,
+                    event.location,
+                    event.opcode,
+                    event.iteration,
+                    event.lane,
+                )
 
             if key(left) != key(right):
                 aligned = False
@@ -294,6 +301,7 @@ def compare_programs(
                         left.opcode,
                         name,
                         left.iteration,
+                        left.lane,
                     )
                     break
             if first_operation is not None:

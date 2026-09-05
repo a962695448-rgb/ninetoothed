@@ -42,6 +42,9 @@ def main():
     started = time.perf_counter()
     exit_code = 2
     try:
+        import numpy
+        import sympy
+
         from tests.test_interpreter_gpu import (
             GPU_CASES,
             SEED,
@@ -51,6 +54,8 @@ def main():
 
         torch, triton = require_gpu(args.device)
         report.update(
+            numpy_version=numpy.__version__,
+            sympy_version=sympy.__version__,
             torch_version=torch.__version__,
             triton_version=triton.__version__,
             torch_cuda_version=torch.version.cuda,

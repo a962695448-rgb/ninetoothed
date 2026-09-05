@@ -76,6 +76,7 @@ class TraceEvent:
     watched: dict | None = None
     inputs: dict | None = None
     mask: dict | None = None
+    lane: tuple | None = None
 
 
 @dataclass(frozen=True)
@@ -183,6 +184,13 @@ def _program_shapes(specs, symbols):
 def _local_program_index(shape, master_shape, flat_index):
     if not shape or math.prod(shape) <= 1:
         return 0
+    # Layouts may squeeze/insert singleton program axes, e.g. row reduction
+    # x.tile((1, K)) has domain (rows, 1), while out.tile((1,)) has (rows,).
+    # Removing only size-one axes preserves the flattened coordinate order.
+    if tuple(size for size in shape if size != 1) == tuple(
+        size for size in master_shape if size != 1
+    ):
+        return flat_index
     master_coords = np.unravel_index(flat_index, master_shape)
     if len(shape) > len(master_shape):
         raise ValueError("Input has more program dimensions than the launch domain.")
@@ -254,6 +262,35 @@ class _Execution:
         self.program_id = (0, 0, 0)
         self.iteration = ()
         self.location = "entry"
+        self.lane = None
+        decomposed_stores = tuple(
+            (index, op)
+            for index, op in enumerate(program.blocks[0].operations)
+            if op.opcode == "mem.store"
+            and op.attrs.get("decomposition") in {"matmul", "transpose"}
+        )
+        self.scalar_output = None
+        if decomposed_stores:
+            outputs = {op.operands[1] for _index, op in decomposed_stores}
+            if len(outputs) != 1 or len(decomposed_stores) != 1:
+                raise UnsupportedOperationError(
+                    "Scalar decomposition requires exactly one output store."
+                )
+            if any(
+                op.opcode == "mem.store"
+                and op.attrs.get("decomposition") not in {"matmul", "transpose"}
+                for op in program.blocks[0].operations
+            ):
+                raise UnsupportedOperationError(
+                    "Scalar decomposition mixed with other output stores is not supported."
+                )
+            index, operation = decomposed_stores[0]
+            if math.prod(self.grid) != 1:
+                raise UnsupportedOperationError(
+                    f"entry:{index}:mem.store: scalar {operation.attrs['decomposition']} decomposition "
+                    "does not support multiple arranged programs; use a single program or preserve linalg."
+                )
+            self.scalar_output = operation.operands[1]
 
     def run(self):
         last_env = dict(self.symbols)
@@ -280,8 +317,24 @@ class _Execution:
                     env[value.name] = np.asarray(
                         actual, dtype=numpy_dtype(value.type.dtype)
                     )
-            self.block(self.program.blocks[0], env, "entry")
-            last_env = env
+            if self.scalar_output is None:
+                self.block(self.program.blocks[0], env, "entry")
+                last_env = env
+            else:
+                target = env[self.scalar_output]
+                if not isinstance(target, TensorRef) or len(target.shape) != 2:
+                    raise UnsupportedOperationError(
+                        "Scalar matmul/transpose decomposition requires a rank-2 tensor output."
+                    )
+                _coordinates, valid = target._access()
+                for lane in np.ndindex(target.shape):
+                    if not valid[lane]:
+                        continue
+                    self.lane = lane
+                    lane_env = dict(env)
+                    self.block(self.program.blocks[0], lane_env, "entry")
+                    last_env = lane_env
+                self.lane = None
         outputs = {}
         for output in self.program.outputs:
             if output.name in self.inputs:
@@ -382,6 +435,13 @@ class _Execution:
                         selected = np.zeros(valid.shape, dtype=bool)
                         selected[indices] = True
                         valid = valid & selected
+                    if self.lane is not None and op.attrs.get("decomposition") in {
+                        "matmul",
+                        "transpose",
+                    }:
+                        selected = np.zeros(valid.shape, dtype=bool)
+                        selected[self.lane] = True
+                        valid = valid & selected
             else:
                 raise ValueError("Memory trace requires a checked pointer/tensor.")
             mask = _snapshot(np.asarray(valid, dtype=bool))
@@ -394,7 +454,17 @@ class _Execution:
         if op.opcode == "mem.store":
             destination = env[op.operands[1]]
             if isinstance(destination, TensorRef):
-                values[op.operands[1]] = _snapshot(destination)
+                if self.lane is not None and op.attrs.get("decomposition") in {
+                    "matmul",
+                    "transpose",
+                }:
+                    coordinates, _valid = destination._access()
+                    stored = destination.array[
+                        tuple(coordinate[self.lane] for coordinate in coordinates)
+                    ]
+                    values[op.operands[1]] = _snapshot(stored)
+                else:
+                    values[op.operands[1]] = _snapshot(destination)
         watch = tuple(
             dict.fromkeys((*self.watch, *getattr(self.callback, "watch_symbols", ())))
         )
@@ -408,6 +478,7 @@ class _Execution:
             watched,
             input_snapshots,
             mask_snapshot,
+            self.lane,
         )
         if self.tracing:
             self.events.append(event)
@@ -494,6 +565,13 @@ class _Execution:
             else:
                 if not isinstance(target, (Pointer, TensorRef)):
                     raise ValueError("store requires a checked destination.")
+                if self.lane is not None and op.attrs.get("decomposition") in {
+                    "matmul",
+                    "transpose",
+                }:
+                    selected = np.zeros(target.shape, dtype=bool)
+                    selected[self.lane] = True
+                    mask = np.asarray(mask, dtype=bool) & selected
                 target.write(materialize(value), mask)
             return None
         if code == "tensor.extract":
@@ -525,10 +603,13 @@ class _Execution:
             return math.prod(target.shape[dim + 1 :])
         if code == "index.offset":
             if op.attrs.get("decomposition") in {"matmul", "transpose"}:
-                raise UnsupportedOperationError(
-                    f"Scalar {op.attrs['decomposition']} decomposition at {location}, program {self.program_id}, "
-                    "requires a scalar-lane execution domain not supported by this interpreter."
-                )
+                if self.lane is None or not isinstance(args[0], TensorRef):
+                    raise UnsupportedOperationError(
+                        f"Scalar {op.attrs['decomposition']} decomposition at {location}, program {self.program_id}, "
+                        "requires an enclosing supported scalar-lane output domain."
+                    )
+                coordinates, _mask = args[0]._access()
+                return coordinates[int(op.attrs.get("dim", 0))][self.lane]
             return self._offset(args[0], op)
         if code == "tensor.cast":
             dtype = op.attrs.get("dtype", op.results[0].type.dtype)

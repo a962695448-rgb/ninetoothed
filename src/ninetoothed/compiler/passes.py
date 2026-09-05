@@ -1132,9 +1132,28 @@ def _decompose_matmul_store(
     product, temp_index = _fresh_value(existing_names, temp_index, scalar_type)
     acc_next, temp_index = _fresh_value(existing_names, temp_index, scalar_type)
     acc_result, temp_index = _fresh_value(existing_names, temp_index, scalar_type)
+    # Fixed/compound K extents are not SSA symbols. Obtain the real arranged
+    # operand extent instead of introducing an undefined fallback name `k`.
+    lhs_type = value_types.get(lhs)
+    k_extent = None if lhs_type is None else _shape_dim(lhs_type.shape, -1)
+    bound_operations = ()
+    k_operand = k
+    if k_extent is not None and not str(k_extent).isidentifier():
+        bound, temp_index = _fresh_value(
+            existing_names, temp_index, ssa.Type(kind="index", dtype="int64")
+        )
+        bound_operations = (
+            ssa.Operation(
+                opcode="shape.dim",
+                operands=(lhs,),
+                results=(bound,),
+                attrs={"dim": -1},
+            ),
+        )
+        k_operand = bound.name
     loop = ssa.Operation(
         opcode="scf.for",
-        operands=(zero.name, k, one.name, acc_init.name),
+        operands=(zero.name, k_operand, one.name, acc_init.name),
         results=(acc_result,),
         attrs={
             "induction": kk.name,
@@ -1148,7 +1167,7 @@ def _decompose_matmul_store(
             "decomposition": "matmul",
             "m": m,
             "n": n,
-            "k": k,
+            "k": str(k_extent) if k_extent is not None else k,
         },
         regions=(
             ssa.Block(
@@ -1214,6 +1233,7 @@ def _decompose_matmul_store(
                 results=(acc_init,),
                 attrs={"value": 0.0, "decomposition": "matmul"},
             ),
+            *bound_operations,
             loop,
             ssa.Operation(
                 opcode="mem.store",

@@ -551,7 +551,7 @@ def test_num_programs_rejects_invalid_axis_with_operation_location(axis):
 
 
 @pytest.mark.parametrize("decomposition", ("matmul", "transpose"))
-def test_scalar_decomposition_is_rejected_without_silently_using_the_first_lane(
+def test_isolated_decomposed_offset_without_output_store_is_rejected(
     decomposition,
 ):
     x = _value("x", (2, 2))
