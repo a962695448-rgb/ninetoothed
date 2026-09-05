@@ -1,6 +1,8 @@
 """Required CPU/real-Triton differential checks; missing GPU is not a skip."""
 
+import ast
 import hashlib
+import operator
 from dataclasses import dataclass, replace
 
 import numpy as np
@@ -26,6 +28,14 @@ def vector_add(x, y, out):
 
 def broadcast_arrangement(x, bias, out):
     return x.tile((1, 256)), bias.tile((256,)), out.tile((1, 256))
+
+
+def row_bias_arrangement(x, bias, out):
+    return x.tile((1, 256)), bias.tile((1, 256)), out.tile((1, 256))
+
+
+def column_bias_arrangement(x, bias, out):
+    return x.tile((1, 256)), bias.tile((1, 1)), out.tile((1, 256))
 
 
 def broadcast_add(x, bias, out):
@@ -79,6 +89,7 @@ class GPUCase:
     dtype: str = "float32"
     size: int = 1031
     positive: bool = True
+    broadcast_mode: str = "vector"
 
 
 GPU_CASES = (
@@ -86,6 +97,10 @@ GPU_CASES = (
     GPUCase("masked_float32_tail", "masked_tail"),
     GPUCase("masked_int32_tail", "masked_tail", dtype="int32"),
     GPUCase("broadcast_float32_tail", "broadcast"),
+    GPUCase("broadcast_row_matrix_float32_tail", "broadcast", broadcast_mode="row"),
+    GPUCase(
+        "broadcast_column_matrix_float32_tail", "broadcast", broadcast_mode="column"
+    ),
     GPUCase("row_reduction_float32", "row_reduction"),
     GPUCase("row_reduction_int32", "row_reduction", dtype="int32"),
     GPUCase("comparison_bool_exact", "comparison", dtype="bool"),
@@ -138,11 +153,21 @@ def case_inputs(case):
         )
     if case.category == "broadcast":
         x = rng.normal(size=(7, 257)).astype(np.float32)
-        bias = rng.normal(size=257).astype(np.float32)
+        bias_shapes = {"vector": (257,), "row": (1, 257), "column": (7, 1)}
+        bias = rng.normal(size=bias_shapes[case.broadcast_mode]).astype(np.float32)
+        arrangement = {
+            "vector": broadcast_arrangement,
+            "row": row_bias_arrangement,
+            "column": column_bias_arrangement,
+        }[case.broadcast_mode]
         return (
-            broadcast_arrangement,
+            arrangement,
             broadcast_add,
-            (_descriptor("x", 2), _descriptor("bias", 1), _descriptor("out", 2)),
+            (
+                _descriptor("x", 2),
+                _descriptor("bias", bias.ndim),
+                _descriptor("out", 2),
+            ),
             {"x": x, "bias": bias},
             x + bias,
         )
@@ -305,6 +330,13 @@ def run_gpu_case(case, torch, device_index=0):
     launch(**gpu_inputs)
     torch.cuda.synchronize(device)
     actual = gpu_inputs["out"].cpu().numpy()
+    if case.category == "broadcast":
+        for row in range(expected.shape[0]):
+            _assert_equal(
+                actual[row],
+                expected[row],
+                f"GPU broadcast row {row}, including the final one-element tile",
+            )
     _assert_equal(actual, raw_inputs["out"], "actual Triton GPU versus frontend SSA")
     _assert_equal(
         actual, interpreted.outputs["out"], "actual Triton GPU versus emitted SSA"
@@ -350,3 +382,200 @@ def gpu_runtime():
 def test_cpu_interpreter_matches_actual_triton_gpu(case, gpu_runtime):
     torch, _triton = gpu_runtime
     run_gpu_case(case, torch)
+
+
+def _compile_case(case):
+    arrangement, application, tensors, inputs, expected = case_inputs(case)
+    return (
+        DEFAULT_COMPILER.compile(
+            CompileRequest(
+                arrangement=arrangement,
+                application=application,
+                tensors=tensors,
+                backend="triton",
+                kernel_name=f"gpu_validation_{case.name}",
+                num_warps=4,
+                max_num_configs=1,
+            )
+        ),
+        inputs,
+        expected,
+    )
+
+
+@pytest.mark.parametrize(
+    "case",
+    tuple(case for case in GPU_CASES if case.category == "broadcast"),
+    ids=lambda case: case.name,
+)
+def test_broadcast_gpu_fixtures_match_numpy_before_and_after_lowering_on_cpu(case):
+    """Verify all bias layouts even when CUDA and Triton are unavailable."""
+    arrangement, application, tensors, inputs, expected = case_inputs(case)
+    compilation, _, _ = _compile_case(case)
+    lowered = _program_from_metadata(compilation.artifact.metadata["ssa"])
+    snapshots = {name: value.copy() for name, value in inputs.items()}
+    for label, program in (
+        ("frontend SSA", interpret(arrangement, application, tensors).program),
+        ("emitted target SSA", lowered),
+    ):
+        arguments = {
+            **{name: value.copy() for name, value in inputs.items()},
+            "out": np.full_like(expected, -123),
+        }
+        result = interpret_program(
+            program,
+            arguments,
+            tensors=compilation.kernel.tensors,
+            symbols=compilation.kernel.metadata.get("meta_defaults", {}),
+        )
+        _assert_equal(result.outputs["out"], expected, label)
+        for name, snapshot in snapshots.items():
+            np.testing.assert_array_equal(arguments[name], snapshot)
+
+
+def _jit_function(source):
+    tree = ast.parse(source)
+    return next(
+        node
+        for node in tree.body
+        if isinstance(node, ast.FunctionDef)
+        and any(
+            isinstance(decorator, ast.Attribute)
+            and isinstance(decorator.value, ast.Name)
+            and decorator.value.id == "triton"
+            and decorator.attr == "jit"
+            for decorator in node.decorator_list
+        )
+    )
+
+
+@pytest.mark.parametrize("case", GPU_CASES[:3], ids=lambda case: case.name)
+def test_generated_stride_guards_use_binary_boolops_supported_by_triton_31(case):
+    compilation, _inputs, _expected = _compile_case(case)
+    kernel = _jit_function(compilation.artifact.primary_source)
+    guards = [node for node in ast.walk(kernel) if isinstance(node, ast.BoolOp)]
+    assert guards, "The contiguous-stride fast-path guard unexpectedly disappeared."
+    offenders = [
+        (node.lineno, ast.unparse(node)) for node in guards if len(node.values) > 2
+    ]
+    assert not offenders, f"Triton 3.1 does not support chained BoolOp: {offenders}"
+
+
+def _numeric_source_expression(node, values):
+    """Evaluate only emitted address/mask arithmetic, with no Python execution."""
+    binary = {
+        ast.Add: operator.add,
+        ast.Sub: operator.sub,
+        ast.Mult: operator.mul,
+        ast.FloorDiv: operator.floordiv,
+        ast.Mod: operator.mod,
+        ast.BitAnd: operator.and_,
+        ast.BitOr: operator.or_,
+    }
+    comparison = {
+        ast.Eq: operator.eq,
+        ast.NotEq: operator.ne,
+        ast.Lt: operator.lt,
+        ast.LtE: operator.le,
+        ast.Gt: operator.gt,
+        ast.GtE: operator.ge,
+    }
+    if isinstance(node, ast.Constant):
+        return node.value
+    if isinstance(node, ast.Name):
+        return values[node.id]
+    if isinstance(node, ast.BinOp) and type(node.op) in binary:
+        return binary[type(node.op)](
+            _numeric_source_expression(node.left, values),
+            _numeric_source_expression(node.right, values),
+        )
+    if isinstance(node, ast.UnaryOp):
+        function = {
+            ast.USub: operator.neg,
+            ast.UAdd: operator.pos,
+            ast.Invert: operator.invert,
+        }[type(node.op)]
+        return function(_numeric_source_expression(node.operand, values))
+    if isinstance(node, ast.Compare):
+        left = _numeric_source_expression(node.left, values)
+        result = True
+        for operation, child in zip(node.ops, node.comparators):
+            right = _numeric_source_expression(child, values)
+            result = np.logical_and(result, comparison[type(operation)](left, right))
+            left = right
+        return result
+    raise AssertionError(f"Unsupported generated address expression: {ast.dump(node)}")
+
+
+@pytest.mark.parametrize(
+    "case",
+    tuple(case for case in GPU_CASES if case.category == "broadcast"),
+    ids=lambda case: case.name,
+)
+@pytest.mark.parametrize("tensor_name", ("x", "bias"))
+def test_generated_broadcast_input_addresses_and_masks_match_numpy_layout(
+    case, tensor_name
+):
+    compilation, inputs, expected = _compile_case(case)
+    inputs = dict(inputs, out=np.empty_like(expected))
+    kernel = _jit_function(compilation.artifact.primary_source)
+    loads = [
+        node
+        for node in ast.walk(kernel)
+        if isinstance(node, ast.Call)
+        and isinstance(node.func, ast.Attribute)
+        and isinstance(node.func.value, ast.Name)
+        and node.func.value.id == "tl"
+        and node.func.attr == "load"
+        and any(
+            isinstance(child, ast.Name) and child.id == tensor_name
+            for child in ast.walk(node.args[0])
+        )
+    ]
+    assert loads, f"No generated {tensor_name} load found."
+    symbols = {}
+    for binding in compilation.launch_abi.kernel_args:
+        if binding.source not in inputs:
+            continue
+        value = inputs[binding.source]
+        if binding.kind == "shape":
+            symbols[binding.name] = value.shape[binding.dim]
+        elif binding.kind == "stride":
+            symbols[binding.name] = value.strides[binding.dim] // value.itemsize
+        elif binding.kind == "tensor":
+            symbols[binding.name] = 0  # Address relative to each allocation.
+    padded_columns = 512
+    symbols["index"] = np.arange(expected.shape[0] * padded_columns, dtype=np.int64)
+    symbols["mask"] = np.ones(symbols["index"].shape, dtype=bool)
+    if tensor_name == "x":
+        rows, columns = np.divmod(symbols["index"], padded_columns)
+        expected_addresses = rows * expected.shape[1] + columns
+        expected_mask = columns < expected.shape[1]
+        valid_lanes_per_row = expected.shape[1]
+    elif case.broadcast_mode == "column":
+        expected_addresses = symbols["index"] // padded_columns
+        # The scalar bias is valid even on padded output lanes; output stores
+        # have their own tail mask and the real-GPU test checks storage guards.
+        expected_mask = np.ones(symbols["index"].shape, dtype=bool)
+        valid_lanes_per_row = padded_columns
+    else:
+        expected_addresses = symbols["index"] % padded_columns
+        expected_mask = expected_addresses < expected.shape[1]
+        valid_lanes_per_row = expected.shape[1]
+    for load in loads:
+        address = _numeric_source_expression(load.args[0], symbols)
+        mask_node = next(
+            keyword.value for keyword in load.keywords if keyword.arg == "mask"
+        )
+        actual_mask = np.asarray(
+            _numeric_source_expression(mask_node, symbols), dtype=bool
+        )
+        np.testing.assert_array_equal(actual_mask, expected_mask)
+        np.testing.assert_array_equal(
+            address[expected_mask], expected_addresses[expected_mask]
+        )
+        for row in range(expected.shape[0]):
+            row_slice = slice(row * padded_columns, (row + 1) * padded_columns)
+            assert actual_mask[row_slice].sum() == valid_lanes_per_row, (
+                f"{tensor_name} lanes missing in row {row}"
+            )

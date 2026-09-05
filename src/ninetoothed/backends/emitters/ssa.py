@@ -666,11 +666,16 @@ def _with_contiguous_1d_fast_path(
         layout_contiguous=True,
         vector_program=vector_program,
     )
-    predicate = (
-        " && ".join(f"({stride} == 1)" for stride in stride_params)
-        if target.c_style_syntax
-        else " and ".join(f"({stride} == 1)" for stride in stride_params)
-    )
+    conditions = tuple(f"({stride} == 1)" for stride in stride_params)
+    if target.c_style_syntax:
+        predicate = " && ".join(conditions)
+    else:
+        # Triton 3.0/3.1 accepts binary BoolOps but rejects a single `and`
+        # expression with three or more operands. Preserve short-circuit
+        # semantics while explicitly nesting the binary expressions.
+        predicate = conditions[0]
+        for condition in conditions[1:]:
+            predicate = f"({predicate} and {condition})"
 
     if target.c_style_syntax:
         return (
@@ -2075,7 +2080,7 @@ def _offset_from_template(
             info, shape, coords, level=level, dim=dim, ctx=ctx
         )
 
-    replacements = {"outer_index": ctx.outer_index_expr}
+    replacements = {"outer_index": _tensor_outer_index(info, ctx)}
     replacements.update(
         {f"value_{index}": coord for index, coord in enumerate(value_coords)}
     )
@@ -2932,7 +2937,7 @@ def _source_index_for_value(
         if len(value_coords) == len(shape)
         else _coords_from_linear(view_index, shape, ctx.target)
     )
-    replacements = {"outer_index": ctx.outer_index_expr}
+    replacements = {"outer_index": _tensor_outer_index(info, ctx)}
     replacements.update({f"value_{index}": coord for index, coord in enumerate(coords)})
     replacements.update(_jagged_extent_replacements(ctx))
 
@@ -3124,7 +3129,7 @@ def _mask_from_template_offsets(
 
     shape = tuple(str(dim) for dim in template.get("shape", ())) or ctx.output_axes
     coords = _coords_from_linear(view_index, shape, ctx.target)
-    replacements = {"outer_index": ctx.outer_index_expr}
+    replacements = {"outer_index": _tensor_outer_index(info, ctx)}
     replacements.update({f"value_{index}": coord for index, coord in enumerate(coords)})
     replacements.update(_jagged_extent_replacements(ctx))
     replacements.update(_jagged_runtime_replacements(template, replacements, ctx))
@@ -3220,7 +3225,7 @@ def _combined_mask(
                 if len(value_coords) == len(shape)
                 else _coords_from_linear(view_index, shape, target)
             )
-            replacements = {"outer_index": ctx.outer_index_expr}
+            replacements = {"outer_index": _tensor_outer_index(info, ctx)}
             replacements.update(
                 {f"value_{index}": coord for index, coord in enumerate(coords)}
             )
@@ -3259,6 +3264,35 @@ def _combined_mask(
     if len(masks) == 1:
         return masks[0]
     return " & ".join(f"({mask})" for mask in masks)
+
+
+def _tensor_outer_index(info: _TensorInfo | None, ctx: _EmitContext) -> str:
+    """Map a broadcast input's program domain before applying its access map.
+
+    Right-align the input domain with the output and zero singleton axes,
+    including axes whose size is only known at launch. Reusing the output's
+    flat index would advance a broadcast input's pointer and mask past its
+    storage. Addresses and masks must use the same local program coordinate.
+    """
+    output = ctx.tensor_infos.get(ctx.output)
+    if info is None or output is None or info.name == output.name:
+        return ctx.outer_index_expr
+    axes = tuple(info.shape)
+    output_axes = tuple(output.shape)
+    if not axes:
+        return "0"
+    if len(axes) > len(output_axes) or axes == output_axes:
+        return ctx.outer_index_expr
+    output_coords = _coords_from_linear(ctx.outer_index_expr, output_axes, ctx.target)
+    coords = tuple(
+        "0"
+        if _is_one_expr(axis)
+        else coordinate
+        if axis.isdecimal()
+        else f"({coordinate}) * (({axis}) != 1)"
+        for axis, coordinate in zip(axes, output_coords[-len(axes) :])
+    )
+    return _target_index_expr(ctx.target, _linearized_index(coords, axes))
 
 
 def _access_template(info: _TensorInfo | None, level: int) -> Mapping[str, Any] | None:
@@ -3839,12 +3873,12 @@ def _axis_offset_expr(
     index_expr = index if _valid_symbol(str(index)) else f"({index})"
 
     if dim == len(axes) - 1:
-        return _target_index_expr(target, f"({index_expr} % {axes[dim]})")
+        return _target_index_expr(target, f"({index_expr} % ({axes[dim]}))")
 
     stride = _product(axes[dim + 1 :])
     div = "/" if target.c_style_syntax else "//"
     base = f"({index_expr} {div} ({stride}))"
-    expr = base if dim == 0 else f"({base} % {axes[dim]})"
+    expr = base if dim == 0 else f"({base} % ({axes[dim]}))"
 
     return _target_index_expr(target, expr)
 
