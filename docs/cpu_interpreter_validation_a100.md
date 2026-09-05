@@ -1,8 +1,8 @@
 # CPU 参考解释器：NVIDIA A100 验证记录
 
-更新日期：2026-09-06（Asia/Shanghai）。冻结源码 **`b5a3206f8351e5a138d16ee13f6d6ef9c620044b`** 在实际 NVIDIA A100-SXM4-40GB 上完成 **14/14 真实 Triton GPU 差分**和 **180 passed 的解释器专项回归**，两次退出码均为 0。四个已结束运行的 manifest 均记录执行前后 HEAD 与该 SHA 一致、已跟踪文件无修改。
+更新日期：2026-09-06（Asia/Shanghai）。初轮源码 **`b5a3206f8351e5a138d16ee13f6d6ef9c620044b`** 的 A100 完整测试已结束：**16 failed、584 passed、2 skipped，2737.65 s，退出码 1**。随后提交 **`377daec6242864a920de43a55523ac3d5f582648`** 只修正 jagged 测试的输入构造与独立参考，A100 定向回归为 **16 passed、8.83 s、退出码 0**；该提交的新完整测试已启动，仍为 **RUNNING，没有最终结论**。
 
-**A100 完整仓库测试仍在运行，已收集 602 项，没有最终汇总。** 以下结果证明所列程序的硬件差分与专项范围，不表示全部原测试、整项目官方验收、上游合并或优秀学员评选已经完成。历史 RTX 4090 结果见 [4090 报告](cpu_interpreter_validation_4090.md)，验收对照见 [提交说明](cpu_interpreter_acceptance.md)。
+初轮 `b5a3206` 已完成的 **14/14 真实 Triton GPU 差分**和 **180 passed 解释器专项**仍是该源码上的有效 PASS 记录，不改写到 `377daec`，也不与定向 16 项或完整测试数字相加。以下结果不表示整项目官方验收、上游合并或优秀学员评选完成。历史 RTX 4090 结果见 [4090 报告](cpu_interpreter_validation_4090.md)，验收对照见 [提交说明](cpu_interpreter_acceptance.md)。
 
 ## 按运行保留结果
 
@@ -14,9 +14,30 @@
 | 修正 libcuda 路径后，同一 smoke | 1 passed，2.31 s；退出码 0 | [manifest](../results/a100_20260906/smoke-libcuda/manifest.json)、[日志](../results/a100_20260906/smoke-libcuda/validation.stdout.log) |
 | 独立真实 GPU 差分报告 | 14/14 PASS；8 个程序、9 类用例；退出码 0 | [manifest](../results/a100_20260906/gpu-report/manifest.json)、[GPU JSON](../results/a100_20260906/gpu-report/interpreter_gpu_validation.json) |
 | 解释器专项 | 180 passed，7.95 s；退出码 0 | [manifest](../results/a100_20260906/specialist/manifest.json)、[日志](../results/a100_20260906/specialist/validation.stdout.log)、[JUnit](../results/a100_20260906/specialist/junit.xml) |
-| 完整仓库测试 | 运行中；602 是收集数，不是通过数 | 完成后单独保存退出状态、完整日志、JUnit 与 coverage |
+| `b5a3206` 初轮完整仓库测试 | 16 failed、584 passed、2 skipped，2737.65 s；退出码 1 | [完整清单](../results/full_suite_a100_b5a3206/manifest.json)、[原文归档](../results/full_suite_a100_b5a3206/raw-full.tar.gz)、[说明](../results/full_suite_a100_b5a3206/README.md) |
+| `377daec` jagged 定向回归 | 原 16 个参数用例全部通过：16 passed，8.83 s；退出码 0 | [定向验证清单](../results/jagged_reference_recheck_a100_377daec/manifest.json)、[说明](../results/jagged_reference_recheck_a100_377daec/README.md) |
+| `377daec` 新完整仓库测试 | RUNNING；尚无最终退出状态与汇总 | 完成后单独归档，不用 16 项定向通过替代全量 |
 
-smoke 是 14 项 GPU 差分中的一个用例；180 项专项又包含这 14 项，以及应用、SSA、调试、逐默认 pass、回放和 Torch 适配测试。不能相加为 15、194 或 195 个独立用例。这里的时长是各次 pytest 汇总时长；外部 runner 计时还包含进程启动等开销，二者不能混用，也不是性能基准。
+smoke 是 14 项 GPU 差分中的一个用例；180 项专项又包含这 14 项，以及应用、SSA、调试、逐默认 pass、回放和 Torch 适配测试。初轮完整测试与这些专项重叠，新提交的 16 项又是 jagged 定向复验；各版本和范围均不能相加。这里的时长是各次 pytest 汇总时长；外部 runner 计时还包含进程启动等开销，二者不能混用，也不是性能基准。
+
+## 初轮 16 项失败与测试参考修复
+
+`b5a3206` 完整运行的 JUnit 为 602 条目、16 failures、0 errors、2 skipped，与 **584 + 16 + 2 = 602** 一致。原始 stdout/stderr、runner manifest、JUnit、coverage XML/HTML 均保留在 [raw-full.tar.gz](../results/full_suite_a100_b5a3206/raw-full.tar.gz)；原文字节数与 SHA-256 见 [完整清单](../results/full_suite_a100_b5a3206/manifest.json)，失败没有被后续定向通过覆盖。
+
+| 数量 | 原有参数范围 | 实际失败位置 |
+|---|---|---|
+| 8 | 两个 jagged 测试，`jagged_dim=1`，batch 数 2、3、7、16 | PyTorch 2.5 的参考转换 `to_padded_tensor` 抛出 `NotImplementedError: aten.to_padded_tensor.default` |
+| 8 | 同样两个测试，`jagged_dim=2`，同样 batch 参数 | 使用列表创建 jagged nested tensor 时抛出 RuntimeError，输入构造阶段即不支持所需 ragged 维度 |
+
+这 16 项是输入构造/参考计算失败，不是已经完成比较后的数值断言失败；仅凭初轮日志不能宣称 jagged 内核正确。初轮另有两项跨设备 skip，分别要求至少两张设备的 AOT 测试和至少两张 CUDA 设备的 Triton 上下文复用测试；单卡 A100 未验证这两个场景。
+
+修复提交 `377daec6242864a920de43a55523ac3d5f582648` **只修改 `tests/test_jagged.py`**：
+
+- 由原始 batch 显式拼接 packed values、累计 offsets，并传入 `jagged_dim` 构造 nested tensor，使两个 jagged 维度都能建立测试输入。
+- `to_padded_tensor` 的 dense 期望值在调用被测 kernel 前，由原始 batch 和 padding 独立填充，不再调用当前环境未实现的参考接口，也不依赖被测输出。
+- `expand` 预先生成完整 expected values 和 offsets 副本；运行后比较全部 values，并检查 offsets 未变，不再按被测结果的非零位置筛选比较。
+
+原有 16 个参数组合、比较容差、被测 kernel、`src/` 实现和依赖版本均保留。A100 定向结果为 **16 passed、8.83 s、退出码 0**，证明这些修正后的用例已完成数值比较；新版全量仍需等待最终结果。本次修复没有把 jagged 运行能力新增到 NumPy CPU 解释器，也不改变优化后 dot 等限制。
 
 ## 硬件与依赖
 
@@ -66,9 +87,9 @@ GPU JSON 的每条记录保存发射 SSA 的 SHA-256 和默认 Triton pass 列�
 
 原 GPU JSON 的 `limitations` 保留一条旧脚本静态模板句：`Results describe the reported GPU; they do not prove A100 validation.`。它不是硬件检测结果，也不是本次检测到非 A100 的结论：同一 JSON 的 `gpu_name`、`compute_capability`，加上 runtime 与 `nvidia-smi`，记录的都是真实 A100。为保持原文及 SHA-256 可核验，不修改该句。本报告据实际硬件字段确认上述用例在 A100 上运行，同时保留“专项通过不等于整项目官方验收”的边界。
 
-## 复现已完成的范围
+## 复现 `b5a3206` 已完成的专项范围
 
-在独立 checkout 中使用测试源码 `b5a3206f8351e5a138d16ee13f6d6ef9c620044b` 和上述依赖。以下是与 manifest 对应的可移植写法，替换的仅是机器相关路径；原始 argv 与环境变量以各运行 manifest 为准。不要在本次仍运行完整测试的 checkout 中切换源码或重复启动同一全量。
+在独立 checkout 中使用测试源码 `b5a3206f8351e5a138d16ee13f6d6ef9c620044b` 和上述依赖。以下是初轮专项 manifest 对应的可移植写法，替换的仅是机器相关路径；原始 argv 与环境变量以各运行 manifest 为准。正在运行的新版全量使用 `377daec`，不要在那个 checkout 中切回旧源码或重复启动全量。
 
 ```bash
 # 在对应 checkout 的仓库根目录，使用已准备的项目 Python 环境。
@@ -113,8 +134,17 @@ export LIBRARY_PATH="$TRITON_LIBCUDA_PATH"
 
 这些命令要求 CUDA 可见，并显式设置 `TRITON_INTERPRET=0`。若在同样缺少 unversioned 驱动链接的环境重建 `.driver-libs`，先确认真实 driver 文件为 ELF64，再以 `mkdir -p "$PROJECT_ROOT/.driver-libs"` 创建项目内目录，并执行 `ln -s /usr/lib/x86_64-linux-gnu/libcuda.so.550.127.05 "$PROJECT_ROOT/.driver-libs/libcuda.so"`；不同机器的真实驱动文件名可能不同，不能改用 toolkit stub。各命令退出状态、stdout/stderr 和源码前后检查应分别保存在新目录，避免覆盖原始证据。
 
-## 仍未完成的范围
+## 修复后定向复现与剩余范围
 
-完整 A100 套件仍在运行；收集 602 项不表示 602 项通过，最终失败、skip 和覆盖率须等进程结束后按实际输出记录。单卡环境不能证明双卡测试通过，4090 的 `5b37725` 完整结果也不能重标为本次 `b5a3206` 的 A100 全量结果。
+在独立的 `377daec6242864a920de43a55523ac3d5f582648` checkout 中复验 jagged 时，使用相同 A100 依赖与上述受控环境，令 `RUN_DIR` 指向本次新建的结果目录，然后运行：
+
+```bash
+python -m pytest --color=no --tb=short -ra -q tests/test_jagged.py \
+  --junitxml="$RUN_DIR/jagged.xml"
+```
+
+本次准确 argv、stdout/stderr、前后源码检查及退出状态见 [定向 manifest](../results/jagged_reference_recheck_a100_377daec/manifest.json)。这条命令只代表 jagged 子范围。
+
+初轮 `b5a3206` 的完整结果已经确定为失败；修复后的 `377daec` 完整 A100 套件仍为 RUNNING，尚无最终汇总。等待新版进程结束后再按实际输出记录失败、skip 和覆盖率。单卡环境不能证明双卡测试通过；4090 的 `5b37725` 完整结果、A100 的 `b5a3206` 专项结果和 `377daec` 的定向 16 项均不能替代新版全量。
 
 GPU runner **未包含优化后 dot/matmul**，多 program 分块标量分解仍有明确限制；softmax 通过不填补这一缺口。跨结构 pass 的 operation 来源追踪、真实历史缺陷演示等加分增强以及上游 PR/主分支合并仍按 [差距计划](excellence_gap_plan.md)推进。归档只确认对应源码、环境与范围内的真实结果。

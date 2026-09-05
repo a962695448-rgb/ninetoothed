@@ -10,3 +10,5 @@ interpreter_debug_replay_20260905/*.xml -text -whitespace
 interpreter_debug_replay_20260905/*.zip -text -whitespace
 full_suite_rtx4090_5b37725/*.gz -text -whitespace
 a100_20260906/** -text -whitespace
+full_suite_a100_b5a3206/** -text -whitespace
+jagged_reference_recheck_a100_377daec/** -text -whitespace

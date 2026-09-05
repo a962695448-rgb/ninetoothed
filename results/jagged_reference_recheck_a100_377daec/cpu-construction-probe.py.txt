@@ -1,0 +1,38 @@
+"""Record CPU-only jagged construction capabilities for the installed Torch."""
+
+from datetime import datetime, timezone
+import inspect
+import json
+from pathlib import Path
+import traceback
+
+import torch
+
+
+out = Path.home() / "infinitensor-2026/runs/jagged-construction-cpu-20260906.json"
+assert not out.exists(), "Do not replace an existing diagnosis"
+report = {"checked_at_utc": datetime.now(timezone.utc).isoformat(), "torch_version": torch.__version__, "scope": "CPU-only construction capability diagnosis", "from_jagged_signature": str(inspect.signature(torch.nested.nested_tensor_from_jagged)), "cases": []}
+for dim in [1, 2]:
+    shapes = [(2, 4), (3, 4)] if dim == 1 else [(4, 2), (4, 3)]
+    batches = [torch.arange(shape[0] * shape[1], dtype=torch.float32).reshape(shape) for shape in shapes]
+    expected = torch.cat(batches, dim=dim-1)
+    offsets = torch.tensor([0, 2, 5], dtype=torch.int64)
+    for method in ["from_jagged", "transpose_construct"]:
+        entry = {"jagged_dim": dim, "method": method}
+        try:
+            if method == "from_jagged":
+                nested = torch.nested.nested_tensor_from_jagged(expected, offsets, jagged_dim=dim)
+            elif dim == 1:
+                nested = torch.nested.nested_tensor(batches, layout=torch.jagged)
+            else:
+                nested = torch.nested.nested_tensor([batch.transpose(0, 1).contiguous() for batch in batches], layout=torch.jagged).transpose(1, 2)
+            torch.testing.assert_close(nested.values(), expected)
+            torch.testing.assert_close(nested.offsets(), offsets)
+            entry.update(status="PASS", shape=str(nested.shape), values_shape=list(nested.values().shape), values_stride=list(nested.values().stride()), nested_stride=[str(x) for x in nested.stride()])
+        except Exception as error:
+            entry.update(status="FAIL", error_type=type(error).__name__, error=str(error), traceback=traceback.format_exc())
+        report["cases"].append(entry)
+report["cuda_initialized"] = torch.cuda.is_initialized()
+assert not report["cuda_initialized"]
+out.write_text(json.dumps(report, indent=2) + "\n")
+print(json.dumps(report, indent=2))

@@ -1,0 +1,303 @@
+{
+  "status": "PASS",
+  "mode": "jagged",
+  "started_at_utc": "2026-09-05T18:01:34.486371+00:00",
+  "repo": "/home/vipuser/infinitensor-2026/ninetoothed",
+  "output_directory": "/home/vipuser/infinitensor-2026/runs/a100-recheck-20260905T180134Z/jagged",
+  "expected_sha": "377daec6242864a920de43a55523ac3d5f582648",
+  "python": "3.12.7 | packaged by Anaconda, Inc. | (main, Oct  4 2024, 13:27:36) [GCC 11.2.0]",
+  "python_executable": "/home/vipuser/infinitensor-2026/.venv/bin/python",
+  "os": "Linux",
+  "runner_sha256": "e94871e1ed8be4183bf5a1e0b5649ee67228ad2da42249f9ac82387c6b48ae63",
+  "environment_overrides": {
+    "PYTHONPATH": "/home/vipuser/infinitensor-2026/ninetoothed/src:/home/vipuser/infinitensor-2026/ninetoothed",
+    "PYTEST_DISABLE_PLUGIN_AUTOLOAD": "1",
+    "PYTHONUNBUFFERED": "1",
+    "TRITON_INTERPRET": "0"
+  },
+  "environment_unset": [
+    "PYTEST_ADDOPTS",
+    "PYTEST_PLUGINS",
+    "PYTEST_XDIST_WORKER",
+    "NINETOOTHED_BACKEND"
+  ],
+  "observed_environment": {
+    "CUDA_VISIBLE_DEVICES": null,
+    "CUDA_HOME": "/usr/local/cuda",
+    "CUDA_PATH": null,
+    "OMP_NUM_THREADS": "2",
+    "MKL_NUM_THREADS": null,
+    "TRITON_CACHE_DIR": null,
+    "NINETOOTHED_CACHE_DIR": null,
+    "MPLBACKEND": "Agg",
+    "TORCH_CUDA_ARCH_LIST": null,
+    "CC": null,
+    "CXX": null,
+    "TRITON_LIBCUDA_PATH": "/home/vipuser/infinitensor-2026/.driver-libs",
+    "LIBRARY_PATH": "/home/vipuser/infinitensor-2026/.driver-libs",
+    "LD_LIBRARY_PATH": null,
+    "PATH": "/home/vipuser/infinitensor-2026/.venv/bin:/usr/local/cuda/bin:/home/vipuser/miniconda3/bin:/usr/local/bin:/usr/bin:/bin"
+  },
+  "commands": [
+    {
+      "name": "before-head",
+      "argv": [
+        "git",
+        "rev-parse",
+        "HEAD"
+      ],
+      "cwd": "/home/vipuser/infinitensor-2026/ninetoothed",
+      "stdout": "before-head.stdout.log",
+      "stderr": "before-head.stderr.log",
+      "started_at_utc": "2026-09-05T18:01:34.486723+00:00",
+      "returncode": 0,
+      "pid": 12287,
+      "ended_at_utc": "2026-09-05T18:01:34.489936+00:00",
+      "elapsed_seconds": 0.003
+    },
+    {
+      "name": "before-status",
+      "argv": [
+        "git",
+        "status",
+        "--porcelain",
+        "--untracked-files=no"
+      ],
+      "cwd": "/home/vipuser/infinitensor-2026/ninetoothed",
+      "stdout": "before-status.stdout.log",
+      "stderr": "before-status.stderr.log",
+      "started_at_utc": "2026-09-05T18:01:34.490123+00:00",
+      "returncode": 0,
+      "pid": 12288,
+      "ended_at_utc": "2026-09-05T18:01:34.494205+00:00",
+      "elapsed_seconds": 0.004
+    },
+    {
+      "name": "environment",
+      "argv": [
+        "/home/vipuser/infinitensor-2026/.venv/bin/python",
+        "-c",
+        "\nimport importlib.metadata\nimport json\nimport platform\nimport sys\nimport torch\n\npackages = {}\nfor name in (\n    \"torch\", \"triton\", \"numpy\", \"sympy\", \"pytest\", \"pytest-cov\", \"coverage\",\n    \"tilelang\", \"matplotlib\", \"pandas\", \"jupyter\", \"jupytext\", \"nbconvert\",\n    \"ipykernel\", \"ninetoothed\",\n):\n    try:\n        packages[name] = importlib.metadata.version(name)\n    except importlib.metadata.PackageNotFoundError:\n        packages[name] = None\ndevices = []\navailable = torch.cuda.is_available()\nif available:\n    for index in range(torch.cuda.device_count()):\n        prop = torch.cuda.get_device_properties(index)\n        devices.append({\n            \"index\": index,\n            \"name\": prop.name,\n            \"compute_capability\": [prop.major, prop.minor],\n            \"total_memory_bytes\": prop.total_memory,\n            \"multiprocessor_count\": prop.multi_processor_count,\n        })\nprint(json.dumps({\n    \"python\": sys.version,\n    \"python_executable\": sys.executable,\n    \"platform\": {\"system\": platform.system(), \"machine\": platform.machine()},\n    \"packages\": packages,\n    \"torch_import_version\": torch.__version__,\n    \"torch_cuda_build_version\": torch.version.cuda,\n    \"torch_cuda_available\": available,\n    \"torch_float8_e5m2_attribute\": hasattr(torch, \"float8_e5m2\"),\n    \"cuda_devices\": devices,\n}, indent=2))\n"
+      ],
+      "cwd": "/home/vipuser/infinitensor-2026/ninetoothed",
+      "stdout": "environment.stdout.log",
+      "stderr": "environment.stderr.log",
+      "started_at_utc": "2026-09-05T18:01:34.495258+00:00",
+      "returncode": 0,
+      "pid": 12289,
+      "ended_at_utc": "2026-09-05T18:01:35.838217+00:00",
+      "elapsed_seconds": 1.343
+    },
+    {
+      "name": "nvidia-smi",
+      "argv": [
+        "nvidia-smi",
+        "--query-gpu=index,name,memory.total,driver_version,mig.mode.current",
+        "--format=csv,noheader,nounits"
+      ],
+      "cwd": "/home/vipuser/infinitensor-2026/ninetoothed",
+      "stdout": "nvidia-smi.stdout.log",
+      "stderr": "nvidia-smi.stderr.log",
+      "started_at_utc": "2026-09-05T18:01:35.838688+00:00",
+      "returncode": 0,
+      "pid": 12295,
+      "ended_at_utc": "2026-09-05T18:01:35.858284+00:00",
+      "elapsed_seconds": 0.02
+    },
+    {
+      "name": "validation",
+      "argv": [
+        "/home/vipuser/infinitensor-2026/.venv/bin/python",
+        "-m",
+        "pytest",
+        "--color=no",
+        "--tb=short",
+        "-ra",
+        "-q",
+        "tests/test_jagged.py",
+        "--junitxml=/home/vipuser/infinitensor-2026/runs/a100-recheck-20260905T180134Z/jagged/junit.xml"
+      ],
+      "cwd": "/home/vipuser/infinitensor-2026/ninetoothed",
+      "stdout": "validation.stdout.log",
+      "stderr": "validation.stderr.log",
+      "started_at_utc": "2026-09-05T18:01:35.858589+00:00",
+      "returncode": 0,
+      "pid": 12296,
+      "ended_at_utc": "2026-09-05T18:01:46.273257+00:00",
+      "elapsed_seconds": 10.415
+    },
+    {
+      "name": "after-head",
+      "argv": [
+        "git",
+        "rev-parse",
+        "HEAD"
+      ],
+      "cwd": "/home/vipuser/infinitensor-2026/ninetoothed",
+      "stdout": "after-head.stdout.log",
+      "stderr": "after-head.stderr.log",
+      "started_at_utc": "2026-09-05T18:01:46.273719+00:00",
+      "returncode": 0,
+      "pid": 12374,
+      "ended_at_utc": "2026-09-05T18:01:46.277870+00:00",
+      "elapsed_seconds": 0.004
+    },
+    {
+      "name": "after-status",
+      "argv": [
+        "git",
+        "status",
+        "--porcelain",
+        "--untracked-files=no"
+      ],
+      "cwd": "/home/vipuser/infinitensor-2026/ninetoothed",
+      "stdout": "after-status.stdout.log",
+      "stderr": "after-status.stderr.log",
+      "started_at_utc": "2026-09-05T18:01:46.279674+00:00",
+      "returncode": 0,
+      "pid": 12375,
+      "ended_at_utc": "2026-09-05T18:01:46.282523+00:00",
+      "elapsed_seconds": 0.003
+    }
+  ],
+  "validation_exit_code": 0,
+  "notes": [
+    "One mode only; no dependency installation, test changes, or automatic retries.",
+    "GPU inventory initializes CUDA but does not launch validation kernels.",
+    "Existing matmul/addmm FP8 tests have no compute-capability skip.",
+    "A specialist/full run overlaps the smoke and GPU-report case coverage.",
+    "Artifact hashes exclude this manifest itself; hash it externally when archiving."
+  ],
+  "before_source": {
+    "head": "377daec6242864a920de43a55523ac3d5f582648",
+    "tracked_status": ""
+  },
+  "runtime": {
+    "python": "3.12.7 | packaged by Anaconda, Inc. | (main, Oct  4 2024, 13:27:36) [GCC 11.2.0]",
+    "python_executable": "/home/vipuser/infinitensor-2026/.venv/bin/python",
+    "platform": {
+      "system": "Linux",
+      "machine": "x86_64"
+    },
+    "packages": {
+      "torch": "2.5.0",
+      "triton": "3.1.0",
+      "numpy": "2.1.3",
+      "sympy": "1.13.1",
+      "pytest": "8.1.1",
+      "pytest-cov": "7.1.0",
+      "coverage": "7.16.0",
+      "tilelang": "0.1.14",
+      "matplotlib": "3.11.1",
+      "pandas": "3.0.5",
+      "jupyter": "1.1.1",
+      "jupytext": "1.19.5",
+      "nbconvert": "7.17.1",
+      "ipykernel": "7.3.0",
+      "ninetoothed": null
+    },
+    "torch_import_version": "2.5.0+cu124",
+    "torch_cuda_build_version": "12.4",
+    "torch_cuda_available": true,
+    "torch_float8_e5m2_attribute": true,
+    "cuda_devices": [
+      {
+        "index": 0,
+        "name": "NVIDIA A100-SXM4-40GB",
+        "compute_capability": [
+          8,
+          0
+        ],
+        "total_memory_bytes": 42285268992,
+        "multiprocessor_count": 108
+      }
+    ]
+  },
+  "expected_artifacts": [
+    "junit.xml"
+  ],
+  "after_source": {
+    "head": "377daec6242864a920de43a55523ac3d5f582648",
+    "tracked_status": ""
+  },
+  "missing_artifacts": [],
+  "ended_at_utc": "2026-09-05T18:01:46.284185+00:00",
+  "wrapper_exit_code": 0,
+  "artifacts": [
+    {
+      "path": "after-head.stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "after-head.stdout.log",
+      "bytes": 41,
+      "sha256": "d5454cfedd8b1a84bb28af4b99e369858a65bf56c2cee3a86835b61c71eaa16e"
+    },
+    {
+      "path": "after-status.stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "after-status.stdout.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "before-head.stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "before-head.stdout.log",
+      "bytes": 41,
+      "sha256": "d5454cfedd8b1a84bb28af4b99e369858a65bf56c2cee3a86835b61c71eaa16e"
+    },
+    {
+      "path": "before-status.stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "before-status.stdout.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "environment.stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "environment.stdout.log",
+      "bytes": 1012,
+      "sha256": "598c620f3b621d5240851b77fe6301e946e49e9d4b58fcf6326dcd5e0b485e04"
+    },
+    {
+      "path": "junit.xml",
+      "bytes": 1703,
+      "sha256": "6401c9aee2241dd7dca3b29a8b886a4c000e6886bc387761f8b12c3b20fcb45a"
+    },
+    {
+      "path": "nvidia-smi.stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "nvidia-smi.stdout.log",
+      "bytes": 54,
+      "sha256": "771ef0404d0da497e135edd0d1fa56773141b94fd22133ea98ec8c1d5ba8d0a8"
+    },
+    {
+      "path": "validation.stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "validation.stdout.log",
+      "bytes": 207,
+      "sha256": "cd0dd692fcf917e0c35eaadeb921f7c19168b623b807b7749657881630ae58c8"
+    }
+  ]
+}

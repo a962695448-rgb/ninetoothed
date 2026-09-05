@@ -1,0 +1,85 @@
+{
+  "checked_at_utc": "2026-09-05T17:55:44.674754+00:00",
+  "torch_version": "2.5.0+cu124",
+  "scope": "CPU-only construction capability diagnosis",
+  "from_jagged_signature": "(values: torch.Tensor, offsets: Optional[torch.Tensor] = None, lengths: Optional[torch.Tensor] = None, jagged_dim: Optional[int] = None, min_seqlen: Optional[int] = None, max_seqlen: Optional[int] = None) -> torch.Tensor",
+  "cases": [
+    {
+      "jagged_dim": 1,
+      "method": "from_jagged",
+      "status": "PASS",
+      "shape": "torch.Size([2, j1, 4])",
+      "values_shape": [
+        5,
+        4
+      ],
+      "values_stride": [
+        4,
+        1
+      ],
+      "nested_stride": [
+        "4*j1",
+        "4",
+        "1"
+      ]
+    },
+    {
+      "jagged_dim": 1,
+      "method": "transpose_construct",
+      "status": "PASS",
+      "shape": "torch.Size([2, j2, 4])",
+      "values_shape": [
+        5,
+        4
+      ],
+      "values_stride": [
+        4,
+        1
+      ],
+      "nested_stride": [
+        "4*j2",
+        "4",
+        "1"
+      ]
+    },
+    {
+      "jagged_dim": 2,
+      "method": "from_jagged",
+      "status": "PASS",
+      "shape": "torch.Size([2, 4, j3])",
+      "values_shape": [
+        4,
+        5
+      ],
+      "values_stride": [
+        5,
+        1
+      ],
+      "nested_stride": [
+        "j3",
+        "5",
+        "1"
+      ]
+    },
+    {
+      "jagged_dim": 2,
+      "method": "transpose_construct",
+      "status": "PASS",
+      "shape": "torch.Size([2, 4, j4])",
+      "values_shape": [
+        4,
+        5
+      ],
+      "values_stride": [
+        1,
+        4
+      ],
+      "nested_stride": [
+        "4*j4",
+        "1",
+        "4"
+      ]
+    }
+  ],
+  "cuda_initialized": false
+}

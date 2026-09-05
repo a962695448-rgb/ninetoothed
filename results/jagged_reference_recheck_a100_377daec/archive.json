@@ -1,0 +1,84 @@
+{
+  "code_commit": "377daec6242864a920de43a55523ac3d5f582648",
+  "scope": "Targeted jagged regression only",
+  "status": "PASS",
+  "tests": 16,
+  "artifacts": {
+    "after-head.stderr.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "after-head.stdout.log": {
+      "bytes": 41,
+      "sha256": "d5454cfedd8b1a84bb28af4b99e369858a65bf56c2cee3a86835b61c71eaa16e"
+    },
+    "after-status.stderr.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "after-status.stdout.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "before-head.stderr.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "before-head.stdout.log": {
+      "bytes": 41,
+      "sha256": "d5454cfedd8b1a84bb28af4b99e369858a65bf56c2cee3a86835b61c71eaa16e"
+    },
+    "before-status.stderr.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "before-status.stdout.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "cpu-construction-probe.json": {
+      "bytes": 1721,
+      "sha256": "7a8e42ab1b218372d227e3d3cdf704d676ac9ba4c55f46002ce5a06379897eb7"
+    },
+    "cpu-construction-probe.py.txt": {
+      "bytes": 2159,
+      "sha256": "79709826a87d729b174ea82c8392e0c1af3459aba9404c17085cbcf5592c21ae"
+    },
+    "environment.stderr.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "environment.stdout.log": {
+      "bytes": 1012,
+      "sha256": "598c620f3b621d5240851b77fe6301e946e49e9d4b58fcf6326dcd5e0b485e04"
+    },
+    "junit.xml": {
+      "bytes": 1703,
+      "sha256": "6401c9aee2241dd7dca3b29a8b886a4c000e6886bc387761f8b12c3b20fcb45a"
+    },
+    "manifest.json": {
+      "bytes": 10937,
+      "sha256": "0d547af2816c8be407540bac907f37ea6a03db5ff15841723e7d53281d4463e1"
+    },
+    "nvidia-smi.stderr.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "nvidia-smi.stdout.log": {
+      "bytes": 54,
+      "sha256": "771ef0404d0da497e135edd0d1fa56773141b94fd22133ea98ec8c1d5ba8d0a8"
+    },
+    "README.md": {
+      "bytes": 1769,
+      "sha256": "41f55e366719487692c872bf2853a3fa3f84de605879b73263ab3f73c5569bb9"
+    },
+    "validation.stderr.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "validation.stdout.log": {
+      "bytes": 207,
+      "sha256": "cd0dd692fcf917e0c35eaadeb921f7c19168b623b807b7749657881630ae58c8"
+    }
+  }
+}
