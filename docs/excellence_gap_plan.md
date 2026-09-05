@@ -20,7 +20,7 @@
 
 | 标准 | 当前证据 | 差距与合格证据 |
 |---|---|---|
-| 原有测试、风格、文档保持可用 | `5b37725` RTX 4090 完整重跑 591 passed、2 skipped、退出码 0；日志/JUnit/coverage 已归档；独立副本另有 39 项 CPU 回归及风格/文档检查 | 两个 skip 均要求至少双卡，SIGSEGV 历史原因未定；整合演示改进后按新源码验证，不能继承旧提交的全量结果 |
+| 原有测试、风格、文档保持可用 | `5b37725` RTX 4090 完整重跑 591 passed、2 skipped、退出码 0；日志/JUnit/coverage 已归档；演示改进已整合，文件散列与39项CPU回归及风格/文档检查对应 | 两个 skip 均要求至少双卡，SIGSEGV 历史原因未定；新提交不能直接继承旧提交的全量运行结论 |
 | CPU-only 与五类应用、三种必需 dtype | `76ca646` 隐藏 CUDA 后 209 passed；`5b37725` 的 WSL 无 Torch/Triton 环境 206 passed、14 deselected；应用与 dtype 对照见验收说明 | 两轮依赖、源码和选择范围不同。新 CPU 记录未验证 PyTorch CPU Tensor 适配；广泛收集时的缺包错误另保留，不能将 206 与 209 相加或直接比较 |
 | 默认 pass 前后至少三个程序一致与 A100 差分 | 4090 报告包含 8 个程序、14 项四方比较；发射 SSA 和默认 pass 可追溯 | A100 相同合同下实际运行，报告设备/代码 SHA/SSA SHA/布局/种子/误差；至少三个不同程序明确覆盖默认 pass |
 | dot/matmul、softmax 和扩展能力 | softmax 已有真实 GPU 对照；直接 dot 与单 program 分解有 CPU 测试；已支持 strided 视图等 | 多 program 分块 dot 被明确拒绝，GPU runner 排除了优化后 dot；补齐真实默认管线中的代表性矩阵乘法 |
@@ -77,7 +77,7 @@ CPU 执行速度不是本题目标，不优先做多线程 CPU kernel、GPU 并�
 
 ## 提交流程与优秀评选风险
 
-贡献规范要求 kebab-case 分支；2026-09-05 通过远端引用核对，合规提交分支 `add-cpu-reference-interpreter` 与开发分支 `feat/cpu-reference-interpreter` 均已推送到 `5b377252cc4452b5ccc48c46ff1ae07a4e5e0e8a`。正式 PR 使用前者；既有历史保留，无需改写已发布提交。
+贡献规范要求 kebab-case 分支；合规提交分支 `add-cpu-reference-interpreter` 与开发分支 `feat/cpu-reference-interpreter` 均已建立并推送，现已整合演示改进与完整测试归档。正式 PR 使用前者，发布前以远端引用核对确切提交；完整测试的冻结版本仍按证据记录为 `5b37725`。既有历史保留，无需改写已发布提交。
 
 用户要求中文 commit 备注，后续保留该偏好，不重写已推送的中文提交。`.githooks/commit-msg` 是需在本地显式启用的 hook，其英文首字母要求不能直接解释为远端对历史 commit 的检查。实际远端 `.github/workflows/contributing.yml` 通过 `--event` 检查 PR 的 title、head branch 和正文中的 pytest 输出，没有遍历历史 commit messages。PR 标题按英文大写开头、命令式、无结尾标点的规则准备，正文可用中文并附实际 pytest 输出；不修改上游规则，也不以本地 hook 惯例覆盖用户语言偏好。
 
