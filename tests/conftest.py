@@ -8,6 +8,7 @@ try:
 except ModuleNotFoundError as exc:
     if exc.name != "torch":
         raise
+
     torch = None
 
 
@@ -28,6 +29,7 @@ def set_seed_per_test(request):
 
 def _set_random_seed(seed):
     random.seed(seed)
+
     if torch is not None:
         torch.manual_seed(seed)
 

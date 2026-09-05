@@ -1,0 +1,3 @@
+# These two small logs are intentional validation artifacts.
+!interpreter_quality_rtx4090.log
+!interpreter_cpu_only_rtx4090_host.log

@@ -92,6 +92,7 @@ class StepDebugger:
             self.last_event.lane,
         ) != (event.program_id, event.lane):
             self.values.clear()
+
         self.last_event = event
         self.events_seen += 1
         self.values.update(event.inputs or {})
@@ -103,35 +104,46 @@ class StepDebugger:
             or event.location.startswith(f"{breakpoint}:")
             for breakpoint in self.breakpoints
         )
+
         if not self._stepping and not hit:
             return
+
         self.pauses.append(event)
         self.output(
             f"paused {event.program_id} {event.location} lane={event.lane} iteration={event.iteration}"
         )
+
         for name in self._watch:
             if name in self.values:
                 self.output(
                     f"watch {name} = {json.dumps(self.values[name], sort_keys=True)}"
                 )
+
         while True:
             if self._commands is None:
                 command = input("cpu-debug> ")
             else:
                 command = next(self._commands, "continue")
+
             parts = command.strip().split(maxsplit=1)
             action = parts[0] if parts else "step"
             argument = parts[1] if len(parts) > 1 else None
+
             if action in {"s", "step"}:
                 self.step()
+
                 return
+
             if action in {"c", "continue"}:
                 self.continue_()
+
                 return
+
             if action in {"q", "quit"}:
                 raise DebuggerQuit(
                     f"Debugger stopped at {event.location}, program {event.program_id}."
                 )
+
             if action in {"b", "break"} and argument:
                 self.add_breakpoint(argument)
                 self.output(f"breakpoint added: {argument}")
@@ -188,23 +200,30 @@ def _copy_array_layout(value, *, strides=None, writeable=None):
     """Copy numeric storage while retaining signed strides and write permission."""
     if value.dtype.kind not in "biufc":
         raise TypeError("Differential replay requires numeric arrays.")
+
     strides = value.strides if strides is None else tuple(strides)
+
     if len(strides) != value.ndim or any(
         not isinstance(stride, int) for stride in strides
     ):
         raise ValueError("Array strides must contain one integer per dimension.")
+
     if value.size:
-        extents = tuple((size - 1) * stride for size, stride in zip(value.shape, strides))
+        extents = tuple(
+            (size - 1) * stride for size, stride in zip(value.shape, strides)
+        )
         lower = sum(min(0, extent) for extent in extents)
         upper = sum(max(0, extent) for extent in extents)
     else:
         lower = upper = 0
+
     storage = np.empty(upper - lower + value.itemsize, dtype=np.uint8)
     result = np.ndarray(
         value.shape, dtype=value.dtype, buffer=storage, offset=-lower, strides=strides
     )
     result[...] = value
     result.flags.writeable = value.flags.writeable if writeable is None else writeable
+
     return result
 
 
@@ -213,27 +232,34 @@ def _copy_inputs(inputs):
     arrays = [
         (name, value) for name, value in inputs.items() if isinstance(value, np.ndarray)
     ]
+
     for index, (name, first) in enumerate(arrays):
         for other_name, second in arrays[index + 1 :]:
             if first is not second and np.shares_memory(first, second):
                 raise ValueError(
                     f"Differential replay does not support overlapping views `{name}` and `{other_name}`."
                 )
+
     memo = {}
     result = {}
+
     for name, value in inputs.items():
         if isinstance(value, np.ndarray):
             if id(value) not in memo:
                 memo[id(value)] = _copy_array_layout(value)
+
             value = memo[id(value)]
+
         result[name] = value
     return result
 
 
 def _same(first, second, rtol, atol):
     first, second = np.asarray(first), np.asarray(second)
+
     if first.shape != second.shape or first.dtype != second.dtype:
         return False
+
     if first.dtype.kind in "fc":
         return bool(np.allclose(first, second, rtol=rtol, atol=atol, equal_nan=True))
     return bool(np.array_equal(first, second))
@@ -242,6 +268,7 @@ def _same(first, second, rtol, atol):
 def _same_snapshot(first, second, rtol, atol):
     if "value" not in first or "value" not in second:
         return first == second
+
     if first["shape"] != second["shape"] or first["dtype"] != second["dtype"]:
         return False
     return _same(
@@ -296,6 +323,7 @@ def compare_programs(
     )
     aligned = _structure(reference) == _structure(candidate)
     first_operation = None
+
     if aligned:
         for left, right in zip(first.trace, second.trace):
 
@@ -311,6 +339,7 @@ def compare_programs(
             if key(left) != key(right):
                 aligned = False
                 break
+
             for name in sorted(set(left.results) | set(right.results)):
                 if (
                     name not in left.results
@@ -328,8 +357,10 @@ def compare_programs(
                         left.lane,
                     )
                     break
+
             if first_operation is not None:
                 break
+
         if len(first.trace) != len(second.trace) and first_operation is None:
             aligned = False
     return ProgramComparison(not differing, differing, first_operation, aligned)
@@ -354,8 +385,10 @@ def check_passes(
     """
     current = program
     checked = []
+
     for name, transform in passes:
         checked.append(str(name))
+
         try:
             current = transform(current)
             difference = compare_programs(
@@ -370,6 +403,7 @@ def check_passes(
             )
         except (InterpretationError, ValueError, TypeError) as exc:
             return PassCheck(False, tuple(checked), str(name), error=str(exc))
+
         if not difference.equal:
             return PassCheck(False, tuple(checked), str(name), difference)
     return PassCheck(True, tuple(checked), None)
@@ -387,18 +421,24 @@ def export_reproducer(
     inputs, _originals = _adapt_inputs(inputs)
     directory = Path(directory)
     files = ("program.json", "program.ssa", "inputs.npz", "manifest.json", "replay.py")
+
     if any((directory / filename).exists() for filename in files):
         raise FileExistsError("Refusing to overwrite an existing replay bundle.")
+
     ssa.verify_program(program)
     _copy_inputs(inputs)  # Validate the aliasing restriction before writing files.
     arrays, bindings, aliases, names_by_id = {}, {}, {}, {}
+
     for index, (name, value) in enumerate(inputs.items()):
         if isinstance(value, np.ndarray) and id(value) in names_by_id:
             aliases[name] = names_by_id[id(value)]
             continue
+
         array = np.asarray(value)
+
         if array.dtype.kind not in "biufc":
             raise TypeError(f"Reproducer input `{name}` is not a numeric array/scalar.")
+
         key = f"input_{index}"
         arrays[key] = array
         bindings[name] = {
@@ -409,8 +449,10 @@ def export_reproducer(
             "writeable": bool(array.flags.writeable),
             "scalar": not isinstance(value, np.ndarray),
         }
+
         if isinstance(value, np.ndarray):
             names_by_id[id(value)] = name
+
     metadata = {
         "schema": 1,
         "seed": seed,
@@ -437,6 +479,7 @@ def export_reproducer(
         "print({name: (value.shape, str(value.dtype)) for name, value in result.outputs.items()})\n",
         encoding="utf-8",
     )
+
     return directory
 
 
@@ -488,6 +531,7 @@ def _tensor(data):
 
     data = dict(data)
     layout = data["layout"]
+
     if layout is not None:
         data["layout"] = TensorLayout(
             **{
@@ -521,20 +565,25 @@ def load_reproducer(directory):
     """Load only structured JSON and non-pickled numeric arrays from a bundle."""
     directory = Path(directory)
     metadata = json.loads((directory / "manifest.json").read_text(encoding="utf-8"))
+
     if metadata.get("schema") != 1:
         raise ValueError("Unsupported replay bundle schema.")
+
     program = _program(
         json.loads((directory / "program.json").read_text(encoding="utf-8"))
     )
     inputs = {}
+
     with np.load(directory / "inputs.npz", allow_pickle=False) as arrays:
         for name, binding in metadata["inputs"].items():
             array = arrays[binding["key"]].copy()
+
             if (
                 list(array.shape) != binding["shape"]
                 or str(array.dtype) != binding["dtype"]
             ):
                 raise ValueError(f"Input `{name}` disagrees with the bundle manifest.")
+
             inputs[name] = (
                 array[()]
                 if binding["scalar"]
@@ -544,6 +593,7 @@ def load_reproducer(directory):
                     writeable=binding.get("writeable", True),
                 )
             )
+
     for name, source in metadata.get("aliases", {}).items():
         inputs[name] = inputs[source]
     return (

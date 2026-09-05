@@ -1,0 +1,30 @@
+{
+  "source_commit": "76ca6464fc921bc1419700b22f730b4084b3035b",
+  "date": "2026-09-05",
+  "gpu": "NVIDIA GeForce RTX 4090",
+  "files": [
+    {
+      "path": "interpreter_gpu_rtx4090.json",
+      "bytes": 9515,
+      "sha256": "7d44c62506785dd1a58fd74cde5ccbae7977034a9cb0a52e1194ac3874bdf36f"
+    },
+    {
+      "path": "interpreter_quality_rtx4090.log",
+      "bytes": 341,
+      "sha256": "2f8c936cb653c5d00e857eb08cb111c580a5a2129e96ca30397a53c09e0c5d89"
+    },
+    {
+      "path": "interpreter_cpu_only_rtx4090_host.log",
+      "bytes": 275,
+      "sha256": "657b099b4c95eb9996fceb67b21460d1aa200cf7f130ad6a2209bf73ec79a181"
+    }
+  ],
+  "scope": {
+    "quality_suite": "224 passed, including the 14 real GPU cases and the CUDA-input rejection case",
+    "cpu_only_suite": "CUDA_VISIBLE_DEVICES empty: 209 passed, 15 deselected; the 15 require visible CUDA and were validated in the quality suite",
+    "gpu_report": "14 actual Triton GPU differential cases; these are a subset of the 224 tests, not 14 additional tests",
+    "upstream_full_suite": "RUNNING; final aggregate not yet available",
+    "a100": "NOT RUN; RTX4090 does not satisfy the project-specific A100 validation requirement"
+  },
+  "provenance_note": "source_commit identifies the frozen code under test; later documentation commits must not be described as rerun code without new evidence."
+}

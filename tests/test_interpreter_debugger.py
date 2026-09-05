@@ -59,6 +59,7 @@ def _change_scale(program):
         else operation
         for operation in program.blocks[0].operations
     )
+
     return replace(program, blocks=(replace(program.blocks[0], operations=operations),))
 
 
@@ -83,6 +84,7 @@ def test_difference_identifies_first_aligned_operation_without_mutating_inputs()
         if op.opcode == "arith.constant" and op.attrs["value"] == 2
     )
     assert difference.result_name == operation.results[0].name
+
     for name in inputs:
         np.testing.assert_array_equal(inputs[name], unchanged[name])
 
@@ -110,6 +112,7 @@ def test_pass_checker_stops_at_the_first_semantic_failure():
 
     def after_failure(program):
         visited.append("should-not-run")
+
         return program
 
     result = check_passes(
@@ -138,6 +141,7 @@ def test_pass_checker_records_an_unsupported_operation_as_failure():
 
     def unsupported(program):
         block = program.blocks[0]
+
         return replace(
             program,
             blocks=(
@@ -259,14 +263,15 @@ def test_comparison_and_export_reject_distinct_overlapping_views(tmp_path, parti
     storage = np.arange(8, dtype=np.float32)
     inputs = {"x": storage[:7], "out": storage[1:] if partial else storage[:7]}
     assert inputs["x"] is not inputs["out"]
+
     with pytest.raises(ValueError, match="overlapping views.*x.*out"):
-        compare_programs(
-            kernel.program, kernel.program, inputs, tensors=kernel.tensors
-        )
+        compare_programs(kernel.program, kernel.program, inputs, tensors=kernel.tensors)
+
     with pytest.raises(ValueError, match="overlapping views.*x.*out"):
         export_reproducer(
             tmp_path / "overlap", kernel.program, inputs, tensors=kernel.tensors
         )
+
     assert not (tmp_path / "overlap").exists()
     np.testing.assert_array_equal(storage, np.arange(8, dtype=np.float32))
 
@@ -276,6 +281,7 @@ def _raw_pointer_program():
     x = ssa.Value(name="x", type=tensor_type)
     pointer = ssa.Value(name="%ptr", type=ssa.Type(kind="pointer", dtype="float32"))
     loaded = ssa.Value(name="%loaded", type=ssa.Type(kind="scalar", dtype="float32"))
+
     return ssa.Program(
         kind="strided_pointer_replay",
         inputs=(x,),
@@ -298,13 +304,17 @@ def _raw_pointer_program():
 def test_comparison_and_replay_preserve_noncontiguous_pointer_rejection(tmp_path):
     program = _raw_pointer_program()
     inputs = {"x": np.arange(6, dtype=np.float32)[::2]}
+
     with pytest.raises(InterpretationError, match="C-contiguous"):
         interpret_program(program, inputs)
+
     with pytest.raises(InterpretationError, match="C-contiguous"):
         compare_programs(program, program, inputs)
+
     export_reproducer(tmp_path / "strided", program, inputs)
     restored_program, restored, options = load_reproducer(tmp_path / "strided")
     assert restored["x"].strides == inputs["x"].strides
+
     with pytest.raises(InterpretationError, match="C-contiguous"):
         interpret_program(restored_program, restored, **options)
 
@@ -321,7 +331,9 @@ def test_reproducer_preserves_strides_values_and_readonly_flags(tmp_path, layout
     value.flags.writeable = False
     x = ssa.Value(
         name="x",
-        type=ssa.Type(kind="tensor", shape=tuple(map(str, value.shape)), dtype="float32"),
+        type=ssa.Type(
+            kind="tensor", shape=tuple(map(str, value.shape)), dtype="float32"
+        ),
     )
     program = ssa.Program(
         kind="strides", inputs=(x,), outputs=(x,), blocks=(ssa.Block(),)
@@ -350,6 +362,7 @@ def test_program_comparison_keeps_readonly_output_semantics():
     )
     array = np.arange(3, dtype=np.float32)
     array.flags.writeable = False
+
     with pytest.raises(InterpretationError, match="read-only"):
         compare_programs(program, program, {"x": array})
 
@@ -361,13 +374,16 @@ def test_reproducer_rejects_overwrite_and_manifest_input_mismatch(tmp_path):
         tmp_path / "case", kernel.program, inputs, tensors=kernel.tensors
     )
     original = (directory / "program.json").read_bytes()
+
     with pytest.raises(FileExistsError):
         export_reproducer(directory, kernel.program, inputs, tensors=kernel.tensors)
+
     assert (directory / "program.json").read_bytes() == original
     manifest_path = directory / "manifest.json"
     manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
     manifest["inputs"]["x"]["shape"] = [99]
     manifest_path.write_text(json.dumps(manifest), encoding="utf-8")
+
     with pytest.raises(ValueError, match="manifest"):
         load_reproducer(directory)
 
@@ -376,10 +392,12 @@ def test_reproducer_rejects_object_arrays_without_pickle(tmp_path):
     kernel = _kernel()
     inputs = _inputs()
     inputs["x"] = inputs["x"].astype(object)
+
     with pytest.raises(TypeError, match="numeric"):
         export_reproducer(
             tmp_path / "object", kernel.program, inputs, tensors=kernel.tensors
         )
+
     assert not (tmp_path / "object" / "inputs.npz").exists()
 
 
@@ -441,9 +459,11 @@ def test_step_debugger_discards_values_from_the_previous_output_lane():
 
     def callback(event):
         debugger(event)
+
         if event.opcode == "index.offset" and event.lane == (0, 1):
             with pytest.raises(KeyError):
                 debugger.inspect("%acc_iter")
+
             inspected_transition.append(event.lane)
 
     inputs = _dot_inputs()

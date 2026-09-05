@@ -61,7 +61,7 @@ SymPy, and pytest, and run from this checkout with ``PYTHONPATH=src``. This is a
 source-checkout testing route, not a newly published CPU-only wheel.
 
 Frontend versus backend SSA
---------------------------
+---------------------------
 
 By default, ``kernel.program`` is the original frontend SSA. To execute the SSA
 pass pipeline used by a backend, select it explicitly:
@@ -131,7 +131,7 @@ coordinates are zero. An explicit arranged grid must cover the same number of
 programs as its layout domain.
 
 Tracing, extension and pass debugging
-------------------------------------
+-------------------------------------
 
 ``TraceEvent`` records ``program_id``, ``location``, ``opcode``, execution-before
 ``inputs`` snapshots, ``results`` snapshots, ``mask``, loop ``iteration``, and

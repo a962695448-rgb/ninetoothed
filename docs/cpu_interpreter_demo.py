@@ -25,6 +25,7 @@ def deliberately_bad_pass(program):
     """Inject one visible error to demonstrate automatic localization."""
     block = program.blocks[0]
     operations = list(block.operations)
+
     for index, operation in enumerate(operations):
         if operation.opcode == "arith.constant" and operation.attrs.get("value") == 2:
             operations[index] = replace(operation, attrs={"value": 3})
@@ -52,6 +53,7 @@ def main():
     x = np.random.default_rng(seed).normal(size=11).astype(np.float32)
     out = np.zeros_like(x)
     debugger = None
+
     if arguments.debug or arguments.interactive_debug:
         commands = (
             None
@@ -59,6 +61,7 @@ def main():
             else ("watch %0", "print %0", "step", "break mem.store", "continue")
         )
         debugger = StepDebugger(commands=commands)
+
     kernel = interpret(
         arrangement,
         application,
@@ -86,6 +89,7 @@ def main():
     assert report.first_bad_pass == "injected_bad_constant"
     print(f"First bad pass: {report.first_bad_pass}")
     print(f"First different operation: {report.difference.first_operation}")
+
     if arguments.export:
         path = export_reproducer(
             arguments.export,

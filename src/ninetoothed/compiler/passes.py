@@ -1138,6 +1138,7 @@ def _decompose_matmul_store(
     k_extent = None if lhs_type is None else _shape_dim(lhs_type.shape, -1)
     bound_operations = ()
     k_operand = k
+
     if k_extent is not None and not str(k_extent).isidentifier():
         bound, temp_index = _fresh_value(
             existing_names, temp_index, ssa.Type(kind="index", dtype="int64")
@@ -1151,6 +1152,7 @@ def _decompose_matmul_store(
             ),
         )
         k_operand = bound.name
+
     loop = ssa.Operation(
         opcode="scf.for",
         operands=(zero.name, k_operand, one.name, acc_init.name),

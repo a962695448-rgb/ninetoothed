@@ -23,8 +23,10 @@ def prepare_application(
 ):
     """Run exactly the frontend preparation shared by all execution routes."""
     parameters = tuple(inspect.signature(application).parameters)
+
     if arrangement is None:
         annotations = inspect.get_annotations(application, eval_str=False)
+
         try:
             arranged = tuple(copy.deepcopy(annotations[name]) for name in parameters)
         except KeyError as exc:
@@ -35,16 +37,21 @@ def prepare_application(
     else:
         arranged = arrangement(*copy.deepcopy(tuple(tensors)))
         arranged = arranged if isinstance(arranged, tuple) else (arranged,)
+
     if len(arranged) != len(parameters):
         raise LoweringError(
             f"Cannot lower `{application.__name__}`: arrangement returned "
             f"{len(arranged)} values for {len(parameters)} parameters."
         )
+
     for name, tensor in zip(parameters, arranged):
         dtype = (tensor_dtypes or {}).get(name)
+
         if dtype is not None:
             getattr(tensor, "source", tensor).dtype = dtype
+
     specs = tensor_specs(parameters, arranged)
+
     try:
         program = from_application(
             application, specs, kind=kernel_name or application.__name__, strict=True
@@ -53,6 +60,7 @@ def prepare_application(
         raise LoweringError(
             f"Cannot lower `{application.__name__}` through the SSA backend path: {exc}."
         ) from exc
+
     if program is None:
         raise LoweringError(
             f"Cannot lower `{application.__name__}` through the SSA backend path: "

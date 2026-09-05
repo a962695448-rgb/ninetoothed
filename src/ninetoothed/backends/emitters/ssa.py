@@ -667,6 +667,7 @@ def _with_contiguous_1d_fast_path(
         vector_program=vector_program,
     )
     conditions = tuple(f"({stride} == 1)" for stride in stride_params)
+
     if target.c_style_syntax:
         predicate = " && ".join(conditions)
     else:
@@ -674,6 +675,7 @@ def _with_contiguous_1d_fast_path(
         # expression with three or more operands. Preserve short-circuit
         # semantics while explicitly nesting the binary expressions.
         predicate = conditions[0]
+
         for condition in conditions[1:]:
             predicate = f"({predicate} and {condition})"
 
@@ -1407,6 +1409,7 @@ def _floor_divmod_expr(
     quotient = f"({lhs} {division_symbol} {rhs})"
     remainder = f"({lhs} % {rhs})"
     dtype = _normalize_dtype(ctx.target.arithmetic_result_type(op, ctx).dtype)
+
     if ctx.target.backend == Target.TRITON and dtype in {
         "int8",
         "int16",
@@ -1417,6 +1420,7 @@ def _floor_divmod_expr(
         # remainder whose sign differs from the divisor. Using the remainder's
         # sign also leaves compile-time scalar Python arithmetic unchanged.
         correction = f"(({remainder} != 0) & (({remainder} < 0) != ({rhs} < 0)))"
+
         if operator == "floordiv":
             return ctx.target.where(correction, f"({quotient} - 1)", quotient)
         return ctx.target.where(correction, f"({remainder} + {rhs})", remainder)
@@ -3292,14 +3296,19 @@ def _tensor_outer_index(info: _TensorInfo | None, ctx: _EmitContext) -> str:
     storage. Addresses and masks must use the same local program coordinate.
     """
     output = ctx.tensor_infos.get(ctx.output)
+
     if info is None or output is None or info.name == output.name:
         return ctx.outer_index_expr
+
     axes = tuple(info.shape)
     output_axes = tuple(output.shape)
+
     if not axes:
         return "0"
+
     if len(axes) > len(output_axes) or axes == output_axes:
         return ctx.outer_index_expr
+
     output_coords = _coords_from_linear(ctx.outer_index_expr, output_axes, ctx.target)
     coords = tuple(
         "0"
@@ -3309,6 +3318,7 @@ def _tensor_outer_index(info: _TensorInfo | None, ctx: _EmitContext) -> str:
         else f"({coordinate}) * (({axis}) != 1)"
         for axis, coordinate in zip(axes, output_coords[-len(axes) :])
     )
+
     return _target_index_expr(ctx.target, _linearized_index(coords, axes))
 
 

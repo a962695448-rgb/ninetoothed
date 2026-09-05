@@ -40,28 +40,39 @@ def evaluate(expression, symbols):
     """Evaluate a trusted IndexExpr using explicit supported operations only."""
     expression = IndexExpr.parse(expression)
     op = expression.op
+
     if op == "constant":
         return expression.value
+
     if op == "symbol":
         try:
             return symbols[expression.value]
         except KeyError as exc:
             raise ValueError(f"Unbound layout symbol `{expression.value}`.") from exc
+
     if op == "attribute":
         # Dotted function names are stored in call.value, not evaluated as objects.
         name = expression.render()
+
         if name in symbols:
             return symbols[name]
+
         raise ValueError(f"Unsupported layout attribute `{name}`.")
+
     values = tuple(evaluate(value, symbols) for value in expression.operands)
+
     if op in BINARY:
         return BINARY[op](*values)
+
     if op in UNARY:
         return UNARY[op](*values)
+
     if op == "tuple":
         return values
+
     if op == "subscript":
         return values[0][values[1]]
+
     if op == "call":
         name = str(expression.value).rsplit(".", 1)[-1]
         functions = {
@@ -79,18 +90,23 @@ def evaluate(expression, symbols):
             "next_power_of_2": lambda x: 1 << (int(x) - 1).bit_length(),
             "int": int,
         }
+
         if name in functions:
             return functions[name](*values)
+
     raise ValueError(f"Unsupported layout expression `{expression.render()}`.")
 
 
 def shape_value(shape, symbols):
     """Resolve a symbolic shape, requiring nonnegative integer extents."""
     result = []
+
     for dimension in shape:
         value = evaluate(dimension, symbols)
+
         if np.ndim(value) != 0 or int(value) != value or int(value) < 0:
             raise ValueError(f"Invalid shape extent `{value}`.")
+
         result.append(int(value))
     return tuple(result)
 
@@ -99,6 +115,7 @@ def numpy_dtype(dtype, fallback=None):
     """Normalize NineToothed and backend dtype spellings."""
     if dtype is None:
         return None if fallback is None else np.dtype(fallback)
+
     name = str(dtype).rsplit(".", 1)[-1]
     names = {
         "fp16": "float16",
@@ -115,12 +132,15 @@ def numpy_dtype(dtype, fallback=None):
         "index": "int64",
         "i1": "bool",
     }
+
     if name in {"symbol", "none"}:
         return None
+
     try:
         result = np.dtype(names.get(name, name))
     except TypeError as exc:
         raise ValueError(f"Unsupported interpreter dtype `{dtype}`.") from exc
+
     if result.name not in {
         "bool",
         "int8",

@@ -20,12 +20,16 @@ class Pointer:
     def _indices(self, mask):
         if not self.array.flags.c_contiguous:
             raise ValueError("Raw pointer operations require C-contiguous arrays.")
+
         offsets, mask = np.broadcast_arrays(
             np.asarray(self.offset), np.asarray(mask, dtype=bool)
         )
+
         if offsets.dtype.kind not in "iu":
             raise ValueError("Pointer offsets must be integers.")
+
         selected = offsets[mask]
+
         if np.any(selected < 0) or np.any(selected >= self.array.size):
             raise IndexError("Active pointer lane is outside its allocation.")
         return offsets, mask
@@ -35,6 +39,7 @@ class Pointer:
         result = np.full(offsets.shape, other, dtype=self.array.dtype)
         # Do not evaluate even a NumPy index for a masked-out lane.
         result[mask] = self.array.reshape(-1)[offsets[mask]]
+
         return result
 
     def write(self, value, mask=True):
@@ -66,6 +71,7 @@ class TensorRef:
     def shape(self):
         if self.levels:
             return shape_value(self.levels[self.level].shape, self.symbols)
+
         if self.layout is not None:
             return shape_value(self.layout.application_shape, self.symbols)
         return self.array.shape
@@ -76,7 +82,9 @@ class TensorRef:
                 raise ValueError(
                     "Nested tensor extraction must index one complete layout level."
                 )
+
             coordinates = tuple(int(index) for index in indices)
+
             if any(
                 index < 0 or index >= size
                 for index, size in zip(coordinates, self.shape)
@@ -91,23 +99,31 @@ class TensorRef:
 
     def _access(self, extra_mask=True):
         shape = self.shape
+
         if self.levels and self.level < len(self.levels) - 1:
             raise ValueError(
                 "Nested tensors must be indexed down to their innermost value level."
             )
+
         if self.layout is None:
             coords = np.indices(self.array.shape, sparse=False)
+
             return tuple(coords), np.broadcast_to(
                 np.asarray(extra_mask, dtype=bool), self.array.shape
             )
+
         symbols = dict(self.symbols, outer_index=self.outer_index)
+
         for level, coordinates in enumerate(self.extracted):
             for dimension, value in enumerate(coordinates):
                 symbols[f"extract_{level}_{dimension}"] = value
+
         if self.levels:
             if not self.layout.value_accesses:
                 raise ValueError("Arranged tensor has no value access map.")
+
             access = self.layout.value_accesses[-1]
+
             for dimension, size in enumerate(shape):
                 expand = (
                     (1,) * dimension + (size,) + (1,) * (len(shape) - dimension - 1)
@@ -117,16 +133,21 @@ class TensorRef:
                 )
         else:
             access = self.layout.view_access
+
             if access is None:
                 if self.array.shape == shape:
                     coords = np.indices(shape, sparse=False)
+
                     return tuple(coords), np.broadcast_to(
                         np.asarray(extra_mask, dtype=bool), shape
                     )
+
                 raise ValueError("Tensor view has no access map.")
+
             symbols["index"] = np.arange(
                 np.prod(shape, dtype=int), dtype=np.int64
             ).reshape(shape)
+
         mask = np.broadcast_to(
             np.asarray(evaluate(access.predicate, symbols), dtype=bool), shape
         )
@@ -135,25 +156,31 @@ class TensorRef:
             np.broadcast_to(np.asarray(evaluate(index, symbols)), shape)
             for index in access.source_indices
         )
+
         if len(coordinates) != self.array.ndim:
             raise ValueError("Layout/source rank mismatch.")
+
         for coordinate, size in zip(coordinates, self.array.shape):
             if coordinate.dtype.kind not in "iu":
                 raise ValueError("Layout coordinates must be integers.")
+
             if np.any(coordinate[mask] < 0) or np.any(coordinate[mask] >= size):
                 raise IndexError("Active layout lane is outside its source tensor.")
         return coordinates, mask
 
     def read(self, mask=True, other=None):
         coordinates, valid = self._access(mask)
+
         if other is None:
             other = self.spec.attrs.get("other") if self.spec is not None else None
+
         result = np.full(
             valid.shape, 0 if other is None else other, dtype=self.array.dtype
         )
         result[valid] = self.array[
             tuple(coordinate[valid] for coordinate in coordinates)
         ]
+
         return result
 
     def write(self, value, mask=True):

@@ -88,6 +88,7 @@ def _masked_load_program(offsets, mask, *, source_size=3):
             attrs={"other": -99},
         ),
     )
+
     return program
 
 
@@ -114,8 +115,10 @@ def test_all_false_mask_can_load_from_an_empty_buffer():
 @pytest.mark.parametrize("offset", (-1, 3, 1000))
 def test_active_out_of_bounds_load_reports_the_operation_location(offset):
     program = _masked_load_program((offset,), (True,))
+
     with pytest.raises(InterpretationError) as caught:
         interpret_program(program, {"x": np.ones(3, dtype=np.float32)})
+
     assert "mem.load" in str(caught.value)
     assert "entry:4" in str(caught.value)
 
@@ -127,6 +130,7 @@ def _masked_store_program(offsets, mask):
     indices = _value("%indices", (len(offsets),), "int32")
     addresses = _value("%addresses", (len(offsets),), "int32", kind="pointer")
     predicate = _value("%mask", (len(mask),), "bool")
+
     return _program(
         (out, values),
         (out,),
@@ -161,10 +165,12 @@ def test_masked_store_changes_only_active_valid_addresses():
 def test_active_out_of_bounds_store_reports_the_operation_location(offset):
     program = _masked_store_program((offset,), (True,))
     out = np.full(5, -731, dtype=np.int32)
+
     with pytest.raises(InterpretationError) as caught:
         interpret_program(
             program, {"out": out, "values": np.array([3], dtype=np.int32)}
         )
+
     assert "mem.store" in str(caught.value)
     assert "entry:4" in str(caught.value)
     np.testing.assert_array_equal(out, np.full(5, -731, dtype=np.int32))
@@ -172,8 +178,10 @@ def test_active_out_of_bounds_store_reports_the_operation_location(offset):
 
 def test_unknown_operation_fails_closed_with_opcode_and_location():
     program = _program((), (), ssa.Operation(opcode="test.unsupported"))
+
     with pytest.raises(UnsupportedOperationError) as caught:
         interpret_program(program, {})
+
     assert "test.unsupported" in str(caught.value)
     assert "entry:0" in str(caught.value)
 
@@ -193,8 +201,10 @@ def test_unknown_operation_in_nested_region_reports_nested_location():
             ),
         ),
     )
+
     with pytest.raises(UnsupportedOperationError) as caught:
         interpret_program(program, {"condition": True})
+
     assert "test.nested" in str(caught.value)
     assert "entry:0" in str(caught.value)
     assert "region" in str(caught.value) or "then" in str(caught.value)
@@ -339,6 +349,7 @@ def _grid_program():
         _constant(values[name], literal)
         for name, literal in (("%six", 6), ("%two", 2), ("%hundred", 100), ("%ten", 10))
     )
+
     for opcode, lhs, rhs, result in (
         ("mul", "%pid0", "%six", "%offset0"),
         ("mul", "%pid1", "%two", "%offset1"),
@@ -354,6 +365,7 @@ def _grid_program():
                 opcode=f"arith.{opcode}", operands=(lhs, rhs), results=(values[result],)
             )
         )
+
     operations.extend(
         (
             ssa.Operation(opcode="mem.data_ptr", operands=("out",), results=(ptr,)),
@@ -363,6 +375,7 @@ def _grid_program():
             ssa.Operation(opcode="mem.store", operands=("%value", address.name)),
         )
     )
+
     return _program((out,), (out,), *operations)
 
 
@@ -437,6 +450,7 @@ def test_explicit_extension_handler_receives_materialized_cpu_operands():
         assert isinstance(operands[0], np.ndarray)
         assert operands[0].dtype == np.float32
         calls.append(operation.opcode)
+
         return operands[0] * operation.attrs["scale"]
 
     data = np.array([2, -4, 5], dtype=np.float32)
@@ -455,6 +469,7 @@ def test_explicit_extension_handler_receives_materialized_cpu_operands():
 
 def test_extension_handler_does_not_hide_an_unregistered_operation():
     program = _program((), (), ssa.Operation(opcode="example.unregistered"))
+
     with pytest.raises(UnsupportedOperationError, match="example.unregistered"):
         interpret_program(
             program, {}, handlers={"example.other": lambda op, args: None}
@@ -581,6 +596,7 @@ def test_unsupported_array_dtypes_are_rejected_before_execution(dtype):
     x = _value("x", (3,), dtype=None)
     program = _program((x,), (x,))
     data = np.array([1, 2, 3], dtype=dtype)
+
     with pytest.raises((TypeError, InterpretationError), match="(?i)dtype|type"):
         interpret_program(program, {"x": data})
 
@@ -588,6 +604,7 @@ def test_unsupported_array_dtypes_are_rejected_before_execution(dtype):
 def test_array_dtype_must_match_the_declared_ssa_type():
     x = _value("x", (3,), "int32")
     program = _program((x,), (x,))
+
     with pytest.raises((TypeError, InterpretationError), match="(?i)dtype|type"):
         interpret_program(program, {"x": np.ones(3, dtype=np.float32)})
 
@@ -602,8 +619,10 @@ def test_num_programs_rejects_invalid_axis_with_operation_location(axis):
             opcode="call.num_programs", results=(count,), attrs={"axis": axis}
         ),
     )
+
     with pytest.raises(InterpretationError) as caught:
         interpret_program(program, {}, grid=(2, 3, 2))
+
     assert "call.num_programs" in str(caught.value)
     assert "entry:0" in str(caught.value)
 
@@ -624,7 +643,9 @@ def test_isolated_decomposed_offset_without_output_store_is_rejected(
             attrs={"dim": 0, "decomposition": decomposition},
         ),
     )
+
     with pytest.raises(UnsupportedOperationError) as caught:
         interpret_program(program, {"x": np.ones((2, 2), dtype=np.float32)})
+
     assert decomposition in str(caught.value)
     assert "entry:0:index.offset" in str(caught.value)

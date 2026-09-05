@@ -1,0 +1,4 @@
+# Keep server evidence byte-identical across Windows and Linux checkouts.
+interpreter_gpu_rtx4090.json -text -whitespace
+interpreter_quality_rtx4090.log -text -whitespace
+interpreter_cpu_only_rtx4090_host.log -text -whitespace

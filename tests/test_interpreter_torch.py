@@ -17,7 +17,7 @@ def torch():
     try:
         import torch as module
     except ImportError as error:
-        pytest.fail(f"Torch adapter validation UNVERIFIED: {error}", pytrace=False)
+        pytest.fail(f"Torch adapter validation UNVERIFIED: {error}.", pytrace=False)
     return module
 
 
@@ -110,6 +110,7 @@ def test_noncontiguous_torch_cpu_views_preserve_strides_and_guard_storage(torch)
 def test_requires_grad_torch_buffers_are_rejected(torch, grad_binding):
     inputs = {name: torch.ones(8, dtype=torch.float32) for name in ("x", "y", "out")}
     inputs[grad_binding].requires_grad_(True)
+
     with pytest.raises(
         (InterpretationError, TypeError), match="requires_grad|gradient"
     ):
@@ -118,6 +119,7 @@ def test_requires_grad_torch_buffers_are_rejected(torch, grad_binding):
 
 def test_sparse_torch_input_is_rejected(torch):
     sparse = torch.sparse_coo_tensor([[0, 4]], [1.0, 2.0], size=(8,))
+
     with pytest.raises((InterpretationError, TypeError), match="strided|sparse|layout"):
         _kernel()(sparse, torch.ones(8), torch.empty(8))
 
@@ -127,6 +129,7 @@ def test_cuda_tensor_is_rejected_by_cpu_interpreter(torch):
         pytest.fail(
             "CUDA-input rejection validation UNVERIFIED: no CUDA GPU.", pytrace=False
         )
+
     with pytest.raises((InterpretationError, TypeError), match="CPU|cpu|CUDA|cuda"):
         _kernel()(torch.ones(8, device="cuda"), torch.ones(8), torch.empty(8))
 

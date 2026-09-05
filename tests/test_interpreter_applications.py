@@ -55,8 +55,10 @@ def _nested_row_tiles(x, out):
 
 def _nested_row_sum(x, out):
     accumulator = ntl.zeros(out.shape, dtype=out.dtype)
+
     for i in range(x.shape[1]):
         accumulator += ntl.sum(x[0, i], axis=-1)
+
     out = accumulator  # noqa: F841
 
 
@@ -66,11 +68,13 @@ def _control_tiles(x, positive, out):
 
 def _control_flow(x, positive, out):
     accumulator = x
+
     for i in range(3):
         if positive:
             accumulator = accumulator + i
         else:
             accumulator = accumulator - i
+
     out = accumulator  # noqa: F841
 
 
@@ -115,6 +119,7 @@ def _descriptor(ndim, name, dtype="float32", **kwargs):
 def _check(actual, expected):
     assert actual.shape == expected.shape
     assert actual.dtype == expected.dtype
+
     if expected.dtype.kind == "f":
         np.testing.assert_allclose(actual, expected, rtol=1e-3, atol=1e-3)
     else:
@@ -129,6 +134,7 @@ def _run_and_compare(handle, arguments, expected, *, optimize):
     _check(arguments[-1], expected)
     assert "out" in before.outputs
     _check(before.outputs["out"], expected)
+
     if optimize:
         for backend in ("cuda", "triton"):
             program = lower_for_target(
@@ -142,6 +148,7 @@ def _run_and_compare(handle, arguments, expected, *, optimize):
             after = handle.with_program(program)(*optimized_arguments)
             _check(optimized_arguments[-1], expected)
             _check(after.outputs["out"], before.outputs["out"])
+
     for argument, original in zip(arguments[:-1], originals[:-1]):
         if isinstance(argument, np.ndarray):
             np.testing.assert_array_equal(argument, original)
@@ -393,9 +400,11 @@ def test_fixed_k_tiled_dot_matches_numpy_after_target_decomposition(
     rng = np.random.default_rng(2026)
     a = rng.integers(-7, 8, size=(rows, inner)).astype(dtype)
     b = rng.integers(-7, 8, size=(inner, columns)).astype(dtype)
+
     if dtype == np.float32:
         a /= 3
         b /= 5
+
     expected = a @ b
     tensors = (
         _descriptor(2, "a", np.dtype(dtype).name, other=0),
@@ -419,10 +428,12 @@ def test_fixed_k_tiled_dot_matches_numpy_after_target_decomposition(
     stores = [event for event in result.trace if event.opcode == "mem.store"]
     assert len(stores) == rows * columns
     assert {event.lane for event in stores} == set(np.ndindex(expected.shape))
+
     for event in stores:
         mask = np.asarray(event.mask["value"])
         assert mask.sum() == 1
         assert mask[event.lane]
+
     repeated = handle(a, b, np.full_like(expected, -731))
     assert result.trace == repeated.trace
 
@@ -482,10 +493,12 @@ def test_multi_program_dot_decomposition_is_rejected_without_partial_writes(
         ),
         backend=backend,
     )
+
     with pytest.raises(UnsupportedOperationError, match="multiple arranged programs"):
         handle(
             np.ones((rows, inner), dtype=np.float32),
             np.ones((inner, columns), dtype=np.float32),
             out,
         )
+
     np.testing.assert_array_equal(out, np.full(out.shape, -731, dtype=np.float32))

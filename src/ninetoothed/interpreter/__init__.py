@@ -44,23 +44,30 @@ class InterpretedKernel:
         self.callback = callback
         self.watch = tuple(watch)
         # Match the compiler's schedule-parameter defaults. Explicit meta wins.
+
         for tensor in prepared.arranged:
             for symbol in tensor.names():
                 if not hasattr(symbol, "lower_bound"):
                     continue
+
                 value = min(max(256, int(symbol.lower_bound)), int(symbol.upper_bound))
+
                 if getattr(symbol, "power_of_two", False):
                     value = 1 << max(0, value.bit_length() - 1)
+
                 value = self.meta.get(remove_prefixes(str(symbol)), value)
                 self.meta.setdefault(str(symbol), value)
 
     def __call__(self, *args, **kwargs):
         if len(args) > len(self._prepared.parameters):
             raise TypeError("Too many arguments for interpreted kernel.")
+
         inputs = dict(zip(self._prepared.parameters, args))
+
         for name, value in kwargs.items():
             if name not in self._prepared.parameters or name in inputs:
                 raise TypeError(f"Unexpected or duplicate argument `{name}`.")
+
             inputs[name] = value
         return interpret_program(
             self.program,
@@ -110,10 +117,12 @@ def interpret(
     """
     if application is None:
         application, arrangement = arrangement, None
+
     prepared = prepare_application(
         application, arrangement=arrangement, tensors=tensors
     )
     frontend_program = prepared.program
+
     if backend is not None:
         from ninetoothed.compiler.passes import lower_for_target
 
@@ -127,8 +136,9 @@ def interpret(
             )
         except ssa.VerificationError as exc:
             raise InterpretationError(
-                f"Backend `{backend}` SSA pipeline produced invalid SSA: {exc}"
+                f"Backend `{backend}` SSA pipeline produced invalid SSA: {exc}."
             ) from exc
+
         prepared = replace(prepared, program=program)
     elif pipeline is not None or pass_options is not None:
         raise ValueError("A backend must be specified when choosing SSA passes.")

@@ -41,6 +41,7 @@ def main():
     }
     started = time.perf_counter()
     exit_code = 2
+
     try:
         import numpy
         import sympy
@@ -64,6 +65,7 @@ def main():
             device_index=args.device,
             seed=SEED,
         )
+
         for case in GPU_CASES:
             try:
                 result = run_gpu_case(case, torch, args.device)
@@ -75,8 +77,10 @@ def main():
                     "error": f"{type(error).__name__}: {error}",
                     "traceback": traceback.format_exc(),
                 }
+
             report["cases"].append(result)
             print(f"{result['status']}: {case.name}", flush=True)
+
         passed = [case for case in report["cases"] if case["status"] == "PASS"]
         report["passed_cases"] = len(passed)
         report["total_cases"] = len(GPU_CASES)
@@ -89,12 +93,14 @@ def main():
         report["error"] = f"{type(error).__name__}: {error}"
         report["traceback"] = traceback.format_exc()
         print(f"UNVERIFIED: {error}", file=sys.stderr)
+
     report["elapsed_validation_seconds"] = round(time.perf_counter() - started, 3)
     args.report.parent.mkdir(parents=True, exist_ok=True)
     args.report.write_text(
         json.dumps(report, indent=2, ensure_ascii=False) + "\n", encoding="utf-8"
     )
     print(f"{report['status']}: report saved to {args.report}")
+
     return exit_code
 
 

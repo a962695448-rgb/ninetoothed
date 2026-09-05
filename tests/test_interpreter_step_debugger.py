@@ -15,6 +15,7 @@ def _program():
         ssa.Value(name=name, type=tensor) for name in ("x", "out", "%plus", "%square")
     )
     one = ssa.Value(name="%one", type=ssa.Type(kind="scalar", dtype="float32"))
+
     return ssa.Program(
         kind="debug_steps",
         inputs=(x, out),
@@ -115,8 +116,10 @@ def test_quit_stops_future_operations_and_does_not_rollback_completed_stores(
         breakpoints=(location,),
         stop_on_entry=False,
     )
+
     with pytest.raises(DebuggerQuit, match="Debugger stopped"):
         interpret_program(_program(), inputs, callback=debugger)
+
     np.testing.assert_array_equal(inputs["out"], [9, 16] if written else [-731, -731])
 
 

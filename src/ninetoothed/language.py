@@ -13,7 +13,8 @@ def __getattr__(name):
         from triton.language.extra import libdevice
 
         return libdevice
-    raise AttributeError(f"module {__name__!r} has no attribute {name!r}")
+
+    raise AttributeError(f"Module {__name__!r} has no attribute {name!r}.")
 
 
 def call(func, *args, **kwargs):
