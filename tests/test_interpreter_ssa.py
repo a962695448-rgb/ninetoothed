@@ -518,6 +518,64 @@ def test_masked_store_trace_does_not_dereference_inactive_addresses():
     )
 
 
+@pytest.mark.parametrize("source_size", (0, 3))
+@pytest.mark.parametrize("use_callback", (False, True))
+def test_masked_tensor_store_trace_and_watch_never_load_inactive_lanes(
+    source_size, use_callback
+):
+    from ninetoothed.ir import AccessMap, IndexExpr, TensorLayout, TensorSpec
+
+    expr = IndexExpr.parse
+    out, values = _value("out", (source_size,)), _value("values", (5,))
+    mask = _value("mask", (5,), "bool")
+    program = _program(
+        (out, values, mask),
+        (out,),
+        ssa.Operation(opcode="mem.store", operands=("values", "out", "mask")),
+    )
+    layout = TensorLayout(
+        source_shape=(expr(source_size),),
+        source_strides=(expr(1),),
+        view_shape=(expr(5),),
+        application_shape=(expr(5),),
+        view_access=AccessMap(
+            source_indices=(expr("index"),),
+            linear_index=expr("index"),
+            predicate=expr(True),
+        ),
+    )
+    spec = TensorSpec(
+        ndim=1,
+        name="out",
+        shape=("5",),
+        dtype="float32",
+        layout=layout,
+        attrs={"source_shape": (str(source_size),)},
+    )
+    inputs = {
+        "out": np.full(source_size, -731, dtype=np.float32),
+        "values": np.arange(5, dtype=np.float32),
+        "mask": np.arange(5) < source_size,
+    }
+    callbacks = []
+    result = interpret_program(
+        program,
+        inputs,
+        tensors=(spec,),
+        trace=not use_callback,
+        callback=callbacks.append if use_callback else None,
+        watch=("out",),
+    )
+    np.testing.assert_array_equal(
+        result.outputs["out"], np.arange(source_size, dtype=np.float32)
+    )
+    event = callbacks[0] if use_callback else result.trace[0]
+    assert event.mask["value"] == inputs["mask"].tolist()
+    assert event.results["out"]["tensor"] == "out"
+    assert "value" not in event.results["out"]
+    assert event.watched["out"] == event.results["out"]
+
+
 @pytest.mark.parametrize("dtype", (object, np.complex64, "U4", "S4"))
 def test_unsupported_array_dtypes_are_rejected_before_execution(dtype):
     x = _value("x", (3,), dtype=None)

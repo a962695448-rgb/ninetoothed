@@ -26,6 +26,14 @@ def vector_add(x, y, out):
     out = x + y  # noqa: F841
 
 
+def vector_floor_divide(x, y, out):
+    out = x // y  # noqa: F841
+
+
+def vector_remainder(x, y, out):
+    out = x % y  # noqa: F841
+
+
 def broadcast_arrangement(x, bias, out):
     return x.tile((1, 256)), bias.tile((256,)), out.tile((1, 256))
 
@@ -107,6 +115,8 @@ GPU_CASES = (
     GPUCase("if_for_true", "if_for", positive=True),
     GPUCase("if_for_false", "if_for", positive=False),
     GPUCase("softmax_float32", "softmax"),
+    GPUCase("floor_div_int32_mixed_sign_tail", "floor_div", dtype="int32"),
+    GPUCase("remainder_int32_mixed_sign_tail", "remainder", dtype="int32"),
 )
 
 
@@ -133,10 +143,64 @@ def _descriptor(name, ndim, dtype="float32", **kwargs):
     return Tensor(ndim, name=name, dtype=dtype, **kwargs)
 
 
+def _signed_division_inputs(size):
+    # All sign combinations, exact/inexact quotients, zero numerators, and
+    # int32 extremes. Division by zero and INT_MIN / -1 are outside this test.
+    pairs = np.array(
+        [
+            (-7, 3),
+            (7, -3),
+            (-7, -3),
+            (7, 3),
+            (-6, 3),
+            (6, -3),
+            (-6, -3),
+            (6, 3),
+            (0, 3),
+            (0, -3),
+            (-1, 3),
+            (1, -3),
+            (-2147483648, 3),
+            (2147483647, -3),
+            (-2147483648, -3),
+            (2147483647, 3),
+            (-2147483648, 2147483647),
+            (2147483647, -2147483648),
+            (-2147483647, -1),
+            (-2147483648, 1),
+            (-1, -2147483648),
+            (1, 2147483647),
+        ],
+        dtype=np.int32,
+    )
+    selected = pairs[np.arange(size) % len(pairs)]
+    return selected[:, 0].copy(), selected[:, 1].copy()
+
+
 def case_inputs(case):
     """Construct fixed-seed inputs and an independent NumPy oracle."""
     rng = np.random.default_rng(SEED)
     dtype = np.dtype(case.dtype)
+    if case.category in {"floor_div", "remainder"}:
+        x, y = _signed_division_inputs(case.size)
+        function = operator.floordiv if case.category == "floor_div" else operator.mod
+        # Python integers are an independent, exact oracle: no GPU or NumPy
+        # division, float conversion, or rounding assumption is involved.
+        expected = np.array(
+            [function(int(lhs), int(rhs)) for lhs, rhs in zip(x, y)],
+            dtype=np.int32,
+        )
+        return (
+            vector_arrangement,
+            vector_floor_divide if case.category == "floor_div" else vector_remainder,
+            (
+                _descriptor("x", 1, "int32"),
+                _descriptor("y", 1, "int32", other=1),
+                _descriptor("out", 1, "int32"),
+            ),
+            {"x": x, "y": y},
+            expected,
+        )
     if case.category in {"elementwise", "masked_tail"}:
         if dtype.kind == "i":
             x = rng.integers(-100, 100, size=case.size, dtype=dtype)
@@ -405,11 +469,15 @@ def _compile_case(case):
 
 @pytest.mark.parametrize(
     "case",
-    tuple(case for case in GPU_CASES if case.category == "broadcast"),
+    tuple(
+        case
+        for case in GPU_CASES
+        if case.category in {"broadcast", "floor_div", "remainder"}
+    ),
     ids=lambda case: case.name,
 )
-def test_broadcast_gpu_fixtures_match_numpy_before_and_after_lowering_on_cpu(case):
-    """Verify all bias layouts even when CUDA and Triton are unavailable."""
+def test_gpu_fixtures_match_oracle_before_and_after_lowering_on_cpu(case):
+    """Verify broadcast and signed division without CUDA or Triton installed."""
     arrangement, application, tensors, inputs, expected = case_inputs(case)
     compilation, _, _ = _compile_case(case)
     lowered = _program_from_metadata(compilation.artifact.metadata["ssa"])
@@ -461,8 +529,14 @@ def test_generated_stride_guards_use_binary_boolops_supported_by_triton_31(case)
     assert not offenders, f"Triton 3.1 does not support chained BoolOp: {offenders}"
 
 
-def _numeric_source_expression(node, values):
+def _numeric_source_expression(node, values, *, tensor_division=False):
     """Evaluate only emitted address/mask arithmetic, with no Python execution."""
+
+    def evaluate(child):
+        return _numeric_source_expression(
+            child, values, tensor_division=tensor_division
+        )
+
     binary = {
         ast.Add: operator.add,
         ast.Sub: operator.sub,
@@ -485,26 +559,90 @@ def _numeric_source_expression(node, values):
     if isinstance(node, ast.Name):
         return values[node.id]
     if isinstance(node, ast.BinOp) and type(node.op) in binary:
-        return binary[type(node.op)](
-            _numeric_source_expression(node.left, values),
-            _numeric_source_expression(node.right, values),
-        )
+        lhs, rhs = evaluate(node.left), evaluate(node.right)
+        if tensor_division and isinstance(node.op, (ast.FloorDiv, ast.Mod)):
+            # Simulate documented Triton tensor C semantics with exact int64
+            # arithmetic. The int32 fixtures exclude zero/overflow division.
+            quotient = (np.abs(lhs) // np.abs(rhs)) * np.where(
+                (lhs < 0) != (rhs < 0), -1, 1
+            )
+            return (
+                quotient
+                if isinstance(node.op, ast.FloorDiv)
+                else lhs - rhs * quotient
+            )
+        return binary[type(node.op)](lhs, rhs)
     if isinstance(node, ast.UnaryOp):
         function = {
             ast.USub: operator.neg,
             ast.UAdd: operator.pos,
             ast.Invert: operator.invert,
         }[type(node.op)]
-        return function(_numeric_source_expression(node.operand, values))
+        return function(evaluate(node.operand))
     if isinstance(node, ast.Compare):
-        left = _numeric_source_expression(node.left, values)
+        left = evaluate(node.left)
         result = True
         for operation, child in zip(node.ops, node.comparators):
-            right = _numeric_source_expression(child, values)
+            right = evaluate(child)
             result = np.logical_and(result, comparison[type(operation)](left, right))
             left = right
         return result
+    if (
+        isinstance(node, ast.Call)
+        and isinstance(node.func, ast.Attribute)
+        and isinstance(node.func.value, ast.Name)
+        and node.func.value.id == "tl"
+    ):
+        if node.func.attr == "where":
+            return np.where(*(evaluate(arg) for arg in node.args))
+        if node.func.attr == "load":
+            source_names = {
+                child.id
+                for child in ast.walk(node.args[0])
+                if isinstance(child, ast.Name) and child.id in values
+            }
+            assert len(source_names) == 1
+            return values[source_names.pop()]
     raise AssertionError(f"Unsupported generated address expression: {ast.dump(node)}")
+
+
+@pytest.mark.parametrize(
+    "case",
+    tuple(case for case in GPU_CASES if case.category in {"floor_div", "remainder"}),
+    ids=lambda case: case.name,
+)
+def test_generated_signed_division_corrects_triton_tensor_rounding(case):
+    """Check emitted arithmetic under C semantics before expensive GPU runs."""
+    compilation, inputs, expected = _compile_case(case)
+    kernel = _jit_function(compilation.artifact.primary_source)
+    stores = [
+        node
+        for node in ast.walk(kernel)
+        if isinstance(node, ast.Call)
+        and isinstance(node.func, ast.Attribute)
+        and isinstance(node.func.value, ast.Name)
+        and node.func.value.id == "tl"
+        and node.func.attr == "store"
+    ]
+    assert stores
+    output_names = {store.args[1].id for store in stores}
+    expressions = [
+        node.value
+        for node in ast.walk(kernel)
+        if isinstance(node, ast.Assign)
+        and any(
+            isinstance(target, ast.Name) and target.id in output_names
+            for target in node.targets
+        )
+    ]
+    assert expressions
+    for expression in expressions:
+        actual = _numeric_source_expression(
+            expression,
+            {name: value.astype(np.int64) for name, value in inputs.items()},
+            tensor_division=True,
+        )
+        np.testing.assert_array_equal(actual, expected)
 
 
 @pytest.mark.parametrize(

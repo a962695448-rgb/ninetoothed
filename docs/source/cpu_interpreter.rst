@@ -50,6 +50,10 @@ execution.
 Array dtypes must match declared SSA types. The acceptance-tested arithmetic
 types are float32, int32, and bool; index values use int64 internally.
 Object, complex, string, structured, and unsupported dtypes are rejected.
+Signed integer ``floordiv`` rounds toward negative infinity, and ``mod`` has
+the divisor's sign, following the SSA/Python contract. The Triton emitter
+corrects its native signed division/remainder when needed. Division by zero
+and the signed overflow case ``INT_MIN / -1`` are outside the validated inputs.
 
 The package's existing installation metadata still lists Triton as a dependency.
 For CPU-only contributor testing, use an isolated environment containing NumPy,
@@ -133,8 +137,9 @@ Tracing, extension and pass debugging
 ``inputs`` snapshots, ``results`` snapshots, ``mask``, loop ``iteration``, and
 ``watched`` values. A snapshot stores shape, dtype and values. Memory destination
 and pointer snapshots store reference metadata instead of dereferencing arbitrary
-addresses. Source snapshots are copied, so later mutations do not alter the
-recorded trace.
+addresses. Lazy tensor references in results and watch lists likewise retain
+metadata; observing them never introduces an unmasked memory read. Numeric
+source snapshots are copied, so later mutations do not alter the recorded trace.
 
 The lower-level API accepts ``program_ids``, ``opcodes`` and ``watch`` filters.
 ``callback(event)`` receives each selected event synchronously. ``StepDebugger``
@@ -219,10 +224,14 @@ Replay bundles
 
 ``export_reproducer(directory, program, inputs, tensors=..., symbols=..., seed=...)``
 exports structured JSON, readable SSA, numeric NPZ inputs, shape/dtype/seed metadata,
-and a replay script. ``load_reproducer`` loads JSON and NumPy data with
+array strides and write permissions, and a replay script. Differential copies
+and loaded bundles preserve positive, negative and zero strides in independent
+storage. ``load_reproducer`` loads JSON and NumPy data with
 ``allow_pickle=False``. Existing bundle files are never overwritten.
 The supplied case is preserved; automatic shape/operation minimization is not
-implemented. Overlapping distinct NumPy views are rejected for differential
+implemented. Multiple input names bound to the same array object retain that
+alias relationship in differential copies and loaded bundles. Overlapping
+distinct NumPy views are rejected for differential
 copying/export because their shared-storage relationship is not serialized.
 
 Current boundaries

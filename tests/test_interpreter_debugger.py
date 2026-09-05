@@ -10,7 +10,7 @@ import numpy as np
 import pytest
 
 from ninetoothed import Tensor, interpret
-from ninetoothed.interpreter import interpret_program
+from ninetoothed.interpreter import InterpretationError, interpret_program
 from ninetoothed.interpreter.debugger import (
     StepDebugger,
     check_passes,
@@ -216,6 +216,142 @@ def test_reproducer_preserves_exact_alias_bindings(tmp_path):
     assert restored["x"] is restored["y"]
     result = interpret_program(restored_program, restored, **options)
     np.testing.assert_array_equal(result.outputs["x"], shared)
+
+
+def test_comparison_preserves_write_then_read_through_exact_aliases():
+    tensor_type = ssa.Type(kind="tensor", shape=("3",), dtype="float32")
+    x, alias, out = (
+        ssa.Value(name=name, type=tensor_type) for name in ("x", "alias", "out")
+    )
+    one = ssa.Value(name="%one", type=ssa.Type(kind="scalar", dtype="float32"))
+    operations = (
+        ssa.Operation(opcode="arith.constant", results=(one,), attrs={"value": 1}),
+        ssa.Operation(opcode="mem.store", operands=("%one", "x")),
+        ssa.Operation(opcode="mem.store", operands=("alias", "out")),
+    )
+    program = ssa.Program(
+        kind="alias_effect",
+        inputs=(x, alias, out),
+        outputs=(out,),
+        blocks=(ssa.Block(operations=operations),),
+    )
+    candidate = replace(
+        program,
+        blocks=(
+            ssa.Block(
+                operations=(
+                    *operations[:2],
+                    ssa.Operation(opcode="mem.store", operands=("%one", "out")),
+                )
+            ),
+        ),
+    )
+    shared = np.array([2, 3, 5], dtype=np.float32)
+    inputs = {"x": shared, "alias": shared, "out": np.full(3, -731, dtype=np.float32)}
+    assert compare_programs(program, candidate, inputs).equal
+    np.testing.assert_array_equal(shared, [2, 3, 5])
+    np.testing.assert_array_equal(inputs["out"], [-731, -731, -731])
+
+
+@pytest.mark.parametrize("partial", (False, True))
+def test_comparison_and_export_reject_distinct_overlapping_views(tmp_path, partial):
+    kernel = _kernel()
+    storage = np.arange(8, dtype=np.float32)
+    inputs = {"x": storage[:7], "out": storage[1:] if partial else storage[:7]}
+    assert inputs["x"] is not inputs["out"]
+    with pytest.raises(ValueError, match="overlapping views.*x.*out"):
+        compare_programs(
+            kernel.program, kernel.program, inputs, tensors=kernel.tensors
+        )
+    with pytest.raises(ValueError, match="overlapping views.*x.*out"):
+        export_reproducer(
+            tmp_path / "overlap", kernel.program, inputs, tensors=kernel.tensors
+        )
+    assert not (tmp_path / "overlap").exists()
+    np.testing.assert_array_equal(storage, np.arange(8, dtype=np.float32))
+
+
+def _raw_pointer_program():
+    tensor_type = ssa.Type(kind="tensor", shape=("3",), dtype="float32")
+    x = ssa.Value(name="x", type=tensor_type)
+    pointer = ssa.Value(name="%ptr", type=ssa.Type(kind="pointer", dtype="float32"))
+    loaded = ssa.Value(name="%loaded", type=ssa.Type(kind="scalar", dtype="float32"))
+    return ssa.Program(
+        kind="strided_pointer_replay",
+        inputs=(x,),
+        outputs=(loaded,),
+        blocks=(
+            ssa.Block(
+                operations=(
+                    ssa.Operation(
+                        opcode="mem.data_ptr", operands=("x",), results=(pointer,)
+                    ),
+                    ssa.Operation(
+                        opcode="mem.load", operands=("%ptr",), results=(loaded,)
+                    ),
+                )
+            ),
+        ),
+    )
+
+
+def test_comparison_and_replay_preserve_noncontiguous_pointer_rejection(tmp_path):
+    program = _raw_pointer_program()
+    inputs = {"x": np.arange(6, dtype=np.float32)[::2]}
+    with pytest.raises(InterpretationError, match="C-contiguous"):
+        interpret_program(program, inputs)
+    with pytest.raises(InterpretationError, match="C-contiguous"):
+        compare_programs(program, program, inputs)
+    export_reproducer(tmp_path / "strided", program, inputs)
+    restored_program, restored, options = load_reproducer(tmp_path / "strided")
+    assert restored["x"].strides == inputs["x"].strides
+    with pytest.raises(InterpretationError, match="C-contiguous"):
+        interpret_program(restored_program, restored, **options)
+
+
+@pytest.mark.parametrize("layout", ("positive", "negative", "transpose", "broadcast"))
+def test_reproducer_preserves_strides_values_and_readonly_flags(tmp_path, layout):
+    data = np.arange(12, dtype=np.float32)
+    value = {
+        "positive": data[::2],
+        "negative": data[::-1],
+        "transpose": data.reshape(3, 4).T,
+        "broadcast": np.broadcast_to(data[:1], (6,)),
+    }[layout]
+    value.flags.writeable = False
+    x = ssa.Value(
+        name="x",
+        type=ssa.Type(kind="tensor", shape=tuple(map(str, value.shape)), dtype="float32"),
+    )
+    program = ssa.Program(
+        kind="strides", inputs=(x,), outputs=(x,), blocks=(ssa.Block(),)
+    )
+    export_reproducer(tmp_path / layout, program, {"x": value})
+    _program, restored, _options = load_reproducer(tmp_path / layout)
+    assert restored["x"].strides == value.strides
+    assert not restored["x"].flags.writeable
+    np.testing.assert_array_equal(restored["x"], value)
+    assert not np.shares_memory(restored["x"], value)
+
+
+def test_program_comparison_keeps_readonly_output_semantics():
+    value = ssa.Value(
+        name="x", type=ssa.Type(kind="tensor", shape=("3",), dtype="float32")
+    )
+    program = ssa.Program(
+        kind="readonly",
+        inputs=(value,),
+        outputs=(value,),
+        blocks=(
+            ssa.Block(
+                operations=(ssa.Operation(opcode="mem.store", operands=("x", "x")),)
+            ),
+        ),
+    )
+    array = np.arange(3, dtype=np.float32)
+    array.flags.writeable = False
+    with pytest.raises(InterpretationError, match="read-only"):
+        compare_programs(program, program, {"x": array})
 
 
 def test_reproducer_rejects_overwrite_and_manifest_input_mismatch(tmp_path):

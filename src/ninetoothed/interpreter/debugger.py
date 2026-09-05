@@ -184,6 +184,30 @@ class PassCheck:
     error: str | None = None
 
 
+def _copy_array_layout(value, *, strides=None, writeable=None):
+    """Copy numeric storage while retaining signed strides and write permission."""
+    if value.dtype.kind not in "biufc":
+        raise TypeError("Differential replay requires numeric arrays.")
+    strides = value.strides if strides is None else tuple(strides)
+    if len(strides) != value.ndim or any(
+        not isinstance(stride, int) for stride in strides
+    ):
+        raise ValueError("Array strides must contain one integer per dimension.")
+    if value.size:
+        extents = tuple((size - 1) * stride for size, stride in zip(value.shape, strides))
+        lower = sum(min(0, extent) for extent in extents)
+        upper = sum(max(0, extent) for extent in extents)
+    else:
+        lower = upper = 0
+    storage = np.empty(upper - lower + value.itemsize, dtype=np.uint8)
+    result = np.ndarray(
+        value.shape, dtype=value.dtype, buffer=storage, offset=-lower, strides=strides
+    )
+    result[...] = value
+    result.flags.writeable = value.flags.writeable if writeable is None else writeable
+    return result
+
+
 def _copy_inputs(inputs):
     inputs, _originals = _adapt_inputs(inputs)
     arrays = [
@@ -200,7 +224,7 @@ def _copy_inputs(inputs):
     for name, value in inputs.items():
         if isinstance(value, np.ndarray):
             if id(value) not in memo:
-                memo[id(value)] = value.copy()
+                memo[id(value)] = _copy_array_layout(value)
             value = memo[id(value)]
         result[name] = value
     return result
@@ -381,6 +405,8 @@ def export_reproducer(
             "key": key,
             "shape": list(array.shape),
             "dtype": str(array.dtype),
+            "strides": list(array.strides),
+            "writeable": bool(array.flags.writeable),
             "scalar": not isinstance(value, np.ndarray),
         }
         if isinstance(value, np.ndarray):
@@ -509,7 +535,15 @@ def load_reproducer(directory):
                 or str(array.dtype) != binding["dtype"]
             ):
                 raise ValueError(f"Input `{name}` disagrees with the bundle manifest.")
-            inputs[name] = array[()] if binding["scalar"] else array
+            inputs[name] = (
+                array[()]
+                if binding["scalar"]
+                else _copy_array_layout(
+                    array,
+                    strides=binding.get("strides"),
+                    writeable=binding.get("writeable", True),
+                )
+            )
     for name, source in metadata.get("aliases", {}).items():
         inputs[name] = inputs[source]
     return (

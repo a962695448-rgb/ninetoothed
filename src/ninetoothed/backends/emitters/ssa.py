@@ -11,7 +11,7 @@ import re
 from dataclasses import replace
 from typing import Any, Mapping
 
-from ninetoothed.backends.core import Artifact
+from ninetoothed.backends.core import Artifact, Target
 from ninetoothed.backends.emitters.analysis import (
     atomic_output_tensors as _atomic_output_tensors,
 )
@@ -1329,12 +1329,8 @@ def _operation_expr(op: ssa.Operation, ctx: _EmitContext) -> str:
         if operator in _UNARY:
             return f"({_UNARY[operator]}{args[0]})"
 
-        if operator == "floordiv":
-            return (
-                f"(({args[0]}) // ({args[1]}))"
-                if not target.c_style_syntax
-                else f"(({args[0]}) / ({args[1]}))"
-            )
+        if operator in {"floordiv", "mod"}:
+            return _floor_divmod_expr(operator, op, args, ctx)
 
         if operator == "pow":
             return target.call("pow", args)
@@ -1400,6 +1396,31 @@ def _binary_expr(operator: str, op: ssa.Operation, ctx: _EmitContext) -> str:
     symbol = _BINARY[operator]
 
     return f"({args[0]} {symbol} {args[1]})"
+
+
+def _floor_divmod_expr(
+    operator: str, op: ssa.Operation, args: tuple[str, ...], ctx: _EmitContext
+) -> str:
+    """Preserve SSA/Python floor division on signed Triton tensor operands."""
+    lhs, rhs = (f"({arg})" for arg in args)
+    division_symbol = "/" if ctx.target.c_style_syntax else "//"
+    quotient = f"({lhs} {division_symbol} {rhs})"
+    remainder = f"({lhs} % {rhs})"
+    dtype = _normalize_dtype(ctx.target.arithmetic_result_type(op, ctx).dtype)
+    if ctx.target.backend == Target.TRITON and dtype in {
+        "int8",
+        "int16",
+        "int32",
+        "int64",
+    }:
+        # Triton tensor // and % truncate toward zero. Correct a nonzero
+        # remainder whose sign differs from the divisor. Using the remainder's
+        # sign also leaves compile-time scalar Python arithmetic unchanged.
+        correction = f"(({remainder} != 0) & (({remainder} < 0) != ({rhs} < 0)))"
+        if operator == "floordiv":
+            return ctx.target.where(correction, f"({quotient} - 1)", quotient)
+        return ctx.target.where(correction, f"({remainder} + {rhs})", remainder)
+    return quotient if operator == "floordiv" else remainder
 
 
 def _emit_linalg_dot(
@@ -1718,12 +1739,8 @@ def _element_binary(
 
     args = ctx.target.coerce_binary_args(op, args, ctx)
 
-    if operator == "floordiv":
-        return (
-            f"(({args[0]}) // ({args[1]}))"
-            if not ctx.target.c_style_syntax
-            else f"(({args[0]}) / ({args[1]}))"
-        )
+    if operator in {"floordiv", "mod"}:
+        return _floor_divmod_expr(operator, op, args, ctx)
 
     symbol = _BINARY[operator]
     result = f"({args[0]} {symbol} {args[1]})"

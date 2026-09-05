@@ -450,7 +450,12 @@ class _Execution:
     def record(self, op, env, location, input_snapshots, mask_snapshot):
         if not self.event_enabled(op):
             return
-        values = {result.name: _snapshot(env[result.name]) for result in op.results}
+        values = {
+            result.name: _snapshot(
+                env[result.name], reference_only=isinstance(env[result.name], TensorRef)
+            )
+            for result in op.results
+        }
         if op.opcode == "mem.store":
             destination = env[op.operands[1]]
             if isinstance(destination, TensorRef):
@@ -464,11 +469,18 @@ class _Execution:
                     ]
                     values[op.operands[1]] = _snapshot(stored)
                 else:
-                    values[op.operands[1]] = _snapshot(destination)
+                    # A trace must not turn a masked write into an unmasked read.
+                    # Store inputs and the effective mask describe the write;
+                    # preserve destination provenance without dereferencing it.
+                    values[op.operands[1]] = _snapshot(destination, reference_only=True)
         watch = tuple(
             dict.fromkeys((*self.watch, *getattr(self.callback, "watch_symbols", ())))
         )
-        watched = {name: _snapshot(env[name]) for name in watch if name in env}
+        watched = {
+            name: _snapshot(env[name], reference_only=isinstance(env[name], TensorRef))
+            for name in watch
+            if name in env
+        }
         event = TraceEvent(
             self.program_id,
             location,
