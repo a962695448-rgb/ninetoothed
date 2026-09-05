@@ -1,0 +1,62 @@
+{
+  "schema": 1,
+  "scope": "Controlled GPU mechanism diagnosis, including an expected assertion failure; not a formal pytest run or an exact replay of the earlier full-suite state.",
+  "code_commit": "377daec6242864a920de43a55523ac3d5f582648",
+  "archived_at_utc": "2026-09-05T18:29:25.715576+00:00",
+  "original_diagnosis_time_utc": "2026-09-05T18:22:55.132677+00:00",
+  "formal_pytest_run": false,
+  "add_to_formal_test_counts": false,
+  "manual_seed": 2026,
+  "fixture_arguments": [
+    1024,
+    128,
+    10,
+    "cuda"
+  ],
+  "case_outcomes": {
+    "natural_allocation": "PASS",
+    "nan_output_unique_indices": "FAIL",
+    "finite_output_unique_indices": "PASS"
+  },
+  "before_source": {
+    "head": "377daec6242864a920de43a55523ac3d5f582648",
+    "tracked_status": ""
+  },
+  "after_source": {
+    "head": "377daec6242864a920de43a55523ac3d5f582648",
+    "tracked_status": ""
+  },
+  "test_file_sha256": "c82e94035bea75c1c1a54ace7465030ea30dcb2f659a18a905319b5e237ed945",
+  "frozen_test_git_blob_hash_verified": true,
+  "original_allclose_result_returned_unchanged": true,
+  "equal_nan_true_is_observation_only": true,
+  "original_copies_byte_identical": true,
+  "privacy_review": {
+    "files_reviewed": [
+      "squeeze-fixture-diagnosis-20260906.json",
+      "a100_diagnose_squeeze_fixture.py.txt"
+    ],
+    "method": "Independent static scan and source review; no private connection IP, rental login material, suspected private-key filename, key header, common credential token or authenticated URL found. No private key was read.",
+    "findings": []
+  },
+  "limitations": [
+    "Original full-suite allocator state, actual pytest random state and complete indices were not preserved or replayed.",
+    "The earlier full-suite failure cannot be assigned a unique exact cause from these controls.",
+    "All three observed/control index lists were unique; deliberately repeated target rows were not tested.",
+    "No formal pytest count or acceptance status is inferred from these three direct fixture calls."
+  ],
+  "artifacts": {
+    "a100_diagnose_squeeze_fixture.py.txt": {
+      "bytes": 4492,
+      "sha256": "5dec48fdaa880590d0e639c3bdf95645528549623c4df668616a0f180b003cf5"
+    },
+    "README.md": {
+      "bytes": 4226,
+      "sha256": "1d216db01016bde75fad867a92b930cbf4b19b243b7dff95d78c7809489253e8"
+    },
+    "squeeze-fixture-diagnosis-20260906.json": {
+      "bytes": 2956,
+      "sha256": "df3b3b913a0c802e55bdbc80626a62efabda5ff060f60284142ca4a54dd911ca"
+    }
+  }
+}

@@ -1,0 +1,79 @@
+"""Run bounded controls against the unchanged squeeze test; retain assertions."""
+
+from datetime import datetime, timezone
+import hashlib
+import json
+import os
+from pathlib import Path
+import subprocess
+import sys
+import traceback
+
+root = Path.home() / "infinitensor-2026"
+repo = root / "ninetoothed"
+state = json.loads((root / "runs/a100-recheck-active.json").read_text())
+full = json.loads((Path(state["stages"]["full"]["out"]) / "manifest.json").read_text())
+assert full["status"] == "FAIL" and full["wrapper_exit_code"] == 1
+out = root / "runs/squeeze-fixture-diagnosis-20260906.json"
+assert not out.exists()
+expected_sha = "377daec6242864a920de43a55523ac3d5f582648"
+
+
+def source_state():
+    return {"head": subprocess.check_output(["git", "rev-parse", "HEAD"], cwd=repo, text=True).strip(), "tracked_status": subprocess.check_output(["git", "status", "--porcelain", "--untracked-files=no"], cwd=repo, text=True).strip()}
+
+
+before = source_state()
+assert before == {"head": expected_sha, "tracked_status": ""}
+os.chdir(repo)
+sys.path[:0] = [str(repo / "src"), str(repo)]
+os.environ.update(TRITON_LIBCUDA_PATH=str(root / ".driver-libs"), LIBRARY_PATH=str(root / ".driver-libs"), TRITON_INTERPRET="0", OMP_NUM_THREADS="2")
+import torch
+from tests.test_generation import test_squeezing_the_innermost_level
+
+report = {"checked_at_utc": datetime.now(timezone.utc).isoformat(), "scope": "Instrumented controls on the unchanged fixture; manual seed 2026, not a replay of the prior full-suite allocator state or pytest seed", "before_source": before, "test_file_sha256": hashlib.sha256((repo / "tests/test_generation.py").read_bytes()).hexdigest(), "torch": torch.__version__, "gpu": torch.cuda.get_device_name(0), "cases": []}
+original_empty, original_randint, original_allclose = torch.empty, torch.randint, torch.allclose
+for mode in ("natural_allocation", "nan_output_unique_indices", "finite_output_unique_indices"):
+    entry = {"mode": mode, "empty_calls": 0, "indices": None, "comparisons": []}
+    torch.manual_seed(2026)
+
+    def observed_empty(*args, **kwargs):
+        value = original_empty(*args, **kwargs)
+        if value.shape == (1024, 128) and value.is_cuda and value.dtype == torch.float32:
+            entry["empty_calls"] += 1
+            if mode == "nan_output_unique_indices":
+                value.fill_(float("nan"))
+            elif mode == "finite_output_unique_indices":
+                value.fill_(-123.0)
+        return value
+
+    def observed_randint(*args, **kwargs):
+        value = original_randint(*args, **kwargs)
+        if len(args) >= 3 and args[:2] == (0, 1024) and args[2] == (10,) and value.is_cuda:
+            if mode != "natural_allocation":
+                value = torch.arange(10, device=value.device, dtype=value.dtype)
+            entry["indices"] = value.cpu().tolist()
+        return value
+
+    def observed_allclose(actual, expected, *args, **kwargs):
+        passed = original_allclose(actual, expected, *args, **kwargs)
+        if actual.shape == expected.shape == (1024, 128):
+            a, b = actual.detach().cpu(), expected.detach().cpu()
+            row_mask = torch.zeros(1024, dtype=torch.bool)
+            row_mask[entry["indices"]] = True
+            entry["comparisons"].append({"original_allclose": bool(passed), "bitwise_mismatches": int((a.view(torch.int32) != b.view(torch.int32)).sum()), "finite_mismatches": int(((a != b) & torch.isfinite(a) & torch.isfinite(b)).sum()), "output_nan_count": int(torch.isnan(a).sum()), "expected_nan_count": int(torch.isnan(b).sum()), "written_rows_nan_count": int(torch.isnan(a[row_mask]).sum()), "unwritten_rows_nan_count": int(torch.isnan(a[~row_mask]).sum()), "unique_indices": len(set(entry["indices"])), "equal_nan_diagnostic_only": bool(original_allclose(a, b, equal_nan=True))})
+        return passed
+
+    torch.empty, torch.randint, torch.allclose = observed_empty, observed_randint, observed_allclose
+    try:
+        test_squeezing_the_innermost_level(1024, 128, 10, "cuda")
+        entry["fixture_outcome"] = "PASS"
+    except Exception as error:
+        entry.update(fixture_outcome="FAIL", error_type=type(error).__name__, traceback=traceback.format_exc())
+    finally:
+        torch.empty, torch.randint, torch.allclose = original_empty, original_randint, original_allclose
+    report["cases"].append(entry)
+report["after_source"] = source_state()
+assert report["after_source"] == before
+out.write_text(json.dumps(report, indent=2) + "\n")
+print(json.dumps(report, indent=2))

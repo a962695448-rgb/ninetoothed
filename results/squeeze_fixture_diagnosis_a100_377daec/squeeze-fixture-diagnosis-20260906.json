@@ -1,0 +1,109 @@
+{
+  "checked_at_utc": "2026-09-05T18:22:55.132677+00:00",
+  "scope": "Instrumented controls on the unchanged fixture; manual seed 2026, not a replay of the prior full-suite allocator state or pytest seed",
+  "before_source": {
+    "head": "377daec6242864a920de43a55523ac3d5f582648",
+    "tracked_status": ""
+  },
+  "test_file_sha256": "c82e94035bea75c1c1a54ace7465030ea30dcb2f659a18a905319b5e237ed945",
+  "torch": "2.5.0+cu124",
+  "gpu": "NVIDIA A100-SXM4-40GB",
+  "cases": [
+    {
+      "mode": "natural_allocation",
+      "empty_calls": 1,
+      "indices": [
+        270,
+        655,
+        632,
+        844,
+        904,
+        951,
+        54,
+        673,
+        792,
+        522
+      ],
+      "comparisons": [
+        {
+          "original_allclose": true,
+          "bitwise_mismatches": 0,
+          "finite_mismatches": 0,
+          "output_nan_count": 0,
+          "expected_nan_count": 0,
+          "written_rows_nan_count": 0,
+          "unwritten_rows_nan_count": 0,
+          "unique_indices": 10,
+          "equal_nan_diagnostic_only": true
+        }
+      ],
+      "fixture_outcome": "PASS"
+    },
+    {
+      "mode": "nan_output_unique_indices",
+      "empty_calls": 1,
+      "indices": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9
+      ],
+      "comparisons": [
+        {
+          "original_allclose": false,
+          "bitwise_mismatches": 0,
+          "finite_mismatches": 0,
+          "output_nan_count": 129792,
+          "expected_nan_count": 129792,
+          "written_rows_nan_count": 0,
+          "unwritten_rows_nan_count": 129792,
+          "unique_indices": 10,
+          "equal_nan_diagnostic_only": true
+        }
+      ],
+      "fixture_outcome": "FAIL",
+      "error_type": "AssertionError",
+      "traceback": "Traceback (most recent call last):\n  File \"<stdin>\", line 69, in <module>\n  File \"/home/vipuser/infinitensor-2026/ninetoothed/tests/test_generation.py\", line 134, in test_squeezing_the_innermost_level\n    assert output.shape == expected.shape and torch.allclose(output, expected)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nAssertionError\n"
+    },
+    {
+      "mode": "finite_output_unique_indices",
+      "empty_calls": 1,
+      "indices": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9
+      ],
+      "comparisons": [
+        {
+          "original_allclose": true,
+          "bitwise_mismatches": 0,
+          "finite_mismatches": 0,
+          "output_nan_count": 0,
+          "expected_nan_count": 0,
+          "written_rows_nan_count": 0,
+          "unwritten_rows_nan_count": 0,
+          "unique_indices": 10,
+          "equal_nan_diagnostic_only": true
+        }
+      ],
+      "fixture_outcome": "PASS"
+    }
+  ],
+  "after_source": {
+    "head": "377daec6242864a920de43a55523ac3d5f582648",
+    "tracked_status": ""
+  }
+}

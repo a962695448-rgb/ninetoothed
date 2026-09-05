@@ -1,6 +1,6 @@
 # CPU 参考解释器：验收与提交说明
 
-本说明整理截至 2026-09-06 的已有证据和剩余验收步骤。`b5a3206f8351e5a138d16ee13f6d6ef9c620044b` 的 A100 初轮全量已结束为 **16 failed、584 passed、2 skipped，2737.65 s，退出码 1**；该源码先前的 **14/14 GPU 差分**和 **180 passed 专项**仍单独保留。仅修正 jagged 测试参考的提交 **`377daec6242864a920de43a55523ac3d5f582648`** 已在 A100 定向通过 **16 passed、8.83 s、退出码 0**，新全量仍为 **RUNNING，无最终结论**。历史 4090 与各专项不累计、不重标版本；上游 PR 和整项目官方验收尚未完成。
+截至 2026-09-06，源码 **`82592b8f6de65052e4258fdd6067956d4ede18c3`** 已在实际 A100-SXM4-40GB 上完成完整测试：**600 passed、2 skipped，450.25 s（0:07:30），退出码 0，无 failures/errors**。两个 skip 均要求同机至少双卡，详见 [最终完整清单](../results/full_suite_a100_82592b8/manifest.json)与 [归档说明](../results/full_suite_a100_82592b8/README.md)。工程验证证据已取得，后续进入上游审查与官方确认；不宣称合并或优秀学员评选已经完成。b5/377 失败历史及 14/180/16/77 各范围按原源码保留，不累计，成功重跑不确定旧 squeeze 失败的唯一根因。
 
 项目通过共享 arrangement/frontend/SSA 管线执行 NumPy 参考语义，帮助检查编译变换后的结果。设计、接口、支持操作和限制见 [CPU 解释器文档](source/cpu_interpreter.rst)，最新硬件记录见 [A100 报告](cpu_interpreter_validation_a100.md)，历史分轮结果见 [4090 报告](cpu_interpreter_validation_4090.md)，加分项计划见 [差距计划](excellence_gap_plan.md)。
 
@@ -14,21 +14,25 @@
 | 五类 application | [应用测试](../tests/test_interpreter_applications.py)：`test_elementwise_and_nondivisible_tail`、`test_broadcast_reuses_bias_for_each_row`、`test_row_reduction_ignores_padded_lanes`、`test_nested_if_and_for_carry_values` | 分别覆盖逐元素、广播、非整除尾块、行归约、分支/循环；尾块也是独立验收类别 |
 | float32、int32、bool | 同一应用测试文件中的 dtype 参数与 `test_bool_results_are_exact`；[GPU 用例](../tests/test_interpreter_gpu.py) 的 `GPU_CASES` | float32 使用 `rtol=1e-3, atol=1e-3`；整数与布尔完全相等 |
 | 无可见 CUDA 的独立运行 | `test_cpu_path_does_not_import_gpu_backends`；[无 Torch/Triton CPU 清单](../results/cpu_no_gpu_packages_20260905/manifest.json) | `5b37725` 的 206 passed、14 deselected；未选择 Torch 适配文件，不等于全仓库无依赖运行 |
-| 至少三个程序默认 pass 前后一致并与 A100 差分 | `test_gpu_fixtures_match_oracle_before_and_after_lowering_on_cpu`、[逐阶段测试](../tests/test_interpreter_default_pipeline.py)、`run_gpu_case`、[GPU runner](../scripts/verify_interpreter_gpu.py) | `b5a3206` A100 上 8 个程序、14 个用例四方比较全部通过，记录真实 Triton 默认 5 pass；逐阶段 CPU 检查包含于 180 项专项。硬件专项已取得证据，完整套件与官方整体验收仍待完成 |
+| 至少三个程序默认 pass 前后一致并与 A100 差分 | `test_gpu_fixtures_match_oracle_before_and_after_lowering_on_cpu`、[逐阶段测试](../tests/test_interpreter_default_pipeline.py)、`run_gpu_case`、[GPU runner](../scripts/verify_interpreter_gpu.py) | b5 A100 的 8 程序、14 项四方比较及 180 项专项已有独立记录；825 最终 A100 全量也已通过。证据按各自源码保存，供上游审查与官方确认 |
 | mask 与 trace 正确；unsupported 显式失败 | [SSA 测试](../tests/test_interpreter_ssa.py) 中 masked load/store、trace 一致性、unsupported operation/dtype 用例 | mask 排除地址不解引用；诊断包含 operation 位置。支持边界见接口文档 |
 | 单步、断点、watch、program/opcode 过滤 | [单步测试](../tests/test_interpreter_step_debugger.py)、`StepDebugger`、[演示](cpu_interpreter_demo.py) | 暂停发生在操作完成之后；交互观察不能代替计算正确性检查 |
 | 首个错误 pass/operation 与差分复现 | [调试器测试](../tests/test_interpreter_debugger.py)、`check_passes`、`compare_programs`、`export_reproducer` | 结构和执行次序可对齐时定位对应 operation；结构重写缺少来源映射时不猜位置。故障注入与真实历史缺陷必须分别标注 |
 | 扩展接口与完整应用 | `handlers` 扩展测试、softmax 与直接/受限分解 dot 测试 | 多 program 分块标量 dot 仍拒绝；GPU runner 排除优化后 dot。没有自动样例缩减承诺 |
-| 原测试、风格、文档、主分支合并 | 完整 pytest、Ruff、贡献风格检查、Sphinx、上游审查 | `b5a3206` A100 全量 16 failed、584 passed、2 skipped；失败来自 jagged 输入构造/参考接口。`377daec` 仅修正测试参考，定向 16 passed，新全量 RUNNING。历史 4090 和 SIGSEGV 记录保留；上游合并未完成 |
+| 原测试、风格、文档、主分支合并 | 完整 pytest、Ruff、贡献风格检查、Sphinx、上游审查 | 825 A100 最终全量 600 passed、2 skipped、exit 0；b5/377 两轮失败和各定向记录保留。两项双卡场景未测；文档/格式检查按实际提交核对，上游合并未完成 |
 
 ## 复查已完成的运行
 
 同一测试可能在多个范围中出现。`224` 包含 `14` 项 GPU 对照，`209` 为旧提交在安装 Torch 的服务器上隐藏 CUDA 的子集，`206` 为 `5b37725` 在无 Torch/Triton 环境的选定范围，`254` 为该提交的兼容性定向回归，`591` 为该提交完整运行的通过数（另有 2 skipped），`39` 为独立副本的 CPU 回归，不能累计。
 
+- [最终 A100 完整清单](../results/full_suite_a100_82592b8/manifest.json)与 [原文归档](../results/full_suite_a100_82592b8/raw-full.tar.gz)：825，600 passed、2 skipped、450.25 s、退出码 0；JUnit 602 tests、0 failures/errors、2 skipped，前后源码一致且 tracked clean。完整成功是独立运行结论，不覆盖此前失败或给出旧 squeeze 的唯一根因。
 - [A100 真实 GPU 清单](../results/a100_20260906/gpu-report/manifest.json)与 [GPU JSON](../results/a100_20260906/gpu-report/interpreter_gpu_validation.json)：`b5a3206`，14/14、8 程序、9 类别、退出码 0；设备与计算能力确认实际 A100。JSON 中旧静态模板提示的含义见 [A100 说明](cpu_interpreter_validation_a100.md)，原文及散列保持不变。
 - [A100 专项清单](../results/a100_20260906/specialist/manifest.json)：180 passed、7.95 s、退出码 0，包含 GPU、应用、SSA、调试、逐 pass、回放与 Torch 适配范围。首次 [smoke 失败](../results/a100_20260906/smoke/manifest.json)与 [修正 libcuda 路径后 1 passed](../results/a100_20260906/smoke-libcuda/manifest.json)分别保留；smoke 属于 14 项，14 项又包含于 180 项，不相加。
 - [A100 初轮完整清单](../results/full_suite_a100_b5a3206/manifest.json)与 [原文归档](../results/full_suite_a100_b5a3206/raw-full.tar.gz)：`b5a3206`，16 failed、584 passed、2 skipped、2737.65 s、退出码 1；JUnit 602 条目。8 项 dim 1 在 PyTorch 参考转换抛 NotImplementedError，8 项 dim 2 在 nested 输入构造抛 RuntimeError，不能把未完成比较的原用例视为 kernel 正确证明。
-- [jagged 修复后定向清单](../results/jagged_reference_recheck_a100_377daec/manifest.json)：`377daec`，16 passed、8.83 s、退出码 0；原参数与容差保留，输入使用 packed values/offsets/dim，dense 参考在 kernel 前独立生成，expand 检查完整 values 与 offsets。新版完整测试仍在运行，定向通过不覆盖初轮失败记录或替代全量。
+- [jagged 修复后定向清单](../results/jagged_reference_recheck_a100_377daec/manifest.json)：`377daec`，16 passed、8.83 s、退出码 0；原参数与容差保留，输入使用 packed values/offsets/dim，dense 参考在 kernel 前独立生成，expand 检查完整 values 与 offsets。这 16 项在第二轮全量中也通过，但该全量另有 squeeze 失败。
+- [A100 第二轮完整清单](../results/full_suite_a100_377daec/manifest.json)：`377daec`，1 failed、599 passed、2 skipped，752.11 s、退出码 1；唯一失败为 `test_squeezing_the_innermost_level[1024-128-10-cuda]` 的完整矩阵 allclose。原失败没有保存分配器状态及全部索引，不能从后续控制实验确定其唯一根因。
+- [squeeze 受控机制诊断](../results/squeeze_fixture_diagnosis_a100_377daec/README.md)：原 fixture 源码未改，人工 seed 2026；自然分配 PASS、NaN/唯一索引 FAIL、有限值/唯一索引 PASS。NaN 控制逐位差异为 0，129792 个 NaN 全在未写区；这不是旧现场精确重放，不增加正式测试通过数。
+- [generation 文件复验清单](../results/generation_reference_recheck_a100_82592b8/manifest.json)：`82592b8`，77 passed、19.66 s、退出码 0；只用有限非零输出初值与 randperm 唯一随机目标稳定输入，kernel、src、参数、全矩阵比较和原容差不变。其后最终全量 600 passed、2 skipped 单独归档，两个范围不累计。
 - [初轮 4090 清单](../results/interpreter_rtx4090_manifest.json)：`76ca646` 专项、隐藏 CUDA 子集与独立 GPU JSON。
 - [后续 4090 清单](../results/rtx4090_compatibility_20260905/manifest.json)：旧全量失败、新提交定向回归、SIGSEGV、两个 FP8 单例；各条含源码 SHA、命令参数、进程返回值、原文与压缩文件散列。
 - [`5b37725` 完整运行清单](../results/full_suite_rtx4090_5b37725/manifest.json)：591 passed、2 skipped，退出码 0；JUnit 593 条目、0 errors、0 failures、2 skipped。归档时 HEAD 与测试 SHA 一致、已跟踪文件无修改。全库 coverage XML 的 line-rate 为 86.76%（9178/10578 行），不是解释器专项覆盖率；跳过项和核验方法见 [归档说明](../results/full_suite_rtx4090_5b37725/README.md)。
@@ -59,13 +63,17 @@ python -m pytest -q --color=no -ra --tb=short \
 
 `tests/test_interpreter_gpu.py` 同时包含 CPU 可执行的发射/布局验证和真实 GPU 测试，因此保留该文件并明确取消选择后者。包元数据仍依赖 Triton；此处是 source checkout 的 CPU 验证路径，不是已发布的 CPU-only wheel 安装说明。
 
-## A100 初轮失败与修复后复验
+## A100 最终通过与提交对应关系
 
 `5b37725` 的 RTX 4090 全量与原文产物已归档，结果为 591 passed、2 skipped、退出码 0。两项跨设备测试因只有一张 GPU 而跳过，不构成跨设备验证。演示与测试改进 `4a680a6` 已在完整测试取证之后整合，其核心、依赖和测试配置未变，修改文件与39项CPU验证记录的散列一致，因此不重复整轮4090运行；39项CPU检查与 `5b37725` 完整GPU结果分别保留。早先SIGSEGV的原因仍未确定，本轮成功不解释该异常。
 
 实际设备为 A100-SXM4-40GB、compute capability 8.0、MIG Disabled。`b5a3206` 的 14 项 GPU 差分与 180 项专项通过，但同一源码完整测试最终失败；这些范围分别记录。最初项目内 libcuda 链接修正指向真实 ELF64 驱动库并设置库路径，该阶段失败也保留；它与后续 jagged 测试参考修复是两个不同问题。环境、原始 argv、结果及来源见 [A100 报告](cpu_interpreter_validation_a100.md)。
 
-`377daec6242864a920de43a55523ac3d5f582648` 只改 `tests/test_jagged.py` 的输入和参考，不改被测 kernel、`src/`、依赖或比较容差；保留原 16 个参数，且 expand 改为比较全部 values 与 offsets。A100 定向已得到 16 passed，当前该提交的新完整测试仍 RUNNING；保持其源码不变，不重复启动，结束后再核对最终失败、skip 与覆盖率。dot、跨结构 operation 来源定位和上游合并等缺口仍在，任何专项通过都不等于整项目官方验收完成。
+`377daec6242864a920de43a55523ac3d5f582648` 只改 jagged 输入和参考，16 项定向及全量中的同一子范围均通过；但第二轮完整结果仍是 FAIL，唯一 squeeze allclose 失败保留原始记录。受控诊断说明未写区 NaN 可导致逐位一致而原 allclose 失败，却没有重建旧现场的分配器和索引，不能确定旧失败的唯一根因；详见 [A100 报告](cpu_interpreter_validation_a100.md)。
+
+`82592b8f6de65052e4258fdd6067956d4ede18c3` 仅改两条 generation 测试输入语句及注释：输出初始化为有限非零值 -123，目标行用 randperm 保证随机且唯一。kernel、`src/`、参数、全矩阵比较、原容差和依赖不变，未改为 `equal_nan=True`。generation 文件 77 项和后续完整测试 600 passed、2 skipped 均已取得独立证据；这些成功不确定旧失败的唯一根因。剩余工作是上游审查、官方确认及优化后 dot、跨结构 operation 来源定位等既有可选增强。
+
+后续仅包含 `docs/`、`results/` 的归档提交，在代码、测试和依赖均与 825 相同时，可写明对应关系并引用本次完整运行。实际测试 SHA 仍是 `82592b8f6de65052e4258fdd6067956d4ede18c3`，不声称资料提交又重跑过全量；提交前核对这些范围及最终证据链接。
 
 ## PR 与官网提交材料
 

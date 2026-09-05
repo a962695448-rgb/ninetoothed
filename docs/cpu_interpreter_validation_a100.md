@@ -1,8 +1,8 @@
 # CPU 参考解释器：NVIDIA A100 验证记录
 
-更新日期：2026-09-06（Asia/Shanghai）。初轮源码 **`b5a3206f8351e5a138d16ee13f6d6ef9c620044b`** 的 A100 完整测试已结束：**16 failed、584 passed、2 skipped，2737.65 s，退出码 1**。随后提交 **`377daec6242864a920de43a55523ac3d5f582648`** 只修正 jagged 测试的输入构造与独立参考，A100 定向回归为 **16 passed、8.83 s、退出码 0**；该提交的新完整测试已启动，仍为 **RUNNING，没有最终结论**。
+更新日期：2026-09-06（Asia/Shanghai）。源码 **`82592b8f6de65052e4258fdd6067956d4ede18c3`** 已在实际 **NVIDIA A100-SXM4-40GB** 上完成完整测试：**600 passed、2 skipped，450.25 s（0:07:30），退出码 0；无 failures 或 errors**。两个 skip 均要求同机至少两张 GPU。原始日志、JUnit、coverage 与命令见 [完整清单](../results/full_suite_a100_82592b8/manifest.json)、[原文归档](../results/full_suite_a100_82592b8/raw-full.tar.gz)和 [归档说明](../results/full_suite_a100_82592b8/README.md)。
 
-初轮 `b5a3206` 已完成的 **14/14 真实 Triton GPU 差分**和 **180 passed 解释器专项**仍是该源码上的有效 PASS 记录，不改写到 `377daec`，也不与定向 16 项或完整测试数字相加。以下结果不表示整项目官方验收、上游合并或优秀学员评选完成。历史 RTX 4090 结果见 [4090 报告](cpu_interpreter_validation_4090.md)，验收对照见 [提交说明](cpu_interpreter_acceptance.md)。
+初轮 b5 的 14/14 GPU 差分、180 passed 专项及 16 failed 的全量，第二轮 377 的 16 passed 定向及 1 failed、599 passed、2 skipped 全量，以及 825 的 77 passed generation 回归，均保留各自源码和原始结果，不与最终 600 项相加。**成功重跑没有确定旧 squeeze 失败的唯一根因**，受控诊断也不是原现场精确重放。A100 完整运行的工程证据已取得，剩余工作是上游审查、官方确认及既有可选加分项；不宣称上游合并或优秀学员评选已完成。历史 RTX 4090 结果见 [4090 报告](cpu_interpreter_validation_4090.md)，验收对照见 [提交说明](cpu_interpreter_acceptance.md)。
 
 ## 按运行保留结果
 
@@ -16,9 +16,18 @@
 | 解释器专项 | 180 passed，7.95 s；退出码 0 | [manifest](../results/a100_20260906/specialist/manifest.json)、[日志](../results/a100_20260906/specialist/validation.stdout.log)、[JUnit](../results/a100_20260906/specialist/junit.xml) |
 | `b5a3206` 初轮完整仓库测试 | 16 failed、584 passed、2 skipped，2737.65 s；退出码 1 | [完整清单](../results/full_suite_a100_b5a3206/manifest.json)、[原文归档](../results/full_suite_a100_b5a3206/raw-full.tar.gz)、[说明](../results/full_suite_a100_b5a3206/README.md) |
 | `377daec` jagged 定向回归 | 原 16 个参数用例全部通过：16 passed，8.83 s；退出码 0 | [定向验证清单](../results/jagged_reference_recheck_a100_377daec/manifest.json)、[说明](../results/jagged_reference_recheck_a100_377daec/README.md) |
-| `377daec` 新完整仓库测试 | RUNNING；尚无最终退出状态与汇总 | 完成后单独归档，不用 16 项定向通过替代全量 |
+| `377daec` 第二轮完整仓库测试 | 1 failed、599 passed、2 skipped，752.11 s；退出码 1；jagged 16 项均通过 | [完整清单](../results/full_suite_a100_377daec/manifest.json)、[原文归档](../results/full_suite_a100_377daec/raw-full.tar.gz)、[说明](../results/full_suite_a100_377daec/README.md) |
+| `377daec` squeeze 受控机制诊断 | 自然分配 PASS；NaN 初值与唯一索引 FAIL；有限初值与唯一索引 PASS；不是正式 pytest 计数 | [诊断 JSON](../results/squeeze_fixture_diagnosis_a100_377daec/squeeze-fixture-diagnosis-20260906.json)、[范围说明](../results/squeeze_fixture_diagnosis_a100_377daec/README.md) |
+| `82592b8` generation 文件回归 | 77 passed，19.66 s；退出码 0 | [复验清单](../results/generation_reference_recheck_a100_82592b8/manifest.json)、[说明](../results/generation_reference_recheck_a100_82592b8/README.md) |
+| `82592b8` 第三轮完整仓库测试 | **600 passed、2 skipped，450.25 s；退出码 0；无 failures/errors** | [完整清单](../results/full_suite_a100_82592b8/manifest.json)、[原文归档](../results/full_suite_a100_82592b8/raw-full.tar.gz)、[说明](../results/full_suite_a100_82592b8/README.md) |
 
-smoke 是 14 项 GPU 差分中的一个用例；180 项专项又包含这 14 项，以及应用、SSA、调试、逐默认 pass、回放和 Torch 适配测试。初轮完整测试与这些专项重叠，新提交的 16 项又是 jagged 定向复验；各版本和范围均不能相加。这里的时长是各次 pytest 汇总时长；外部 runner 计时还包含进程启动等开销，二者不能混用，也不是性能基准。
+smoke 是 14 项 GPU 差分中的一个用例；180 项专项又包含这 14 项，以及应用、SSA、调试、逐默认 pass、回放和 Torch 适配测试。各轮完整测试与专项、jagged 16 项和 generation 77 项均有重叠；受控诊断的两个 PASS 与一个预期 FAIL 也不计入正式测试总数。这里的时长是各次 pytest 汇总时长，外部 runner 计时还包含进程启动等开销，二者不能混用，也不是性能基准。
+
+最终运行共 602 个条目，**602 = 600 passed + 2 skipped**。两项 skip 为 `tests.test_aot::test_add[True-45327-dtype0-bf16-cuda]`（`multi-device testing requires at least 2 devices`）及 `tests.test_built_artifact_reload::test_triton_aot_handle_is_reusable_across_cuda_contexts`（`Triton multi-context testing requires at least 2 CUDA devices`）。本次单卡 A100 没有验证这两个跨设备场景。
+
+原 runner 的运行前后 HEAD 均为 `82592b8`，已跟踪文件无修改。最终 JUnit 为 602 tests、0 failures、0 errors、2 skipped。Coverage XML 记录全仓库 9087 / 10578 行、`line-rate=0.859`，即 **85.90%**；这是本轮全库行覆盖率，不是解释器专项或分支覆盖率，`branches-valid` 为 0。完整原文及校验方式见 [归档说明](../results/full_suite_a100_82592b8/README.md)。
+
+后续若只提交 `docs/`、`results/` 归档，且代码、测试与依赖均与 `82592b8` 相同，应说明这一对应关系并引用本次证据。**实际运行 SHA 始终是 `82592b8f6de65052e4258fdd6067956d4ede18c3`**，不能把新的资料提交写成另一次全量实测。
 
 ## 初轮 16 项失败与测试参考修复
 
@@ -37,7 +46,27 @@ smoke 是 14 项 GPU 差分中的一个用例；180 项专项又包含这 14 项
 - `to_padded_tensor` 的 dense 期望值在调用被测 kernel 前，由原始 batch 和 padding 独立填充，不再调用当前环境未实现的参考接口，也不依赖被测输出。
 - `expand` 预先生成完整 expected values 和 offsets 副本；运行后比较全部 values，并检查 offsets 未变，不再按被测结果的非零位置筛选比较。
 
-原有 16 个参数组合、比较容差、被测 kernel、`src/` 实现和依赖版本均保留。A100 定向结果为 **16 passed、8.83 s、退出码 0**，证明这些修正后的用例已完成数值比较；新版全量仍需等待最终结果。本次修复没有把 jagged 运行能力新增到 NumPy CPU 解释器，也不改变优化后 dot 等限制。
+原有 16 个参数组合、比较容差、被测 kernel、`src/` 实现和依赖版本均保留。A100 定向结果为 **16 passed、8.83 s、退出码 0**；后续 `377daec` 全量中的这 16 项也全部通过，但该次全量仍因另一项 squeeze 断言失败而退出 1。本次修复没有把 jagged 运行能力新增到 NumPy CPU 解释器，也不改变优化后 dot 等限制。
+
+## 第二轮 squeeze 失败、受控诊断与输入稳定化
+
+`377daec` 全量的唯一失败为 `tests/test_generation.py::test_squeezing_the_innermost_level[1024-128-10-cuda]`。实际输出和参考形状均为 `[1024, 128]`，原 `torch.allclose(output, expected)` 返回 False。该轮 JUnit 为 602 条目、599 passed、1 failure、0 errors、2 skipped；原始失败断言与堆栈见 [全量清单](../results/full_suite_a100_377daec/manifest.json)。两项 skip 仍是要求同机至少双卡的跨设备测试。
+
+随后在实际 A100 上对 **未改动的 `377daec` fixture 源码**进行受控机制诊断。每个场景人工设置 seed 2026，在进程内观察或控制分配、索引和比较入口，直接调用原 fixture；源文件、kernel 和原断言未改。它不是一次正式 pytest，也没有恢复旧全量运行的分配器状态、实际随机状态或索引，详见 [诊断方法和边界](../results/squeeze_fixture_diagnosis_a100_377daec/README.md)。
+
+| 受控场景 | 原始 allclose / fixture 结果 | 全矩阵逐位差异数 | 已写区 / 未写区 NaN 数 |
+|---|---|---|---|
+| 自然分配；本次随机目标恰好唯一 | True / PASS | 0 | 0 / 0 |
+| 输出预填 NaN，目标固定为唯一的 0–9 行 | False / FAIL | 0 | 0 / 129792 |
+| 输出预填有限值 -123，目标固定为唯一的 0–9 行 | True / PASS | 0 | 0 / 0 |
+
+NaN 控制中，output 与 expected 的 **129792 个 NaN 均位于未写行**，即 `(1024 - 10) × 128`；两矩阵逐位相同，有限值位置也没有差异，原始 allclose 仍返回 False。诊断额外观察了 `equal_nan` 结果，但保留原始比较的返回值，没有把正式断言改为 `equal_nan=True` 或放宽容差。
+
+这些控制证明该测试在未写区含 NaN 时可以出现“逐位一致但 allclose 失败”的机制，**不证明旧全量失败一定由 NaN、重复目标行或某个唯一原因造成**。旧失败未保存分配器状态与全部索引，本次没有精确重放它；自然场景通过也不能据此声称原失败已经重现或消失。诊断中的索引均唯一，没有故意重复目标行的控制实验。
+
+提交 **`82592b8f6de65052e4258fdd6067956d4ede18c3`** 只修改 `tests/test_generation.py` 的两条测试输入语句并添加说明注释：以 `torch.full(..., -123.0)` 初始化输出，用 `torch.randperm(num_rows)[:num_indices]` 选择互异的随机目标行。这样未写行具有明确的有限非零初值，测试不再包含重复目标行；被测 kernel、`src/`、参数组合、完整矩阵比较、原 `torch.allclose` 容差和依赖均未改变。
+
+该提交在 A100 运行整个 `tests/test_generation.py` 得到 **77 passed、19.66 s、退出码 0**，随后完整测试得到 **600 passed、2 skipped、退出码 0**。文件复验见 [generation 清单](../results/generation_reference_recheck_a100_82592b8/manifest.json)，完整结果另行归档。两次成功均是测试输入稳定化后的独立结果，不是原失败现场重放，也没有确定旧失败的唯一根因。
 
 ## 硬件与依赖
 
@@ -89,7 +118,7 @@ GPU JSON 的每条记录保存发射 SSA 的 SHA-256 和默认 Triton pass 列�
 
 ## 复现 `b5a3206` 已完成的专项范围
 
-在独立 checkout 中使用测试源码 `b5a3206f8351e5a138d16ee13f6d6ef9c620044b` 和上述依赖。以下是初轮专项 manifest 对应的可移植写法，替换的仅是机器相关路径；原始 argv 与环境变量以各运行 manifest 为准。正在运行的新版全量使用 `377daec`，不要在那个 checkout 中切回旧源码或重复启动全量。
+在独立 checkout 中使用测试源码 `b5a3206f8351e5a138d16ee13f6d6ef9c620044b` 和上述依赖。以下是初轮专项 manifest 对应的可移植写法，替换的仅是机器相关路径；原始 argv 与环境变量以各运行 manifest 为准。最终完整测试使用 `82592b8`，复查该次结果时应使用其对应源码和 [完整运行清单](../results/full_suite_a100_82592b8/manifest.json)，不混用初轮专项命令与版本。
 
 ```bash
 # 在对应 checkout 的仓库根目录，使用已准备的项目 Python 环境。
@@ -134,7 +163,7 @@ export LIBRARY_PATH="$TRITON_LIBCUDA_PATH"
 
 这些命令要求 CUDA 可见，并显式设置 `TRITON_INTERPRET=0`。若在同样缺少 unversioned 驱动链接的环境重建 `.driver-libs`，先确认真实 driver 文件为 ELF64，再以 `mkdir -p "$PROJECT_ROOT/.driver-libs"` 创建项目内目录，并执行 `ln -s /usr/lib/x86_64-linux-gnu/libcuda.so.550.127.05 "$PROJECT_ROOT/.driver-libs/libcuda.so"`；不同机器的真实驱动文件名可能不同，不能改用 toolkit stub。各命令退出状态、stdout/stderr 和源码前后检查应分别保存在新目录，避免覆盖原始证据。
 
-## 修复后定向复现与剩余范围
+## 定向复现与提交边界
 
 在独立的 `377daec6242864a920de43a55523ac3d5f582648` checkout 中复验 jagged 时，使用相同 A100 依赖与上述受控环境，令 `RUN_DIR` 指向本次新建的结果目录，然后运行：
 
@@ -145,6 +174,13 @@ python -m pytest --color=no --tb=short -ra -q tests/test_jagged.py \
 
 本次准确 argv、stdout/stderr、前后源码检查及退出状态见 [定向 manifest](../results/jagged_reference_recheck_a100_377daec/manifest.json)。这条命令只代表 jagged 子范围。
 
-初轮 `b5a3206` 的完整结果已经确定为失败；修复后的 `377daec` 完整 A100 套件仍为 RUNNING，尚无最终汇总。等待新版进程结束后再按实际输出记录失败、skip 和覆盖率。单卡环境不能证明双卡测试通过；4090 的 `5b37725` 完整结果、A100 的 `b5a3206` 专项结果和 `377daec` 的定向 16 项均不能替代新版全量。
+在独立 `82592b8f6de65052e4258fdd6067956d4ede18c3` checkout 中复验 generation 文件时，沿用同一受控环境和新的结果目录：
+
+```bash
+python -m pytest --color=no --tb=short -ra -q tests/test_generation.py \
+  --junitxml="$RUN_DIR/generation.xml"
+```
+
+准确命令与结果见 [generation 复验清单](../results/generation_reference_recheck_a100_82592b8/manifest.json)。`b5a3206` 和 `377daec` 两次 A100 全量保持原 FAIL 结论；`82592b8` 第三轮独立记录为 **600 passed、2 skipped，450.25 s，退出码 0**。完整硬件验证证据已取得，后续据此提交上游审查与官方确认。单卡 skip、受控诊断边界和各版本范围继续保留，不相加、不改写旧结果。
 
 GPU runner **未包含优化后 dot/matmul**，多 program 分块标量分解仍有明确限制；softmax 通过不填补这一缺口。跨结构 pass 的 operation 来源追踪、真实历史缺陷演示等加分增强以及上游 PR/主分支合并仍按 [差距计划](excellence_gap_plan.md)推进。归档只确认对应源码、环境与范围内的真实结果。
