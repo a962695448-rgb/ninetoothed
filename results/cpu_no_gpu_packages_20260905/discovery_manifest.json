@@ -1,0 +1,50 @@
+{
+  "created_at_utc": "2026-09-05T13:25:41.102570+00:00",
+  "commit": "5b377252cc4452b5ccc48c46ff1ae07a4e5e0e8a",
+  "python": "3.12.3 (main, Jun 19 2026, 12:46:00) [GCC 13.3.0]",
+  "numpy": "2.5.2",
+  "sympy": "1.14.0",
+  "pytest": "9.1.1",
+  "installed": {
+    "torch": false,
+    "triton": false
+  },
+  "command": [
+    "/home/xxl/.venvs/infinitensor-2026/bin/python",
+    "-m",
+    "pytest",
+    "-q",
+    "--color=no",
+    "-ra",
+    "--tb=short",
+    "tests/test_interpreter_applications.py",
+    "tests/test_interpreter_debugger.py",
+    "tests/test_interpreter_gpu.py",
+    "tests/test_interpreter_ssa.py",
+    "tests/test_interpreter_step_debugger.py",
+    "tests/test_interpreter_torch.py",
+    "tests/test_ssa_application_lowering.py",
+    "tests/test_ssa_first_backend_lowering.py",
+    "tests/test_ssa_pass_pipeline.py",
+    "tests/test_ssa_program_domain_regressions.py",
+    "tests/test_ssa_validation.py",
+    "--junitxml=/mnt/c/Users/xxl/Projects/infinitensor-2026/evidence/nine-cpu-no-gpu-packages-20260905/pytest.xml"
+  ],
+  "environment": {
+    "PYTHONPATH": "/mnt/c/Users/xxl/Projects/infinitensor-2026/ninetoothed/src",
+    "PYTEST_DISABLE_PLUGIN_AUTOLOAD": "1",
+    "CUDA_VISIBLE_DEVICES": ""
+  },
+  "exit_code": 1,
+  "completed_at_utc": "2026-09-05T13:26:03.198201+00:00",
+  "artifacts": {
+    "pytest.log": {
+      "bytes": 10465,
+      "sha256": "c53b5407bf854bcbadd18642d4f8caef89907ffb613c09c6e8c9eeafaf0815d5"
+    },
+    "pytest.xml": {
+      "bytes": 43360,
+      "sha256": "088322efe72db7eb55d01e220db3599f6c2a2843abdbfbcd5dd2506b2dc8400b"
+    }
+  }
+}

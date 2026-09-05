@@ -1,0 +1,112 @@
+{
+  "source_base": "5b377252cc4452b5ccc48c46ff1ae07a4e5e0e8a",
+  "source_files": {
+    "docs/cpu_interpreter_demo.py": "c8025922807d0677bed2e2f3e9ed9205ae5cccac4569a67c4cf996d35e358b57",
+    "docs/source/cpu_interpreter.rst": "373673d8c30dd9f0a9c21a89418cae6f994bc0f84c92db3e5542deabc2a0f4b2",
+    "tests/test_interpreter_demo.py": "86daa3326aaff58058ceec5084d6692b6d05b1176e9ba95cd8e424f05b561fb6",
+    "tests/test_interpreter_default_pipeline.py": "dddda52e4cec8bf3427b96d886195c9490ccca25481effdce4df42e99bb9bb8c"
+  },
+  "scope": "CPU-only validation on the RTX 4090 host with CUDA_VISIBLE_DEVICES empty; not GPU or A100 comparison",
+  "runs": [
+    {
+      "job": "nine_stage_debug_cpu_20260905_2132",
+      "exit_code": 0,
+      "args": [
+        "/data/infinitensor-2026/.venv/bin/python",
+        "-m",
+        "pytest",
+        "-q",
+        "--color=no",
+        "-ra",
+        "--tb=short",
+        "tests/test_interpreter_demo.py",
+        "tests/test_interpreter_default_pipeline.py",
+        "tests/test_interpreter_debugger.py",
+        "tests/test_interpreter_step_debugger.py",
+        "--junitxml=/data/infinitensor-2026/runs/20260905-081227/nine_stage_debug_cpu_20260905_2132.xml"
+      ],
+      "log": "nine_stage_debug_cpu_20260905_2132.log",
+      "sha256": "2bdb2696c2fa2ee7a9593988b0f424b4e238f4b7190f49a0313b173d08babc23"
+    },
+    {
+      "job": "nine_stage_sphinx_20260905_2134",
+      "exit_code": 0,
+      "args": [
+        "/data/infinitensor-2026/.venv/bin/python",
+        "-m",
+        "sphinx",
+        "-b",
+        "html",
+        "docs/source",
+        "/data/infinitensor-2026/runs/20260905-081227/nine_stage_sphinx_20260905_2134_html"
+      ],
+      "log": "nine_stage_sphinx_20260905_2134.log",
+      "sha256": "9160a7832b8626d347ee7544c23be42070ea79e2ff28801041b6f50125083290"
+    },
+    {
+      "job": "nine_stage_demo_20260905_2136",
+      "exit_code": 0,
+      "args": [
+        "/data/infinitensor-2026/.venv/bin/python",
+        "docs/cpu_interpreter_demo.py",
+        "--debug",
+        "--export",
+        "/data/infinitensor-2026/runs/20260905-081227/nine_stage_demo_case_20260905_2136"
+      ],
+      "log": "nine_stage_demo_20260905_2136.log",
+      "sha256": "5dd4eeb2d340d37ebf9e88621ca6d46c124048311a49e2a87a557e198fce699a"
+    },
+    {
+      "job": "nine_stage_replay_20260905_2137",
+      "exit_code": 0,
+      "args": [
+        "/data/infinitensor-2026/.venv/bin/python",
+        "/data/infinitensor-2026/runs/20260905-081227/nine_stage_demo_case_20260905_2136/replay.py"
+      ],
+      "log": "nine_stage_replay_20260905_2137.log",
+      "sha256": "adb43053b272c66df5346b5a06afe76455e10d7a08e5b1e5a01b39e2911bd151"
+    }
+  ],
+  "artifacts": {
+    "nine_stage_debug_cpu_20260905_2132.log": {
+      "bytes": 207,
+      "sha256": "2bdb2696c2fa2ee7a9593988b0f424b4e238f4b7190f49a0313b173d08babc23"
+    },
+    "nine_stage_sphinx_20260905_2134.log": {
+      "bytes": 9609,
+      "sha256": "9160a7832b8626d347ee7544c23be42070ea79e2ff28801041b6f50125083290"
+    },
+    "nine_stage_demo_20260905_2136.log": {
+      "bytes": 1053,
+      "sha256": "5dd4eeb2d340d37ebf9e88621ca6d46c124048311a49e2a87a557e198fce699a"
+    },
+    "nine_stage_replay_20260905_2137.log": {
+      "bytes": 320,
+      "sha256": "adb43053b272c66df5346b5a06afe76455e10d7a08e5b1e5a01b39e2911bd151"
+    },
+    "nine_stage_debug_cpu_20260905_2132.xml": {
+      "bytes": 6065,
+      "sha256": "0ba823647fefb3e720891f6e19a64caac17a8fe4271a78fbba151796912236a3"
+    },
+    "injected_fault_reproducer.zip": {
+      "bytes": 10116,
+      "sha256": "e1af7b80c504fcec65dba3e5b0f0e2f94afab4f5c73e028762737c3c6af11afe"
+    }
+  },
+  "environment": {
+    "python": "3.12.3",
+    "numpy": "1.26.4",
+    "sympy": "1.13.1",
+    "pytest": "8.1.1",
+    "sphinx": "9.1.0",
+    "CUDA_VISIBLE_DEVICES": "",
+    "PYTEST_DISABLE_PLUGIN_AUTOLOAD": "1",
+    "source_hashes_note": "source_files hashes the exact files executed on the server; source_lf_sha256 hashes the same text with CRLF normalized to LF, as stored by Git. Python ASTs are unchanged. These modified files were tested on source_base in an isolated worktree; no interpreter core source changed."
+  },
+  "source_lf_sha256": {
+    "docs/cpu_interpreter_demo.py": "0ecadd2527dc8fab9dc2d75ddabcab7cb8d8da71477c57c854af974351358844",
+    "docs/source/cpu_interpreter.rst": "73e2f2efa2ce6d7558a79d7ca29952c4feea2755cfcf0e2201b6105850fe57fa",
+    "tests/test_interpreter_demo.py": "86daa3326aaff58058ceec5084d6692b6d05b1176e9ba95cd8e424f05b561fb6",
+    "tests/test_interpreter_default_pipeline.py": "dddda52e4cec8bf3427b96d886195c9490ccca25481effdce4df42e99bb9bb8c"
+  }
+}

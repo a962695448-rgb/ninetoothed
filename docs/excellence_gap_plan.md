@@ -1,6 +1,6 @@
 # 九齿优秀项目差距与执行计划
 
-审查日期：2026-09-05。代码检查基于 `c9de134`；现有实际 CPU/GPU 运行证据对应 `76ca6464fc921bc1419700b22f730b4084b3035b`。本文是待执行计划，不是新增功能或验证完成声明。
+审查日期：2026-09-05。当前已公开源码为 `5b377252cc4452b5ccc48c46ff1ae07a4e5e0e8a`。初轮专项证据对应 `76ca6464fc921bc1419700b22f730b4084b3035b`；后续兼容性定向回归和无 Torch/Triton 的 CPU 验证对应 `5b37725`，分别记录，不将旧结果归于新提交。本文是待执行计划，不是新增功能或验收完成声明。
 
 规则依据：训练营[九齿 CPU 参考解释器与差分调试器任务](https://gxtctab8no8.feishu.cn/wiki/GxhWwiz0iiAhKkk7CFhcLTCyn2b)的 2026-09-05 本地阅读快照；实施依据为本仓库源码、测试、[4090 证据报告](cpu_interpreter_validation_4090.md)与 [贡献规范](../CONTRIBUTING.md)。
 
@@ -20,21 +20,21 @@
 
 | 标准 | 当前证据 | 差距与合格证据 |
 |---|---|---|
-| 原有测试、风格、文档保持可用 | 专项 224 项通过；Ruff、贡献风格、Sphinx 已有记录 | 全库收集 587 项后仍运行，不能写全库通过；冻结最终代码后保存完整退出状态、通过/跳过原因和依赖版本 |
-| CPU-only 与五类应用、三种必需 dtype | 隐藏 CUDA 后 209 项通过；真实 GPU 报告含基本应用、float32/int32/bool | 在干净 CPU 环境运行无 GPU 导入路径，记录精确命令及环境；不能把隐藏 CUDA 等同于未安装所有 GPU 包 |
+| 原有测试、风格、文档保持可用 | `76ca646` 专项 224 项通过；旧全量 11 failed、574 passed、2 skipped；`5b37725` 定向 254 passed、1 skipped | `5b37725` 一次含 coverage 全量以 SIGSEGV 结束；去掉额外 faulthandler timeout 的完整重跑仍运行。取得冻结源码最终汇总，再检查当前改动的风格与文档 |
+| CPU-only 与五类应用、三种必需 dtype | `76ca646` 隐藏 CUDA 后 209 passed；`5b37725` 的 WSL 无 Torch/Triton 环境 206 passed、14 deselected；应用与 dtype 对照见验收说明 | 两轮依赖、源码和选择范围不同。新 CPU 记录未验证 PyTorch CPU Tensor 适配；广泛收集时的缺包错误另保留，不能将 206 与 209 相加或直接比较 |
 | 默认 pass 前后至少三个程序一致与 A100 差分 | 4090 报告包含 8 个程序、14 项四方比较；发射 SSA 和默认 pass 可追溯 | A100 相同合同下实际运行，报告设备/代码 SHA/SSA SHA/布局/种子/误差；至少三个不同程序明确覆盖默认 pass |
 | dot/matmul、softmax 和扩展能力 | softmax 已有真实 GPU 对照；直接 dot 与单 program 分解有 CPU 测试；已支持 strided 视图等 | 多 program 分块 dot 被明确拒绝，GPU runner 排除了优化后 dot；补齐真实默认管线中的代表性矩阵乘法 |
-| trace 过滤、单步、断点、watch | 有实现与自动化测试、可运行交互示例 | 保存一个外部用户可复现的完整故障调试演示；验证跨 program/循环作用域和 trace 开关不改变计算 |
+| trace 过滤、单步、断点、watch | 有实现与自动化测试；新增 reference/candidate 独立回放、负向控制和公开演示包，服务器 CPU 定向 39 passed | 现有完整演示是故障注入；继续补真实历史缺陷的前后对照，保持跨 program/循环作用域及 trace 一致性验证 |
 | 自动定位首个错误 pass 和 operation | 每个 pass 可与原始程序比对；结构与事件一致时能定位 operation | 重构 pass 后缺少来源映射，operation 位置会明确为空；不能宣传普遍精确定位，需要限定合同或补来源追踪 |
 | 导出 SSA、输入、shape、dtype、seed | JSON/NPZ 和回放代码已有实现；保存 strides、权限与同对象别名 | 用一个真实历史缺陷导出并独立回放，证明输入布局问题没有在复制时消失；自动缩减不是规则明确必需项 |
 | 可扩展、复用 | operation handlers 与 frontend/运行时接口已分离 | 用一个独立新增 operation 的局部实现示例验证扩展接口，并保留 unsupported 报错 |
 | 合并主分支 | 已有用户 fork 与分支 | 尚未创建上游 PR；合并取决于维护者，必须预留设计讨论、CI、修改与审查时间 |
 
-224 项已经包含 14 项 GPU 对照，不能相加为 238 项；参数组合数也不能当成独立功能数量。
+224 项已经包含 14 项 GPU 对照，不能相加为 238 项。209 是初轮 CPU 子集；206 是另一环境与提交的明确选定范围；254 是兼容性定向回归。各轮不相加，参数组合数也不能当成独立功能数量。完整命令和证据入口见 [验证报告](cpu_interpreter_validation_4090.md)与 [验收及提交说明](cpu_interpreter_acceptance.md)。
 
 ## P0：先关闭验收缺口
 
-1. 保存正在运行的全库日志及退出状态；对失败按环境缺失、上游已有问题、本次回归分别定位。单独复测通过不能覆盖原全量失败记录，修复后在冻结提交上完成最终回归。
+1. 保存正在运行的 `5b37725` 全库日志及退出状态，期间保持服务器源码冻结。旧全量失败、定向回归、SIGSEGV 和两个 FP8 单例运行已分轮归档；SIGSEGV 原因仍未确定，单例通过不证明全量问题已修复。重跑结束后按实际失败定位，再决定必要修复和回归。
 2. 在 A100 上运行 CPU 专项、真实 GPU 差分与完整套件。CPU 与 GPU 使用相同 arrangement/application、布局、输入、种子和默认 pass，分别与独立 NumPy 参考比较。float32 保持 `rtol=1e-3, atol=1e-3`，int32/bool 保持完全相等。
 3. 记录实际机器、软件版本、commit、运行命令、原始日志/JSON、散列和可解释的跳过项。单卡导致的双卡测试跳过要逐项说明，不能写无条件全覆盖。
 4. 保留当前可工作的最小主线，尽早整理设计说明和可评审改动；不能等所有可选功能完成才开始上游评审。
@@ -77,10 +77,12 @@ CPU 执行速度不是本题目标，不优先做多线程 CPU kernel、GPU 并�
 
 ## 提交流程与优秀评选风险
 
-贡献规范要求 kebab-case 分支；合规提交分支 `add-cpu-reference-interpreter` 已建立并推送到 `c9de134`，供正式 PR 使用。原 `feat/cpu-reference-interpreter` 开发分支与既有历史保留。无需为此改写已发布提交。
+贡献规范要求 kebab-case 分支；2026-09-05 通过远端引用核对，合规提交分支 `add-cpu-reference-interpreter` 与开发分支 `feat/cpu-reference-interpreter` 均已推送到 `5b377252cc4452b5ccc48c46ff1ae07a4e5e0e8a`。正式 PR 使用前者；既有历史保留，无需改写已发布提交。
 
 用户要求中文 commit 备注，后续保留该偏好，不重写已推送的中文提交。`.githooks/commit-msg` 是需在本地显式启用的 hook，其英文首字母要求不能直接解释为远端对历史 commit 的检查。实际远端 `.github/workflows/contributing.yml` 通过 `--event` 检查 PR 的 title、head branch 和正文中的 pytest 输出，没有遍历历史 commit messages。PR 标题按英文大写开头、命令式、无结尾标点的规则准备，正文可用中文并附实际 pytest 输出；不修改上游规则，也不以本地 hook 惯例覆盖用户语言偏好。
 
 建议先形成可审查主线 PR，再将已确认独立的编译器 bug 修复按依赖拆为小补丁，避免为了拆分制造相互不兼容的分支。每个 PR 必须说明问题触发方式、修改后的行为、测试环境及尚未覆盖范围。
+
+`.github/workflows/pytest.yml` 会跳过来自 fork 的 PR GPU job，push 触发的任务则要求带有 `nvidia`、`ninetoothed` 等标签的 self-hosted runner。必须附可复查的真实测试证据，并由维护者决定如何在其 runner 验证；GitHub 上该 job 的 skipped 状态不代表 GPU 测试通过。提交内容与各工作流的实际检查范围见 [验收及提交说明](cpu_interpreter_acceptance.md)。
 
 合并和优秀评选由训练营及维护者决定。可控的完成条件是准确实现、完整证据、及时回应 review、实际修复 CI 和真实用户可用性；不是用服务器数量或测试数量替代这几项。

@@ -180,6 +180,30 @@ or ``--interactive-debug`` to read commands from the terminal:
 
    PYTHONPATH=src python docs/cpu_interpreter_demo.py --debug
 
+The demo checks the correct ``x * 2 + 1`` result against NumPy, then deliberately
+changes the SSA constant ``2`` to ``3``. ``check_passes`` identifies
+``injected_bad_constant`` and the first different ``arith.constant`` operation.
+This is fault injection for teaching the debugger, not a historical compiler bug.
+Eleven inputs with tiles of four also demonstrate three program IDs and a
+masked final lane.
+
+Use a new directory to save both programs and replay the same difference in a
+separate process, without rerunning the frontend or the injected pass:
+
+.. code-block:: console
+
+   PYTHONPATH=src python docs/cpu_interpreter_demo.py --debug --export /tmp/nine-demo
+   PYTHONPATH=src python /tmp/nine-demo/replay.py
+
+The directory contains ``reference/`` and ``candidate/`` replay bundles plus a
+top-level ``replay.py``. Both bundles preserve the original inputs, layouts,
+dtype and seed. The top-level script checks the reference result against NumPy,
+verifies the injected candidate's result, and prints ``Different outputs:
+('out',)`` and the first different operation. Exit code zero means the expected
+injected fault was reproduced; if the saved candidate no longer differs, the
+script fails. The saved-SSA comparison does not claim to rerun or independently
+identify the pass. Reusing an existing export directory is rejected.
+
 An extension can register a handler for an individual operation without changing
 the frontend or matching an entire application:
 
@@ -200,7 +224,10 @@ SSA results, and remain responsible for their operation's semantics.
    from ninetoothed.compiler.passes import Context, default_pipeline
    from ninetoothed.interpreter.debugger import check_passes
 
-   context = Context(backend=Target.TRITON, tensors=kernel.tensors)
+   context = Context(
+       backend=Target.TRITON, compiler_options={}, kernel_metadata={},
+       tensors=kernel.tensors,
+   )
    pipeline = default_pipeline(Target.TRITON)
    checks = tuple(
        (pass_.name, lambda program, pass_=pass_: pass_.run(program, context))

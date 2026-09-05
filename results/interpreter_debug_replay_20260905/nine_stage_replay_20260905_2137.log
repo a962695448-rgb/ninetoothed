@@ -1,0 +1,4 @@
+Fault type: deliberately injected constant 2 -> 3; saved SSA comparison
+Correct reference output verified against NumPy
+Different outputs: ('out',)
+First different operation: OperationDifference(program_id=(0, 0, 0), location='entry:0:arith.constant', opcode='arith.constant', result_name='%0', iteration=(), lane=None)

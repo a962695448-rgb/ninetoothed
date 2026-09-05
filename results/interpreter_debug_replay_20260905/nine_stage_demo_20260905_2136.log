@@ -1,0 +1,17 @@
+paused (0, 0, 0) entry:0:arith.constant lane=None iteration=()
+watch added: %0
+%0 = {"dtype": "int64", "shape": [], "value": 2}
+paused (0, 0, 0) entry:1:arith.mul lane=None iteration=()
+watch %0 = {"dtype": "int64", "shape": [], "value": 2}
+breakpoint added: mem.store
+paused (0, 0, 0) entry:4:mem.store lane=None iteration=()
+watch %0 = {"dtype": "int64", "shape": [], "value": 2}
+paused (1, 0, 0) entry:4:mem.store lane=None iteration=()
+watch %0 = {"dtype": "int64", "shape": [], "value": 2}
+paused (2, 0, 0) entry:4:mem.store lane=None iteration=()
+watch %0 = {"dtype": "int64", "shape": [], "value": 2}
+Correct CPU output: (11,), float32; 15 trace events
+First bad pass: injected_bad_constant
+First different operation: OperationDifference(program_id=(0, 0, 0), location='entry:0:arith.constant', opcode='arith.constant', result_name='%0', iteration=(), lane=None)
+Fault type: deliberately injected constant 2 -> 3; not a historical bug
+Differential replay: /data/infinitensor-2026/runs/20260905-081227/nine_stage_demo_case_20260905_2136/replay.py

@@ -1,0 +1,51 @@
+{
+  "created_at_utc": "2026-09-05T13:27:03.964813+00:00",
+  "commit": "5b377252cc4452b5ccc48c46ff1ae07a4e5e0e8a",
+  "python": "3.12.3 (main, Jun 19 2026, 12:46:00) [GCC 13.3.0]",
+  "numpy": "2.5.2",
+  "sympy": "1.14.0",
+  "pytest": "9.1.1",
+  "installed": {
+    "torch": false,
+    "triton": false
+  },
+  "command": [
+    "/home/xxl/.venvs/infinitensor-2026/bin/python",
+    "-m",
+    "pytest",
+    "-q",
+    "--color=no",
+    "-ra",
+    "--tb=short",
+    "tests/test_interpreter_applications.py",
+    "tests/test_interpreter_debugger.py",
+    "tests/test_interpreter_gpu.py",
+    "tests/test_interpreter_ssa.py",
+    "tests/test_interpreter_step_debugger.py",
+    "tests/test_ssa_application_lowering.py",
+    "tests/test_ssa_first_backend_lowering.py",
+    "tests/test_ssa_pass_pipeline.py",
+    "tests/test_ssa_program_domain_regressions.py",
+    "tests/test_ssa_validation.py",
+    "--junitxml=/mnt/c/Users/xxl/Projects/infinitensor-2026/evidence/nine-cpu-contract-20260905/pytest.xml",
+    "-k",
+    "not test_cpu_interpreter_matches_actual_triton_gpu"
+  ],
+  "environment": {
+    "PYTHONPATH": "/mnt/c/Users/xxl/Projects/infinitensor-2026/ninetoothed/src",
+    "PYTEST_DISABLE_PLUGIN_AUTOLOAD": "1",
+    "CUDA_VISIBLE_DEVICES": ""
+  },
+  "exit_code": 0,
+  "completed_at_utc": "2026-09-05T13:27:21.823703+00:00",
+  "artifacts": {
+    "pytest.log": {
+      "bytes": 276,
+      "sha256": "40dd8c16848c5502b6dd284d4b98ec43d39ca813695384eed0216e9d5cbb8e41"
+    },
+    "pytest.xml": {
+      "bytes": 31416,
+      "sha256": "230fca6998406f3ba1de92cb427d0d6bd5f9a9768ad21097ca3306d460c2c8ab"
+    }
+  }
+}

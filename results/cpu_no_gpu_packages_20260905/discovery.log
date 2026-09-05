@@ -1,0 +1,187 @@
+........................................................................ [ 31%]
+.......EEEEEEEEEEEEEE................................................... [ 62%]
+.................EEEEEEEEE.............................................. [ 93%]
+..............                                                           [100%]
+==================================== ERRORS ====================================
+_ ERROR at setup of test_cpu_interpreter_matches_actual_triton_gpu[elementwise_float32_aligned] _
+No module named 'torch'
+
+The above exception was the direct cause of the following exception:
+GPU validation UNVERIFIED: PyTorch and Triton must be installed.
+
+During handling of the above exception, another exception occurred:
+GPU validation UNVERIFIED: PyTorch and Triton must be installed.
+_ ERROR at setup of test_cpu_interpreter_matches_actual_triton_gpu[masked_float32_tail] _
+No module named 'torch'
+
+The above exception was the direct cause of the following exception:
+GPU validation UNVERIFIED: PyTorch and Triton must be installed.
+
+During handling of the above exception, another exception occurred:
+GPU validation UNVERIFIED: PyTorch and Triton must be installed.
+_ ERROR at setup of test_cpu_interpreter_matches_actual_triton_gpu[masked_int32_tail] _
+No module named 'torch'
+
+The above exception was the direct cause of the following exception:
+GPU validation UNVERIFIED: PyTorch and Triton must be installed.
+
+During handling of the above exception, another exception occurred:
+GPU validation UNVERIFIED: PyTorch and Triton must be installed.
+_ ERROR at setup of test_cpu_interpreter_matches_actual_triton_gpu[broadcast_float32_tail] _
+No module named 'torch'
+
+The above exception was the direct cause of the following exception:
+GPU validation UNVERIFIED: PyTorch and Triton must be installed.
+
+During handling of the above exception, another exception occurred:
+GPU validation UNVERIFIED: PyTorch and Triton must be installed.
+_ ERROR at setup of test_cpu_interpreter_matches_actual_triton_gpu[broadcast_row_matrix_float32_tail] _
+No module named 'torch'
+
+The above exception was the direct cause of the following exception:
+GPU validation UNVERIFIED: PyTorch and Triton must be installed.
+
+During handling of the above exception, another exception occurred:
+GPU validation UNVERIFIED: PyTorch and Triton must be installed.
+_ ERROR at setup of test_cpu_interpreter_matches_actual_triton_gpu[broadcast_column_matrix_float32_tail] _
+No module named 'torch'
+
+The above exception was the direct cause of the following exception:
+GPU validation UNVERIFIED: PyTorch and Triton must be installed.
+
+During handling of the above exception, another exception occurred:
+GPU validation UNVERIFIED: PyTorch and Triton must be installed.
+_ ERROR at setup of test_cpu_interpreter_matches_actual_triton_gpu[row_reduction_float32] _
+No module named 'torch'
+
+The above exception was the direct cause of the following exception:
+GPU validation UNVERIFIED: PyTorch and Triton must be installed.
+
+During handling of the above exception, another exception occurred:
+GPU validation UNVERIFIED: PyTorch and Triton must be installed.
+_ ERROR at setup of test_cpu_interpreter_matches_actual_triton_gpu[row_reduction_int32] _
+No module named 'torch'
+
+The above exception was the direct cause of the following exception:
+GPU validation UNVERIFIED: PyTorch and Triton must be installed.
+
+During handling of the above exception, another exception occurred:
+GPU validation UNVERIFIED: PyTorch and Triton must be installed.
+_ ERROR at setup of test_cpu_interpreter_matches_actual_triton_gpu[comparison_bool_exact] _
+No module named 'torch'
+
+The above exception was the direct cause of the following exception:
+GPU validation UNVERIFIED: PyTorch and Triton must be installed.
+
+During handling of the above exception, another exception occurred:
+GPU validation UNVERIFIED: PyTorch and Triton must be installed.
+_ ERROR at setup of test_cpu_interpreter_matches_actual_triton_gpu[if_for_true] _
+No module named 'torch'
+
+The above exception was the direct cause of the following exception:
+GPU validation UNVERIFIED: PyTorch and Triton must be installed.
+
+During handling of the above exception, another exception occurred:
+GPU validation UNVERIFIED: PyTorch and Triton must be installed.
+_ ERROR at setup of test_cpu_interpreter_matches_actual_triton_gpu[if_for_false] _
+No module named 'torch'
+
+The above exception was the direct cause of the following exception:
+GPU validation UNVERIFIED: PyTorch and Triton must be installed.
+
+During handling of the above exception, another exception occurred:
+GPU validation UNVERIFIED: PyTorch and Triton must be installed.
+_ ERROR at setup of test_cpu_interpreter_matches_actual_triton_gpu[softmax_float32] _
+No module named 'torch'
+
+The above exception was the direct cause of the following exception:
+GPU validation UNVERIFIED: PyTorch and Triton must be installed.
+
+During handling of the above exception, another exception occurred:
+GPU validation UNVERIFIED: PyTorch and Triton must be installed.
+_ ERROR at setup of test_cpu_interpreter_matches_actual_triton_gpu[floor_div_int32_mixed_sign_tail] _
+No module named 'torch'
+
+The above exception was the direct cause of the following exception:
+GPU validation UNVERIFIED: PyTorch and Triton must be installed.
+
+During handling of the above exception, another exception occurred:
+GPU validation UNVERIFIED: PyTorch and Triton must be installed.
+_ ERROR at setup of test_cpu_interpreter_matches_actual_triton_gpu[remainder_int32_mixed_sign_tail] _
+No module named 'torch'
+
+The above exception was the direct cause of the following exception:
+GPU validation UNVERIFIED: PyTorch and Triton must be installed.
+
+During handling of the above exception, another exception occurred:
+GPU validation UNVERIFIED: PyTorch and Triton must be installed.
+_ ERROR at setup of test_torch_cpu_output_keeps_identity_and_updates_shared_storage[float32] _
+No module named 'torch'
+
+During handling of the above exception, another exception occurred:
+Torch adapter validation UNVERIFIED: No module named 'torch'.
+_ ERROR at setup of test_torch_cpu_output_keeps_identity_and_updates_shared_storage[int32] _
+No module named 'torch'
+
+During handling of the above exception, another exception occurred:
+Torch adapter validation UNVERIFIED: No module named 'torch'.
+_ ERROR at setup of test_input_adapter_shares_cpu_storage_before_numeric_load __
+No module named 'torch'
+
+During handling of the above exception, another exception occurred:
+Torch adapter validation UNVERIFIED: No module named 'torch'.
+_ ERROR at setup of test_noncontiguous_torch_cpu_views_preserve_strides_and_guard_storage _
+No module named 'torch'
+
+During handling of the above exception, another exception occurred:
+Torch adapter validation UNVERIFIED: No module named 'torch'.
+______ ERROR at setup of test_requires_grad_torch_buffers_are_rejected[x] ______
+No module named 'torch'
+
+During handling of the above exception, another exception occurred:
+Torch adapter validation UNVERIFIED: No module named 'torch'.
+_____ ERROR at setup of test_requires_grad_torch_buffers_are_rejected[out] _____
+No module named 'torch'
+
+During handling of the above exception, another exception occurred:
+Torch adapter validation UNVERIFIED: No module named 'torch'.
+____________ ERROR at setup of test_sparse_torch_input_is_rejected _____________
+No module named 'torch'
+
+During handling of the above exception, another exception occurred:
+Torch adapter validation UNVERIFIED: No module named 'torch'.
+______ ERROR at setup of test_cuda_tensor_is_rejected_by_cpu_interpreter _______
+No module named 'torch'
+
+During handling of the above exception, another exception occurred:
+Torch adapter validation UNVERIFIED: No module named 'torch'.
+_______ ERROR at setup of test_torch_dtype_must_match_declared_ssa_dtype _______
+No module named 'torch'
+
+During handling of the above exception, another exception occurred:
+Torch adapter validation UNVERIFIED: No module named 'torch'.
+=========================== short test summary info ============================
+ERROR tests/test_interpreter_gpu.py::test_cpu_interpreter_matches_actual_triton_gpu[elementwise_float32_aligned]
+ERROR tests/test_interpreter_gpu.py::test_cpu_interpreter_matches_actual_triton_gpu[masked_float32_tail]
+ERROR tests/test_interpreter_gpu.py::test_cpu_interpreter_matches_actual_triton_gpu[masked_int32_tail]
+ERROR tests/test_interpreter_gpu.py::test_cpu_interpreter_matches_actual_triton_gpu[broadcast_float32_tail]
+ERROR tests/test_interpreter_gpu.py::test_cpu_interpreter_matches_actual_triton_gpu[broadcast_row_matrix_float32_tail]
+ERROR tests/test_interpreter_gpu.py::test_cpu_interpreter_matches_actual_triton_gpu[broadcast_column_matrix_float32_tail]
+ERROR tests/test_interpreter_gpu.py::test_cpu_interpreter_matches_actual_triton_gpu[row_reduction_float32]
+ERROR tests/test_interpreter_gpu.py::test_cpu_interpreter_matches_actual_triton_gpu[row_reduction_int32]
+ERROR tests/test_interpreter_gpu.py::test_cpu_interpreter_matches_actual_triton_gpu[comparison_bool_exact]
+ERROR tests/test_interpreter_gpu.py::test_cpu_interpreter_matches_actual_triton_gpu[if_for_true]
+ERROR tests/test_interpreter_gpu.py::test_cpu_interpreter_matches_actual_triton_gpu[if_for_false]
+ERROR tests/test_interpreter_gpu.py::test_cpu_interpreter_matches_actual_triton_gpu[softmax_float32]
+ERROR tests/test_interpreter_gpu.py::test_cpu_interpreter_matches_actual_triton_gpu[floor_div_int32_mixed_sign_tail]
+ERROR tests/test_interpreter_gpu.py::test_cpu_interpreter_matches_actual_triton_gpu[remainder_int32_mixed_sign_tail]
+ERROR tests/test_interpreter_torch.py::test_torch_cpu_output_keeps_identity_and_updates_shared_storage[float32]
+ERROR tests/test_interpreter_torch.py::test_torch_cpu_output_keeps_identity_and_updates_shared_storage[int32]
+ERROR tests/test_interpreter_torch.py::test_input_adapter_shares_cpu_storage_before_numeric_load
+ERROR tests/test_interpreter_torch.py::test_noncontiguous_torch_cpu_views_preserve_strides_and_guard_storage
+ERROR tests/test_interpreter_torch.py::test_requires_grad_torch_buffers_are_rejected[x]
+ERROR tests/test_interpreter_torch.py::test_requires_grad_torch_buffers_are_rejected[out]
+ERROR tests/test_interpreter_torch.py::test_sparse_torch_input_is_rejected - ...
+ERROR tests/test_interpreter_torch.py::test_cuda_tensor_is_rejected_by_cpu_interpreter
+ERROR tests/test_interpreter_torch.py::test_torch_dtype_must_match_declared_ssa_dtype
+207 passed, 23 errors in 21.14s
