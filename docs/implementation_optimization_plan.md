@@ -1,8 +1,8 @@
 # 九齿解释器实施与优化计划
 
-更新日期：2026-09-06。本轮功能源码已冻结为 **`f35fb51b16a52392e7ee92b3a3c15622305d428b`**。它修改了运行时、默认 pass、发射器、SSA 来源记录和测试，相对历史 `82592b8` 有功能变化，不能继承旧 A100 的 600 passed、2 skipped 结果。
+更新日期：2026-09-07。本轮功能源码已冻结为 **`6ecce58da28bb9709aa35fc6c25c1f361aff736f`**。它修改了运行时、默认 pass、发射器、SSA 来源记录和测试，并把标量存储保护统一到 single/multi dot 与 transpose；相对历史代码有功能变化，不能继承旧 GPU 结果。
 
-本轮预备 CPU 组合为 **171 passed、23.72 s**，仅代表当次选择范围。随后冻结 f35 的广范围 CPU 选择得到 **1 failed、294 passed、15 deselected，35.42 s，退出码 1**：原测试把整个 SSA 元数据中的来源记录名称误当成尚未消除的执行 opcode；原失败保留，测试兼容修正需独立复验。GPU runner 已准备 **15 个用例**，包括新增的多 M/N 输出 tile、完整 K 的 float32 dot，**新版本 GPU 尚未运行，也没有新的 A100 结果**。本阶段完成全部约定优化与验证后先交用户验收；验收后才处理上游 PR 与官网提交，当前不创建或发布 PR，不执行官网提交。
+最新冻结 CPU 选择为 **307 passed、15 deselected，32.68 s，退出码 0**；它是无 Torch/Triton 的 NumPy CPU 范围。独立 **RTX 4090** 运行已完成 **15/15 Triton 差分（9 程序、10 类别）及一个 CUDA 标量 dot probe，均 exit 0**，见[实机归档](../results/interpreter_optimization_20260906/gpu-6ecce58/archive_manifest.json)。这些范围不累计；新源码的 A100、完整仓库与双卡验证仍未完成。两次历史 Sphinx 构建均因缺少依赖失败，本次无 GUI 文档构建结果见最新归档。当前只收尾已有实现与证据；用户验收前不创建 PR 或执行官网提交。
 
 ## 要求依据与验证层次
 
@@ -10,10 +10,10 @@
 
 | 功能或验证条件 | 当前实现与入口 | 需要保留的边界 |
 |---|---|---|
-| 清晰 CPU 入口，复用 arrangement/frontend/SSA | `interpret`、`interpret_program`，直接解释共享布局和 SSA；已加载的 PyTorch CPU Tensor 可共享 NumPy 存储 | 不调用 GPU 代算，不另写 application 到 NumPy 的转换器；新版本 CPU-only 检查须独立留证 |
+| 清晰 CPU 入口，复用 arrangement/frontend/SSA | `interpret`、`interpret_program`，直接解释共享布局和 SSA；已加载的 PyTorch CPU Tensor 可共享 NumPy 存储 | 6ec 无 Torch/Triton 的 NumPy CPU 选择已通过；未选择 Torch 适配文件，不把该结果解释为全部 CPU 适配路径通过 |
 | 最小操作集合与程序状态 | 常量、算术、比较、cast、select、broadcast、mask load/store、sum/max、if/for、value environment、program ID | 非活动地址不解引用；未支持的 operation/dtype/访存形式明确报错并给出 SSA 位置 |
 | 五类应用与三种必需 dtype | elementwise、broadcast、非整除尾块、row reduction、分支/循环；float32、int32、bool | float32 对独立参考用 `rtol=1e-3, atol=1e-3`，整数和布尔完全相等；参数化数量不替代功能范围 |
-| 默认优化前后及实际 GPU 差分 | CPU 比较 frontend 与默认目标管线；GPU runner 比较独立参考、两份 SSA 的 CPU 结果与实际 GPU 输出 | 官方 GPU 条件使用 A100；f35 的 15 个用例尚未实际运行，旧 b5/825 的结果不迁移 |
+| 默认优化前后及实际 GPU 差分 | CPU 比较 frontend 与默认目标管线；GPU runner 比较独立参考、两份 SSA 的 CPU 结果与实际 GPU 输出 | 官方 GPU 条件使用 A100；6ec 的 15 个 Triton 用例和一个 CUDA probe 已在 RTX 4090 通过；新 A100 仍未完成，旧记录不迁移 |
 | dot/matmul 与 softmax | 本轮增加完整 K 的多 M/N 输出 tile 标量 dot；softmax 已有解释器实现 | 仅下述 rank-2 合同；未实现 split-K 累积、Tensor Core 验证或任意矩阵布局 |
 | trace 与交互调试 | program/opcode 过滤、单步、断点、watch、独立快照和回放 | 来源候选不是 Python 源码行；完整事件序列不同不能强行对齐中间值 |
 | pass 差分与来源记录 | `check_passes`、`Operation.origins`、显式 pass 关系与 `source_candidates` | 结构一致且完整 trace 对齐时可报告操作位置；结构变化只给已声明的原 SSA 候选集合，不证明唯一因果点 |
@@ -27,6 +27,8 @@
 默认 Triton/CUDA 管线输出的标量 SSA 和 K 循环由 CPU 实际执行，输入为 rank-2 的 `(M,K)` 与 `(K,N)`，输出为 `(M,N)`。M/N 可以跨多个输出 tile，但每个 program 必须包含完整 K；K 尾块补零，输出有效坐标完整覆盖且每个位置只写一次。操作使用 value-space 局部行列坐标，再通过共享布局解析到存储位置。
 
 [矩阵乘法回归](../tests/test_interpreter_matmul.py)覆盖 float32/int32、非方阵、M/N/K 尾块、非连续输入，以及元素对齐的独立正/负 stride 输出和保护区。K 跨独立 program 却无累积、计算得到的操作数、额外 value 层级、潜在输入输出别名、部分字节重叠、输出重复写及额外 store/atomic 副作用均在支持合同外；现有负向测试明确检查 K 分拆、别名、重叠输出和嵌套额外 store 在写入前被拒绝且缓冲区保持不变。额外副作用递归检查嵌套 region，避免每个输出 lane 重复执行它们。
+
+6ec 的公共存储保护在 single/multi dot 与 transpose 的标量 lane 执行前统一检查：输入输出潜在别名、部分字节重叠、造成重复写的 zero stride，以及同一 `out` 绑定又作为 lhs 等值读取均被拒绝；形状/stride/offset 元数据读取仍允许。正常 untiled 与独立、元素对齐的正负 stride 输出继续支持。新增 12 项单 program 回归修正前为 8 failed、4 passed；修正后相关组合 137 passed，正式广范围结果另按 6ec 的 307/15 保存。
 
 当前 GPU 新例只覆盖 float32 标量 lowering：`(7,3) @ (3,6)`、4×4 tile、四个 M/N 输出 program。CPU 的 int32 和丰富 strides 测试不能推断为这些情况也已完成 GPU 验证。[GPU fixture](../tests/test_interpreter_gpu.py)含发射坐标检查和完整 origins 往返检查，代码生成检查本身不是 GPU 运行。
 
@@ -47,17 +49,21 @@
 | 377 jagged 定向 / 825 generation 定向 | 分别 16 passed、77 passed；不与专项或全量相加 |
 | 825 A100 全量 | 600 passed、2 skipped、450.25 s、exit 0；见[原运行清单](../results/full_suite_a100_82592b8/manifest.json) |
 | 086 资料归档 | `086f148b40a7ac057f9184ecfbfccef84eb4037e` 仅归档 docs/results，运行源码仍为 825；不是另一轮实测 |
-| f35 本轮功能 | 171 passed、23.72 s 为预备 CPU 组合；广范围 CPU 为 1 failed、294 passed、15 deselected、35.42 s、exit 1，修正后复验另记；GPU 15 用例待跑，新 A100 未验证 |
+| f35 CPU 选择 | 1 failed、294 passed、15 deselected、35.42 s、exit 1；原断言对全部 metadata 做字符串检查，误命中 origins 中保留的操作名，见[原失败](../results/interpreter_optimization_20260906/cpu-f35fb51/manifest.json) |
+| 56 CPU 复验 | `56f091eb585e94b725a08989e44a63b222b1e3f0`：295 passed、15 deselected、34.18 s、exit 0，见[复验清单](../results/interpreter_optimization_20260906/cpu-56f091e/manifest.json) |
+| 6ec CPU 阶段 | 307 passed、15 deselected、32.68 s、exit 0，见[最新清单](../results/interpreter_optimization_20260906/cpu-6ecce58/manifest.json)；无 Torch/Triton，15 个 GPU 用例在该 CPU 命令中取消选择；独立 4090 运行另记 |
+
+171 passed、23.72 s 的预备组合，以及新增存储回归的 8 failed/4 passed 与后续 137 passed 属于开发检查；不与三次冻结 CPU 运行累计，也不改写对应失败记录。
 
 历史 4090 的 224/209/206/254/591/39 等也分别归于其源码、依赖和选择范围，见[历史报告](cpu_interpreter_validation_4090.md)。CPU、GPU、完整套件和诊断场景不累计。旧 squeeze 控制实验没有恢复原全量分配器与索引现场，后续成功仍不能确定旧失败的精确原因。
 
-## 接下来必须完成的验证与演示
+## 当前交付与后续验收边界
 
-1. 保留 f35 广范围 CPU 的 1 项失败；执行 opcode 的断言应递归检查 blocks/regions，不能对包含 origins 的整个 metadata 做字符串包含判断。测试兼容修正后冻结新 SHA 并独立复验，保留确切命令、依赖、真实退出码和选择范围；171 项仍只作预备组合记录，不能称为全仓库通过。
-2. 使用相同输入、布局、dtype、seed 和默认 pass，在可用 NVIDIA GPU 上实际运行 15 项差分并归档。若先用 RTX 4090，只记为 4090；新的 A100 对照仍需单独完成，不能继承 825 的 600 项结果。
-3. 新增功能后的完整兼容性、格式、文档及示例验证按新提交留证。双卡场景继续单独注明，单卡不能代替同机多设备验证。
-4. 核对真实历史缺陷演示及失败后导出/独立回放流程；现有故障注入、显式导出 API 和自动样例缩减是不同能力。新 operation 局部扩展及更丰富动态 shape 的证明也须有具体用例，不能只写计划或增加 dtype 名称。
-5. 汇总全部约定实现、验证结果、仍不支持的输入和可复查演示，交用户验收。用户验收通过后，再按[贡献规范](../CONTRIBUTING.md)准备外部提交；当前不创建或发布 PR，不执行官网提交。
+1. f35/56/6ec 三轮 CPU 原文与各自源版本保留；最新 307/15 不扩大为 Torch 适配或全仓库通过。
+2. 6ec 的 15 项 Triton 差分及一个 CUDA 后端标量 dot 已在 4090 完成。新的 A100、完整库与同机多卡不在本次证据范围，不继承历史 825 的 600/2。
+3. 保留两次 Sphinx 原 FAIL；静态绘图的 GUI 依赖改为只在交互入口导入，文档构建结果按最新清单记录，不把依赖准备当作构建成功。
+4. 来源候选、故障注入与导出/回放是明确的现有能力；唯一根因定位、自动最小样例缩减、任意布局/split-K 和性能最优不作为已完成承诺。
+5. 源码、文档和原始证据同步到个人交付分支供用户验收；上游 PR、官网提交及维护者合并仍未执行。
 
 ## 排除范围与提交约束
 

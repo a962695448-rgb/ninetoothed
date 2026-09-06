@@ -1,5 +1,12 @@
 # CPU 参考解释器：RTX 4090 验证记录
 
+## 6ec 新实现的独立复验（2026-09-06 执行，2026-09-07 归档）
+
+`6ecce58da28bb9709aa35fc6c25c1f361aff736f` 在实际 NVIDIA GeForce RTX 4090 / sm89 上通过15/15 Triton差分（9程序、10类别）及一个CUDA标量dot probe，两阶段exit0、源码前后clean。环境为Python3.12.3、NumPy1.26.4、Torch2.6.0a0+ecf3bae40a.nv25.01、CUDA12.8、Triton3.1.0；[原控制记录](../results/interpreter_optimization_20260906/gpu-6ecce58/validation.json)、[Triton报告](../results/interpreter_optimization_20260906/gpu-6ecce58/triton-report.json)、[CUDA报告](../results/interpreter_optimization_20260906/gpu-6ecce58/cuda-dot/report.json)。
+
+CUDA仅验证 `(7,3) @ (3,6)`、四个4×4 M/N输出tile、完整K的float32标量lowering；frontend CPU/lowered CPU/GPU对NumPy最大绝对误差分别0、1.1920928955078125e-7、0，输入与保护区不变。它不是完整GPU套件、Tensor Core或性能结果。限定CPU307/15、该15项和这个probe分别记录，不与历史A100或4090数量相加。交互GUI依赖惰性导入及文档归档是后续收尾变更，计算源码证据仍准确归于6ec。
+
+
 2026-09-06的后续实际A100差分与专项结果见 [A100验证记录](cpu_interpreter_validation_a100.md)。以下保留RTX 4090各轮运行及当时的验收状态。
 
 更新日期：2026-09-05。冻结源码 `5b377252cc4452b5ccc48c46ff1ae07a4e5e0e8a` 在 RTX 4090 上完成含 doctest 与 coverage 的完整重跑：**591 passed、2 skipped，6036.09 s，退出码 0**。归档时服务器 HEAD 与该提交一致，已跟踪文件无修改。两个跳过项均要求同机至少两张 GPU。**此结论仅属于 `5b37725` 的本轮运行，不覆盖后续演示与测试改进的完整套件；A100 验证尚未运行。**旧完整套件的 11 项失败和一次 SIGSEGV 记录保留，SIGSEGV 原因仍未确定。

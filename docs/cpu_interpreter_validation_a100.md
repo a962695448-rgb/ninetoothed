@@ -1,6 +1,6 @@
 # CPU 参考解释器：NVIDIA A100 验证记录
 
-本页保存 b5/377/825 的历史实机结果。当前功能源码 `f35fb51b16a52392e7ee92b3a3c15622305d428b` 已修改运行时、pass、发射器和来源记录；其 171 项预备 CPU 组合不能继承本页的 A100 结论。f35 广范围 CPU 已记录 1 failed、294 passed、15 deselected、35.42 s，测试兼容修正复验另记。15 个 GPU 用例已准备，新 GPU 尚未运行，新的 A100 验证仍待完成，当前状态见 [实施与优化计划](implementation_optimization_plan.md)。
+本页保存 b5/377/825 的历史 A100 实机结果。当前计算源码 `6ecce58da28bb9709aa35fc6c25c1f361aff736f` 已修改 runtime/pass/emitter/provenance；限定 NumPy CPU 结果为307 passed、15 deselected。其新增 **15 项 Triton 差分和一个 CUDA 标量 dot 已在 RTX 4090 通过**，见[新归档](../results/interpreter_optimization_20260906/gpu-6ecce58/archive_manifest.json)；这不是新的 A100 验证。两次历史 Sphinx 依赖失败及本次无 GUI 构建另记，不能继承本页旧硬件结论。
 
 更新日期：2026-09-06（Asia/Shanghai）。源码 **`82592b8f6de65052e4258fdd6067956d4ede18c3`** 已在实际 **NVIDIA A100-SXM4-40GB** 上完成完整测试：**600 passed、2 skipped，450.25 s（0:07:30），退出码 0；无 failures 或 errors**。两个 skip 均要求同机至少两张 GPU。原始日志、JUnit、coverage 与命令见 [完整清单](../results/full_suite_a100_82592b8/manifest.json)、[原文归档](../results/full_suite_a100_82592b8/raw-full.tar.gz)和 [归档说明](../results/full_suite_a100_82592b8/README.md)。
 
@@ -29,7 +29,7 @@ smoke 是 14 项 GPU 差分中的一个用例；180 项专项又包含这 14 项
 
 原 runner 的运行前后 HEAD 均为 `82592b8`，已跟踪文件无修改。最终 JUnit 为 602 tests、0 failures、0 errors、2 skipped。Coverage XML 记录全仓库 9087 / 10578 行、`line-rate=0.859`，即 **85.90%**；这是本轮全库行覆盖率，不是解释器专项或分支覆盖率，`branches-valid` 为 0。完整原文及校验方式见 [归档说明](../results/full_suite_a100_82592b8/README.md)。
 
-原归档提交 `086f148b40a7ac057f9184ecfbfccef84eb4037e` 只修改当时的 `docs/`、`results/`，代码、测试、依赖与 CI 和 825 相同；因此该批资料引用本次原运行，086 本身不是另一轮实测。**本页这次完整运行的 SHA 是 `82592b8f6de65052e4258fdd6067956d4ede18c3`**。当前 f35 的 runtime/pass/emitter/provenance 与测试已有功能变更，必须另行验证，不能推广为后续所有代码都已在 A100 通过。
+原归档提交 `086f148b40a7ac057f9184ecfbfccef84eb4037e` 只修改当时的 `docs/`、`results/`，代码、测试、依赖与 CI 和 825 相同；因此该批资料引用本次原运行，086 本身不是另一轮实测。**本页这次完整运行的 SHA 是 `82592b8f6de65052e4258fdd6067956d4ede18c3`**。当前 6ec 的 runtime/pass/emitter/provenance 与测试已有功能变更，必须另行完成硬件验证，不能推广为后续所有代码都已在 A100 通过。
 
 ## 初轮 16 项失败与测试参考修复
 
@@ -185,4 +185,4 @@ python -m pytest --color=no --tb=short -ra -q tests/test_generation.py \
 
 准确命令与结果见 [generation 复验清单](../results/generation_reference_recheck_a100_82592b8/manifest.json)。`b5a3206` 和 `377daec` 两次 A100 全量保持原 FAIL 结论；`82592b8` 第三轮独立记录为 **600 passed、2 skipped，450.25 s，退出码 0**。完整硬件验证证据已取得，后续完成约定优化及验证并交用户验收，通过后再处理外部提交。单卡 skip、受控诊断边界和各版本范围继续保留，不相加、不改写旧结果。
 
-本页历史 b5 GPU runner **未包含优化后 dot/matmul**，softmax 的旧实机通过不填补该缺口。当前 f35 已实现限定合同内的多 M/N tile、完整 K 标量 dot 和原 SSA 来源候选，15 个 GPU 用例中已加入一个 float32 dot，但新 GPU 和 A100 结果尚未取得。具体合同、来源候选限制与剩余验证见 [实施与优化计划](implementation_optimization_plan.md)；完成全部约定优化与验证并经用户验收后，再处理上游 PR 与官网提交，当前不创建或发布 PR，不执行官网提交。归档只确认对应源码、环境与范围内的真实结果。
+本页历史 b5 GPU runner 未包含优化后 dot/matmul。6ec 的限定多 M/N tile、完整 K 标量 float32 dot 已由 RTX 4090 的 Triton/CUDA 各自验证，见[实机来源](../results/interpreter_optimization_20260906/gpu-6ecce58/validation.json)。仍没有该新版的 A100、完整库或双卡验证，不声称 Tensor Core、任意布局或 split-K。完成现有成果收尾后先交用户验收，上游 PR、官网提交与维护者合并未执行。

@@ -1,0 +1,146 @@
+{
+  "bootstrap.py": {
+    "bytes": 679,
+    "sha256": "2fa127709e8d0f5e04ca0cbd675fde4dee04cfebcaf11ec6a7cf2932acbb9877"
+  },
+  "bootstrap.log": {
+    "bytes": 1473,
+    "sha256": "135d30e6e3eae2a5661471332b5f0c7fbb0e8740e033d06e4080a4762900dea6"
+  },
+  "triton-report.json": {
+    "bytes": 10217,
+    "sha256": "725c89bac4649e79f9cf2309d21010aafb7732618d3a63111e61cdfd8c25edaa"
+  },
+  "cuda_probe.py": {
+    "bytes": 14510,
+    "sha256": "dcee9e2d933b396cae42ea76222bc9339fa7f9a2b68c9dec403dad5e71383fe9"
+  },
+  "validate.py": {
+    "bytes": 1998,
+    "sha256": "e03a0eabfa03ed71fef7098a059ecbbe629410b00f80954e94796b8e605b2eb9"
+  },
+  "triton.stderr.log": {
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "cuda.stdout.log": {
+    "bytes": 119,
+    "sha256": "f90e647ed190f9f169fa0e8aa01b398426b1c41855e0b85d5636475516917830"
+  },
+  "validation.json": {
+    "bytes": 1040,
+    "sha256": "4999950d7b54a7a99026f363be64f2fb6d4d5f3fe6c1468864fc93340f80c952"
+  },
+  "cuda.stderr.log": {
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "triton.stdout.log": {
+    "bytes": 541,
+    "sha256": "795ce8d08740a2fa85a996d863e5bc28c5318b5d9515df85b0677c067c470744"
+  },
+  "controller.log": {
+    "bytes": 837,
+    "sha256": "6b13422f9e70eb5ff4e122bd14bcd7f29d1bff11ad45c111e304700979539eac"
+  },
+  "cuda-dot/oracle.npz": {
+    "bytes": 1062,
+    "sha256": "8484a1b03b775ed987ecf1b55542b649a1e169d88c4fd846f146d845c9306a93"
+  },
+  "cuda-dot/report.json": {
+    "bytes": 6233,
+    "sha256": "eb6a3aa065ff1ddf353eb4bc467e829681f3f8f908acc51f58136964a16054fc"
+  },
+  "cuda-dot/emitted-ir.json": {
+    "bytes": 32863,
+    "sha256": "169dff2246cfb45919518e9877c86e19261e59bdf56147b2319297b0aa3a7536"
+  },
+  "cuda-dot/cuda_ssa_cpu.npz": {
+    "bytes": 1148,
+    "sha256": "4d99ef34693bbbeaa8803ff941bd07b5a702391ff01721828e9b3d0ada7d0e18"
+  },
+  "cuda-dot/frontend.ssa.txt": {
+    "bytes": 228,
+    "sha256": "de7b501bf104b6160787e3eb4b009e1a54666a35d504ebea3a2c75bbe37ce846"
+  },
+  "cuda-dot/frontend_cpu.npz": {
+    "bytes": 1148,
+    "sha256": "57a3bbd83a9b7fc9a2d0997627e913e6ff32d852045f02b6fc8e7426d426ed20"
+  },
+  "cuda-dot/source-before.json": {
+    "bytes": 39933,
+    "sha256": "58d58cd4e05e02e109a26f4d7b6d999f08f1a365cc84ccedd4bc22a614520bda"
+  },
+  "cuda-dot/kernel.cu": {
+    "bytes": 21021,
+    "sha256": "a2e4dd1317008238618e9b116d4382cc7767de13d76fd752a237fa0c9840f3ed"
+  },
+  "cuda-dot/probe-script.py": {
+    "bytes": 14510,
+    "sha256": "dcee9e2d933b396cae42ea76222bc9339fa7f9a2b68c9dec403dad5e71383fe9"
+  },
+  "cuda-dot/cuda_gpu.npz": {
+    "bytes": 1148,
+    "sha256": "57a3bbd83a9b7fc9a2d0997627e913e6ff32d852045f02b6fc8e7426d426ed20"
+  },
+  "cuda-dot/artifact-ir.json": {
+    "bytes": 32863,
+    "sha256": "169dff2246cfb45919518e9877c86e19261e59bdf56147b2319297b0aa3a7536"
+  },
+  "cuda-dot/source-after.json": {
+    "bytes": 39933,
+    "sha256": "58d58cd4e05e02e109a26f4d7b6d999f08f1a365cc84ccedd4bc22a614520bda"
+  },
+  "cuda-dot/emitted.ssa.txt": {
+    "bytes": 1176,
+    "sha256": "0e42836c7b8f9241f79c8245f0a3fd94c99c6f5aa4e6f1366263c74f54b717d8"
+  },
+  "cuda-dot/nvcc-version.txt": {
+    "bytes": 208,
+    "sha256": "fc8ae1e160e2c922233faf6c9c15d04074acc08e24a94f8ec9b057ceaf3d2381"
+  },
+  "cuda-dot/build/nine_opt_cuda_dot_probe.cuda.manifest.json": {
+    "bytes": 14025,
+    "sha256": "ca14bdaee7224328e8113df5426dd6295415558531b67bafb57974db6e4afe00"
+  },
+  "cuda-dot/build/nine_opt_cuda_dot_probe.cuda.so.lock": {
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "cuda-dot/build/nine_opt_cuda_dot_probe.cuda.manifest.json.lock": {
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "cuda-dot/build/nine_opt_cuda_dot_probe.cuda.so": {
+    "bytes": 1043880,
+    "sha256": "46428e00eb624d85afaf4c92b798b85325d2ca0bae4f1b1eaaba2df99591ee4e"
+  },
+  "cuda-dot/build-cache/toolchains/nvcc.lock": {
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "cuda-dot/build-cache/artifacts/3425ec84524d566fc0b3afe4111f343700ef0570b2d134df8fcdbaeb772be259/nine_opt_cuda_dot_probe.cuda.manifest.json": {
+    "bytes": 14106,
+    "sha256": "d0501b169a50c5082ec3d5fea17820f8d313bce71ecfcb2e7ad51b58841e7b0f"
+  },
+  "cuda-dot/build-cache/artifacts/3425ec84524d566fc0b3afe4111f343700ef0570b2d134df8fcdbaeb772be259/nine_opt_cuda_dot_probe.cu.lock": {
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "cuda-dot/build-cache/artifacts/3425ec84524d566fc0b3afe4111f343700ef0570b2d134df8fcdbaeb772be259/nine_opt_cuda_dot_probe.cuda.so.lock": {
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "cuda-dot/build-cache/artifacts/3425ec84524d566fc0b3afe4111f343700ef0570b2d134df8fcdbaeb772be259/nine_opt_cuda_dot_probe.cu": {
+    "bytes": 21021,
+    "sha256": "a2e4dd1317008238618e9b116d4382cc7767de13d76fd752a237fa0c9840f3ed"
+  },
+  "cuda-dot/build-cache/artifacts/3425ec84524d566fc0b3afe4111f343700ef0570b2d134df8fcdbaeb772be259/nine_opt_cuda_dot_probe.cuda.manifest.json.lock": {
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "cuda-dot/build-cache/artifacts/3425ec84524d566fc0b3afe4111f343700ef0570b2d134df8fcdbaeb772be259/nine_opt_cuda_dot_probe.cuda.so": {
+    "bytes": 1043880,
+    "sha256": "46428e00eb624d85afaf4c92b798b85325d2ca0bae4f1b1eaaba2df99591ee4e"
+  }
+}

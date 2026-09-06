@@ -1,0 +1,693 @@
+{
+  "created_at_utc": "2026-09-06T07:45:22.466926+00:00",
+  "source_commit": "56f091eb585e94b725a08989e44a63b222b1e3f0",
+  "scope": "New single-program CPU storage-boundary probes only; no GPU execution or source edits.",
+  "torch_available": false,
+  "triton_available": false,
+  "seed": 2026,
+  "before": {
+    "head": "56f091eb585e94b725a08989e44a63b222b1e3f0",
+    "tracked_files_checked": 126,
+    "all_code_test_script_blobs_match_commit": true,
+    "normalization": "UTF-8 CRLF to LF only; WSL git-status mode/line-ending noise is not treated as a code change",
+    "raw_source_tree_sha256": "adff538ed92cda7cee7b937f5e53befd4914a9ccec8f796a92bb4229d132a274",
+    "runtime_raw_sha256": "3c3695953fa53abc1e7f0550396481265c742faf32100113ebeb62dff6fd43e5"
+  },
+  "after": {
+    "head": "56f091eb585e94b725a08989e44a63b222b1e3f0",
+    "tracked_files_checked": 126,
+    "all_code_test_script_blobs_match_commit": true,
+    "normalization": "UTF-8 CRLF to LF only; WSL git-status mode/line-ending noise is not treated as a code change",
+    "raw_source_tree_sha256": "adff538ed92cda7cee7b937f5e53befd4914a9ccec8f796a92bb4229d132a274",
+    "runtime_raw_sha256": "3c3695953fa53abc1e7f0550396481265c742faf32100113ebeb62dff6fd43e5"
+  },
+  "source_unchanged": true,
+  "cases": [
+    {
+      "backend": "triton",
+      "case": "out_aliases_lhs",
+      "a_shape": [
+        3,
+        4
+      ],
+      "b_shape": [
+        4,
+        4
+      ],
+      "out_shape": [
+        3,
+        4
+      ],
+      "tile_shape": [
+        4,
+        4
+      ],
+      "launch_programs": 1,
+      "pass_trace": [
+        "ssa.canonicalize",
+        "ssa.analyze_effects",
+        "ssa.select_schedule",
+        "ssa.triton.optimize_schedule",
+        "ssa.decompose_linalg"
+      ],
+      "frontend": {
+        "out_strides_bytes": [
+          16,
+          4
+        ],
+        "accepted": true,
+        "matches_numpy": true,
+        "backing_unchanged": false,
+        "lhs_unchanged": false,
+        "rhs_unchanged": true,
+        "finite_output": true,
+        "max_abs_error": 0.0,
+        "actual": [
+          [
+            1.2666666507720947,
+            -1.6666665077209473,
+            1.8666666746139526,
+            -2.933333396911621
+          ],
+          [
+            1.9999998807907104,
+            -3.866666555404663,
+            -1.8666667938232422,
+            -2.2666666507720947
+          ],
+          [
+            -2.7333333492279053,
+            3.3999998569488525,
+            2.7333333492279053,
+            2.799999952316284
+          ]
+        ]
+      },
+      "target": {
+        "out_strides_bytes": [
+          16,
+          4
+        ],
+        "accepted": true,
+        "matches_numpy": false,
+        "backing_unchanged": false,
+        "lhs_unchanged": false,
+        "rhs_unchanged": true,
+        "finite_output": true,
+        "max_abs_error": 6.131199836730957,
+        "actual": [
+          [
+            1.2666666507720947,
+            -2.1466662883758545,
+            2.2026665210723877,
+            3.197866439819336
+          ],
+          [
+            2.0,
+            -0.6666665077209473,
+            0.5333331823348999,
+            -1.4933335781097412
+          ],
+          [
+            -2.7333333492279053,
+            -0.6800002455711365,
+            0.709333598613739,
+            5.059200763702393
+          ]
+        ]
+      },
+      "expected": [
+        [
+          1.2666666507720947,
+          -1.6666665077209473,
+          1.8666666746139526,
+          -2.933333396911621
+        ],
+        [
+          1.9999998807907104,
+          -3.866666555404663,
+          -1.8666667938232422,
+          -2.2666666507720947
+        ],
+        [
+          -2.7333333492279053,
+          3.3999998569488525,
+          2.7333333492279053,
+          2.799999952316284
+        ]
+      ]
+    },
+    {
+      "backend": "triton",
+      "case": "partial_byte_overlap_3x3",
+      "a_shape": [
+        3,
+        4
+      ],
+      "b_shape": [
+        4,
+        3
+      ],
+      "out_shape": [
+        3,
+        3
+      ],
+      "tile_shape": [
+        4,
+        4
+      ],
+      "launch_programs": 1,
+      "pass_trace": [
+        "ssa.canonicalize",
+        "ssa.analyze_effects",
+        "ssa.select_schedule",
+        "ssa.triton.optimize_schedule",
+        "ssa.decompose_linalg"
+      ],
+      "frontend": {
+        "out_strides_bytes": [
+          12,
+          1
+        ],
+        "accepted": true,
+        "matches_numpy": false,
+        "backing_unchanged": false,
+        "lhs_unchanged": true,
+        "rhs_unchanged": true,
+        "finite_output": true,
+        "max_abs_error": 1.9983856106660168e+18,
+        "actual": [
+          [
+            -1.995439469259391e+18,
+            1.9983856106660168e+18,
+            3.4666664600372314
+          ],
+          [
+            -106361920.0,
+            107370224.0,
+            0.7999998331069946
+          ],
+          [
+            -9.417810027883656e-34,
+            -8.22198972669672e-34,
+            0.06666681170463562
+          ]
+        ]
+      },
+      "target": {
+        "out_strides_bytes": [
+          12,
+          1
+        ],
+        "accepted": true,
+        "matches_numpy": false,
+        "backing_unchanged": false,
+        "lhs_unchanged": true,
+        "rhs_unchanged": true,
+        "finite_output": true,
+        "max_abs_error": 2.0044465310751785e+18,
+        "actual": [
+          [
+            -2.0044465310751785e+18,
+            1.9984207950381056e+18,
+            3.4666666984558105
+          ],
+          [
+            -105907264.0,
+            107368448.0,
+            0.7999998331069946
+          ],
+          [
+            -9.658081991546693e-34,
+            -8.222928285467455e-34,
+            0.06666684150695801
+          ]
+        ]
+      },
+      "expected": [
+        [
+          6.400000095367432,
+          2.133333444595337,
+          3.4666664600372314
+        ],
+        [
+          1.066666603088379,
+          -5.16573592790337e-08,
+          0.7999998331069946
+        ],
+        [
+          0.9333333373069763,
+          -0.06666655838489532,
+          0.06666681170463562
+        ]
+      ]
+    },
+    {
+      "backend": "triton",
+      "case": "partial_byte_overlap_3x4",
+      "a_shape": [
+        3,
+        4
+      ],
+      "b_shape": [
+        4,
+        4
+      ],
+      "out_shape": [
+        3,
+        4
+      ],
+      "tile_shape": [
+        4,
+        4
+      ],
+      "launch_programs": 1,
+      "pass_trace": [
+        "ssa.canonicalize",
+        "ssa.analyze_effects",
+        "ssa.select_schedule",
+        "ssa.triton.optimize_schedule",
+        "ssa.decompose_linalg"
+      ],
+      "frontend": {
+        "out_strides_bytes": [
+          16,
+          1
+        ],
+        "accepted": true,
+        "matches_numpy": false,
+        "backing_unchanged": false,
+        "lhs_unchanged": true,
+        "rhs_unchanged": true,
+        "finite_output": true,
+        "max_abs_error": 3.866666555404663,
+        "actual": [
+          [
+            -0.029214922338724136,
+            -0.005765834823250771,
+            0.005729309748858213,
+            -2.933333396911621
+          ],
+          [
+            3.7939276753060606e-28,
+            1.1512582076608755e-28,
+            1.1444010544645063e-28,
+            -2.2666666507720947
+          ],
+          [
+            1.1157305124243067e-07,
+            4.189459801295925e-08,
+            4.1723918542402316e-08,
+            2.799999952316284
+          ]
+        ]
+      },
+      "target": {
+        "out_strides_bytes": [
+          16,
+          1
+        ],
+        "accepted": true,
+        "matches_numpy": false,
+        "backing_unchanged": false,
+        "lhs_unchanged": true,
+        "rhs_unchanged": true,
+        "finite_output": true,
+        "max_abs_error": 3.866666555404663,
+        "actual": [
+          [
+            -0.029214922338724136,
+            -0.005765834823250771,
+            0.005729309748858213,
+            -2.933333396911621
+          ],
+          [
+            3.7938662862890833e-28,
+            1.1512582076608755e-28,
+            1.1444010544645063e-28,
+            -2.2666666507720947
+          ],
+          [
+            4.4629948092733684e-07,
+            4.21274322093268e-08,
+            4.172482803710409e-08,
+            2.8000001907348633
+          ]
+        ]
+      },
+      "expected": [
+        [
+          1.2666666507720947,
+          -1.6666665077209473,
+          1.8666666746139526,
+          -2.933333396911621
+        ],
+        [
+          1.9999998807907104,
+          -3.866666555404663,
+          -1.8666667938232422,
+          -2.2666666507720947
+        ],
+        [
+          -2.7333333492279053,
+          3.3999998569488525,
+          2.7333333492279053,
+          2.799999952316284
+        ]
+      ]
+    },
+    {
+      "backend": "cuda",
+      "case": "out_aliases_lhs",
+      "a_shape": [
+        3,
+        4
+      ],
+      "b_shape": [
+        4,
+        4
+      ],
+      "out_shape": [
+        3,
+        4
+      ],
+      "tile_shape": [
+        4,
+        4
+      ],
+      "launch_programs": 1,
+      "pass_trace": [
+        "ssa.canonicalize",
+        "ssa.analyze_effects",
+        "ssa.select_schedule",
+        "ssa.cuda.optimize_schedule",
+        "ssa.decompose_linalg"
+      ],
+      "frontend": {
+        "out_strides_bytes": [
+          16,
+          4
+        ],
+        "accepted": true,
+        "matches_numpy": true,
+        "backing_unchanged": false,
+        "lhs_unchanged": false,
+        "rhs_unchanged": true,
+        "finite_output": true,
+        "max_abs_error": 0.0,
+        "actual": [
+          [
+            1.2666666507720947,
+            -1.6666665077209473,
+            1.8666666746139526,
+            -2.933333396911621
+          ],
+          [
+            1.9999998807907104,
+            -3.866666555404663,
+            -1.8666667938232422,
+            -2.2666666507720947
+          ],
+          [
+            -2.7333333492279053,
+            3.3999998569488525,
+            2.7333333492279053,
+            2.799999952316284
+          ]
+        ]
+      },
+      "target": {
+        "out_strides_bytes": [
+          16,
+          4
+        ],
+        "accepted": true,
+        "matches_numpy": false,
+        "backing_unchanged": false,
+        "lhs_unchanged": false,
+        "rhs_unchanged": true,
+        "finite_output": true,
+        "max_abs_error": 6.131199836730957,
+        "actual": [
+          [
+            1.2666666507720947,
+            -2.1466662883758545,
+            2.2026665210723877,
+            3.197866439819336
+          ],
+          [
+            2.0,
+            -0.6666665077209473,
+            0.5333331823348999,
+            -1.4933335781097412
+          ],
+          [
+            -2.7333333492279053,
+            -0.6800002455711365,
+            0.709333598613739,
+            5.059200763702393
+          ]
+        ]
+      },
+      "expected": [
+        [
+          1.2666666507720947,
+          -1.6666665077209473,
+          1.8666666746139526,
+          -2.933333396911621
+        ],
+        [
+          1.9999998807907104,
+          -3.866666555404663,
+          -1.8666667938232422,
+          -2.2666666507720947
+        ],
+        [
+          -2.7333333492279053,
+          3.3999998569488525,
+          2.7333333492279053,
+          2.799999952316284
+        ]
+      ]
+    },
+    {
+      "backend": "cuda",
+      "case": "partial_byte_overlap_3x3",
+      "a_shape": [
+        3,
+        4
+      ],
+      "b_shape": [
+        4,
+        3
+      ],
+      "out_shape": [
+        3,
+        3
+      ],
+      "tile_shape": [
+        4,
+        4
+      ],
+      "launch_programs": 1,
+      "pass_trace": [
+        "ssa.canonicalize",
+        "ssa.analyze_effects",
+        "ssa.select_schedule",
+        "ssa.cuda.optimize_schedule",
+        "ssa.decompose_linalg"
+      ],
+      "frontend": {
+        "out_strides_bytes": [
+          12,
+          1
+        ],
+        "accepted": true,
+        "matches_numpy": false,
+        "backing_unchanged": false,
+        "lhs_unchanged": true,
+        "rhs_unchanged": true,
+        "finite_output": true,
+        "max_abs_error": 1.9983856106660168e+18,
+        "actual": [
+          [
+            -1.995439469259391e+18,
+            1.9983856106660168e+18,
+            3.4666664600372314
+          ],
+          [
+            -106361920.0,
+            107370224.0,
+            0.7999998331069946
+          ],
+          [
+            -9.417810027883656e-34,
+            -8.22198972669672e-34,
+            0.06666681170463562
+          ]
+        ]
+      },
+      "target": {
+        "out_strides_bytes": [
+          12,
+          1
+        ],
+        "accepted": true,
+        "matches_numpy": false,
+        "backing_unchanged": false,
+        "lhs_unchanged": true,
+        "rhs_unchanged": true,
+        "finite_output": true,
+        "max_abs_error": 2.0044465310751785e+18,
+        "actual": [
+          [
+            -2.0044465310751785e+18,
+            1.9984207950381056e+18,
+            3.4666666984558105
+          ],
+          [
+            -105907264.0,
+            107368448.0,
+            0.7999998331069946
+          ],
+          [
+            -9.658081991546693e-34,
+            -8.222928285467455e-34,
+            0.06666684150695801
+          ]
+        ]
+      },
+      "expected": [
+        [
+          6.400000095367432,
+          2.133333444595337,
+          3.4666664600372314
+        ],
+        [
+          1.066666603088379,
+          -5.16573592790337e-08,
+          0.7999998331069946
+        ],
+        [
+          0.9333333373069763,
+          -0.06666655838489532,
+          0.06666681170463562
+        ]
+      ]
+    },
+    {
+      "backend": "cuda",
+      "case": "partial_byte_overlap_3x4",
+      "a_shape": [
+        3,
+        4
+      ],
+      "b_shape": [
+        4,
+        4
+      ],
+      "out_shape": [
+        3,
+        4
+      ],
+      "tile_shape": [
+        4,
+        4
+      ],
+      "launch_programs": 1,
+      "pass_trace": [
+        "ssa.canonicalize",
+        "ssa.analyze_effects",
+        "ssa.select_schedule",
+        "ssa.cuda.optimize_schedule",
+        "ssa.decompose_linalg"
+      ],
+      "frontend": {
+        "out_strides_bytes": [
+          16,
+          1
+        ],
+        "accepted": true,
+        "matches_numpy": false,
+        "backing_unchanged": false,
+        "lhs_unchanged": true,
+        "rhs_unchanged": true,
+        "finite_output": true,
+        "max_abs_error": 3.866666555404663,
+        "actual": [
+          [
+            -0.029214922338724136,
+            -0.005765834823250771,
+            0.005729309748858213,
+            -2.933333396911621
+          ],
+          [
+            3.7939276753060606e-28,
+            1.1512582076608755e-28,
+            1.1444010544645063e-28,
+            -2.2666666507720947
+          ],
+          [
+            1.1157305124243067e-07,
+            4.189459801295925e-08,
+            4.1723918542402316e-08,
+            2.799999952316284
+          ]
+        ]
+      },
+      "target": {
+        "out_strides_bytes": [
+          16,
+          1
+        ],
+        "accepted": true,
+        "matches_numpy": false,
+        "backing_unchanged": false,
+        "lhs_unchanged": true,
+        "rhs_unchanged": true,
+        "finite_output": true,
+        "max_abs_error": 3.866666555404663,
+        "actual": [
+          [
+            -0.029214922338724136,
+            -0.005765834823250771,
+            0.005729309748858213,
+            -2.933333396911621
+          ],
+          [
+            3.7938662862890833e-28,
+            1.1512582076608755e-28,
+            1.1444010544645063e-28,
+            -2.2666666507720947
+          ],
+          [
+            4.4629948092733684e-07,
+            4.21274322093268e-08,
+            4.172482803710409e-08,
+            2.8000001907348633
+          ]
+        ]
+      },
+      "expected": [
+        [
+          1.2666666507720947,
+          -1.6666665077209473,
+          1.8666666746139526,
+          -2.933333396911621
+        ],
+        [
+          1.9999998807907104,
+          -3.866666555404663,
+          -1.8666667938232422,
+          -2.2666666507720947
+        ],
+        [
+          -2.7333333492279053,
+          3.3999998569488525,
+          2.7333333492279053,
+          2.799999952316284
+        ]
+      ]
+    }
+  ]
+}

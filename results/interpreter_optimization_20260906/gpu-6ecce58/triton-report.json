@@ -1,0 +1,374 @@
+{
+  "status": "PASS",
+  "created_at_utc": "2026-09-06T08:38:50.180559+00:00",
+  "backend": "triton",
+  "python": "3.12.3",
+  "cases": [
+    {
+      "name": "elementwise_float32_aligned",
+      "category": "elementwise",
+      "program": "vector_add",
+      "dtype": "float32",
+      "output_shape": [
+        1024
+      ],
+      "seed": 2026,
+      "status": "PASS",
+      "guard_lanes_unchanged": true,
+      "pass_trace": [
+        "ssa.canonicalize",
+        "ssa.analyze_effects",
+        "ssa.select_schedule",
+        "ssa.triton.optimize_schedule",
+        "ssa.decompose_linalg"
+      ],
+      "emitted_ssa_sha256": "0dcf781224e63ac6c0abddd616ea7231d1bce783c6dbb52c74f029ca93346d10",
+      "max_abs_error": 0.0
+    },
+    {
+      "name": "masked_float32_tail",
+      "category": "masked_tail",
+      "program": "vector_add",
+      "dtype": "float32",
+      "output_shape": [
+        1031
+      ],
+      "seed": 2026,
+      "status": "PASS",
+      "guard_lanes_unchanged": true,
+      "pass_trace": [
+        "ssa.canonicalize",
+        "ssa.analyze_effects",
+        "ssa.select_schedule",
+        "ssa.triton.optimize_schedule",
+        "ssa.decompose_linalg"
+      ],
+      "emitted_ssa_sha256": "24c4672ce71e8c7f405a55b2bfde0397c2ac2c6ce855621385bfd825a39e46ad",
+      "max_abs_error": 0.0
+    },
+    {
+      "name": "masked_int32_tail",
+      "category": "masked_tail",
+      "program": "vector_add",
+      "dtype": "int32",
+      "output_shape": [
+        1031
+      ],
+      "seed": 2026,
+      "status": "PASS",
+      "guard_lanes_unchanged": true,
+      "pass_trace": [
+        "ssa.canonicalize",
+        "ssa.analyze_effects",
+        "ssa.select_schedule",
+        "ssa.triton.optimize_schedule",
+        "ssa.decompose_linalg"
+      ],
+      "emitted_ssa_sha256": "4d9ea686ab125e7ffdde53befa4cee93fe15ddfc5e4de2ec6729d8b34695e1ac",
+      "max_abs_error": 0.0
+    },
+    {
+      "name": "broadcast_float32_tail",
+      "category": "broadcast",
+      "program": "broadcast_add",
+      "dtype": "float32",
+      "output_shape": [
+        7,
+        257
+      ],
+      "seed": 2026,
+      "status": "PASS",
+      "guard_lanes_unchanged": true,
+      "pass_trace": [
+        "ssa.canonicalize",
+        "ssa.analyze_effects",
+        "ssa.select_schedule",
+        "ssa.triton.optimize_schedule",
+        "ssa.decompose_linalg"
+      ],
+      "emitted_ssa_sha256": "84e145abc849b66c35ff6e53e134df50c20338406886558269deb85ac4ff0d10",
+      "max_abs_error": 0.0
+    },
+    {
+      "name": "broadcast_row_matrix_float32_tail",
+      "category": "broadcast",
+      "program": "broadcast_add",
+      "dtype": "float32",
+      "output_shape": [
+        7,
+        257
+      ],
+      "seed": 2026,
+      "status": "PASS",
+      "guard_lanes_unchanged": true,
+      "pass_trace": [
+        "ssa.canonicalize",
+        "ssa.analyze_effects",
+        "ssa.select_schedule",
+        "ssa.triton.optimize_schedule",
+        "ssa.decompose_linalg"
+      ],
+      "emitted_ssa_sha256": "a0688c09ed49366be143d8e0abb2b91dfac4bf3bf943c2b20850e59f44077f23",
+      "max_abs_error": 0.0
+    },
+    {
+      "name": "broadcast_column_matrix_float32_tail",
+      "category": "broadcast",
+      "program": "broadcast_add",
+      "dtype": "float32",
+      "output_shape": [
+        7,
+        257
+      ],
+      "seed": 2026,
+      "status": "PASS",
+      "guard_lanes_unchanged": true,
+      "pass_trace": [
+        "ssa.canonicalize",
+        "ssa.analyze_effects",
+        "ssa.select_schedule",
+        "ssa.triton.optimize_schedule",
+        "ssa.decompose_linalg"
+      ],
+      "emitted_ssa_sha256": "0741887d7dc92c2d8a2731cb5fa6f4d2976a41b63c03aacc8c4c81fb9517b2a4",
+      "max_abs_error": 0.0
+    },
+    {
+      "name": "row_reduction_float32",
+      "category": "row_reduction",
+      "program": "row_sum",
+      "dtype": "float32",
+      "output_shape": [
+        7
+      ],
+      "seed": 2026,
+      "status": "PASS",
+      "guard_lanes_unchanged": true,
+      "pass_trace": [
+        "ssa.canonicalize",
+        "ssa.analyze_effects",
+        "ssa.select_schedule",
+        "ssa.triton.optimize_schedule",
+        "ssa.decompose_linalg"
+      ],
+      "emitted_ssa_sha256": "cc78fc0299fc621e680bab0b1eaff19f80bcea7eeb0474130cd7714be5559bd8",
+      "max_abs_error": 1.9073486328125e-06
+    },
+    {
+      "name": "row_reduction_int32",
+      "category": "row_reduction",
+      "program": "row_sum",
+      "dtype": "int32",
+      "output_shape": [
+        7
+      ],
+      "seed": 2026,
+      "status": "PASS",
+      "guard_lanes_unchanged": true,
+      "pass_trace": [
+        "ssa.canonicalize",
+        "ssa.analyze_effects",
+        "ssa.select_schedule",
+        "ssa.triton.optimize_schedule",
+        "ssa.decompose_linalg"
+      ],
+      "emitted_ssa_sha256": "c9f75fb1a7d8aa02708d43d5798431332830d94c54e6ff27548df8ee76f8b7ac",
+      "max_abs_error": 0.0
+    },
+    {
+      "name": "comparison_bool_exact",
+      "category": "comparison",
+      "program": "comparison",
+      "dtype": "bool",
+      "output_shape": [
+        1031
+      ],
+      "seed": 2026,
+      "status": "PASS",
+      "guard_lanes_unchanged": true,
+      "pass_trace": [
+        "ssa.canonicalize",
+        "ssa.analyze_effects",
+        "ssa.select_schedule",
+        "ssa.triton.optimize_schedule",
+        "ssa.decompose_linalg"
+      ],
+      "emitted_ssa_sha256": "6a6fa9a2cf9a139ae5f74a2611ffdaf41cbc477ad97e787a0d27656b87ce85b7",
+      "max_abs_error": 0.0
+    },
+    {
+      "name": "if_for_true",
+      "category": "if_for",
+      "program": "control_flow",
+      "dtype": "float32",
+      "output_shape": [
+        1031
+      ],
+      "seed": 2026,
+      "status": "PASS",
+      "guard_lanes_unchanged": true,
+      "pass_trace": [
+        "ssa.canonicalize",
+        "ssa.analyze_effects",
+        "ssa.select_schedule",
+        "ssa.triton.optimize_schedule",
+        "ssa.decompose_linalg"
+      ],
+      "emitted_ssa_sha256": "aac48738a58a892550b8cd79a3dbd32ce07a2750e1a0beae9a4c59427407e863",
+      "max_abs_error": 2.384185791015625e-07
+    },
+    {
+      "name": "if_for_false",
+      "category": "if_for",
+      "program": "control_flow",
+      "dtype": "float32",
+      "output_shape": [
+        1031
+      ],
+      "seed": 2026,
+      "status": "PASS",
+      "guard_lanes_unchanged": true,
+      "pass_trace": [
+        "ssa.canonicalize",
+        "ssa.analyze_effects",
+        "ssa.select_schedule",
+        "ssa.triton.optimize_schedule",
+        "ssa.decompose_linalg"
+      ],
+      "emitted_ssa_sha256": "1d3df98645acb35828200d3783d213cdd13de21a8e4c0e6be506dc54bb16f6e9",
+      "max_abs_error": 2.384185791015625e-07
+    },
+    {
+      "name": "softmax_float32",
+      "category": "softmax",
+      "program": "row_softmax",
+      "dtype": "float32",
+      "output_shape": [
+        7,
+        257
+      ],
+      "seed": 2026,
+      "status": "PASS",
+      "guard_lanes_unchanged": true,
+      "pass_trace": [
+        "ssa.canonicalize",
+        "ssa.analyze_effects",
+        "ssa.select_schedule",
+        "ssa.triton.optimize_schedule",
+        "ssa.decompose_linalg"
+      ],
+      "emitted_ssa_sha256": "1bcf567076a5056f2bb50cad4c116ea62f0b19302f8feddcdc7b465973da1082",
+      "max_abs_error": 8.940696716308594e-08
+    },
+    {
+      "name": "floor_div_int32_mixed_sign_tail",
+      "category": "floor_div",
+      "program": "vector_floor_divide",
+      "dtype": "int32",
+      "output_shape": [
+        1031
+      ],
+      "seed": 2026,
+      "status": "PASS",
+      "guard_lanes_unchanged": true,
+      "pass_trace": [
+        "ssa.canonicalize",
+        "ssa.analyze_effects",
+        "ssa.select_schedule",
+        "ssa.triton.optimize_schedule",
+        "ssa.decompose_linalg"
+      ],
+      "emitted_ssa_sha256": "ed1297c6ff34c7ccbe03384c74285bde855e6a84b8630c537cf65f7ebfffd74d",
+      "max_abs_error": 0.0
+    },
+    {
+      "name": "remainder_int32_mixed_sign_tail",
+      "category": "remainder",
+      "program": "vector_remainder",
+      "dtype": "int32",
+      "output_shape": [
+        1031
+      ],
+      "seed": 2026,
+      "status": "PASS",
+      "guard_lanes_unchanged": true,
+      "pass_trace": [
+        "ssa.canonicalize",
+        "ssa.analyze_effects",
+        "ssa.select_schedule",
+        "ssa.triton.optimize_schedule",
+        "ssa.decompose_linalg"
+      ],
+      "emitted_ssa_sha256": "0529e047c1a8a3cf370e7fb3ebba0fee8b3f6c41aa48f2379faeeb1ff274e00d",
+      "max_abs_error": 0.0
+    },
+    {
+      "name": "dot_float32_multi_program_tail",
+      "category": "dot",
+      "program": "matrix_dot",
+      "dtype": "float32",
+      "output_shape": [
+        7,
+        6
+      ],
+      "seed": 2026,
+      "status": "PASS",
+      "guard_lanes_unchanged": true,
+      "pass_trace": [
+        "ssa.canonicalize",
+        "ssa.analyze_effects",
+        "ssa.select_schedule",
+        "ssa.triton.optimize_schedule",
+        "ssa.decompose_linalg"
+      ],
+      "emitted_ssa_sha256": "1b2c8cc12e3749e9f2c4273661cda4fd895638171e8af8e309b7ccae33b1221a",
+      "max_abs_error": 0.0
+    }
+  ],
+  "rtol": 0.001,
+  "atol": 0.001,
+  "integer_and_bool_comparison": "exact",
+  "limitations": [
+    "Correctness validation, not a performance benchmark.",
+    "Results apply only to the GPU and cases identified in this report.",
+    "Dot covers one scalar float32 2D matmul with M/N output tiles and a complete K domain; it does not establish arbitrary-layout, split-K, Tensor Core, or performance coverage."
+  ],
+  "numpy_version": "1.26.4",
+  "sympy_version": "1.13.1",
+  "torch_version": "2.6.0a0+ecf3bae40a.nv25.01",
+  "triton_version": "3.1.0",
+  "torch_cuda_version": "12.8",
+  "gpu_name": "NVIDIA GeForce RTX 4090",
+  "compute_capability": [
+    8,
+    9
+  ],
+  "device_index": 0,
+  "seed": 2026,
+  "passed_cases": 15,
+  "total_cases": 15,
+  "passed_programs": [
+    "broadcast_add",
+    "comparison",
+    "control_flow",
+    "matrix_dot",
+    "row_softmax",
+    "row_sum",
+    "vector_add",
+    "vector_floor_divide",
+    "vector_remainder"
+  ],
+  "passed_categories": [
+    "broadcast",
+    "comparison",
+    "dot",
+    "elementwise",
+    "floor_div",
+    "if_for",
+    "masked_tail",
+    "remainder",
+    "row_reduction",
+    "softmax"
+  ],
+  "elapsed_validation_seconds": 10.161
+}

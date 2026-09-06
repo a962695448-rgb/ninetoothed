@@ -1,0 +1,68 @@
+{
+  "status": "FAIL",
+  "exit_code": 2,
+  "argv": [
+    "/home/xxl/.venvs/infinitensor-2026/bin/python",
+    "-m",
+    "sphinx",
+    "-W",
+    "--keep-going",
+    "-b",
+    "html",
+    "docs/source",
+    "/mnt/c/Users/xxl/Projects/infinitensor-2026/evidence/nine-optimization-20260906/sphinx-6ecce58/html"
+  ],
+  "source_commit": "6ecce58da28bb9709aa35fc6c25c1f361aff736f",
+  "scope": "Current documentation working-tree snapshot; code at the recorded commit. CPU-only Sphinx HTML build, not GPU validation.",
+  "doc_sha256_before": {
+    "docs/source/basics.rst": "9acd23ec7ed4102b31ab550e538cbc5226f3377670f3ca752e0ee44228b1e1b8",
+    "docs/source/build.rst": "5de94a67fe91a8d116ae9586e4f3988911a6ea9c89eab59ac2bc11511d75b888",
+    "docs/source/conf.py": "47f5fa35d01c73c057eaeeef1f9fd5df793edae294f739973a8efc7f2c3a2484",
+    "docs/source/cpu_interpreter.rst": "fcf9fd74bf7d5b226e7d97bd045ff6bcf91ab08cc2c9d9c5d4b24d339c82d3de",
+    "docs/source/index.rst": "a0ecd1219051eca0489b29504495ece634445423bfff9f67ec5e013424b98818",
+    "docs/source/installation.rst": "efb23b2d9d884ce449712a623cc7cbff30a43cf957c9e16a435558bff6b09d0e",
+    "docs/source/python_api.rst": "5ca874abb094750dcc0051fd6f47f7f89f99a2f597661cd6c243c696cdb5fef5",
+    "docs/source/visualize.py": "f80f68db27b3b5aed1e8bf42f46f6cbd7459c26d4fb2013abc5313b1b933ba99",
+    "docs/source/python_api/code_generation.rst": "19028d537dc32deea4fdc340402be523c8733198789f89d9e7b632641b06e676",
+    "docs/source/python_api/debugging.rst": "b8333a56000a4d302b4fe9bc156e9122eeaa84f6048d8b5b584070cd9f4a7669",
+    "docs/source/python_api/symbol.rst": "3818861f0332a8923b265befb5ad50cd8f8558a5192ba8ac63b92f7c45886084",
+    "docs/source/python_api/tensor.rst": "0a1f22f9ec8a49d8600eead0bd8eacd93460b08eecfbef3d25a72000bd1d2798",
+    "docs/source/python_api/visualization.rst": "cd5152552b13fb594cc26d44a93aaaae705b7ad23f3bd6da72c9be41da4cf5c8",
+    "docs/source/_static/ninetoothed-logo.png": "2eb81c9d72a5f53d3409a8f56f5bf8ea85145ac788930743a5449692097d4537"
+  },
+  "doc_sha256_after": {
+    "docs/source/basics.rst": "9acd23ec7ed4102b31ab550e538cbc5226f3377670f3ca752e0ee44228b1e1b8",
+    "docs/source/build.rst": "5de94a67fe91a8d116ae9586e4f3988911a6ea9c89eab59ac2bc11511d75b888",
+    "docs/source/conf.py": "47f5fa35d01c73c057eaeeef1f9fd5df793edae294f739973a8efc7f2c3a2484",
+    "docs/source/cpu_interpreter.rst": "fcf9fd74bf7d5b226e7d97bd045ff6bcf91ab08cc2c9d9c5d4b24d339c82d3de",
+    "docs/source/index.rst": "a0ecd1219051eca0489b29504495ece634445423bfff9f67ec5e013424b98818",
+    "docs/source/installation.rst": "efb23b2d9d884ce449712a623cc7cbff30a43cf957c9e16a435558bff6b09d0e",
+    "docs/source/python_api.rst": "5ca874abb094750dcc0051fd6f47f7f89f99a2f597661cd6c243c696cdb5fef5",
+    "docs/source/visualize.py": "f80f68db27b3b5aed1e8bf42f46f6cbd7459c26d4fb2013abc5313b1b933ba99",
+    "docs/source/python_api/code_generation.rst": "19028d537dc32deea4fdc340402be523c8733198789f89d9e7b632641b06e676",
+    "docs/source/python_api/debugging.rst": "b8333a56000a4d302b4fe9bc156e9122eeaa84f6048d8b5b584070cd9f4a7669",
+    "docs/source/python_api/symbol.rst": "3818861f0332a8923b265befb5ad50cd8f8558a5192ba8ac63b92f7c45886084",
+    "docs/source/python_api/tensor.rst": "0a1f22f9ec8a49d8600eead0bd8eacd93460b08eecfbef3d25a72000bd1d2798",
+    "docs/source/python_api/visualization.rst": "cd5152552b13fb594cc26d44a93aaaae705b7ad23f3bd6da72c9be41da4cf5c8",
+    "docs/source/_static/ninetoothed-logo.png": "2eb81c9d72a5f53d3409a8f56f5bf8ea85145ac788930743a5449692097d4537"
+  },
+  "elapsed_seconds": 1.237,
+  "ended_at_utc": "2026-09-06T08:27:04.372663+00:00",
+  "packages": {
+    "sphinx": "9.1.0",
+    "pydata-sphinx-theme": "0.21.0",
+    "numpy": "2.5.2",
+    "sympy": "1.14.0",
+    "pytest": "9.1.1"
+  },
+  "artifacts": {
+    "build.stderr.log": {
+      "bytes": 1548,
+      "sha256": "42935a2efbb0882826df7e0c2f6c5e5a27a78381dc4a226cc9b439fdf7e67699"
+    },
+    "build.stdout.log": {
+      "bytes": 22,
+      "sha256": "92b09e72cec8770e2cd626a333e1f9e5e215f838df8df5891781e3e671935c81"
+    }
+  }
+}

@@ -1,6 +1,6 @@
 # CPU 参考解释器：验收与提交说明
 
-当前功能源码为 **`f35fb51b16a52392e7ee92b3a3c15622305d428b`**，新增多 M/N 输出 tile 标量 dot 和显式 SSA 来源记录，修改了 runtime、默认 pass、发射器、IR 与测试。预备 CPU 组合为 **171 passed、23.72 s**；广范围 CPU 选择已得到 **1 failed、294 passed、15 deselected，35.42 s，退出码 1**，原测试对整个 metadata 的字符串检查误命中 origins 中保留的操作名，兼容修正需独立复验。**15 个 GPU 用例已准备，但新 GPU 尚未运行，也没有新的 A100 结果。**本轮功能变更不能继承历史 A100 600 项通过结论。完成全部约定优化及验证后先由用户验收，之后才处理上游 PR 与官网提交；当前不创建或发布 PR，不执行官网提交。
+当前计算功能源码为 **`6ecce58da28bb9709aa35fc6c25c1f361aff736f`**。已完成限定 NumPy CPU **307 passed/15 deselected**，以及独立 RTX 4090 的 **15/15 Triton 差分与一个 CUDA 标量 dot probe**；见[本轮证据索引](../results/interpreter_optimization_20260906/README.md)。后续收尾只涉及 GUI 依赖惰性导入与 docs/results，不把它当作新一轮 GPU 验证。新 A100、完整库、双卡和外部提交仍有明确限制。
 
 历史验证：源码 **`82592b8f6de65052e4258fdd6067956d4ede18c3`** 曾在实际 A100-SXM4-40GB 上完成完整测试：**600 passed、2 skipped，450.25 s（0:07:30），退出码 0，无 failures/errors**。两个 skip 均要求同机至少双卡，详见 [该轮完整清单](../results/full_suite_a100_82592b8/manifest.json)与 [归档说明](../results/full_suite_a100_82592b8/README.md)。b5/377 失败历史及 14/180/16/77 各范围按原源码保留，不累计，成功重跑不确定旧 squeeze 失败的唯一根因。
 
@@ -15,15 +15,25 @@
 | 复用实际 SSA，NumPy CPU 执行 | `interpret(..., backend="triton")`、`interpret_program`；`test_high_level_backend_option_executes_the_real_pass_pipeline` | 执行目标默认管线输出；不支持时显式失败，不回退 frontend SSA 或 GPU |
 | 五类 application | [应用测试](../tests/test_interpreter_applications.py)：`test_elementwise_and_nondivisible_tail`、`test_broadcast_reuses_bias_for_each_row`、`test_row_reduction_ignores_padded_lanes`、`test_nested_if_and_for_carry_values` | 分别覆盖逐元素、广播、非整除尾块、行归约、分支/循环；尾块也是独立验收类别 |
 | float32、int32、bool | 同一应用测试文件中的 dtype 参数与 `test_bool_results_are_exact`；[GPU 用例](../tests/test_interpreter_gpu.py) 的 `GPU_CASES` | float32 使用 `rtol=1e-3, atol=1e-3`；整数与布尔完全相等 |
-| 无可见 CUDA 的独立运行 | `test_cpu_path_does_not_import_gpu_backends`；[无 Torch/Triton CPU 清单](../results/cpu_no_gpu_packages_20260905/manifest.json) | `5b37725` 的 206 passed、14 deselected；未选择 Torch 适配文件，不等于全仓库无依赖运行 |
-| 至少三个程序默认 pass 前后一致并与 A100 差分 | `test_gpu_fixtures_match_oracle_before_and_after_lowering_on_cpu`、[逐阶段测试](../tests/test_interpreter_default_pipeline.py)、`run_gpu_case`、[GPU runner](../scripts/verify_interpreter_gpu.py) | 历史 b5 的 8 程序、14 项 A100 四方比较和 180 项专项分别留存；f35 已准备 15 个用例，新的真实 GPU 及 A100 对照尚未完成 |
+| 无可见 CUDA 的独立运行 | `test_cpu_path_does_not_import_gpu_backends`；[6ec NumPy CPU 清单](../results/interpreter_optimization_20260906/cpu-6ecce58/manifest.json) | 307 passed、15 deselected，环境无 Torch/Triton；未选择 Torch 适配文件，不等于全仓库无依赖运行 |
+| 至少三个程序默认 pass 前后一致并与 A100 差分 | `test_gpu_fixtures_match_oracle_before_and_after_lowering_on_cpu`、[逐阶段测试](../tests/test_interpreter_default_pipeline.py)、`run_gpu_case`、[GPU runner](../scripts/verify_interpreter_gpu.py) | 历史硬件记录分别保留；6ec 的 15 项 Triton 与一个 CUDA probe 已在 RTX 4090 通过；新的 A100 对照仍未完成 |
 | mask 与 trace 正确；unsupported 显式失败 | [SSA 测试](../tests/test_interpreter_ssa.py) 中 masked load/store、trace 一致性、unsupported operation/dtype 用例 | mask 排除地址不解引用；诊断包含 operation 位置。支持边界见接口文档 |
 | 单步、断点、watch、program/opcode 过滤 | [单步测试](../tests/test_interpreter_step_debugger.py)、`StepDebugger`、[演示](cpu_interpreter_demo.py) | 暂停发生在操作完成之后；交互观察不能代替计算正确性检查 |
 | 首个错误 pass/operation 与差分复现 | [来源测试](../tests/test_interpreter_provenance.py)、`check_passes`、`compare_programs`、`Operation.origins`、`export_reproducer` | 结构和完整 trace 次序对齐时定位对应 operation；结构变化给已声明的原 SSA 候选集合，不是 Python 行号或唯一因果点。未知映射保持未知，故障注入与真实历史缺陷分别标注 |
-| 扩展接口与完整应用 | `handlers`、softmax、[多 program dot 测试](../tests/test_interpreter_matmul.py) | CPU 已实现 M/N 输出 tile 内完整 K 的 rank-2 标量 dot，覆盖 F32/I32 和独立对齐 strides；split-K、别名、字节重叠及混合副作用等拒绝写前。新 float32 GPU dot 待跑，无 Tensor Core 或自动样例缩减承诺 |
-| 原测试、风格、文档、主分支合并 | 完整 pytest、Ruff、贡献风格检查、Sphinx、用户验收及后续外部审查 | 825 的 600 passed、2 skipped 是历史结果；171 只是预备 CPU 组合，f35 广范围 CPU 的 1 项失败保留并待兼容修正复验。两项双卡场景未测，上游合并未完成 |
+| 扩展接口与完整应用 | `handlers`、softmax、[矩阵乘法回归](../tests/test_interpreter_matmul.py) | CPU 支持 M/N 输出 tile 内完整 K 的 rank-2 标量 dot；公共存储检查覆盖 single/multi dot 与 transpose，别名、部分字节/zero-stride 重叠、同一 out 作 lhs 值读取及混合副作用拒绝写前，正常独立 untiled/正负对齐 strides 保留。标量 float32 GPU dot 已在 Triton/CUDA 各自通过 |
+| 原测试、风格、文档、主分支合并 | 完整 pytest、Ruff、贡献风格检查、Sphinx、用户验收及后续外部审查 | 当前 307/15 是限定 CPU 范围；历史失败与复验分开保存。两次历史 Sphinx 依赖失败保留，本次无 GUI 文档构建结果见最新归档；新完整硬件兼容性未重跑，双卡场景和上游合并未完成 |
 
 官方 CPU-only 阶段要求 CUDA 不可见且解释器不导入或调用 CUDA 执行路径；GPU 阶段使用 A100。原生 CPU 代码生成、CPU 性能、warp/block 调度、shared memory 和 GPU race 模拟不属于解释器目标。Atomics、间接指针、多设备、随机数和 float8 等未支持语义必须显式报错，不能静默回退或把原仓库 GPU 测试能力当作 CPU 解释器支持。
+
+## 本轮 CPU 原始记录
+
+| 冻结版本 | 实际结果 | 原始来源 |
+|---|---|---|
+| `f35fb51` | 1 failed、294 passed、15 deselected，35.42 s，退出码 1；旧字符串断言误命中 origins 中保留的操作名 | [原失败清单](../results/interpreter_optimization_20260906/cpu-f35fb51/manifest.json) |
+| `56f091e` | 295 passed、15 deselected，34.18 s，退出码 0；执行 opcode 检查改为遍历 blocks/regions | [复验清单](../results/interpreter_optimization_20260906/cpu-56f091e/manifest.json) |
+| `6ecce58` | 307 passed、15 deselected，32.68 s，退出码 0；统一 single/multi 标量存储检查 | [最新清单](../results/interpreter_optimization_20260906/cpu-6ecce58/manifest.json) |
+
+新增 12 项单 program 回归修复前为 8 failed、4 passed，存储保护修复后相关组合 137 passed；171 项预备组合、这些开发回归和三轮冻结结果不累计。15 个被取消选择的真实 GPU 用例不计为通过。旧失败不被复验覆盖，新的 A100 仍未完成；两次 Sphinx 历史失败及本次构建结果分别记录。
 
 ## 复查已完成的运行
 
@@ -77,7 +87,7 @@ python -m pytest -q --color=no -ra --tb=short \
 
 `82592b8f6de65052e4258fdd6067956d4ede18c3` 仅改两条 generation 测试输入语句及注释：输出初始化为有限非零值 -123，目标行用 randperm 保证随机且唯一。kernel、`src/`、参数、全矩阵比较、原容差和依赖不变，未改为 `equal_nan=True`。generation 文件 77 项和后续完整测试 600 passed、2 skipped 均已取得独立证据；这些成功不确定旧失败的唯一根因。当前工作是优化后 dot、跨结构 operation 来源定位等约定实现及验证，完成后先交用户验收。
 
-归档提交 `086f148b40a7ac057f9184ecfbfccef84eb4037e` 仅修改当时的 `docs/`、`results/`，其代码、测试、依赖与 CI 和 825 相同，所以该批资料引用 825 的原运行；086 本身不是另一轮实测。当前 f35 则有 runtime/pass/emitter/provenance 功能与测试变更，必须独立完成广范围 CPU、实际 GPU 和新的 A100 验证，不能继承 825 的 600 项结果。新 GPU 的预备用例及合同见 [实施与优化计划](implementation_optimization_plan.md)。
+归档提交 `086f148b40a7ac057f9184ecfbfccef84eb4037e` 仅修改当时的 `docs/`、`results/`，其代码、测试、依赖与 CI 和 825 相同，所以该批资料引用 825 的原运行；086 本身不是另一轮实测。当前 6ec 有 runtime/pass/emitter/provenance 与测试功能变更；已完成记录中的 CPU 选择，独立 RTX 4090 的 15 项 Triton 与一个 CUDA probe 已通过，新 A100 仍未完成，Sphinx 按独立清单记录，不能继承旧硬件结果。新 GPU 的预备用例及合同见 [实施与优化计划](implementation_optimization_plan.md)。
 
 ## PR 与官网提交材料
 

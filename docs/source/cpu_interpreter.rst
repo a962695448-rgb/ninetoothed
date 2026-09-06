@@ -138,6 +138,17 @@ scalar SSA arithmetic and a K loop. The CPU interpreter executes those actual
 operations for every valid output lane, including multiple M/N output tiles.
 It does not replace the lowered program with a call to NumPy matmul.
 
+All scalar dot/matmul and transpose decompositions share a storage preflight,
+including untiled and single-program execution. The output must be a named
+array with independent, element-aligned storage. Potential aliasing with another
+input, partial-element byte strides and overlapping output elements (including
+overlapping zero-stride views) are rejected before writes. Reading output values
+inside the scalar program is also rejected, even if the same ``out`` binding is
+used as a matmul operand; shape, stride and offset metadata reads remain allowed.
+Normal independent untiled arrays and aligned positive/negative strides remain
+supported. This is a contract for scalar lane replay, not a restriction on every
+undecomposed vector operation.
+
 The multi-program contract is deliberately bounded:
 
 * The two operands and output are rank-2 input bindings with arranged
@@ -149,11 +160,10 @@ The multi-program contract is deliberately bounded:
   without an accumulating loop is rejected.
 * Every valid output element is written once. The output domain must cover the
   complete matrix, and masks must match the logical in-bounds lanes.
-* Byte strides must align to whole elements. Independent strided inputs and
-  outputs are supported, including positive and negative output strides.
-  Potential input/output storage overlap, overlapping output elements and
-  partial-element byte strides are rejected before execution. The overlap
-  check is conservative and may reject disjoint views of a shared allocation.
+* The shared scalar storage preflight applies to every output program.
+  Independent strided inputs and outputs are supported, including positive and
+  negative output strides. The overlap check is conservative and may reject
+  disjoint views of a shared allocation.
 * There is one top-level decomposed output store. Other stores or atomic
   effects, including those inside nested regions, are rejected before any
   output write. Replaying such effects once per scalar lane would change the
@@ -199,7 +209,7 @@ existing source-coordinate meaning.
 
 CPU regression cases cover float32 and int32, non-square dimensions, M/N/K
 tails, strided inputs, independent strided outputs, trace consistency and
-rejection-before-write checks. The prepared GPU dot case is scalar float32;
+rejection-before-write checks. The validated 4090 GPU dot case is scalar float32;
 it does not cover Tensor Core instructions, arbitrary layouts or split-K.
 New source-emission checks and CPU results do not constitute a GPU run.
 
@@ -424,12 +434,30 @@ CPU tests cannot establish agreement with A100 hardware or measure GPU speed.
 That requires the separate real-GPU differential run on matching kernels,
 inputs, layouts, dtypes, seeds and pass settings.
 
-The feature implementation was frozen in ``f35fb51``. Its preparatory CPU
-combination passed 171 selected tests. A broader selected CPU run then reported
-1 failed, 294 passed and 15 deselected in 35.42 seconds: an existing test searched
-all SSA metadata for a removed opcode and also matched its provenance entry.
-That failure is retained; the test compatibility correction requires a separate
-rerun. The runner contains 15 prepared GPU cases, including the new scalar dot
-case, but this version has no completed new GPU or A100 validation.
-Historical A100 results for ``b5a3206`` and ``82592b8`` do not validate these
+The current implementation is frozen in
+``6ecce58da28bb9709aa35fc6c25c1f361aff736f``. Its selected NumPy CPU suite passed
+307 tests, with 15 GPU cases deselected, in 32.68 seconds (exit 0). That
+environment contains neither Torch nor Triton, so this run does not cover the
+Torch adapter, real GPU execution or the entire repository suite.
+
+Earlier selected runs remain separate: ``f35fb51`` reported 1 failed, 294 passed
+and 15 deselected in 35.42 seconds because a metadata-string assertion matched
+an opcode retained in provenance; ``56f091e`` then passed 295 tests with 15
+deselected in 34.18 seconds. New single-program storage regressions first
+reported 8 failed and 4 passed; the corrected related combination passed 137.
+These development and frozen-run counts are not added together.
+
+A separate RTX 4090 run at the same computation commit passed 15 Triton
+GPU cases (nine programs, ten categories) and one scalar float32 CUDA dot
+probe. The CUDA case compares NumPy, frontend CPU, lowered SSA CPU and
+actual GPU output, with unchanged inputs and guards. It is one backend
+correctness probe, not a performance benchmark or a new independent program
+beyond the Triton matrix. New A100, full-repository and multi-device runs
+remain outside this evidence. Historical A100 results do not validate the
 new runtime, pass, emitter or provenance changes.
+
+Two earlier Sphinx attempts failed on missing matplotlib and then tkinter.
+The closeout defers Tk imports to the interactive visualization entry point;
+static documentation images use a headless backend. Build status and original
+logs are recorded separately from CPU and GPU validation in the acceptance
+notes and the interpreter_optimization_20260906 evidence directory.
