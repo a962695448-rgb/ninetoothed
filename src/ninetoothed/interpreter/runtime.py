@@ -350,11 +350,60 @@ class _Execution:
                 )
 
             self.scalar_output = operation.operands[1]
+            self._validate_scalar_storage(operation, f"entry:{index}:mem.store")
 
             if math.prod(self.grid) > 1:
                 self._validate_scalar_matmul_domain(
                     operation, f"entry:{index}:mem.store"
                 )
+
+    def _validate_scalar_storage(self, operation, location):
+        """Scalar lane replay cannot read storage that an earlier lane writes."""
+
+        def require(condition, reason):
+            if not condition:
+                raise UnsupportedOperationError(
+                    f"Operation {location}: scalar decomposition requires independent "
+                    f"element-aligned output storage: {reason}."
+                )
+
+        output = self.inputs.get(self.scalar_output)
+        require(isinstance(output, np.ndarray), "a named array output is required")
+        arrays = tuple(
+            value for value in self.inputs.values() if isinstance(value, np.ndarray)
+        )
+        require(
+            all(
+                value.itemsize > 0
+                and all(stride % value.itemsize == 0 for stride in value.strides)
+                for value in arrays
+            ),
+            "strides must be aligned to complete elements",
+        )
+        require(
+            not any(
+                np.may_share_memory(output, value)
+                for name, value in self.inputs.items()
+                if name != self.scalar_output and isinstance(value, np.ndarray)
+            ),
+            "potentially overlapping input and output storage is not supported",
+        )
+        metadata_operations = {"index.offset", "shape.dim", "tensor.stride"}
+        for read_location, other in operation_locations(self.program):
+            require(
+                other is operation
+                or self.scalar_output not in other.operands
+                or other.opcode in metadata_operations,
+                f"reading output values at {read_location} is not supported",
+            )
+
+        if math.prod(self.grid) <= 1:
+            coordinates = np.indices(output.shape, sparse=True)
+            offsets = sum(
+                (index * stride for index, stride in zip(coordinates, output.strides)),
+                np.zeros((), dtype=np.int64),
+            )
+            require(np.unique(offsets).size == output.size, "output writes overlap")
 
     def _validate_scalar_matmul_domain(self, operation, location):
         """Prove complete K tiles and independent M/N writes before executing SSA."""
@@ -379,18 +428,6 @@ class _Execution:
             "rank-2 tensors are required",
         )
         lhs, rhs, output = arrays
-        require(
-            all(
-                stride % value.itemsize == 0
-                for value in arrays
-                for stride in value.strides
-            ),
-            "strides must be aligned to complete elements",
-        )
-        require(
-            not any(np.may_share_memory(output, value) for value in (lhs, rhs)),
-            "potentially overlapping input and output storage is not supported",
-        )
         require(
             lhs.shape[1] == rhs.shape[0]
             and output.shape == (lhs.shape[0], rhs.shape[1]),

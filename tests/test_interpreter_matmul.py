@@ -30,6 +30,14 @@ def matrix_dot_with_nested_scratch_store(a, b, scratch, out):
     out = ntl.dot(a, b)  # noqa: F841
 
 
+def in_place_matrix_tiles(out, b):
+    return out.tile((4, 4)), b.tile((4, 4))
+
+
+def in_place_matrix_dot(out, b):
+    out = ntl.dot(out, b)  # noqa: F841
+
+
 def _tensors(dtype):
     return (
         Tensor(2, name="a", dtype=np.dtype(dtype).name, other=0),
@@ -269,3 +277,75 @@ def test_dot_rejects_nested_store_before_replaying_output_lanes(backend):
 
     for name, original in originals.items():
         np.testing.assert_array_equal(target_inputs[name], original)
+
+
+@pytest.mark.parametrize("backend", ("triton", "cuda"))
+@pytest.mark.parametrize("storage", ("lhs_alias", "partial_bytes", "zero_stride"))
+def test_single_program_dot_rejects_output_storage_before_writes(backend, storage):
+    a, b = _operands((3, 4, 4), np.float32, "contiguous")
+
+    if storage == "lhs_alias":
+        backing, out = a, a
+    else:
+        backing = np.full(256, 0x5A, dtype=np.uint8)
+        strides = (16, 1) if storage == "partial_bytes" else (0, 4)
+        out = np.ndarray((3, 4), dtype=np.float32, buffer=backing, strides=strides)
+
+    originals = (a.copy(), b.copy(), backing.copy())
+    kernel = interpret(matrix_tiles, matrix_dot, _tensors(np.float32), backend=backend)
+
+    with pytest.raises(UnsupportedOperationError, match=r"entry:\d+:mem\.store"):
+        kernel(a, b, out)
+
+    np.testing.assert_array_equal(a, originals[0])
+    np.testing.assert_array_equal(b, originals[1])
+    np.testing.assert_array_equal(backing, originals[2])
+
+
+@pytest.mark.parametrize("backend", ("triton", "cuda"))
+@pytest.mark.parametrize(
+    "reverse", (False, True), ids=("positive_stride", "negative_stride")
+)
+def test_single_program_dot_accepts_independent_strided_output(backend, reverse):
+    a, b = _operands((3, 4, 4), np.float32, "strided")
+    expected = a @ b
+    backing = np.full((7, 9), -731, dtype=np.float32)
+    out = backing[1::2, 1::2]
+
+    if reverse:
+        out = out[::-1, ::-1]
+
+    assert out.shape == expected.shape
+    assert not out.flags.c_contiguous
+    protected = np.ones(backing.shape, dtype=bool)
+    protected[1::2, 1::2] = False
+    originals = (a.copy(), b.copy(), backing.copy())
+    kernel = interpret(
+        matrix_tiles, matrix_dot, _tensors(np.float32), backend=backend, trace=True
+    )
+    kernel(a, b, out)
+    _assert_equal(out, expected)
+    np.testing.assert_array_equal(a, originals[0])
+    np.testing.assert_array_equal(b, originals[1])
+    np.testing.assert_array_equal(backing[protected], originals[2][protected])
+
+
+@pytest.mark.parametrize("backend", ("triton", "cuda"))
+def test_single_program_dot_rejects_output_binding_used_as_lhs(backend):
+    out, b = _operands((3, 4, 4), np.float32, "contiguous")
+    originals = (out.copy(), b.copy())
+    kernel = interpret(
+        in_place_matrix_tiles,
+        in_place_matrix_dot,
+        (
+            Tensor(2, name="out", dtype="float32", other=0),
+            Tensor(2, name="b", dtype="float32", other=0),
+        ),
+        backend=backend,
+    )
+
+    with pytest.raises(UnsupportedOperationError, match=r"entry:\d+:mem\.store"):
+        kernel(out, b)
+
+    np.testing.assert_array_equal(out, originals[0])
+    np.testing.assert_array_equal(b, originals[1])
