@@ -2,7 +2,7 @@
   "schema": 1,
   "status": "FAIL",
   "code_commit": "377daec6242864a920de43a55523ac3d5f582648",
-  "scope": "This completed 377daec A100 full run only; all outcomes are parsed, never assumed. It does not establish official acceptance, upstream merge or an award.",
+  "scope": "This completed 377daec A100 full run only; all outcomes are parsed, never assumed. It does not establish official acceptance or upstream merge.",
   "archived_at_utc": "2026-09-05T18:20:26.978380+00:00",
   "summary": "1 failed, 599 passed, 2 skipped in 752.11s (0:12:32)",
   "counts": {

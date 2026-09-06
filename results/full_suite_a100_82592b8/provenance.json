@@ -1,0 +1,43 @@
+{
+  "schema": 1,
+  "revision_date": "2026-09-06",
+  "scope": "Neutral narrative revision of archive overview metadata; no execution evidence edited",
+  "originals": "Exact originals retained outside the repository and recoverable from the recorded Git revision",
+  "files": [
+    {
+      "path": "README.md",
+      "scope": "Narrative text only",
+      "original": {
+        "git_revision": "086f148b40a7ac057f9184ecfbfccef84eb4037e",
+        "bytes": 2047,
+        "sha256": "53d919c688b89a4da5ec6e3ad67ae3da42e9654d213a5230bcca57216623cf17"
+      },
+      "public_copy": {
+        "bytes": 2545,
+        "sha256": "a828b3c22d152da67ee601c30e419f37992c8ce7a813e126466046104220044b"
+      },
+      "matches_original_bytes": false
+    },
+    {
+      "path": "manifest.json",
+      "scope": "scope string only; all other JSON data unchanged",
+      "original": {
+        "git_revision": "086f148b40a7ac057f9184ecfbfccef84eb4037e",
+        "bytes": 21257,
+        "sha256": "628db1321ad1c0c84a3fa9c6c4730dc9267ef50ae427e5c4ac97e48ea054a96e"
+      },
+      "public_copy": {
+        "bytes": 21247,
+        "sha256": "6240ece5bb5ed87d59d9406095f86067dca09312ad0cf48374dcd2d6ee8b8b8a"
+      },
+      "matches_original_bytes": false
+    }
+  ],
+  "unmodified_execution_archive": {
+    "path": "raw-full.tar.gz",
+    "bytes": 663335,
+    "sha256": "d284178b0d22ebefad0797338092f522be10769c0198ccee598ff03944100a89",
+    "all_member_bytes_unchanged": true
+  },
+  "unchanged_fields": "All manifest data other than scope, including outcomes, counts, failure details, code commit, devices, commands, artifact sizes and digests"
+}

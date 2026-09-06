@@ -2,7 +2,7 @@
   "schema": 1,
   "status": "PASS",
   "code_commit": "82592b8f6de65052e4258fdd6067956d4ede18c3",
-  "scope": "This completed 82592b8 A100 full run only; all outcomes are parsed, never assumed. It does not establish official acceptance, upstream merge or an award.",
+  "scope": "This completed 82592b8 A100 full run only; all outcomes are parsed, never assumed. It does not establish official acceptance or upstream merge.",
   "archived_at_utc": "2026-09-05T18:37:48.706308+00:00",
   "summary": "600 passed, 2 skipped in 450.25s (0:07:30)",
   "counts": {

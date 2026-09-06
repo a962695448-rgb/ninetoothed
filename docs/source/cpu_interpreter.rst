@@ -130,6 +130,79 @@ program-ID operations. Trace IDs always contain three coordinates; unused
 coordinates are zero. An explicit arranged grid must cover the same number of
 programs as its layout domain.
 
+Scalar dot across output tiles
+------------------------------
+
+The default Triton and CUDA pipelines can lower a two-dimensional dot into
+scalar SSA arithmetic and a K loop. The CPU interpreter executes those actual
+operations for every valid output lane, including multiple M/N output tiles.
+It does not replace the lowered program with a call to NumPy matmul.
+
+The multi-program contract is deliberately bounded:
+
+* The two operands and output are rank-2 input bindings with arranged
+  descriptors and one rank-2 value level. Their source dimensions describe
+  ``(M, K) @ (K, N) -> (M, N)``.
+* Each output program contains the complete K reduction. Masked K padding is
+  zero, and operand coordinates must match the output rows, output columns,
+  and the complete K coordinate range. Splitting K into independent programs
+  without an accumulating loop is rejected.
+* Every valid output element is written once. The output domain must cover the
+  complete matrix, and masks must match the logical in-bounds lanes.
+* Byte strides must align to whole elements. Independent strided inputs and
+  outputs are supported, including positive and negative output strides.
+  Potential input/output storage overlap, overlapping output elements and
+  partial-element byte strides are rejected before execution. The overlap
+  check is conservative and may reject disjoint views of a shared allocation.
+* There is one top-level decomposed output store. Other stores or atomic
+  effects, including those inside nested regions, are rejected before any
+  output write. Replaying such effects once per scalar lane would change the
+  original program's semantics.
+
+These contract failures identify an SSA operation location. Computed operands,
+additional layout levels, split-K accumulation and arbitrary matrix views are
+outside this multi-program implementation. Scalar transpose decomposition
+continues to require a single logical program.
+
+For example, save and execute the following as a Python file on CPU:
+
+.. code-block:: python
+
+   import numpy as np
+   import ninetoothed.language as ntl
+   from ninetoothed import Tensor, interpret
+
+   def matrix_tiles(a, b, out):
+       return a.tile((4, 4)), b.tile((4, 4)), out.tile((4, 4))
+
+   def matrix_dot(a, b, out):
+       out = ntl.dot(a, b)
+
+   tensors = (
+       Tensor(2, name="a", dtype="float32", other=0),
+       Tensor(2, name="b", dtype="float32", other=0),
+       Tensor(2, name="out", dtype="float32"),
+   )
+   kernel = interpret(matrix_tiles, matrix_dot, tensors, backend="triton")
+   a = np.arange(21, dtype=np.float32).reshape(7, 3) / 7
+   b = np.arange(18, dtype=np.float32).reshape(3, 6) / 5
+   out = np.full((7, 6), -731, dtype=np.float32)
+   kernel(a, b, out)
+   np.testing.assert_allclose(out, a @ b, rtol=1e-3, atol=1e-3)
+
+This example has four M/N output programs and a padded K tile of size four.
+``index.offset`` operations produced by matmul decomposition explicitly use
+``coordinate_space="value"``: row and column indices are local to the output
+tile. The CPU executor and source emitters then use the shared layout maps to
+resolve storage coordinates. Offsets without this attribute keep their
+existing source-coordinate meaning.
+
+CPU regression cases cover float32 and int32, non-square dimensions, M/N/K
+tails, strided inputs, independent strided outputs, trace consistency and
+rejection-before-write checks. The prepared GPU dot case is scalar float32;
+it does not cover Tensor Core instructions, arbitrary layouts or split-K.
+New source-emission checks and CPU results do not constitute a GPU run.
+
 Tracing, extension and pass debugging
 -------------------------------------
 
@@ -242,9 +315,62 @@ SSA results, and remain responsible for their operation's semantics.
 using independent input copies, stopping at the first bad pass. Integer and
 boolean outputs require exact equality. Floating outputs default to
 ``rtol=1e-3, atol=1e-3``. ``compare_programs`` additionally identifies the first
-different corresponding operation when SSA structures and execution order can
-be aligned. If a pass changes structure, output comparison remains valid but an
-operation location is not guessed without provenance information.
+different corresponding operation only when SSA structures and the complete
+trace event sequence align, including program ID, operation location, opcode,
+loop iteration and scalar lane. If a pass changes structure or control flow,
+output comparison remains valid but ``first_operation`` is ``None``. A
+provenance relation does not by itself establish value correspondence.
+
+Explicit SSA provenance
+-----------------------
+
+``ssa.Operation.origins`` is an immutable tuple of original-SSA operation IDs;
+its default is empty. It is nonsemantic: it does not affect operation equality
+or ``ssa.render``. JSON serialization preserves it separately from operation
+attributes. Origins refer to static locations in the seeded SSA, not Python
+source lines or a proven unique cause of a numerical error.
+
+The APIs are available from ``ninetoothed.ir.provenance``:
+
+* ``seed_origins(program)`` assigns stable IDs and a source catalog on first
+  use. Reapplying it preserves the existing history, including unknown origins.
+* ``operation_locations(program)`` returns static ``(location, operation)``
+  pairs, including nested regions, using the interpreter's location convention.
+* ``ProvenancePass(before, name)`` tracks one explicit transformation.
+  ``derive(targets, sources, relation="replace", recursive=False)`` declares
+  replacement, split or merge relations. ``recursive=True`` includes generated
+  region operations. ``delete(*sources)`` declares removal without successors,
+  and ``finish(after)`` records the completed relation set.
+* ``record_pass(before, after, name)`` accepts a matching explicit pass record
+  or records retained operation objects. It does not infer replacements from
+  copied IDs, names, opcodes or structural similarity. Unknown replacements
+  and removals remain unknown; a relation with partly unknown inputs does not
+  present the known subset as a complete source range.
+* ``source_candidates(program, locations=None)`` returns ``SourceCandidate``
+  records with ``origin_id``, ``location``, ``opcode`` and ``result_names``.
+  Explicit locations select output operations; omitting them selects declared
+  changes in the latest pass. These are declared source candidates, not a
+  complete causal slice or a unique fault location.
+
+``Pipeline.run`` and ``check_passes`` seed and record pass provenance. The
+actual linalg decomposition declares the original dot/transpose and store as
+sources of its generated scalar instructions. Temporary allocation reserves
+names across the entire program, including nested regions. Unrelated or
+unmapped transformations do not acquire an invented source relation.
+
+``ProgramComparison`` exposes ``equal``, ``output_differences``,
+``first_operation``, ``traces_aligned`` and ``source_candidates``.
+``PassCheck.source_candidates`` also retains a declared transformation scope
+when a pass produces an interpretation error. A nonempty candidate tuple must
+not be reported as an exact Python line, value alignment or proof of causality.
+``first_bad_pass`` identifies the first observed mismatch or unsupported/error
+stage in the supplied sequence, which is distinct from proving the underlying
+cause of a compiler defect.
+
+To inspect executable opcodes, walk the program blocks and nested regions.
+Provenance catalogs intentionally retain names of removed operations, so a
+substring search over the entire serialized SSA metadata is not a valid check
+that an opcode has been eliminated.
 
 Replay bundles
 --------------
@@ -261,6 +387,10 @@ alias relationship in differential copies and loaded bundles. Overlapping
 distinct NumPy views are rejected for differential
 copying/export because their shared-storage relationship is not serialized.
 
+Replay JSON preserves operation origins and the provenance catalog/history.
+Legacy schema-1 bundles without origins or provenance metadata remain readable;
+missing origins default to empty rather than inventing a transformation history.
+
 Current boundaries
 ------------------
 
@@ -269,17 +399,20 @@ masked memory, sum/max/min reductions, structured control flow and program IDs.
 Direct ``linalg.dot``/``linalg.matmul`` and the exp/max/sum composition used for
 softmax are also implemented. Scalar matmul/transpose decompositions execute the
 actual SSA operations and region loops once per valid rank-2 output lane. This
-supports one output store and a single logical program, either a whole untiled
-matrix or one arranged tile with masked tails. The ``TraceEvent.lane`` field
+supports one output store in a single logical program and the bounded
+multi-program matmul contract described above. Scalar transpose remains limited
+to one program. The ``TraceEvent.lane`` field
 identifies the output coordinate; normal vector execution has ``lane=None``.
 Inactive output lanes are never executed or written. This is a diagnostic CPU
 path, not a fast matrix multiplication implementation.
 
-Multi-program tiled scalar decompositions and combinations with other output
-stores remain explicitly unsupported, because their global-versus-local lane
-domain must first be defined. Direct/undecomposed linalg operations retain their
-normal vector semantics. Atomics, random-number operations, jagged layouts and
-arbitrary external calls are not part of the validated subset.
+Split-K scalar decomposition, computed matmul operands, extra value levels,
+overlapping storage and combinations with other output stores or atomic effects
+are not supported by the multi-program matmul path. Direct/undecomposed linalg
+operations retain their normal vector semantics. Atomics, indirect pointers,
+random-number operations, float8, jagged layouts and arbitrary external calls
+are not part of the validated interpreter subset. GPU warp/block scheduling,
+shared memory and race behavior are not simulated.
 
 The decomposition pass now derives a fixed or compound reduction extent through
 ``shape.dim(lhs, -1)`` from the arranged operand, instead of referring to an
@@ -290,3 +423,13 @@ fallback to the frontend program.
 CPU tests cannot establish agreement with A100 hardware or measure GPU speed.
 That requires the separate real-GPU differential run on matching kernels,
 inputs, layouts, dtypes, seeds and pass settings.
+
+The feature implementation was frozen in ``f35fb51``. Its preparatory CPU
+combination passed 171 selected tests. A broader selected CPU run then reported
+1 failed, 294 passed and 15 deselected in 35.42 seconds: an existing test searched
+all SSA metadata for a removed opcode and also matched its provenance entry.
+That failure is retained; the test compatibility correction requires a separate
+rerun. The runner contains 15 prepared GPU cases, including the new scalar dot
+case, but this version has no completed new GPU or A100 validation.
+Historical A100 results for ``b5a3206`` and ``82592b8`` do not validate these
+new runtime, pass, emitter or provenance changes.

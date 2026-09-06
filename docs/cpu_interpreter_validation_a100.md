@@ -1,8 +1,10 @@
 # CPU 参考解释器：NVIDIA A100 验证记录
 
+本页保存 b5/377/825 的历史实机结果。当前功能源码 `f35fb51b16a52392e7ee92b3a3c15622305d428b` 已修改运行时、pass、发射器和来源记录；其 171 项预备 CPU 组合不能继承本页的 A100 结论。f35 广范围 CPU 已记录 1 failed、294 passed、15 deselected、35.42 s，测试兼容修正复验另记。15 个 GPU 用例已准备，新 GPU 尚未运行，新的 A100 验证仍待完成，当前状态见 [实施与优化计划](implementation_optimization_plan.md)。
+
 更新日期：2026-09-06（Asia/Shanghai）。源码 **`82592b8f6de65052e4258fdd6067956d4ede18c3`** 已在实际 **NVIDIA A100-SXM4-40GB** 上完成完整测试：**600 passed、2 skipped，450.25 s（0:07:30），退出码 0；无 failures 或 errors**。两个 skip 均要求同机至少两张 GPU。原始日志、JUnit、coverage 与命令见 [完整清单](../results/full_suite_a100_82592b8/manifest.json)、[原文归档](../results/full_suite_a100_82592b8/raw-full.tar.gz)和 [归档说明](../results/full_suite_a100_82592b8/README.md)。
 
-初轮 b5 的 14/14 GPU 差分、180 passed 专项及 16 failed 的全量，第二轮 377 的 16 passed 定向及 1 failed、599 passed、2 skipped 全量，以及 825 的 77 passed generation 回归，均保留各自源码和原始结果，不与最终 600 项相加。**成功重跑没有确定旧 squeeze 失败的唯一根因**，受控诊断也不是原现场精确重放。A100 完整运行的工程证据已取得，剩余工作是上游审查、官方确认及既有可选加分项；不宣称上游合并或优秀学员评选已完成。历史 RTX 4090 结果见 [4090 报告](cpu_interpreter_validation_4090.md)，验收对照见 [提交说明](cpu_interpreter_acceptance.md)。
+初轮 b5 的 14/14 GPU 差分、180 passed 专项及 16 failed 的全量，第二轮 377 的 16 passed 定向及 1 failed、599 passed、2 skipped 全量，以及 825 的 77 passed generation 回归，均保留各自源码和原始结果，不与最终 600 项相加。**成功重跑没有确定旧 squeeze 失败的唯一根因**，受控诊断也不是原现场精确重放。A100 完整运行的工程证据已取得，当前继续完成约定的实现优化与验证，再交用户验收；验收后才处理上游 PR 与官网提交，当前不创建或发布 PR，不执行官网提交。历史 RTX 4090 结果见 [4090 报告](cpu_interpreter_validation_4090.md)，验收对照见 [提交说明](cpu_interpreter_acceptance.md)。
 
 ## 按运行保留结果
 
@@ -27,7 +29,7 @@ smoke 是 14 项 GPU 差分中的一个用例；180 项专项又包含这 14 项
 
 原 runner 的运行前后 HEAD 均为 `82592b8`，已跟踪文件无修改。最终 JUnit 为 602 tests、0 failures、0 errors、2 skipped。Coverage XML 记录全仓库 9087 / 10578 行、`line-rate=0.859`，即 **85.90%**；这是本轮全库行覆盖率，不是解释器专项或分支覆盖率，`branches-valid` 为 0。完整原文及校验方式见 [归档说明](../results/full_suite_a100_82592b8/README.md)。
 
-后续若只提交 `docs/`、`results/` 归档，且代码、测试与依赖均与 `82592b8` 相同，应说明这一对应关系并引用本次证据。**实际运行 SHA 始终是 `82592b8f6de65052e4258fdd6067956d4ede18c3`**，不能把新的资料提交写成另一次全量实测。
+原归档提交 `086f148b40a7ac057f9184ecfbfccef84eb4037e` 只修改当时的 `docs/`、`results/`，代码、测试、依赖与 CI 和 825 相同；因此该批资料引用本次原运行，086 本身不是另一轮实测。**本页这次完整运行的 SHA 是 `82592b8f6de65052e4258fdd6067956d4ede18c3`**。当前 f35 的 runtime/pass/emitter/provenance 与测试已有功能变更，必须另行验证，不能推广为后续所有代码都已在 A100 通过。
 
 ## 初轮 16 项失败与测试参考修复
 
@@ -181,6 +183,6 @@ python -m pytest --color=no --tb=short -ra -q tests/test_generation.py \
   --junitxml="$RUN_DIR/generation.xml"
 ```
 
-准确命令与结果见 [generation 复验清单](../results/generation_reference_recheck_a100_82592b8/manifest.json)。`b5a3206` 和 `377daec` 两次 A100 全量保持原 FAIL 结论；`82592b8` 第三轮独立记录为 **600 passed、2 skipped，450.25 s，退出码 0**。完整硬件验证证据已取得，后续据此提交上游审查与官方确认。单卡 skip、受控诊断边界和各版本范围继续保留，不相加、不改写旧结果。
+准确命令与结果见 [generation 复验清单](../results/generation_reference_recheck_a100_82592b8/manifest.json)。`b5a3206` 和 `377daec` 两次 A100 全量保持原 FAIL 结论；`82592b8` 第三轮独立记录为 **600 passed、2 skipped，450.25 s，退出码 0**。完整硬件验证证据已取得，后续完成约定优化及验证并交用户验收，通过后再处理外部提交。单卡 skip、受控诊断边界和各版本范围继续保留，不相加、不改写旧结果。
 
-GPU runner **未包含优化后 dot/matmul**，多 program 分块标量分解仍有明确限制；softmax 通过不填补这一缺口。跨结构 pass 的 operation 来源追踪、真实历史缺陷演示等加分增强以及上游 PR/主分支合并仍按 [差距计划](excellence_gap_plan.md)推进。归档只确认对应源码、环境与范围内的真实结果。
+本页历史 b5 GPU runner **未包含优化后 dot/matmul**，softmax 的旧实机通过不填补该缺口。当前 f35 已实现限定合同内的多 M/N tile、完整 K 标量 dot 和原 SSA 来源候选，15 个 GPU 用例中已加入一个 float32 dot，但新 GPU 和 A100 结果尚未取得。具体合同、来源候选限制与剩余验证见 [实施与优化计划](implementation_optimization_plan.md)；完成全部约定优化与验证并经用户验收后，再处理上游 PR 与官网提交，当前不创建或发布 PR，不执行官网提交。归档只确认对应源码、环境与范围内的真实结果。

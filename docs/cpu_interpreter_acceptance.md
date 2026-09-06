@@ -1,12 +1,14 @@
 # CPU 参考解释器：验收与提交说明
 
-截至 2026-09-06，源码 **`82592b8f6de65052e4258fdd6067956d4ede18c3`** 已在实际 A100-SXM4-40GB 上完成完整测试：**600 passed、2 skipped，450.25 s（0:07:30），退出码 0，无 failures/errors**。两个 skip 均要求同机至少双卡，详见 [最终完整清单](../results/full_suite_a100_82592b8/manifest.json)与 [归档说明](../results/full_suite_a100_82592b8/README.md)。工程验证证据已取得，后续进入上游审查与官方确认；不宣称合并或优秀学员评选已经完成。b5/377 失败历史及 14/180/16/77 各范围按原源码保留，不累计，成功重跑不确定旧 squeeze 失败的唯一根因。
+当前功能源码为 **`f35fb51b16a52392e7ee92b3a3c15622305d428b`**，新增多 M/N 输出 tile 标量 dot 和显式 SSA 来源记录，修改了 runtime、默认 pass、发射器、IR 与测试。预备 CPU 组合为 **171 passed、23.72 s**；广范围 CPU 选择已得到 **1 failed、294 passed、15 deselected，35.42 s，退出码 1**，原测试对整个 metadata 的字符串检查误命中 origins 中保留的操作名，兼容修正需独立复验。**15 个 GPU 用例已准备，但新 GPU 尚未运行，也没有新的 A100 结果。**本轮功能变更不能继承历史 A100 600 项通过结论。完成全部约定优化及验证后先由用户验收，之后才处理上游 PR 与官网提交；当前不创建或发布 PR，不执行官网提交。
 
-项目通过共享 arrangement/frontend/SSA 管线执行 NumPy 参考语义，帮助检查编译变换后的结果。设计、接口、支持操作和限制见 [CPU 解释器文档](source/cpu_interpreter.rst)，最新硬件记录见 [A100 报告](cpu_interpreter_validation_a100.md)，历史分轮结果见 [4090 报告](cpu_interpreter_validation_4090.md)，加分项计划见 [差距计划](excellence_gap_plan.md)。
+历史验证：源码 **`82592b8f6de65052e4258fdd6067956d4ede18c3`** 曾在实际 A100-SXM4-40GB 上完成完整测试：**600 passed、2 skipped，450.25 s（0:07:30），退出码 0，无 failures/errors**。两个 skip 均要求同机至少双卡，详见 [该轮完整清单](../results/full_suite_a100_82592b8/manifest.json)与 [归档说明](../results/full_suite_a100_82592b8/README.md)。b5/377 失败历史及 14/180/16/77 各范围按原源码保留，不累计，成功重跑不确定旧 squeeze 失败的唯一根因。
+
+项目通过共享 arrangement/frontend/SSA 管线执行 NumPy 参考语义，帮助检查编译变换后的结果。设计、接口、支持操作和限制见 [CPU 解释器文档](source/cpu_interpreter.rst)，最新硬件记录见 [A100 报告](cpu_interpreter_validation_a100.md)，历史分轮结果见 [4090 报告](cpu_interpreter_validation_4090.md)，后续实现与验证见 [实施与优化计划](implementation_optimization_plan.md)。
 
 ## 验收要求与证据入口
 
-下表依据训练营九齿任务的 2026-09-05 阅读快照。测试文件与用例名称是审查入口，列出实现或测试不等于该项已在 A100 上验收。
+下表依据 2026-09-06 重新只读核对的官方任务内容，按功能、验证条件与支持边界组织。测试文件与用例名称是审查入口，列出实现或 CPU 测试不等于当前版本已在 A100 上验收。
 
 | 要求 | 实现或自动化测试入口 | 现有证据与边界 |
 |---|---|---|
@@ -14,12 +16,14 @@
 | 五类 application | [应用测试](../tests/test_interpreter_applications.py)：`test_elementwise_and_nondivisible_tail`、`test_broadcast_reuses_bias_for_each_row`、`test_row_reduction_ignores_padded_lanes`、`test_nested_if_and_for_carry_values` | 分别覆盖逐元素、广播、非整除尾块、行归约、分支/循环；尾块也是独立验收类别 |
 | float32、int32、bool | 同一应用测试文件中的 dtype 参数与 `test_bool_results_are_exact`；[GPU 用例](../tests/test_interpreter_gpu.py) 的 `GPU_CASES` | float32 使用 `rtol=1e-3, atol=1e-3`；整数与布尔完全相等 |
 | 无可见 CUDA 的独立运行 | `test_cpu_path_does_not_import_gpu_backends`；[无 Torch/Triton CPU 清单](../results/cpu_no_gpu_packages_20260905/manifest.json) | `5b37725` 的 206 passed、14 deselected；未选择 Torch 适配文件，不等于全仓库无依赖运行 |
-| 至少三个程序默认 pass 前后一致并与 A100 差分 | `test_gpu_fixtures_match_oracle_before_and_after_lowering_on_cpu`、[逐阶段测试](../tests/test_interpreter_default_pipeline.py)、`run_gpu_case`、[GPU runner](../scripts/verify_interpreter_gpu.py) | b5 A100 的 8 程序、14 项四方比较及 180 项专项已有独立记录；825 最终 A100 全量也已通过。证据按各自源码保存，供上游审查与官方确认 |
+| 至少三个程序默认 pass 前后一致并与 A100 差分 | `test_gpu_fixtures_match_oracle_before_and_after_lowering_on_cpu`、[逐阶段测试](../tests/test_interpreter_default_pipeline.py)、`run_gpu_case`、[GPU runner](../scripts/verify_interpreter_gpu.py) | 历史 b5 的 8 程序、14 项 A100 四方比较和 180 项专项分别留存；f35 已准备 15 个用例，新的真实 GPU 及 A100 对照尚未完成 |
 | mask 与 trace 正确；unsupported 显式失败 | [SSA 测试](../tests/test_interpreter_ssa.py) 中 masked load/store、trace 一致性、unsupported operation/dtype 用例 | mask 排除地址不解引用；诊断包含 operation 位置。支持边界见接口文档 |
 | 单步、断点、watch、program/opcode 过滤 | [单步测试](../tests/test_interpreter_step_debugger.py)、`StepDebugger`、[演示](cpu_interpreter_demo.py) | 暂停发生在操作完成之后；交互观察不能代替计算正确性检查 |
-| 首个错误 pass/operation 与差分复现 | [调试器测试](../tests/test_interpreter_debugger.py)、`check_passes`、`compare_programs`、`export_reproducer` | 结构和执行次序可对齐时定位对应 operation；结构重写缺少来源映射时不猜位置。故障注入与真实历史缺陷必须分别标注 |
-| 扩展接口与完整应用 | `handlers` 扩展测试、softmax 与直接/受限分解 dot 测试 | 多 program 分块标量 dot 仍拒绝；GPU runner 排除优化后 dot。没有自动样例缩减承诺 |
-| 原测试、风格、文档、主分支合并 | 完整 pytest、Ruff、贡献风格检查、Sphinx、上游审查 | 825 A100 最终全量 600 passed、2 skipped、exit 0；b5/377 两轮失败和各定向记录保留。两项双卡场景未测；文档/格式检查按实际提交核对，上游合并未完成 |
+| 首个错误 pass/operation 与差分复现 | [来源测试](../tests/test_interpreter_provenance.py)、`check_passes`、`compare_programs`、`Operation.origins`、`export_reproducer` | 结构和完整 trace 次序对齐时定位对应 operation；结构变化给已声明的原 SSA 候选集合，不是 Python 行号或唯一因果点。未知映射保持未知，故障注入与真实历史缺陷分别标注 |
+| 扩展接口与完整应用 | `handlers`、softmax、[多 program dot 测试](../tests/test_interpreter_matmul.py) | CPU 已实现 M/N 输出 tile 内完整 K 的 rank-2 标量 dot，覆盖 F32/I32 和独立对齐 strides；split-K、别名、字节重叠及混合副作用等拒绝写前。新 float32 GPU dot 待跑，无 Tensor Core 或自动样例缩减承诺 |
+| 原测试、风格、文档、主分支合并 | 完整 pytest、Ruff、贡献风格检查、Sphinx、用户验收及后续外部审查 | 825 的 600 passed、2 skipped 是历史结果；171 只是预备 CPU 组合，f35 广范围 CPU 的 1 项失败保留并待兼容修正复验。两项双卡场景未测，上游合并未完成 |
+
+官方 CPU-only 阶段要求 CUDA 不可见且解释器不导入或调用 CUDA 执行路径；GPU 阶段使用 A100。原生 CPU 代码生成、CPU 性能、warp/block 调度、shared memory 和 GPU race 模拟不属于解释器目标。Atomics、间接指针、多设备、随机数和 float8 等未支持语义必须显式报错，不能静默回退或把原仓库 GPU 测试能力当作 CPU 解释器支持。
 
 ## 复查已完成的运行
 
@@ -71,11 +75,13 @@ python -m pytest -q --color=no -ra --tb=short \
 
 `377daec6242864a920de43a55523ac3d5f582648` 只改 jagged 输入和参考，16 项定向及全量中的同一子范围均通过；但第二轮完整结果仍是 FAIL，唯一 squeeze allclose 失败保留原始记录。受控诊断说明未写区 NaN 可导致逐位一致而原 allclose 失败，却没有重建旧现场的分配器和索引，不能确定旧失败的唯一根因；详见 [A100 报告](cpu_interpreter_validation_a100.md)。
 
-`82592b8f6de65052e4258fdd6067956d4ede18c3` 仅改两条 generation 测试输入语句及注释：输出初始化为有限非零值 -123，目标行用 randperm 保证随机且唯一。kernel、`src/`、参数、全矩阵比较、原容差和依赖不变，未改为 `equal_nan=True`。generation 文件 77 项和后续完整测试 600 passed、2 skipped 均已取得独立证据；这些成功不确定旧失败的唯一根因。剩余工作是上游审查、官方确认及优化后 dot、跨结构 operation 来源定位等既有可选增强。
+`82592b8f6de65052e4258fdd6067956d4ede18c3` 仅改两条 generation 测试输入语句及注释：输出初始化为有限非零值 -123，目标行用 randperm 保证随机且唯一。kernel、`src/`、参数、全矩阵比较、原容差和依赖不变，未改为 `equal_nan=True`。generation 文件 77 项和后续完整测试 600 passed、2 skipped 均已取得独立证据；这些成功不确定旧失败的唯一根因。当前工作是优化后 dot、跨结构 operation 来源定位等约定实现及验证，完成后先交用户验收。
 
-后续仅包含 `docs/`、`results/` 的归档提交，在代码、测试和依赖均与 825 相同时，可写明对应关系并引用本次完整运行。实际测试 SHA 仍是 `82592b8f6de65052e4258fdd6067956d4ede18c3`，不声称资料提交又重跑过全量；提交前核对这些范围及最终证据链接。
+归档提交 `086f148b40a7ac057f9184ecfbfccef84eb4037e` 仅修改当时的 `docs/`、`results/`，其代码、测试、依赖与 CI 和 825 相同，所以该批资料引用 825 的原运行；086 本身不是另一轮实测。当前 f35 则有 runtime/pass/emitter/provenance 功能与测试变更，必须独立完成广范围 CPU、实际 GPU 和新的 A100 验证，不能继承 825 的 600 项结果。新 GPU 的预备用例及合同见 [实施与优化计划](implementation_optimization_plan.md)。
 
 ## PR 与官网提交材料
+
+以下仅为材料准备要求。完成全部约定优化与验证并通过用户验收后，才处理上游 PR 和官网提交；当前不创建或发布 PR，不执行官网提交。
 
 正式 PR 使用已推送的 kebab-case 分支 `add-cpu-reference-interpreter`，目标为 `InfiniTensor/ninetoothed:master`。候选标题为 `Add a CPU reference interpreter and differential debugger`。中文 commit 保留既有历史；提交前重新核对本地和远端源码 SHA。
 
@@ -97,4 +103,4 @@ PR 正文应按以下顺序组织：
 | `ruff.yml` | 贡献风格、Ruff check 和 format check | 对准备提交的实际改动重新检查 |
 | `sphinx.yml` | push 时构建文档并上传产物；master 才部署 | 当前提交的文档构建应留结果，旧构建成功不自动覆盖新增内容 |
 
-只有证据齐全后才将相应项标为完成。主分支合并和优秀学员评选由维护者及训练营决定。
+只有实现与证据齐全后才将相应项标为完成，并交由用户验收。后续外部审查与主分支合并由相应维护者处理，按实际状态记录。
