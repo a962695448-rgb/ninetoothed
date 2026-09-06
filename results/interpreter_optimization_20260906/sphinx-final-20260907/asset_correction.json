@@ -1,0 +1,21 @@
+{
+  "status": "LOCAL_STATIC_ASSET_CORRECTION",
+  "server_rebuild": false,
+  "original_server_archive_unchanged": true,
+  "original_server_zip_sha256": "f9f0a372f29c1efff2f572c7ad696ff98e53d96d1fa5d8a2044ca0b0c37a5a3e",
+  "original_logo_sha256": "497a81de96bd9d4ae1ecce02453ab20d232c2e370d8ff31b5aa497348dd7ba7c",
+  "original_logo_bytes": 130,
+  "replacement_logo_sha256": "2eb81c9d72a5f53d3409a8f56f5bf8ea85145ac788930743a5449692097d4537",
+  "replacement_logo_bytes": 17335,
+  "replacement_source": "docs/source/_static/ninetoothed-logo.png; content matches tracked Git LFS oid",
+  "changed_asset": "_static/ninetoothed-logo.png",
+  "other_html_asset_contents_unchanged": true,
+  "html_asset_files": 97,
+  "publishable_zip_sha256": "c2a89547e42fae7836caa05c5b5c94d32c102e354a83feb513f6e7c2221e1655",
+  "source_lfs": {
+    "local_object_present": true,
+    "object_sha256": "2eb81c9d72a5f53d3409a8f56f5bf8ea85145ac788930743a5449692097d4537",
+    "source_checkout_requires_git_lfs": true,
+    "push_exit_code": 0
+  }
+}

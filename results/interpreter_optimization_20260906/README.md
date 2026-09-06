@@ -23,3 +23,7 @@ CPU、Sphinx与GPU各目录的manifest记录命令、环境、源码/工作文�
 服务器既有环境运行原Sphinx `-W --keep-going`：exit0、28页、5.392s、stderr空，源码为 `cc190a1653eb99878cd21a59eac8a69ab8302684`。所有原有构建输入SHA已与该Git提交逐一核对，Sphinx只正常新增14份autosummary RST；控制器误把新增文件当作输入漂移的原FAIL保留，独立postcheck另记PASS。完整117文件包为sphinx-final-20260907/raw-html.zip，SHA256 `f9f0a372f29c1efff2f572c7ad696ff98e53d96d1fa5d8a2044ca0b0c37a5a3e`。
 
 **静态资源限制：服务器HTML中的logo是Git LFS指针，不能称资产完整。** 本地准备包有真PNG，但本次未成功上传到服务器；原HTML包未改写，正式发布前需恢复真实logo。文档未部署，上游PR与官网仍等待用户验收。
+
+### 独立本地静态资产修正
+
+已从仓库实际PNG恢复一个可发布HTML副本：[publishable-html.zip](sphinx-final-20260907/publishable-html.zip)。PNG内容SHA与已跟踪Git LFS oid一致；只替换副本中的logo，其余HTML/资源内容不变。原server ZIP及LFS指针保留不动。这是本地静态资产修正，**不是服务器重跑或官网部署**，不需要重新租GPU。来源与原/修正SHA见asset_correction.json；源码clone仍需Git LFS，可发布ZIP已包含真图。

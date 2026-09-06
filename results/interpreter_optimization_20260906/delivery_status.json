@@ -24,11 +24,12 @@
     "logo_bytes": 130,
     "static_assets_complete": false,
     "required_before_website_publication": "Restore the real logo image; original HTML ZIP remains unchanged",
-    "new_gpu_or_full_suite_run": false
+    "new_gpu_or_full_suite_run": false,
+    "local_publishable_static_copy_corrected": true,
+    "local_asset_correction_server_rerun": false
   },
   "remaining": [
     "New6ec A100/full-suite/multi-device validation not run",
-    "Restore real logo before site publication",
     "User acceptance pending",
     "Upstream PR and camp-site submission not performed"
   ],

@@ -21,7 +21,7 @@
 | 单步、断点、watch、program/opcode 过滤 | [单步测试](../tests/test_interpreter_step_debugger.py)、`StepDebugger`、[演示](cpu_interpreter_demo.py) | 暂停发生在操作完成之后；交互观察不能代替计算正确性检查 |
 | 首个错误 pass/operation 与差分复现 | [来源测试](../tests/test_interpreter_provenance.py)、`check_passes`、`compare_programs`、`Operation.origins`、`export_reproducer` | 结构和完整 trace 次序对齐时定位对应 operation；结构变化给已声明的原 SSA 候选集合，不是 Python 行号或唯一因果点。未知映射保持未知，故障注入与真实历史缺陷分别标注 |
 | 扩展接口与完整应用 | `handlers`、softmax、[矩阵乘法回归](../tests/test_interpreter_matmul.py) | CPU 支持 M/N 输出 tile 内完整 K 的 rank-2 标量 dot；公共存储检查覆盖 single/multi dot 与 transpose，别名、部分字节/zero-stride 重叠、同一 out 作 lhs 值读取及混合副作用拒绝写前，正常独立 untiled/正负对齐 strides 保留。标量 float32 GPU dot 已在 Triton/CUDA 各自通过 |
-| 原测试、风格、文档、主分支合并 | 完整 pytest、Ruff、贡献风格检查、Sphinx、用户验收及后续外部审查 | 当前 307/15 是限定 CPU 范围；历史失败与复验分开保存。两次历史 Sphinx 依赖失败保留，服务器Sphinx实际exit0/28页；控制器因14个正常autosummary输出记FAIL，独立复核确认原有输入未变。HTML内logo仍是LFS指针，静态资产不完整，正式发布前须恢复真图，见[最终记录](../results/interpreter_optimization_20260906/sphinx-final-20260907/delivery_limitations.json)；新完整硬件兼容性未重跑，双卡场景和上游合并未完成 |
+| 原测试、风格、文档、主分支合并 | 完整 pytest、Ruff、贡献风格检查、Sphinx、用户验收及后续外部审查 | 当前 307/15 是限定 CPU 范围；历史失败与复验分开保存。两次历史 Sphinx 依赖失败保留，服务器Sphinx实际exit0/28页；控制器因14个正常autosummary输出记FAIL，独立复核确认原有输入未变。原HTML内logo为LFS指针；已在独立本地发布副本恢复真PNG，原包未改且未重跑服务器，见[最终记录](../results/interpreter_optimization_20260906/sphinx-final-20260907/delivery_limitations.json)；新完整硬件兼容性未重跑，双卡场景和上游合并未完成 |
 
 官方 CPU-only 阶段要求 CUDA 不可见且解释器不导入或调用 CUDA 执行路径；GPU 阶段使用 A100。原生 CPU 代码生成、CPU 性能、warp/block 调度、shared memory 和 GPU race 模拟不属于解释器目标。Atomics、间接指针、多设备、随机数和 float8 等未支持语义必须显式报错，不能静默回退或把原仓库 GPU 测试能力当作 CPU 解释器支持。
 
@@ -33,7 +33,7 @@
 | `56f091e` | 295 passed、15 deselected，34.18 s，退出码 0；执行 opcode 检查改为遍历 blocks/regions | [复验清单](../results/interpreter_optimization_20260906/cpu-56f091e/manifest.json) |
 | `6ecce58` | 307 passed、15 deselected，32.68 s，退出码 0；统一 single/multi 标量存储检查 | [最新清单](../results/interpreter_optimization_20260906/cpu-6ecce58/manifest.json) |
 
-新增 12 项单 program 回归修复前为 8 failed、4 passed，存储保护修复后相关组合 137 passed；171 项预备组合、这些开发回归和三轮冻结结果不累计。15 个被取消选择的真实 GPU 用例不计为通过。旧失败不被复验覆盖，新的 A100 仍未完成；两次 Sphinx 历史失败及服务器Sphinx实际exit0/28页；控制器因14个正常autosummary输出记FAIL，独立复核确认原有输入未变。HTML内logo仍是LFS指针，静态资产不完整，正式发布前须恢复真图，见[最终记录](../results/interpreter_optimization_20260906/sphinx-final-20260907/delivery_limitations.json)。
+新增 12 项单 program 回归修复前为 8 failed、4 passed，存储保护修复后相关组合 137 passed；171 项预备组合、这些开发回归和三轮冻结结果不累计。15 个被取消选择的真实 GPU 用例不计为通过。旧失败不被复验覆盖，新的 A100 仍未完成；两次 Sphinx 历史失败及服务器Sphinx实际exit0/28页；控制器因14个正常autosummary输出记FAIL，独立复核确认原有输入未变。原HTML内logo为LFS指针；已在独立本地发布副本恢复真PNG，原包未改且未重跑服务器，见[最终记录](../results/interpreter_optimization_20260906/sphinx-final-20260907/delivery_limitations.json)。
 
 ## 复查已完成的运行
 

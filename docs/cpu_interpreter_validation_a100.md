@@ -1,6 +1,6 @@
 # CPU 参考解释器：NVIDIA A100 验证记录
 
-本页保存 b5/377/825 的历史 A100 实机结果。当前计算源码 `6ecce58da28bb9709aa35fc6c25c1f361aff736f` 已修改 runtime/pass/emitter/provenance；限定 NumPy CPU 结果为307 passed、15 deselected。其新增 **15 项 Triton 差分和一个 CUDA 标量 dot 已在 RTX 4090 通过**，见[新归档](../results/interpreter_optimization_20260906/gpu-6ecce58/archive_manifest.json)；这不是新的 A100 验证。两次历史 Sphinx 依赖失败及服务器Sphinx实际exit0/28页；控制器因14个正常autosummary输出记FAIL，独立复核确认原有输入未变。HTML内logo仍是LFS指针，静态资产不完整，正式发布前须恢复真图，见[最终记录](../results/interpreter_optimization_20260906/sphinx-final-20260907/delivery_limitations.json)，不能继承本页旧硬件结论。
+本页保存 b5/377/825 的历史 A100 实机结果。当前计算源码 `6ecce58da28bb9709aa35fc6c25c1f361aff736f` 已修改 runtime/pass/emitter/provenance；限定 NumPy CPU 结果为307 passed、15 deselected。其新增 **15 项 Triton 差分和一个 CUDA 标量 dot 已在 RTX 4090 通过**，见[新归档](../results/interpreter_optimization_20260906/gpu-6ecce58/archive_manifest.json)；这不是新的 A100 验证。两次历史 Sphinx 依赖失败及服务器Sphinx实际exit0/28页；控制器因14个正常autosummary输出记FAIL，独立复核确认原有输入未变。原HTML内logo为LFS指针；已在独立本地发布副本恢复真PNG，原包未改且未重跑服务器，见[最终记录](../results/interpreter_optimization_20260906/sphinx-final-20260907/delivery_limitations.json)，不能继承本页旧硬件结论。
 
 更新日期：2026-09-06（Asia/Shanghai）。源码 **`82592b8f6de65052e4258fdd6067956d4ede18c3`** 已在实际 **NVIDIA A100-SXM4-40GB** 上完成完整测试：**600 passed、2 skipped，450.25 s（0:07:30），退出码 0；无 failures 或 errors**。两个 skip 均要求同机至少两张 GPU。原始日志、JUnit、coverage 与命令见 [完整清单](../results/full_suite_a100_82592b8/manifest.json)、[原文归档](../results/full_suite_a100_82592b8/raw-full.tar.gz)和 [归档说明](../results/full_suite_a100_82592b8/README.md)。
 

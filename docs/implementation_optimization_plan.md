@@ -2,7 +2,7 @@
 
 更新日期：2026-09-07。本轮功能源码已冻结为 **`6ecce58da28bb9709aa35fc6c25c1f361aff736f`**。它修改了运行时、默认 pass、发射器、SSA 来源记录和测试，并把标量存储保护统一到 single/multi dot 与 transpose；相对历史代码有功能变化，不能继承旧 GPU 结果。
 
-最新冻结 CPU 选择为 **307 passed、15 deselected，32.68 s，退出码 0**；它是无 Torch/Triton 的 NumPy CPU 范围。独立 **RTX 4090** 运行已完成 **15/15 Triton 差分（9 程序、10 类别）及一个 CUDA 标量 dot probe，均 exit 0**，见[实机归档](../results/interpreter_optimization_20260906/gpu-6ecce58/archive_manifest.json)。这些范围不累计；新源码的 A100、完整仓库与双卡验证仍未完成。两次历史 Sphinx 构建均因缺少依赖失败，服务器Sphinx实际exit0/28页；控制器因14个正常autosummary输出记FAIL，独立复核确认原有输入未变。HTML内logo仍是LFS指针，静态资产不完整，正式发布前须恢复真图，见[最终记录](../results/interpreter_optimization_20260906/sphinx-final-20260907/delivery_limitations.json)。当前只收尾已有实现与证据；用户验收前不创建 PR 或执行官网提交。
+最新冻结 CPU 选择为 **307 passed、15 deselected，32.68 s，退出码 0**；它是无 Torch/Triton 的 NumPy CPU 范围。独立 **RTX 4090** 运行已完成 **15/15 Triton 差分（9 程序、10 类别）及一个 CUDA 标量 dot probe，均 exit 0**，见[实机归档](../results/interpreter_optimization_20260906/gpu-6ecce58/archive_manifest.json)。这些范围不累计；新源码的 A100、完整仓库与双卡验证仍未完成。两次历史 Sphinx 构建均因缺少依赖失败，服务器Sphinx实际exit0/28页；控制器因14个正常autosummary输出记FAIL，独立复核确认原有输入未变。原HTML内logo为LFS指针；已在独立本地发布副本恢复真PNG，原包未改且未重跑服务器，见[最终记录](../results/interpreter_optimization_20260906/sphinx-final-20260907/delivery_limitations.json)。当前只收尾已有实现与证据；用户验收前不创建 PR 或执行官网提交。
 
 ## 要求依据与验证层次
 
@@ -61,7 +61,7 @@
 
 1. f35/56/6ec 三轮 CPU 原文与各自源版本保留；最新 307/15 不扩大为 Torch 适配或全仓库通过。
 2. 6ec 的 15 项 Triton 差分及一个 CUDA 后端标量 dot 已在 4090 完成。新的 A100、完整库与同机多卡不在本次证据范围，不继承历史 825 的 600/2。
-3. 保留两次 Sphinx 原 FAIL；静态绘图的 GUI 依赖改为只在交互入口导入，服务器Sphinx实际exit0/28页；控制器因14个正常autosummary输出记FAIL，独立复核确认原有输入未变。HTML内logo仍是LFS指针，静态资产不完整，正式发布前须恢复真图，见[最终记录](../results/interpreter_optimization_20260906/sphinx-final-20260907/delivery_limitations.json)。
+3. 保留两次 Sphinx 原 FAIL；静态绘图的 GUI 依赖改为只在交互入口导入，服务器Sphinx实际exit0/28页；控制器因14个正常autosummary输出记FAIL，独立复核确认原有输入未变。原HTML内logo为LFS指针；已在独立本地发布副本恢复真PNG，原包未改且未重跑服务器，见[最终记录](../results/interpreter_optimization_20260906/sphinx-final-20260907/delivery_limitations.json)。
 4. 来源候选、故障注入与导出/回放是明确的现有能力；唯一根因定位、自动最小样例缩减、任意布局/split-K 和性能最优不作为已完成承诺。
 5. 源码、文档和原始证据同步到个人交付分支供用户验收；上游 PR、官网提交及维护者合并仍未执行。
 
