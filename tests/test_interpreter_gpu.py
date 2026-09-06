@@ -3,6 +3,7 @@
 import ast
 import hashlib
 import operator
+import re
 from dataclasses import dataclass, replace
 
 import numpy as np
@@ -12,7 +13,7 @@ import ninetoothed.language as ntl
 from ninetoothed import Tensor, interpret
 from ninetoothed.compiler import DEFAULT_COMPILER, CompileRequest
 from ninetoothed.interpreter import interpret_program
-from ninetoothed.ir import ssa
+from ninetoothed.ir import ir_to_dict, ssa
 
 SEED = 2026
 RTOL = ATOL = 1e-3
@@ -92,6 +93,14 @@ def row_softmax(x, out):
     out = numerator / ntl.sum(numerator, axis=1)[:, None]  # noqa: F841
 
 
+def dot_arrangement(a, b, out):
+    return a.tile((4, 4)), b.tile((4, 4)), out.tile((4, 4))
+
+
+def matrix_dot(a, b, out):
+    out = ntl.dot(a, b)  # noqa: F841
+
+
 @dataclass(frozen=True)
 class GPUCase:
     name: str
@@ -119,6 +128,7 @@ GPU_CASES = (
     GPUCase("softmax_float32", "softmax"),
     GPUCase("floor_div_int32_mixed_sign_tail", "floor_div", dtype="int32"),
     GPUCase("remainder_int32_mixed_sign_tail", "remainder", dtype="int32"),
+    GPUCase("dot_float32_multi_program_tail", "dot"),
 )
 
 
@@ -188,6 +198,24 @@ def case_inputs(case):
     """Construct fixed-seed inputs and an independent NumPy oracle."""
     rng = np.random.default_rng(SEED)
     dtype = np.dtype(case.dtype)
+
+    if case.category == "dot":
+        # Four independent M/N output tiles; K is complete within each tile.
+        # This covers scalar float32 lowering, not Tensor Core instructions.
+        a = rng.normal(size=(7, 3)).astype(np.float32)
+        b = rng.normal(size=(3, 6)).astype(np.float32)
+
+        return (
+            dot_arrangement,
+            matrix_dot,
+            (
+                _descriptor("a", 2, other=0),
+                _descriptor("b", 2, other=0),
+                _descriptor("out", 2),
+            ),
+            {"a": a, "b": b},
+            a @ b,
+        )
 
     if case.category in {"floor_div", "remainder"}:
         x, y = _signed_division_inputs(case.size)
@@ -326,6 +354,7 @@ def _program_from_metadata(data):
                     results=tuple(value(result) for result in op["results"]),
                     attrs=op["attrs"],
                     regions=tuple(block(region) for region in op["regions"]),
+                    origins=tuple(op.get("origins", ())),
                 )
                 for op in item["operations"]
             ),
@@ -354,6 +383,32 @@ def _assert_equal(actual, expected, label):
         np.testing.assert_array_equal(actual, expected, err_msg=label)
 
 
+def _scalar_dot_offsets(program):
+    """Require actual scalar-loop lowering, independently of metadata flags."""
+
+    def walk(block):
+        for operation in block.operations:
+            yield operation
+
+            for region in operation.regions:
+                yield from walk(region)
+
+    operations = tuple(op for block in program.blocks for op in walk(block))
+    assert not any(op.opcode in {"linalg.dot", "linalg.matmul"} for op in operations)
+    assert any(
+        op.opcode == "scf.for" and op.attrs.get("decomposition") == "matmul"
+        for op in operations
+    )
+    offsets = {
+        op.attrs["dim"]: op.results[0].name
+        for op in operations
+        if op.opcode == "index.offset" and op.attrs.get("decomposition") == "matmul"
+    }
+    assert set(offsets) == {0, 1}
+
+    return offsets
+
+
 def run_gpu_case(case, torch, device_index=0):
     """Compare raw SSA, emitted target SSA, actual GPU output, and NumPy."""
     arrangement, application, tensors, source_inputs, expected = case_inputs(case)
@@ -376,6 +431,10 @@ def run_gpu_case(case, torch, device_index=0):
     ) == ssa.render(compilation.kernel.ssa)
     lowered = _program_from_metadata(compilation.artifact.metadata["ssa"])
     assert "ssa.triton.optimize_schedule" in lowered.metadata["pass_trace"]
+
+    if case.category == "dot":
+        _scalar_dot_offsets(lowered)
+        assert ir_to_dict(lowered) == compilation.artifact.metadata["ssa"]
 
     def cpu_inputs():
         return {
@@ -498,16 +557,20 @@ def _compile_case(case):
     tuple(
         case
         for case in GPU_CASES
-        if case.category in {"broadcast", "floor_div", "remainder"}
+        if case.category in {"broadcast", "floor_div", "remainder", "dot"}
     ),
     ids=lambda case: case.name,
 )
 def test_gpu_fixtures_match_oracle_before_and_after_lowering_on_cpu(case):
-    """Verify broadcast and signed division without CUDA or Triton installed."""
+    """Verify selected GPU fixtures without CUDA or Triton installed."""
     arrangement, application, tensors, inputs, expected = case_inputs(case)
     compilation, _, _ = _compile_case(case)
     lowered = _program_from_metadata(compilation.artifact.metadata["ssa"])
     snapshots = {name: value.copy() for name, value in inputs.items()}
+
+    if case.category == "dot":
+        _scalar_dot_offsets(lowered)
+        assert ir_to_dict(lowered) == compilation.artifact.metadata["ssa"]
 
     for label, program in (
         ("frontend SSA", interpret(arrangement, application, tensors).program),
@@ -644,6 +707,84 @@ def _numeric_source_expression(node, values, *, tensor_division=False):
             return values[source_names.pop()]
 
     raise AssertionError(f"Unsupported generated address expression: {ast.dump(node)}.")
+
+
+@pytest.mark.parametrize("backend", ("triton", "cuda"))
+def test_emitted_dot_coordinates_stay_local_across_output_programs(backend):
+    """Inspect emitted scalar indices; this does not execute either GPU backend."""
+    case = next(case for case in GPU_CASES if case.category == "dot")
+    arrangement, application, tensors, _inputs, _expected = case_inputs(case)
+    compilation = DEFAULT_COMPILER.compile(
+        CompileRequest(
+            arrangement=arrangement,
+            application=application,
+            tensors=tensors,
+            backend=backend,
+            kernel_name="dot_coordinate_validation",
+            num_warps=4,
+            max_num_configs=1,
+        )
+    )
+    lowered = _program_from_metadata(compilation.artifact.metadata["ssa"])
+    offsets = _scalar_dot_offsets(lowered)
+    source = compilation.artifact.primary_source
+
+    if backend == "triton":
+        bindings = {
+            node.targets[0].id: node.value
+            for node in ast.walk(_jit_function(source))
+            if isinstance(node, ast.Assign)
+            and len(node.targets) == 1
+            and isinstance(node.targets[0], ast.Name)
+        }
+    else:
+        # Only integer coordinate assignments are interpreted. All indices in
+        # this fixture are nonnegative, so C division agrees with Python //.
+        bindings = {
+            name: expression
+            for name, expression in re.findall(
+                r"\bint64_t\s+(\w+)\s*=\s*([^;\n]+);", source
+            )
+        }
+
+    indices = np.arange(4 * 4 * 4, dtype=np.int64)
+    values = {"index": indices}
+
+    def resolve(name):
+        if name in values:
+            return values[name]
+
+        expression = bindings[name]
+
+        if isinstance(expression, str):
+            expression = ast.parse(expression.replace("/", "//"), mode="eval").body
+
+        dependencies = {
+            child.id: resolve(child.id)
+            for child in ast.walk(expression)
+            if isinstance(child, ast.Name)
+        }
+        values[name] = _numeric_source_expression(expression, dependencies)
+
+        return values[name]
+
+    for dimension, value_name in offsets.items():
+        # SSA %N is rendered as vN, with a scope suffix inside the K loop.
+        rendered_name = "v" + value_name.removeprefix("%")
+        matching = [
+            name
+            for name in bindings
+            if name == rendered_name or name.startswith(rendered_name + "_")
+        ]
+        assert matching, f"No emitted coordinate binding for {value_name}."
+        expected = (indices % 16) // 4 if dimension == 0 else indices % 4
+
+        for name in matching:
+            np.testing.assert_array_equal(
+                resolve(name),
+                expected,
+                err_msg=f"{backend} dot axis {dimension} contains a program offset",
+            )
 
 
 @pytest.mark.parametrize(

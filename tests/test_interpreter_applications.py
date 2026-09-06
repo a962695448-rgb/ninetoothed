@@ -477,10 +477,8 @@ def test_non_square_transpose_matches_numpy_after_decomposition(
 
 
 @pytest.mark.parametrize("backend", ("cuda", "triton"))
-@pytest.mark.parametrize("shape", ((7, 4, 3), (3, 5, 2)))
-def test_multi_program_dot_decomposition_is_rejected_without_partial_writes(
-    backend, shape
-):
+@pytest.mark.parametrize("shape", ((3, 5, 2),))
+def test_unreduced_k_program_dot_is_rejected_without_partial_writes(backend, shape):
     rows, inner, columns = shape
     out = np.full((rows, columns), -731, dtype=np.float32)
     handle = interpret(

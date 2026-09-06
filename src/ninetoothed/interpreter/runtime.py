@@ -10,6 +10,7 @@ from dataclasses import dataclass, replace
 import numpy as np
 
 from ninetoothed.ir import ssa
+from ninetoothed.ir.provenance import operation_locations
 from ninetoothed.naming import is_next_power_of_2, remove_prefixes
 
 from .expressions import BINARY, UNARY, evaluate, numpy_dtype, shape_value
@@ -322,24 +323,168 @@ class _Execution:
                     "Scalar decomposition requires exactly one output store."
                 )
 
-            if any(
-                op.opcode == "mem.store"
-                and op.attrs.get("decomposition") not in {"matmul", "transpose"}
-                for op in program.blocks[0].operations
-            ):
+            index, operation = decomposed_stores[0]
+            extra_stores = tuple(
+                location
+                for location, other in operation_locations(program)
+                if other is not operation
+                and (
+                    other.opcode == "mem.store"
+                    or other.opcode.startswith(("atomic.", "mem.atomic"))
+                )
+            )
+
+            if extra_stores:
                 raise UnsupportedOperationError(
-                    "Scalar decomposition mixed with other output stores is not supported."
+                    f"Operation {extra_stores[0]}: scalar decomposition mixed with "
+                    "other output stores or atomic effects is not supported."
                 )
 
-            index, operation = decomposed_stores[0]
-
-            if math.prod(self.grid) != 1:
+            if (
+                math.prod(self.grid) != 1
+                and operation.attrs["decomposition"] != "matmul"
+            ):
                 raise UnsupportedOperationError(
                     f"Operation entry:{index}:mem.store: scalar {operation.attrs['decomposition']} decomposition "
                     "does not support multiple arranged programs; use a single program or preserve linalg."
                 )
 
             self.scalar_output = operation.operands[1]
+
+            if math.prod(self.grid) > 1:
+                self._validate_scalar_matmul_domain(
+                    operation, f"entry:{index}:mem.store"
+                )
+
+    def _validate_scalar_matmul_domain(self, operation, location):
+        """Prove complete K tiles and independent M/N writes before executing SSA."""
+
+        def require(condition, reason):
+            if not condition:
+                raise UnsupportedOperationError(
+                    f"Operation {location}: scalar matmul across multiple arranged programs requires "
+                    f"independent output tiles with complete K reduction: {reason}."
+                )
+
+        names = tuple(operation.attrs.get("matmul_operands", ()))
+        require(len(names) == 2, "missing decomposed operand bindings")
+        names = (*names, self.scalar_output)
+        require(
+            all(name in self.inputs for name in names),
+            "computed operands are not supported",
+        )
+        arrays = tuple(self.inputs[name] for name in names)
+        require(
+            all(isinstance(value, np.ndarray) and value.ndim == 2 for value in arrays),
+            "rank-2 tensors are required",
+        )
+        lhs, rhs, output = arrays
+        require(
+            all(
+                stride % value.itemsize == 0
+                for value in arrays
+                for stride in value.strides
+            ),
+            "strides must be aligned to complete elements",
+        )
+        require(
+            not any(np.may_share_memory(output, value) for value in (lhs, rhs)),
+            "potentially overlapping input and output storage is not supported",
+        )
+        require(
+            lhs.shape[1] == rhs.shape[0]
+            and output.shape == (lhs.shape[0], rhs.shape[1]),
+            "source matrix dimensions disagree",
+        )
+        require(
+            math.prod(self.shapes.get(self.scalar_output, ())) == math.prod(self.grid),
+            "output does not cover the launch domain",
+        )
+        require(
+            all(self.specs.get(name) is not None for name in names),
+            "arranged tensor descriptors are required",
+        )
+        require(
+            all(self.specs[name].attrs.get("other") in (None, 0) for name in names[:2]),
+            "K padding must be zero",
+        )
+        seen = set()
+
+        for flat_index in range(math.prod(self.grid)):
+            refs = []
+
+            for name, array in zip(names, arrays):
+                try:
+                    local = _local_program_index(
+                        self.shapes.get(name, ()), self.master_shape, flat_index
+                    )
+                except ValueError as error:
+                    raise UnsupportedOperationError(
+                        f"Operation {location}: scalar matmul operand program domains "
+                        "cannot be broadcast to the output."
+                    ) from error
+                refs.append(
+                    TensorRef(array, self.specs[name], self.symbols, outer_index=local)
+                )
+
+            a, b, c = refs
+            require(
+                all(len(ref.shape) == 2 and len(ref.levels) == 1 for ref in refs),
+                "one rank-2 value level is required",
+            )
+            require(
+                a.shape[0] == c.shape[0]
+                and b.shape[1] == c.shape[1]
+                and a.shape[1] == b.shape[0],
+                "logical matrix tile dimensions disagree",
+            )
+            require(
+                a.shape[1] >= lhs.shape[1] and b.shape[0] >= rhs.shape[0],
+                "K is split across programs without an accumulating loop",
+            )
+            (a_rows, a_k), a_mask = a._access()
+            (b_k, b_columns), b_mask = b._access()
+            (rows, columns), mask = c._access()
+            require(
+                np.all(rows == rows[:, :1]) and np.all(columns == columns[:1, :]),
+                "output axes are not independent matrix axes",
+            )
+            k = np.arange(a.shape[1])
+            require(
+                np.all(a_rows == rows[:, :1]) and np.all(a_k == k[None, :]),
+                "lhs coordinates do not match output rows and complete K",
+            )
+            require(
+                np.all(b_k == k[:, None]) and np.all(b_columns == columns[:1, :]),
+                "rhs coordinates do not match complete K and output columns",
+            )
+            expected_a = (a_rows >= 0) & (a_rows < lhs.shape[0]) & (a_k < lhs.shape[1])
+            expected_b = (
+                (b_k < rhs.shape[0]) & (b_columns >= 0) & (b_columns < rhs.shape[1])
+            )
+            expected_c = (
+                (rows >= 0)
+                & (rows < output.shape[0])
+                & (columns >= 0)
+                & (columns < output.shape[1])
+            )
+            require(
+                np.array_equal(a_mask, expected_a)
+                and np.array_equal(b_mask, expected_b)
+                and np.array_equal(mask, expected_c),
+                "matrix predicates omit or add logical lanes",
+            )
+            addresses = (
+                rows[mask] * output.strides[0] + columns[mask] * output.strides[1]
+            ).tolist()
+            require(
+                len(addresses) == len(set(addresses))
+                and not seen.intersection(addresses),
+                "output writes overlap",
+            )
+            seen.update(addresses)
+
+        require(len(seen) == output.size, "output coverage is incomplete")
 
     def run(self):
         last_env = dict(self.symbols)
@@ -739,6 +884,26 @@ class _Execution:
             return math.prod(target.shape[dim + 1 :])
 
         if code == "index.offset":
+            coordinate_space = op.attrs.get("coordinate_space", "source")
+
+            if coordinate_space == "value":
+                if self.lane is None or not isinstance(args[0], TensorRef):
+                    raise UnsupportedOperationError(
+                        "Value-space scalar offsets require an enclosing scalar-lane output domain."
+                    )
+                dim = int(op.attrs.get("dim", 0))
+
+                if not -len(self.lane) <= dim < len(self.lane):
+                    raise InterpretationError(
+                        "Value-space offset dimension is outside the logical tile."
+                    )
+                return self.lane[dim]
+
+            if coordinate_space != "source":
+                raise UnsupportedOperationError(
+                    f"Unsupported offset coordinate space `{coordinate_space}`."
+                )
+
             if op.attrs.get("decomposition") in {"matmul", "transpose"}:
                 if self.lane is None or not isinstance(args[0], TensorRef):
                     raise UnsupportedOperationError(

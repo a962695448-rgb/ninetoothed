@@ -15,6 +15,7 @@ from ninetoothed.ir import (
     ir_to_dict,
     ssa,
 )
+from ninetoothed.ir.provenance import record_pass, seed_origins, source_candidates
 
 from .runtime import InterpretationError, _adapt_inputs, interpret_program
 
@@ -177,12 +178,17 @@ class OperationDifference:
 
 @dataclass(frozen=True)
 class ProgramComparison:
-    """Output differences and an operation location when correspondence is safe."""
+    """Output differences, safe trace locations and declared source candidates.
+
+    Source candidates describe the scope of a recorded transformation. They are
+    not evidence of value correspondence or a unique cause of the output error.
+    """
 
     equal: bool
     output_differences: tuple
     first_operation: OperationDifference | None
     traces_aligned: bool
+    source_candidates: tuple = ()
 
 
 @dataclass(frozen=True)
@@ -194,6 +200,7 @@ class PassCheck:
     first_bad_pass: str | None
     difference: ProgramComparison | None = None
     error: str | None = None
+    source_candidates: tuple = ()
 
 
 def _copy_array_layout(value, *, strides=None, writeable=None):
@@ -307,9 +314,9 @@ def compare_programs(
 ):
     """Compare independent executions without changing the caller's buffers.
 
-    An operation is attributed only when SSA structures and event ordering align.
-    Restructuring passes can still be checked by outputs, but do not receive a
-    guessed operation location when an SSA-to-SSA provenance map is unavailable.
+    An operation is attributed only when SSA structures and full event ordering
+    align. Restructuring passes can be checked by outputs and report declared
+    source candidates, but provenance alone never establishes value equivalence.
     """
     options = dict(tensors=tensors, grid=grid, symbols=symbols, trace=True)
     first = interpret_program(reference, _copy_inputs(inputs), **options)
@@ -321,25 +328,23 @@ def compare_programs(
         or name not in second.outputs
         or not _same(first.outputs[name], second.outputs[name], rtol, atol)
     )
-    aligned = _structure(reference) == _structure(candidate)
+
+    def key(event):
+        return (
+            event.program_id,
+            event.location,
+            event.opcode,
+            event.iteration,
+            event.lane,
+        )
+
+    aligned = _structure(reference) == _structure(candidate) and tuple(
+        map(key, first.trace)
+    ) == tuple(map(key, second.trace))
     first_operation = None
 
     if aligned:
         for left, right in zip(first.trace, second.trace):
-
-            def key(event):
-                return (
-                    event.program_id,
-                    event.location,
-                    event.opcode,
-                    event.iteration,
-                    event.lane,
-                )
-
-            if key(left) != key(right):
-                aligned = False
-                break
-
             for name in sorted(set(left.results) | set(right.results)):
                 if (
                     name not in left.results
@@ -361,9 +366,17 @@ def compare_programs(
             if first_operation is not None:
                 break
 
-        if len(first.trace) != len(second.trace) and first_operation is None:
-            aligned = False
-    return ProgramComparison(not differing, differing, first_operation, aligned)
+    candidates = (
+        source_candidates(
+            candidate,
+            (first_operation.location,) if first_operation is not None else None,
+        )
+        if differing
+        else ()
+    )
+    return ProgramComparison(
+        not differing, differing, first_operation, aligned, candidates
+    )
 
 
 def check_passes(
@@ -383,14 +396,18 @@ def check_passes(
     Each transformed program is compared to the original semantic reference,
     preventing accumulated small differences from escaping detection.
     """
+    program = seed_origins(program)
     current = program
     checked = []
 
     for name, transform in passes:
         checked.append(str(name))
+        transformed = None
 
         try:
-            current = transform(current)
+            previous = current
+            transformed = record_pass(previous, transform(previous), str(name))
+            current = transformed
             difference = compare_programs(
                 program,
                 current,
@@ -402,10 +419,24 @@ def check_passes(
                 atol=atol,
             )
         except (InterpretationError, ValueError, TypeError) as exc:
-            return PassCheck(False, tuple(checked), str(name), error=str(exc))
+            return PassCheck(
+                False,
+                tuple(checked),
+                str(name),
+                error=str(exc),
+                source_candidates=(
+                    source_candidates(transformed) if transformed is not None else ()
+                ),
+            )
 
         if not difference.equal:
-            return PassCheck(False, tuple(checked), str(name), difference)
+            return PassCheck(
+                False,
+                tuple(checked),
+                str(name),
+                difference,
+                source_candidates=difference.source_candidates,
+            )
     return PassCheck(True, tuple(checked), None)
 
 
@@ -498,6 +529,7 @@ def _program(data):
                     results=tuple(value(result) for result in op["results"]),
                     attrs=op["attrs"],
                     regions=tuple(block(region) for region in op["regions"]),
+                    origins=tuple(op.get("origins", ())),
                 )
                 for op in item["operations"]
             ),

@@ -35,8 +35,9 @@ def main():
         "integer_and_bool_comparison": "exact",
         "limitations": [
             "Correctness validation, not a performance benchmark.",
-            "Results describe the reported GPU; they do not prove A100 validation.",
-            "Optimized dot is excluded: known target-pipeline/decomposition limitations remain explicit.",
+            "Results apply only to the GPU and cases identified in this report.",
+            "Dot covers one scalar float32 2D matmul with M/N output tiles and a complete K domain; "
+            "it does not establish arbitrary-layout, split-K, Tensor Core, or performance coverage.",
         ],
     }
     started = time.perf_counter()

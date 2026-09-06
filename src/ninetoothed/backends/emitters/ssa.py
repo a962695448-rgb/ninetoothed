@@ -1936,6 +1936,27 @@ def _emit_offset_element(
 ) -> str:
     operand = op.operands[0]
     dim = int(op.attrs.get("dim", 0) or 0)
+    coordinate_space = op.attrs.get("coordinate_space", "source")
+
+    if coordinate_space == "value":
+        axes = _access_axes(
+            ctx.tensor_infos.get(operand),
+            ctx,
+            _dtype_level(operand, ctx),
+            fallback=_value_axes(operand, ctx),
+        )
+        value_coords = (
+            coords if len(coords) == len(axes) else _current_coords(axes, ctx)
+        )
+
+        if not -len(value_coords) <= dim < len(value_coords):
+            raise ValueError(
+                "Value-space offset dimension is outside the logical tile."
+            )
+        return value_coords[dim]
+
+    if coordinate_space != "source":
+        raise ValueError(f"Unsupported offset coordinate space `{coordinate_space}`.")
 
     if operand in ctx.tensor_infos:
         return _offset_from_template(
