@@ -1,0 +1,25 @@
+{
+  "status": "PASS",
+  "sphinx_exit_code": 0,
+  "original_controller_status": "FAIL",
+  "original_controller_exit_code": 1,
+  "preexisting_inputs_unchanged": true,
+  "autosummary_generated_files": [
+    "docs/source/python_api/generated/ninetoothed.Tensor.eval.rst",
+    "docs/source/python_api/generated/ninetoothed.Tensor.expand.rst",
+    "docs/source/python_api/generated/ninetoothed.Tensor.flatten.rst",
+    "docs/source/python_api/generated/ninetoothed.Tensor.pad.rst",
+    "docs/source/python_api/generated/ninetoothed.Tensor.permute.rst",
+    "docs/source/python_api/generated/ninetoothed.Tensor.ravel.rst",
+    "docs/source/python_api/generated/ninetoothed.Tensor.squeeze.rst",
+    "docs/source/python_api/generated/ninetoothed.Tensor.subs.rst",
+    "docs/source/python_api/generated/ninetoothed.Tensor.tile.rst",
+    "docs/source/python_api/generated/ninetoothed.Tensor.unsqueeze.rst",
+    "docs/source/python_api/generated/ninetoothed.build.rst",
+    "docs/source/python_api/generated/ninetoothed.debugging.simulate_arrangement.rst",
+    "docs/source/python_api/generated/ninetoothed.jit.rst",
+    "docs/source/python_api/generated/ninetoothed.make.rst"
+  ],
+  "html_pages": 28,
+  "reason": "Controller equality gate counted normal autosummary output as input drift; original record retained."
+}

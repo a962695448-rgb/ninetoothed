@@ -1,0 +1,19 @@
+........................................................................ [ 24%]
+........................................................................ [ 48%]
+........................................................................ [ 73%]
+...........................................F............................ [ 97%]
+.......                                                                  [100%]
+=================================== FAILURES ===================================
+_ TestSSAFirstBackendLowering.test_transpose_aliases_share_one_backend_emission_contract _
+tests/test_ssa_first_backend_lowering.py:1195: in test_transpose_aliases_share_one_backend_emission_contract
+    assert "linalg.transpose" not in str(artifact.metadata["ssa"])
+E   assert 'linalg.transpose' not in "{'kind': 's...duled-ssa'}}"
+E     
+E     'linalg.transpose' is contained here:
+E     ?           ^^
+E       a:entry:0:linalg.transpose', 'b00666f0d4027bc74e465bb11ce43f6d0dafac5895f681da01b69989f56f981a:entry:1:mem.store']}, {'opcode': 'index.offset', 'operands': ['out'], 'results': [{'name': '%2', 'type': {'kind': 'index', 'shape': [], 'dtype': None, 'attrs': {}}}], 'attrs': {'dim': 1, 'decomposition': 'transpose'}, 'regions': [], 'origins': ['b00666f0d4027bc74e465bb11ce43f6d0dafac5895f681da01b69989f56f981a:entry:0:linalg.transpose', 'b00666f0d4027bc74e465bb11ce43f6d0dafac5895f681da01b69989f56f981a:entry:1:mem.store']}, {'opcode': '...
+E     
+E     ...Full output truncated (2 lines hidden), use '-vv' to show
+=========================== short test summary info ============================
+FAILED tests/test_ssa_first_backend_lowering.py::TestSSAFirstBackendLowering::test_transpose_aliases_share_one_backend_emission_contract
+1 failed, 294 passed, 15 deselected in 35.42s

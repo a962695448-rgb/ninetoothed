@@ -1,0 +1,37 @@
+{
+  "status": "READY_FOR_USER_REVIEW_WITH_LIMITATIONS",
+  "computation_source_commit": "6ecce58da28bb9709aa35fc6c25c1f361aff736f",
+  "gui_import_commit": "1f927722ace58ed04fdc6990344a683ee468681d",
+  "sphinx_source_commit": "cc190a1653eb99878cd21a59eac8a69ab8302684",
+  "cpu": {
+    "passed": 307,
+    "deselected": 15,
+    "scope": "selected NumPy CPU without Torch/Triton"
+  },
+  "rtx4090": {
+    "triton_cases": 15,
+    "cuda_scalar_dot_probe": 1,
+    "performance_claim": false
+  },
+  "sphinx": {
+    "sphinx_exit_code": 0,
+    "html_pages": 28,
+    "original_controller_status": "FAIL",
+    "independent_postcheck_status": "PASS",
+    "preexisting_source_files_unchanged": true,
+    "normal_autosummary_generated_rst_files": 14,
+    "logo_is_git_lfs_pointer": true,
+    "logo_bytes": 130,
+    "static_assets_complete": false,
+    "required_before_website_publication": "Restore the real logo image; original HTML ZIP remains unchanged",
+    "new_gpu_or_full_suite_run": false
+  },
+  "remaining": [
+    "New6ec A100/full-suite/multi-device validation not run",
+    "Restore real logo before site publication",
+    "User acceptance pending",
+    "Upstream PR and camp-site submission not performed"
+  ],
+  "personal_delivery_branch": "add-cpu-reference-interpreter",
+  "counts_not_added_across_scopes": true
+}

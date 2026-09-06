@@ -1,0 +1,13 @@
+{
+  "sphinx_exit_code": 0,
+  "html_pages": 28,
+  "original_controller_status": "FAIL",
+  "independent_postcheck_status": "PASS",
+  "preexisting_source_files_unchanged": true,
+  "normal_autosummary_generated_rst_files": 14,
+  "logo_is_git_lfs_pointer": true,
+  "logo_bytes": 130,
+  "static_assets_complete": false,
+  "required_before_website_publication": "Restore the real logo image; original HTML ZIP remains unchanged",
+  "new_gpu_or_full_suite_run": false
+}

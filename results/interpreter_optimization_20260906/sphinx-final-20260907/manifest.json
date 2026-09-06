@@ -1,0 +1,199 @@
+{
+  "status": "FAIL",
+  "exit_code": 0,
+  "source_commit": "cc190a1653eb99878cd21a59eac8a69ab8302684",
+  "scope": "CPU-only Sphinx HTML build of recorded working docs and lazy GUI imports; no GPU/test-matrix execution",
+  "argv": [
+    "/data/infinitensor-2026/.venv/bin/python",
+    "-m",
+    "sphinx",
+    "-W",
+    "--keep-going",
+    "-b",
+    "html",
+    "/data/infinitensor-2026/nine-staging/opt-20260906/validated-6ecce58/docs/source",
+    "/data/infinitensor-2026/nine-staging/opt-20260906/sphinx-final-20260907/html"
+  ],
+  "MPLBACKEND": "Agg",
+  "python": "3.12.3 (main, Nov  6 2024, 18:32:19) [GCC 13.2.0]",
+  "packages": {
+    "sphinx": "9.1.0",
+    "pydata-sphinx-theme": "0.21.0",
+    "matplotlib": "3.10.0",
+    "numpy": "1.26.4",
+    "sympy": "1.13.1"
+  },
+  "source_sha256_before": {
+    "docs/source/basics.rst": "dc7835b5d4538cd0aa108bc4bc91731e94a9539f5bfc5c526d9b8d758a19792b",
+    "docs/source/build.rst": "80d0acf2713118cfd7a4ecdf2af031be5acb804ee42ff5c0c3d6fcf78dd4655f",
+    "docs/source/cpu_interpreter.rst": "4a66e10b3787ad668dc0e539a4894e18a237fc9585e11a012a71e533507657f4",
+    "docs/source/index.rst": "465a9d45df1f5ebd382d08bd78084f72d447edc2dfb2d110241689c4e131f1ad",
+    "docs/source/installation.rst": "64c5d024776f37cfecfbafc4bc1e299d94cccc57f4955e25794a6c193a332676",
+    "docs/source/python_api/code_generation.rst": "7272e364e5a881bd968bbe58e1d53d96382d48be24a4061ada330398504c5b65",
+    "docs/source/python_api/debugging.rst": "e70ab8d6cf1d6ef31c45d946b4adc578273125e8d2b2eb709e801fe981825b42",
+    "docs/source/python_api/symbol.rst": "b6798c9d508ea3c7cb364c74b458bbf4806dade3c1d90a4202eb3c769637719b",
+    "docs/source/python_api/tensor.rst": "bd48f62d655f257b22e60b57a61f012037708243e9c36dc862329ecb19bb6030",
+    "docs/source/python_api/visualization.rst": "d2b1aa9d90443b500a403618cd8cfeb88542adcdc23659b29b91b7440c895b60",
+    "docs/source/python_api.rst": "d3eb4b3b63a09b487098b02e1e2be626142bce0bbc7cdb0194474eb8bc39af26",
+    "docs/source/conf.py": "b1e73a961eb7d24ade3fd36b9eafcd5e71f23f7fe73de359b2b720ef84aa9a16",
+    "docs/source/visualize.py": "fdcd0c59ad192be8e063724bb9764e0f017a6f2aad0452c2c262db1c28408aa9",
+    "src/ninetoothed/visualization.py": "535761a95197b4ce8413483008d61b49c1c071c39b5ad71fa8546008757107a0"
+  },
+  "source_sha256_after": {
+    "docs/source/basics.rst": "dc7835b5d4538cd0aa108bc4bc91731e94a9539f5bfc5c526d9b8d758a19792b",
+    "docs/source/build.rst": "80d0acf2713118cfd7a4ecdf2af031be5acb804ee42ff5c0c3d6fcf78dd4655f",
+    "docs/source/cpu_interpreter.rst": "4a66e10b3787ad668dc0e539a4894e18a237fc9585e11a012a71e533507657f4",
+    "docs/source/index.rst": "465a9d45df1f5ebd382d08bd78084f72d447edc2dfb2d110241689c4e131f1ad",
+    "docs/source/installation.rst": "64c5d024776f37cfecfbafc4bc1e299d94cccc57f4955e25794a6c193a332676",
+    "docs/source/python_api/code_generation.rst": "7272e364e5a881bd968bbe58e1d53d96382d48be24a4061ada330398504c5b65",
+    "docs/source/python_api/debugging.rst": "e70ab8d6cf1d6ef31c45d946b4adc578273125e8d2b2eb709e801fe981825b42",
+    "docs/source/python_api/generated/ninetoothed.Tensor.eval.rst": "7d8ca507c07f898c0c2ac8b24fcfbb9eac6d15c00ab83ceaa9e72989bf6d4a03",
+    "docs/source/python_api/generated/ninetoothed.Tensor.expand.rst": "10bf5741f3a044484957eee2d247dd2f598c9d523662246089dadb4e2ab3f176",
+    "docs/source/python_api/generated/ninetoothed.Tensor.flatten.rst": "117fc46c9d954a768729517a43a8b2da37a96a5e7cd76991274fb1925699910e",
+    "docs/source/python_api/generated/ninetoothed.Tensor.pad.rst": "3332e55473299be859a5baaacd4a81466b5a6362b3ecd811297461c00769b7a8",
+    "docs/source/python_api/generated/ninetoothed.Tensor.permute.rst": "44dd3477aec94792134daf1442a60668ad00bf42e70d8e637015772e75bc8b1b",
+    "docs/source/python_api/generated/ninetoothed.Tensor.ravel.rst": "e8a2f4bc541e7368b303f8ff174fc056c5e188769b2434e6a539850f1a641a0c",
+    "docs/source/python_api/generated/ninetoothed.Tensor.squeeze.rst": "ff39266c17e9d8e29953789be9bb2b96237cf56e1e7b82123b38b1717ae0e5de",
+    "docs/source/python_api/generated/ninetoothed.Tensor.subs.rst": "348255c4f50fb5728e2eafd1d1cb92c0941b08950fc988827d32b8b7f8e066d2",
+    "docs/source/python_api/generated/ninetoothed.Tensor.tile.rst": "68d910a84590cc71e8438f2e4af6da624c0b70bb61d78f5aa0c6fac6d92ad8be",
+    "docs/source/python_api/generated/ninetoothed.Tensor.unsqueeze.rst": "73ec2e393f20e085a932c86b244c96f9e7bb065dbd4f9de170f9c2fb78fcb2ed",
+    "docs/source/python_api/generated/ninetoothed.build.rst": "4e0072ca233b611b70fd33a9866ed06a72d1bec4a8a719b4792178f654b6fe5d",
+    "docs/source/python_api/generated/ninetoothed.debugging.simulate_arrangement.rst": "a14687a04d497493f662d667dff0922352469db18b9cf07368a300e483ff7514",
+    "docs/source/python_api/generated/ninetoothed.jit.rst": "3b12cef97963d52685835c944856db86203bb5c0922fcabb4b0cb5662ded9c18",
+    "docs/source/python_api/generated/ninetoothed.make.rst": "b4aef97cdd8e250ea566d780d4c27f86499ee2d90c91d2552af621c33409c83d",
+    "docs/source/python_api/symbol.rst": "b6798c9d508ea3c7cb364c74b458bbf4806dade3c1d90a4202eb3c769637719b",
+    "docs/source/python_api/tensor.rst": "bd48f62d655f257b22e60b57a61f012037708243e9c36dc862329ecb19bb6030",
+    "docs/source/python_api/visualization.rst": "d2b1aa9d90443b500a403618cd8cfeb88542adcdc23659b29b91b7440c895b60",
+    "docs/source/python_api.rst": "d3eb4b3b63a09b487098b02e1e2be626142bce0bbc7cdb0194474eb8bc39af26",
+    "docs/source/conf.py": "b1e73a961eb7d24ade3fd36b9eafcd5e71f23f7fe73de359b2b720ef84aa9a16",
+    "docs/source/visualize.py": "fdcd0c59ad192be8e063724bb9764e0f017a6f2aad0452c2c262db1c28408aa9",
+    "src/ninetoothed/visualization.py": "535761a95197b4ce8413483008d61b49c1c071c39b5ad71fa8546008757107a0"
+  },
+  "sources_unchanged_during_build": false,
+  "elapsed_seconds": 5.392,
+  "artifacts": {
+    "build.stdout.log": {
+      "bytes": 9686,
+      "sha256": "ee55158dee4a669ccf87a6ba905d390d8026c47d40008348cc485eb3fbe3af27"
+    },
+    "build.stderr.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  },
+  "html": {
+    "html/_static/webpack-macros.html": {
+      "bytes": 1263,
+      "sha256": "25e9d49d717ae3c3f5ddfecb7b85789ef6070d39622cc73d6a8356dc5bf62176"
+    },
+    "html/basics.html": {
+      "bytes": 58550,
+      "sha256": "70fb6e6fab4f999c3b7b588476c2a04def189f9318b85cae61950e0aae93ca02"
+    },
+    "html/build.html": {
+      "bytes": 55929,
+      "sha256": "a8d25a033f368acba5671b053dd3605611d064f1e8470b50e2be86a1fbeffd18"
+    },
+    "html/cpu_interpreter.html": {
+      "bytes": 69093,
+      "sha256": "a2761340950593eca6feb903b956c7c46cb1b0cc3f4e25bd68446d2708d6fd2c"
+    },
+    "html/genindex.html": {
+      "bytes": 18154,
+      "sha256": "f000837acfc2fce8a87a99c9e6a22fbd12660fdfb4a52c543c35f17309841a14"
+    },
+    "html/index.html": {
+      "bytes": 18511,
+      "sha256": "1a599ee8eb8767dd98f257083b99a71dfed07f8afdc6fdab200daadbf3decca8"
+    },
+    "html/installation.html": {
+      "bytes": 18059,
+      "sha256": "2a7a6d3118d2216b311db9a1dad803efe39b948833c7e0f424c3f50eb69fe9a7"
+    },
+    "html/python_api/code_generation.html": {
+      "bytes": 21647,
+      "sha256": "2c34490889e0f199813b41255a13910288cb531858d29a1ba58952354ad134fb"
+    },
+    "html/python_api/debugging.html": {
+      "bytes": 22319,
+      "sha256": "cea929bb88c20ef926fd97b053c76e8995a3747c2d18cc7f87b282661ee7edf1"
+    },
+    "html/python_api/generated/ninetoothed.Tensor.eval.html": {
+      "bytes": 22694,
+      "sha256": "4c8d7d61b20e2363b5226d546ca5f377a8bfe32c1f4deabf64db941599c0c020"
+    },
+    "html/python_api/generated/ninetoothed.Tensor.expand.html": {
+      "bytes": 22173,
+      "sha256": "5dc34cae4b5f64b9cbc7b089f6958ab02e8f54c767d088cf050e632274e08ae6"
+    },
+    "html/python_api/generated/ninetoothed.Tensor.flatten.html": {
+      "bytes": 23328,
+      "sha256": "2c6b1547a1eb455d428e9443457ff40e00174addb978605b74ddff5d643ca145"
+    },
+    "html/python_api/generated/ninetoothed.Tensor.pad.html": {
+      "bytes": 22129,
+      "sha256": "72c56a90f03c9995cd49de25e214e2a62dab77dbc686a84cae2757505e7dc131"
+    },
+    "html/python_api/generated/ninetoothed.Tensor.permute.html": {
+      "bytes": 22188,
+      "sha256": "bb5d5a9c70201db46a7ed2d25a7dd01f14428cf4be1f78d280b0a79640de9625"
+    },
+    "html/python_api/generated/ninetoothed.Tensor.ravel.html": {
+      "bytes": 23299,
+      "sha256": "f3800d301f42b8e19f593e4a1225a93318726cebfb1839318d2e39e1cc679455"
+    },
+    "html/python_api/generated/ninetoothed.Tensor.squeeze.html": {
+      "bytes": 22205,
+      "sha256": "88f16edbd7b6c12266eedf894b8860706ce30af3b1376a3a10a9e9738c3f1c29"
+    },
+    "html/python_api/generated/ninetoothed.Tensor.subs.html": {
+      "bytes": 22190,
+      "sha256": "9b25c237cfcc20199ae2931bf5cec980ad0fbf3d91c97b04f4b60ef10c2d63a4"
+    },
+    "html/python_api/generated/ninetoothed.Tensor.tile.html": {
+      "bytes": 23056,
+      "sha256": "3f316e8ff8c520cd8e31380c7c9c5c06df13d7361643687010f6685d40160388"
+    },
+    "html/python_api/generated/ninetoothed.Tensor.unsqueeze.html": {
+      "bytes": 22203,
+      "sha256": "2a0fc9cf715b60ab7a2e19dc73f5d292c8ce6806465a5feae67b4395f9e608b4"
+    },
+    "html/python_api/generated/ninetoothed.build.html": {
+      "bytes": 23623,
+      "sha256": "0b3830e6e5b77bad74d74e9bb826868e8f43c19fe05a6be97d59677986593a27"
+    },
+    "html/python_api/generated/ninetoothed.debugging.simulate_arrangement.html": {
+      "bytes": 23012,
+      "sha256": "36f9426965a43ad2c864717fd879dd4e2b538c8e4c515af642e51ad030f71b65"
+    },
+    "html/python_api/generated/ninetoothed.jit.html": {
+      "bytes": 23955,
+      "sha256": "b5347beeafd30372bf53c6a7478025e66cffb71f88bcd281b93c98409cfe5a34"
+    },
+    "html/python_api/generated/ninetoothed.make.html": {
+      "bytes": 23986,
+      "sha256": "c693caae4115a38d9338a279831a79e4057e0b31bb29c621c591f2efd4b107e4"
+    },
+    "html/python_api/symbol.html": {
+      "bytes": 23291,
+      "sha256": "b8c87e1f5c653094e60e3a357e793ddd51f5ad562964fe381f3b120ccc98aadf"
+    },
+    "html/python_api/tensor.html": {
+      "bytes": 29381,
+      "sha256": "4f819716cd2177d39737ff9c13dafc0fce259f426bed25a24ebc34eb519a0c14"
+    },
+    "html/python_api/visualization.html": {
+      "bytes": 33026,
+      "sha256": "1900337d62f408588f020b31fdd618a1c22b5f2049153cf3c97dc22f12063932"
+    },
+    "html/python_api.html": {
+      "bytes": 20987,
+      "sha256": "8665b90c3385c0ad8f7fdd21bea31436dc117bde411f6f1311c983677ac52e0a"
+    },
+    "html/search.html": {
+      "bytes": 13949,
+      "sha256": "44ecc918c983b643fc7f80936919ba97ae512d7f8dca6222b0de588dfa61b2ec"
+    }
+  },
+  "controller_sha256": "fa29b15fcc76f599770cb668dc7b5156a1d29e98f40816325968ef7bcea90b1c"
+}

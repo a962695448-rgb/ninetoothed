@@ -1,0 +1,16 @@
+Cloning into '/data/infinitensor-2026/nine-staging/opt-20260906/ninetoothed'...
+From https://github.com/a962695448-rgb/ninetoothed
+ * branch            improve-interpreter-matmul-provenance -> FETCH_HEAD
+Downloading docs/source/_static/ninetoothed-logo.png (17 KB)
+Error downloading object: docs/source/_static/ninetoothed-logo.png (2eb81c9): Smudge error: Error downloading docs/source/_static/ninetoothed-logo.png (2eb81c9d72a5f53d3409a8f56f5bf8ea85145ac788930743a5449692097d4537): error transferring "2eb81c9d72a5f53d3409a8f56f5bf8ea85145ac788930743a5449692097d4537": [0] remote missing object 2eb81c9d72a5f53d3409a8f56f5bf8ea85145ac788930743a5449692097d4537
+
+Errors logged to '/data/infinitensor-2026/nine-staging/opt-20260906/ninetoothed/.git/lfs/logs/20260906T071023.178256293.log'.
+Use `git lfs logs last` to view the log.
+error: external filter 'git-lfs filter-process' failed
+fatal: docs/source/_static/ninetoothed-logo.png: smudge filter lfs failed
+Traceback (most recent call last):
+  File "/data/infinitensor-2026/nine-staging/opt-20260906/bootstrap.py", line 6, in <module>
+    subprocess.run(['git','checkout','--detach','56f091eb585e94b725a08989e44a63b222b1e3f0'],cwd=p,check=True,timeout=20)
+  File "/usr/lib/python3.12/subprocess.py", line 571, in run
+    raise CalledProcessError(retcode, process.args,
+subprocess.CalledProcessError: Command '['git', 'checkout', '--detach', '56f091eb585e94b725a08989e44a63b222b1e3f0']' returned non-zero exit status 128.

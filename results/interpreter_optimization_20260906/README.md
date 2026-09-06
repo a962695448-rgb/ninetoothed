@@ -17,3 +17,9 @@
 GPU传输包37文件、717096字节，SHA256 `42f4dd0f21087b6bfaa6cb8112435c812f822fd9b40f9a1c21bae981a3b8bb42`。全部对象已核size/SHA；公开保留26份原始源码/报告/数组/日志，另11份编译二进制、缓存与锁保留在私有原包，详见gpu-6ecce58/archive_manifest.json。CUDA二进制SHA已对原包实际重算。公开原文件没有改字节；.gitattributes关闭换行转换。
 
 CPU、Sphinx与GPU各目录的manifest记录命令、环境、源码/工作文档摘要和原始日志。独立复验不会覆盖旧FAIL；此处不宣称全局最优或自动通过训练营评选。
+
+## 最终CPU文档构建
+
+服务器既有环境运行原Sphinx `-W --keep-going`：exit0、28页、5.392s、stderr空，源码为 `cc190a1653eb99878cd21a59eac8a69ab8302684`。所有原有构建输入SHA已与该Git提交逐一核对，Sphinx只正常新增14份autosummary RST；控制器误把新增文件当作输入漂移的原FAIL保留，独立postcheck另记PASS。完整117文件包为sphinx-final-20260907/raw-html.zip，SHA256 `f9f0a372f29c1efff2f572c7ad696ff98e53d96d1fa5d8a2044ca0b0c37a5a3e`。
+
+**静态资源限制：服务器HTML中的logo是Git LFS指针，不能称资产完整。** 本地准备包有真PNG，但本次未成功上传到服务器；原HTML包未改写，正式发布前需恢复真实logo。文档未部署，上游PR与官网仍等待用户验收。

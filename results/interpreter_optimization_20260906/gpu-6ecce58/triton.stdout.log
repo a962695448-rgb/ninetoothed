@@ -1,0 +1,16 @@
+PASS: elementwise_float32_aligned
+PASS: masked_float32_tail
+PASS: masked_int32_tail
+PASS: broadcast_float32_tail
+PASS: broadcast_row_matrix_float32_tail
+PASS: broadcast_column_matrix_float32_tail
+PASS: row_reduction_float32
+PASS: row_reduction_int32
+PASS: comparison_bool_exact
+PASS: if_for_true
+PASS: if_for_false
+PASS: softmax_float32
+PASS: floor_div_int32_mixed_sign_tail
+PASS: remainder_int32_mixed_sign_tail
+PASS: dot_float32_multi_program_tail
+PASS: report saved to /data/infinitensor-2026/nine-staging/opt-20260906/triton-report.json
