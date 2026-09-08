@@ -1,5 +1,13 @@
 # CPU 参考解释器：验收与提交说明
 
+## 2026-09-08 当前验收状态
+
+最终计算与测试源码 `59200180717a45f173a37ee8da5356d31e02018c` 已完成 **A100 完整 682 passed / 2 双卡 skips（467.20 s）**、15/15 Triton 差分和独立 CUDA dot；同一提交无 Torch/Triton 的 CPU 选择 307 passed / 15 deselected（32.49 s）。Ruff、格式和项目自定义风格通过。见[最终报告](a100_final_validation_20260908.md)与[原始证据](../results/a100_final_20260908/README.md)。
+
+本轮补齐了此前“新 A100/完整仓库待验证”的缺口，保留单卡限制及上游审查、合并和正式提交待用户验收的状态。下面的 2026-09-07 及更早记录按其源码和日期保留；其中当时的“未完成”描述不能代替本节的最新状态。
+
+## 历史实现与验收记录
+
 当前计算功能源码为 **`6ecce58da28bb9709aa35fc6c25c1f361aff736f`**。已完成限定 NumPy CPU **307 passed/15 deselected**，以及独立 RTX 4090 的 **15/15 Triton 差分与一个 CUDA 标量 dot probe**；见[本轮证据索引](../results/interpreter_optimization_20260906/README.md)。后续收尾只涉及 GUI 依赖惰性导入与 docs/results，不把它当作新一轮 GPU 验证。新 A100、完整库、双卡和外部提交仍有明确限制。
 
 历史验证：源码 **`82592b8f6de65052e4258fdd6067956d4ede18c3`** 曾在实际 A100-SXM4-40GB 上完成完整测试：**600 passed、2 skipped，450.25 s（0:07:30），退出码 0，无 failures/errors**。两个 skip 均要求同机至少双卡，详见 [该轮完整清单](../results/full_suite_a100_82592b8/manifest.json)与 [归档说明](../results/full_suite_a100_82592b8/README.md)。b5/377 失败历史及 14/180/16/77 各范围按原源码保留，不累计，成功重跑不确定旧 squeeze 失败的唯一根因。

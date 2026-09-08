@@ -1,5 +1,13 @@
 # CPU 参考解释器：NVIDIA A100 验证记录
 
+## 2026-09-08 当前验收状态
+
+最终计算与测试源码 `59200180717a45f173a37ee8da5356d31e02018c` 已完成 **A100 完整 682 passed / 2 双卡 skips（467.20 s）**、15/15 Triton 差分和独立 CUDA dot；同一提交无 Torch/Triton 的 CPU 选择 307 passed / 15 deselected（32.49 s）。Ruff、格式和项目自定义风格通过。见[最终报告](a100_final_validation_20260908.md)与[原始证据](../results/a100_final_20260908/README.md)。
+
+本轮补齐了此前“新 A100/完整仓库待验证”的缺口，保留单卡限制及上游审查、合并和正式提交待用户验收的状态。下面的 2026-09-07 及更早记录按其源码和日期保留；其中当时的“未完成”描述不能代替本节的最新状态。
+
+## 历史实现与验收记录
+
 本页保存 b5/377/825 的历史 A100 实机结果。当前计算源码 `6ecce58da28bb9709aa35fc6c25c1f361aff736f` 已修改 runtime/pass/emitter/provenance；限定 NumPy CPU 结果为307 passed、15 deselected。其新增 **15 项 Triton 差分和一个 CUDA 标量 dot 已在 RTX 4090 通过**，见[新归档](../results/interpreter_optimization_20260906/gpu-6ecce58/archive_manifest.json)；这不是新的 A100 验证。两次历史 Sphinx 依赖失败及服务器Sphinx实际exit0/28页；控制器因14个正常autosummary输出记FAIL，独立复核确认原有输入未变。原HTML内logo为LFS指针；已在独立本地发布副本恢复真PNG，原包未改且未重跑服务器，见[最终记录](../results/interpreter_optimization_20260906/sphinx-final-20260907/delivery_limitations.json)，不能继承本页旧硬件结论。
 
 更新日期：2026-09-06（Asia/Shanghai）。源码 **`82592b8f6de65052e4258fdd6067956d4ede18c3`** 已在实际 **NVIDIA A100-SXM4-40GB** 上完成完整测试：**600 passed、2 skipped，450.25 s（0:07:30），退出码 0；无 failures 或 errors**。两个 skip 均要求同机至少两张 GPU。原始日志、JUnit、coverage 与命令见 [完整清单](../results/full_suite_a100_82592b8/manifest.json)、[原文归档](../results/full_suite_a100_82592b8/raw-full.tar.gz)和 [归档说明](../results/full_suite_a100_82592b8/README.md)。

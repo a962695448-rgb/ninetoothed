@@ -1,5 +1,13 @@
 # 九齿解释器实施与优化计划
 
+## 2026-09-08 当前验收状态
+
+最终计算与测试源码 `59200180717a45f173a37ee8da5356d31e02018c` 已完成 **A100 完整 682 passed / 2 双卡 skips（467.20 s）**、15/15 Triton 差分和独立 CUDA dot；同一提交无 Torch/Triton 的 CPU 选择 307 passed / 15 deselected（32.49 s）。Ruff、格式和项目自定义风格通过。见[最终报告](a100_final_validation_20260908.md)与[原始证据](../results/a100_final_20260908/README.md)。
+
+本轮补齐了此前“新 A100/完整仓库待验证”的缺口，保留单卡限制及上游审查、合并和正式提交待用户验收的状态。下面的 2026-09-07 及更早记录按其源码和日期保留；其中当时的“未完成”描述不能代替本节的最新状态。
+
+## 历史实现与验收记录
+
 更新日期：2026-09-07。本轮功能源码已冻结为 **`6ecce58da28bb9709aa35fc6c25c1f361aff736f`**。它修改了运行时、默认 pass、发射器、SSA 来源记录和测试，并把标量存储保护统一到 single/multi dot 与 transpose；相对历史代码有功能变化，不能继承旧 GPU 结果。
 
 最新冻结 CPU 选择为 **307 passed、15 deselected，32.68 s，退出码 0**；它是无 Torch/Triton 的 NumPy CPU 范围。独立 **RTX 4090** 运行已完成 **15/15 Triton 差分（9 程序、10 类别）及一个 CUDA 标量 dot probe，均 exit 0**，见[实机归档](../results/interpreter_optimization_20260906/gpu-6ecce58/archive_manifest.json)。这些范围不累计；新源码的 A100、完整仓库与双卡验证仍未完成。两次历史 Sphinx 构建均因缺少依赖失败，服务器Sphinx实际exit0/28页；控制器因14个正常autosummary输出记FAIL，独立复核确认原有输入未变。原HTML内logo为LFS指针；已在独立本地发布副本恢复真PNG，原包未改且未重跑服务器，见[最终记录](../results/interpreter_optimization_20260906/sphinx-final-20260907/delivery_limitations.json)。当前只收尾已有实现与证据；用户验收前不创建 PR 或执行官网提交。
