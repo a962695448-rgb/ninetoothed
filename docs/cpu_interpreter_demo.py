@@ -1,4 +1,4 @@
-"""Run with PYTHONPATH=src python docs/cpu_interpreter_demo.py [--export PATH]."""
+"""After installation, run python docs/cpu_interpreter_demo.py [--export PATH]."""
 
 import argparse
 from dataclasses import replace

@@ -55,10 +55,11 @@ the divisor's sign, following the SSA/Python contract. The Triton emitter
 corrects its native signed division/remainder when needed. Division by zero
 and the signed overflow case ``INT_MIN / -1`` are outside the validated inputs.
 
-The package's existing installation metadata still lists Triton as a dependency.
-For CPU-only contributor testing, use an isolated environment containing NumPy,
-SymPy, and pytest, and run from this checkout with ``PYTHONPATH=src``. This is a
-source-checkout testing route, not a newly published CPU-only wheel.
+For a fresh environment without Torch or Triton, follow
+:ref:`cpu-wheel-install`. It installs a real wheel from this checkout and runs
+the demo outside the repository, without ``PYTHONPATH`` or an editable install.
+The wheel retains the existing GPU dependency metadata; the installation guide
+explains the explicit CPU override and its ``pip check`` limitation.
 
 Frontend versus backend SSA
 ---------------------------
