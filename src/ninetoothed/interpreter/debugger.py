@@ -525,7 +525,8 @@ def _capture_failure(directory, reference, candidate, inputs, **options):
 
     try:
         return export_failure(directory, reference, candidate, inputs, **options), None
-    except (OSError, ValueError, TypeError, InterpretationError) as exc:
+    except Exception as exc:
+        # Diagnostic I/O must not replace the original semantic failure.
         return None, f"{type(exc).__name__}: {exc}"
 
 
@@ -640,6 +641,10 @@ def check_passes(
         try:
             transformed = transform(previous)
             phase = "record"
+
+            if not isinstance(transformed, ssa.Program):
+                raise TypeError("An SSA pass must return an SSA Program.")
+
             transformed = record_pass(previous, transformed, str(name))
             ssa.verify_program(transformed)
             current = transformed
@@ -650,7 +655,8 @@ def check_passes(
                 if previous is program
                 else _compare_programs(program, current, inputs, **options)
             )
-        except (InterpretationError, ValueError, TypeError) as exc:
+        except Exception as exc:
+            # Python pass exceptions are diagnostics, never successful checks.
             report = PassCheck(
                 False,
                 tuple(checked),

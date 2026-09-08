@@ -505,3 +505,51 @@ def test_invalid_ssa_is_a_diagnostic_snapshot_with_the_verification_cause(tmp_pa
     metadata = json.loads((report.reproducer / "failure.json").read_text())
     assert metadata["phase"] == "record"
     assert not metadata["replayable"]
+
+
+@pytest.mark.parametrize("kind", ("none", "runtime_error"))
+def test_invalid_python_pass_result_or_exception_is_captured(tmp_path, kind):
+    kernel = _kernel()
+
+    def broken(_):
+        if kind == "runtime_error":
+            raise RuntimeError("Injected Python pass failure.")
+
+        return None
+
+    report = check_passes(
+        kernel.program,
+        (("python_pass", broken),),
+        _inputs(),
+        tensors=kernel.tensors,
+        failure_dir=tmp_path / kind,
+    )
+    assert not report.passed
+    assert report.first_bad_pass == "python_pass"
+    assert report.export_error is None
+    assert report.reproducer is not None
+    assert not json.loads((report.reproducer / "failure.json").read_text())[
+        "replayable"
+    ]
+
+
+def test_unexpected_export_exception_preserves_the_original_mismatch(
+    tmp_path, monkeypatch
+):
+    from ninetoothed.interpreter import failure
+
+    def broken_export(*args, **kwargs):
+        raise RuntimeError("Injected serializer failure.")
+
+    monkeypatch.setattr(failure, "export_failure", broken_export)
+    kernel = _kernel()
+    report = compare_programs(
+        kernel.program,
+        _change_scale(kernel.program),
+        _inputs(),
+        tensors=kernel.tensors,
+        failure_dir=tmp_path / "serializer",
+    )
+    assert not report.equal
+    assert report.reproducer is None
+    assert report.export_error == "RuntimeError: Injected serializer failure."
