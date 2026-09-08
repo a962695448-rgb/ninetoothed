@@ -1,0 +1,449 @@
+{
+  "status": "PASS",
+  "source_commit": "9c5ffbad6d75e8b7f083270f08dc4009a8fe4424",
+  "scope": "Four automatic exports replayed using the isolated installed wheel, plus four repaired negative controls. CPU execution only, no GPU imports or launches.",
+  "cases": [
+    {
+      "backend_pipeline": "triton",
+      "application": "dot",
+      "source_commit": "9c5ffbad6d75e8b7f083270f08dc4009a8fe4424",
+      "replay_exit_code": 0,
+      "negative_control": "PASS",
+      "inputs_unchanged": true,
+      "localization": {
+        "operation": {
+          "program_id": [
+            0,
+            0,
+            0
+          ],
+          "location": "entry:6:scf.for/region0:3:arith.add",
+          "opcode": "arith.add",
+          "result_name": "%8",
+          "iteration": [
+            0
+          ],
+          "lane": [
+            0,
+            0
+          ],
+          "component": "input"
+        },
+        "reference": "previous",
+        "traces_aligned": false,
+        "basis": "retained_boundary",
+        "reference_location": "entry:6:scf.for/region0:3:arith.add"
+      },
+      "first_bad_pass": "diagnostic.inject_dot_fault",
+      "fault_type": "Deliberately injected into real default-pass SSA; not a discovered historical bug."
+    },
+    {
+      "backend_pipeline": "triton",
+      "application": "transpose",
+      "source_commit": "9c5ffbad6d75e8b7f083270f08dc4009a8fe4424",
+      "replay_exit_code": 0,
+      "negative_control": "PASS",
+      "inputs_unchanged": true,
+      "localization": {
+        "operation": {
+          "program_id": [
+            0,
+            0,
+            0
+          ],
+          "location": "entry:3:mem.store",
+          "opcode": "mem.store",
+          "result_name": "%3",
+          "iteration": [],
+          "lane": [
+            0,
+            1
+          ],
+          "component": "input"
+        },
+        "reference": "previous",
+        "traces_aligned": false,
+        "basis": "retained_boundary",
+        "reference_location": "entry:3:mem.store"
+      },
+      "first_bad_pass": "diagnostic.inject_transpose_fault",
+      "fault_type": "Deliberately injected into real default-pass SSA; not a discovered historical bug."
+    },
+    {
+      "backend_pipeline": "cuda",
+      "application": "dot",
+      "source_commit": "9c5ffbad6d75e8b7f083270f08dc4009a8fe4424",
+      "replay_exit_code": 0,
+      "negative_control": "PASS",
+      "inputs_unchanged": true,
+      "localization": {
+        "operation": {
+          "program_id": [
+            0,
+            0,
+            0
+          ],
+          "location": "entry:6:scf.for/region0:3:arith.add",
+          "opcode": "arith.add",
+          "result_name": "%8",
+          "iteration": [
+            0
+          ],
+          "lane": [
+            0,
+            0
+          ],
+          "component": "input"
+        },
+        "reference": "previous",
+        "traces_aligned": false,
+        "basis": "retained_boundary",
+        "reference_location": "entry:6:scf.for/region0:3:arith.add"
+      },
+      "first_bad_pass": "diagnostic.inject_dot_fault",
+      "fault_type": "Deliberately injected into real default-pass SSA; not a discovered historical bug."
+    },
+    {
+      "backend_pipeline": "cuda",
+      "application": "transpose",
+      "source_commit": "9c5ffbad6d75e8b7f083270f08dc4009a8fe4424",
+      "replay_exit_code": 0,
+      "negative_control": "PASS",
+      "inputs_unchanged": true,
+      "localization": {
+        "operation": {
+          "program_id": [
+            0,
+            0,
+            0
+          ],
+          "location": "entry:3:mem.store",
+          "opcode": "mem.store",
+          "result_name": "%3",
+          "iteration": [],
+          "lane": [
+            0,
+            1
+          ],
+          "component": "input"
+        },
+        "reference": "previous",
+        "traces_aligned": false,
+        "basis": "retained_boundary",
+        "reference_location": "entry:3:mem.store"
+      },
+      "first_bad_pass": "diagnostic.inject_transpose_fault",
+      "fault_type": "Deliberately injected into real default-pass SSA; not a discovered historical bug."
+    }
+  ],
+  "artifacts": {
+    "triton-dot.stdout.log": {
+      "bytes": 478,
+      "sha256": "8dd607a34a833d38009c4620eceae500354197be0d510e81b5e7d614a3611e67"
+    },
+    "cuda-transpose.stdout.log": {
+      "bytes": 447,
+      "sha256": "9107e4451f8f812f34916c5b30b5868cbcc118b4468cd00f95c6e378601aa1ca"
+    },
+    "triton-dot.stderr.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "runner.py": {
+      "bytes": 3924,
+      "sha256": "bd251cdfa815cc1bb5dc479b66d79b068f62c681e63abe1cbe03db194a331daf"
+    },
+    "triton-transpose.stdout.log": {
+      "bytes": 447,
+      "sha256": "9107e4451f8f812f34916c5b30b5868cbcc118b4468cd00f95c6e378601aa1ca"
+    },
+    "cuda-transpose.stderr.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "cuda-dot.stdout.log": {
+      "bytes": 478,
+      "sha256": "8dd607a34a833d38009c4620eceae500354197be0d510e81b5e7d614a3611e67"
+    },
+    "triton-transpose.stderr.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "cuda-dot.stderr.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "cuda-transpose/replay.py": {
+      "bytes": 198,
+      "sha256": "c3d02d7fc29a134143e884e58491a646619bf97de7deb16fae0f1a5d79403f2b"
+    },
+    "cuda-transpose/failure.json": {
+      "bytes": 3942,
+      "sha256": "ad742216c90efcdcb1bc19c4c011fde6f2a30b2634a61c4f8d43bc7884511694"
+    },
+    "triton-dot/replay.py": {
+      "bytes": 198,
+      "sha256": "c3d02d7fc29a134143e884e58491a646619bf97de7deb16fae0f1a5d79403f2b"
+    },
+    "triton-dot/failure.json": {
+      "bytes": 3995,
+      "sha256": "618fe5faebcbf34e8717e6b18054b5eb0222e22ed36e31e28a9f4c8fdfe11d79"
+    },
+    "triton-transpose/replay.py": {
+      "bytes": 198,
+      "sha256": "c3d02d7fc29a134143e884e58491a646619bf97de7deb16fae0f1a5d79403f2b"
+    },
+    "triton-transpose/failure.json": {
+      "bytes": 3944,
+      "sha256": "7115d581eba84e3daef3b0cffed0a435c550b33ad2e148e36d6780d5b80e2c2a"
+    },
+    "cuda-dot/replay.py": {
+      "bytes": 198,
+      "sha256": "c3d02d7fc29a134143e884e58491a646619bf97de7deb16fae0f1a5d79403f2b"
+    },
+    "cuda-dot/failure.json": {
+      "bytes": 3993,
+      "sha256": "de11f98205f5f514d35e931b829a1855b68c8afab2947820ef8859f5b99aab97"
+    },
+    "cuda-transpose/previous/replay.py": {
+      "bytes": 424,
+      "sha256": "ecffc8c5aff638f536362deedf6f1ae92c7a9b61caaba7a1f6cdc4bbdd1d81fc"
+    },
+    "cuda-transpose/previous/program.json": {
+      "bytes": 20030,
+      "sha256": "5e24e402698d7dabc6f4e027d142da28c0be5768cedf2c211c9dd26ce8b7beb9"
+    },
+    "cuda-transpose/previous/program.ssa": {
+      "bytes": 399,
+      "sha256": "e70aa6714bffe77a6bcd0d0d967ed836987044268c0cafc17aa1f057d3939a0b"
+    },
+    "cuda-transpose/previous/manifest.json": {
+      "bytes": 258146,
+      "sha256": "59d8e1e71817daf145a6ec563eae5a92abd58fd542c2798c87f650a4db2aded3"
+    },
+    "cuda-transpose/previous/inputs.npz": {
+      "bytes": 437,
+      "sha256": "1e0354de99188eb5e49063c355f4e5c2c836377be7300eb4c3c9d368d3b040d8"
+    },
+    "cuda-transpose/reference/replay.py": {
+      "bytes": 424,
+      "sha256": "ecffc8c5aff638f536362deedf6f1ae92c7a9b61caaba7a1f6cdc4bbdd1d81fc"
+    },
+    "cuda-transpose/reference/program.json": {
+      "bytes": 15914,
+      "sha256": "641cca78be805be1401c3a223e075521c824d88529224eeb289328d9951b219c"
+    },
+    "cuda-transpose/reference/program.ssa": {
+      "bytes": 203,
+      "sha256": "231feba1f72526d4e073c4d8103dc71d88a214a96599486c0beae1a2aa254160"
+    },
+    "cuda-transpose/reference/manifest.json": {
+      "bytes": 258146,
+      "sha256": "59d8e1e71817daf145a6ec563eae5a92abd58fd542c2798c87f650a4db2aded3"
+    },
+    "cuda-transpose/reference/inputs.npz": {
+      "bytes": 437,
+      "sha256": "1e0354de99188eb5e49063c355f4e5c2c836377be7300eb4c3c9d368d3b040d8"
+    },
+    "cuda-transpose/candidate/replay.py": {
+      "bytes": 424,
+      "sha256": "ecffc8c5aff638f536362deedf6f1ae92c7a9b61caaba7a1f6cdc4bbdd1d81fc"
+    },
+    "cuda-transpose/candidate/program.json": {
+      "bytes": 22278,
+      "sha256": "c3dd0449ecad3907476f47eaceab33289e1f35f4a8c23d187d04a0a5ab616ba5"
+    },
+    "cuda-transpose/candidate/program.ssa": {
+      "bytes": 399,
+      "sha256": "95b684f9099172a3fb2b0dd5c67423fc17dcc282a208954dc9065a40c8cac4f0"
+    },
+    "cuda-transpose/candidate/manifest.json": {
+      "bytes": 258146,
+      "sha256": "59d8e1e71817daf145a6ec563eae5a92abd58fd542c2798c87f650a4db2aded3"
+    },
+    "cuda-transpose/candidate/inputs.npz": {
+      "bytes": 437,
+      "sha256": "1e0354de99188eb5e49063c355f4e5c2c836377be7300eb4c3c9d368d3b040d8"
+    },
+    "triton-dot/previous/replay.py": {
+      "bytes": 424,
+      "sha256": "ecffc8c5aff638f536362deedf6f1ae92c7a9b61caaba7a1f6cdc4bbdd1d81fc"
+    },
+    "triton-dot/previous/program.json": {
+      "bytes": 33233,
+      "sha256": "3558c6342af18bd4d5795c9e86320334e4b7e9310cf04bff5bbeffc92ca952c7"
+    },
+    "triton-dot/previous/program.ssa": {
+      "bytes": 1163,
+      "sha256": "ac04a35836d51dcaa1d8e530db486817530a6da35666b97a487c60ccee817294"
+    },
+    "triton-dot/previous/manifest.json": {
+      "bytes": 387083,
+      "sha256": "2776a448a5502c81a38e48023ae7493b6bfffe19a121972bca8d4a70df54fc8b"
+    },
+    "triton-dot/previous/inputs.npz": {
+      "bytes": 691,
+      "sha256": "f53fb75b8024e83c2e2d3f479352ccf7c4c8838ce3d9b5798d80d4d4cfeadbd4"
+    },
+    "triton-dot/reference/replay.py": {
+      "bytes": 424,
+      "sha256": "ecffc8c5aff638f536362deedf6f1ae92c7a9b61caaba7a1f6cdc4bbdd1d81fc"
+    },
+    "triton-dot/reference/program.json": {
+      "bytes": 19292,
+      "sha256": "1b9df9c6c674793d0bedb1c1017931d0aa29895affa49c5d3fdee81622337312"
+    },
+    "triton-dot/reference/program.ssa": {
+      "bytes": 228,
+      "sha256": "de7b501bf104b6160787e3eb4b009e1a54666a35d504ebea3a2c75bbe37ce846"
+    },
+    "triton-dot/reference/manifest.json": {
+      "bytes": 387083,
+      "sha256": "2776a448a5502c81a38e48023ae7493b6bfffe19a121972bca8d4a70df54fc8b"
+    },
+    "triton-dot/reference/inputs.npz": {
+      "bytes": 691,
+      "sha256": "f53fb75b8024e83c2e2d3f479352ccf7c4c8838ce3d9b5798d80d4d4cfeadbd4"
+    },
+    "triton-dot/candidate/replay.py": {
+      "bytes": 424,
+      "sha256": "ecffc8c5aff638f536362deedf6f1ae92c7a9b61caaba7a1f6cdc4bbdd1d81fc"
+    },
+    "triton-dot/candidate/program.json": {
+      "bytes": 39923,
+      "sha256": "2eed338a74ba715eba3732fe92ede8cd8351c636e39f3e0b66d0ff2714b215d1"
+    },
+    "triton-dot/candidate/program.ssa": {
+      "bytes": 1163,
+      "sha256": "a6b7d6f89f7dfdbd4f87e90a479709416ac385b8666bdc35ddbfb3c375c18899"
+    },
+    "triton-dot/candidate/manifest.json": {
+      "bytes": 387083,
+      "sha256": "2776a448a5502c81a38e48023ae7493b6bfffe19a121972bca8d4a70df54fc8b"
+    },
+    "triton-dot/candidate/inputs.npz": {
+      "bytes": 691,
+      "sha256": "f53fb75b8024e83c2e2d3f479352ccf7c4c8838ce3d9b5798d80d4d4cfeadbd4"
+    },
+    "triton-transpose/previous/replay.py": {
+      "bytes": 424,
+      "sha256": "ecffc8c5aff638f536362deedf6f1ae92c7a9b61caaba7a1f6cdc4bbdd1d81fc"
+    },
+    "triton-transpose/previous/program.json": {
+      "bytes": 20110,
+      "sha256": "1fce51e1e6077dafffffdd15ca0b2df703d2eb5d4f90e44d6f0b9af7adb94d38"
+    },
+    "triton-transpose/previous/program.ssa": {
+      "bytes": 399,
+      "sha256": "e70aa6714bffe77a6bcd0d0d967ed836987044268c0cafc17aa1f057d3939a0b"
+    },
+    "triton-transpose/previous/manifest.json": {
+      "bytes": 258146,
+      "sha256": "59d8e1e71817daf145a6ec563eae5a92abd58fd542c2798c87f650a4db2aded3"
+    },
+    "triton-transpose/previous/inputs.npz": {
+      "bytes": 437,
+      "sha256": "1e0354de99188eb5e49063c355f4e5c2c836377be7300eb4c3c9d368d3b040d8"
+    },
+    "triton-transpose/reference/replay.py": {
+      "bytes": 424,
+      "sha256": "ecffc8c5aff638f536362deedf6f1ae92c7a9b61caaba7a1f6cdc4bbdd1d81fc"
+    },
+    "triton-transpose/reference/program.json": {
+      "bytes": 15914,
+      "sha256": "641cca78be805be1401c3a223e075521c824d88529224eeb289328d9951b219c"
+    },
+    "triton-transpose/reference/program.ssa": {
+      "bytes": 203,
+      "sha256": "231feba1f72526d4e073c4d8103dc71d88a214a96599486c0beae1a2aa254160"
+    },
+    "triton-transpose/reference/manifest.json": {
+      "bytes": 258146,
+      "sha256": "59d8e1e71817daf145a6ec563eae5a92abd58fd542c2798c87f650a4db2aded3"
+    },
+    "triton-transpose/reference/inputs.npz": {
+      "bytes": 437,
+      "sha256": "1e0354de99188eb5e49063c355f4e5c2c836377be7300eb4c3c9d368d3b040d8"
+    },
+    "triton-transpose/candidate/replay.py": {
+      "bytes": 424,
+      "sha256": "ecffc8c5aff638f536362deedf6f1ae92c7a9b61caaba7a1f6cdc4bbdd1d81fc"
+    },
+    "triton-transpose/candidate/program.json": {
+      "bytes": 22358,
+      "sha256": "80eab9e57f8722d75acd6dbfa6544e36b385303a460511dce482d20a6df17ce0"
+    },
+    "triton-transpose/candidate/program.ssa": {
+      "bytes": 399,
+      "sha256": "95b684f9099172a3fb2b0dd5c67423fc17dcc282a208954dc9065a40c8cac4f0"
+    },
+    "triton-transpose/candidate/manifest.json": {
+      "bytes": 258146,
+      "sha256": "59d8e1e71817daf145a6ec563eae5a92abd58fd542c2798c87f650a4db2aded3"
+    },
+    "triton-transpose/candidate/inputs.npz": {
+      "bytes": 437,
+      "sha256": "1e0354de99188eb5e49063c355f4e5c2c836377be7300eb4c3c9d368d3b040d8"
+    },
+    "cuda-dot/previous/replay.py": {
+      "bytes": 424,
+      "sha256": "ecffc8c5aff638f536362deedf6f1ae92c7a9b61caaba7a1f6cdc4bbdd1d81fc"
+    },
+    "cuda-dot/previous/program.json": {
+      "bytes": 32022,
+      "sha256": "8d4f965ba75d8bea1610ce2dd4f600bf782eac02f3e1a1c19704be26c8a237cf"
+    },
+    "cuda-dot/previous/program.ssa": {
+      "bytes": 1163,
+      "sha256": "ac04a35836d51dcaa1d8e530db486817530a6da35666b97a487c60ccee817294"
+    },
+    "cuda-dot/previous/manifest.json": {
+      "bytes": 387083,
+      "sha256": "2776a448a5502c81a38e48023ae7493b6bfffe19a121972bca8d4a70df54fc8b"
+    },
+    "cuda-dot/previous/inputs.npz": {
+      "bytes": 691,
+      "sha256": "f53fb75b8024e83c2e2d3f479352ccf7c4c8838ce3d9b5798d80d4d4cfeadbd4"
+    },
+    "cuda-dot/reference/replay.py": {
+      "bytes": 424,
+      "sha256": "ecffc8c5aff638f536362deedf6f1ae92c7a9b61caaba7a1f6cdc4bbdd1d81fc"
+    },
+    "cuda-dot/reference/program.json": {
+      "bytes": 19292,
+      "sha256": "1b9df9c6c674793d0bedb1c1017931d0aa29895affa49c5d3fdee81622337312"
+    },
+    "cuda-dot/reference/program.ssa": {
+      "bytes": 228,
+      "sha256": "de7b501bf104b6160787e3eb4b009e1a54666a35d504ebea3a2c75bbe37ce846"
+    },
+    "cuda-dot/reference/manifest.json": {
+      "bytes": 387083,
+      "sha256": "2776a448a5502c81a38e48023ae7493b6bfffe19a121972bca8d4a70df54fc8b"
+    },
+    "cuda-dot/reference/inputs.npz": {
+      "bytes": 691,
+      "sha256": "f53fb75b8024e83c2e2d3f479352ccf7c4c8838ce3d9b5798d80d4d4cfeadbd4"
+    },
+    "cuda-dot/candidate/replay.py": {
+      "bytes": 424,
+      "sha256": "ecffc8c5aff638f536362deedf6f1ae92c7a9b61caaba7a1f6cdc4bbdd1d81fc"
+    },
+    "cuda-dot/candidate/program.json": {
+      "bytes": 38712,
+      "sha256": "a5324a43dbf521db81a0a1e34000a448d46023e11d42304492a958be2a539d83"
+    },
+    "cuda-dot/candidate/program.ssa": {
+      "bytes": 1163,
+      "sha256": "a6b7d6f89f7dfdbd4f87e90a479709416ac385b8666bdc35ddbfb3c375c18899"
+    },
+    "cuda-dot/candidate/manifest.json": {
+      "bytes": 387083,
+      "sha256": "2776a448a5502c81a38e48023ae7493b6bfffe19a121972bca8d4a70df54fc8b"
+    },
+    "cuda-dot/candidate/inputs.npz": {
+      "bytes": 691,
+      "sha256": "f53fb75b8024e83c2e2d3f479352ccf7c4c8838ce3d9b5798d80d4d4cfeadbd4"
+    }
+  }
+}

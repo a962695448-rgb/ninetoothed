@@ -1,0 +1,5 @@
+Using Python 3.12.3 environment at: venv
+Resolved 1 package in 2ms
+Prepared 1 package in 21ms
+Installed 1 package in 5ms
+ + ninetoothed==0.26.0 (from file:///home/xxl/nine-debug-failure-20260908-7d158f3-run2/wheels/ninetoothed-0.26.0-py3-none-any.whl)

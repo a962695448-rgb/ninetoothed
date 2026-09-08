@@ -1,0 +1,12 @@
+ssa @_transpose {
+  inputs:
+    x : tensor<4x4>xfloat32
+    out : tensor<4x4>xfloat32
+  outputs:
+    out : tensor<4x4>xfloat32
+  ^entry:
+    %1 = index.offset out {dim=0, decomposition='transpose'}
+    %2 = index.offset out {dim=1, decomposition='transpose'}
+    %3 = tensor.extract x, %2, %1 {decomposition='transpose', source=True}
+    mem.store %3, out {target='out', decomposition='transpose'}
+}

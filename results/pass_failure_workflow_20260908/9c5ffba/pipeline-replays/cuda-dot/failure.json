@@ -1,0 +1,150 @@
+{
+  "schema": 1,
+  "kind": "passes",
+  "phase": "execution",
+  "replayable": true,
+  "seed": 923,
+  "rtol": 0.001,
+  "atol": 0.001,
+  "error": null,
+  "report": {
+    "passed": false,
+    "checked_passes": [
+      "ssa.canonicalize",
+      "ssa.analyze_effects",
+      "ssa.select_schedule",
+      "ssa.cuda.optimize_schedule",
+      "ssa.decompose_linalg",
+      "diagnostic.inject_dot_fault"
+    ],
+    "first_bad_pass": "diagnostic.inject_dot_fault",
+    "difference": {
+      "equal": false,
+      "output_differences": [
+        "out"
+      ],
+      "first_operation": null,
+      "traces_aligned": false,
+      "source_candidates": [
+        {
+          "origin_id": "de7b501bf104b6160787e3eb4b009e1a54666a35d504ebea3a2c75bbe37ce846:entry:0:linalg.dot",
+          "location": "entry:0:linalg.dot",
+          "opcode": "linalg.dot",
+          "result_names": [
+            "%0"
+          ]
+        },
+        {
+          "origin_id": "de7b501bf104b6160787e3eb4b009e1a54666a35d504ebea3a2c75bbe37ce846:entry:1:mem.store",
+          "location": "entry:1:mem.store",
+          "opcode": "mem.store",
+          "result_names": []
+        }
+      ],
+      "aligned_prefix_operation": null,
+      "reproducer": null,
+      "export_error": null,
+      "retained_operation": null
+    },
+    "error": null,
+    "source_candidates": [
+      {
+        "origin_id": "de7b501bf104b6160787e3eb4b009e1a54666a35d504ebea3a2c75bbe37ce846:entry:0:linalg.dot",
+        "location": "entry:0:linalg.dot",
+        "opcode": "linalg.dot",
+        "result_names": [
+          "%0"
+        ]
+      },
+      {
+        "origin_id": "de7b501bf104b6160787e3eb4b009e1a54666a35d504ebea3a2c75bbe37ce846:entry:1:mem.store",
+        "location": "entry:1:mem.store",
+        "opcode": "mem.store",
+        "result_names": []
+      }
+    ],
+    "adjacent_difference": {
+      "equal": false,
+      "output_differences": [
+        "out"
+      ],
+      "first_operation": null,
+      "traces_aligned": false,
+      "source_candidates": [
+        {
+          "origin_id": "de7b501bf104b6160787e3eb4b009e1a54666a35d504ebea3a2c75bbe37ce846:entry:0:linalg.dot",
+          "location": "entry:0:linalg.dot",
+          "opcode": "linalg.dot",
+          "result_names": [
+            "%0"
+          ]
+        },
+        {
+          "origin_id": "de7b501bf104b6160787e3eb4b009e1a54666a35d504ebea3a2c75bbe37ce846:entry:1:mem.store",
+          "location": "entry:1:mem.store",
+          "opcode": "mem.store",
+          "result_names": []
+        }
+      ],
+      "aligned_prefix_operation": null,
+      "reproducer": null,
+      "export_error": null,
+      "retained_operation": {
+        "operation": {
+          "program_id": [
+            0,
+            0,
+            0
+          ],
+          "location": "entry:6:scf.for/region0:3:arith.add",
+          "opcode": "arith.add",
+          "result_name": "%8",
+          "iteration": [
+            0
+          ],
+          "lane": [
+            0,
+            0
+          ],
+          "component": "input"
+        },
+        "reference": "reference",
+        "traces_aligned": false,
+        "basis": "retained_boundary",
+        "reference_location": "entry:6:scf.for/region0:3:arith.add"
+      }
+    },
+    "localization": {
+      "operation": {
+        "program_id": [
+          0,
+          0,
+          0
+        ],
+        "location": "entry:6:scf.for/region0:3:arith.add",
+        "opcode": "arith.add",
+        "result_name": "%8",
+        "iteration": [
+          0
+        ],
+        "lane": [
+          0,
+          0
+        ],
+        "component": "input"
+      },
+      "reference": "previous",
+      "traces_aligned": false,
+      "basis": "retained_boundary",
+      "reference_location": "entry:6:scf.for/region0:3:arith.add"
+    },
+    "reproducer": null,
+    "export_error": null
+  },
+  "environment": {
+    "python": "3.12.3",
+    "numpy": "2.5.2",
+    "ninetoothed": null
+  },
+  "scope": "Exact supplied SSA and inputs; no automatic program or shape minimization."
+}

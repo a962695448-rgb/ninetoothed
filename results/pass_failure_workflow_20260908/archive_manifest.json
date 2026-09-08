@@ -1,0 +1,1384 @@
+{
+  "status": "VERIFIED",
+  "scope": "Byte-identical copied logs, manifests and exact failure bundles. Wheels and built HTML retained in the local full archive; public copies omit those binaries.",
+  "source_runs": {
+    "7d158f3": "/home/xxl/nine-debug-failure-20260908-7d158f3-run2",
+    "9c5ffba": "/home/xxl/nine-debug-failure-20260908-9c5ffba"
+  },
+  "files": [
+    {
+      "path": "7d158f3/cpu.junit.xml",
+      "source": "/home/xxl/nine-debug-failure-20260908-7d158f3-run2/cpu.junit.xml",
+      "sha256": "6c70eeac4611afa4112104eeb2ac02884db971cca6750b08d183c863bd0190b6",
+      "bytes": 49702
+    },
+    {
+      "path": "7d158f3/cpu.stderr.log",
+      "source": "/home/xxl/nine-debug-failure-20260908-7d158f3-run2/cpu.stderr.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "path": "7d158f3/cpu.stdout.log",
+      "source": "/home/xxl/nine-debug-failure-20260908-7d158f3-run2/cpu.stdout.log",
+      "sha256": "837ec930064d27a9ac86c2fa0cf0a35bc946d5505c3e8b1cc1fcc6c8ea0da699",
+      "bytes": 436
+    },
+    {
+      "path": "7d158f3/demo-style.stderr.log",
+      "source": "/home/xxl/nine-debug-failure-20260908-7d158f3-run2/demo-style.stderr.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "path": "7d158f3/demo-style.stdout.log",
+      "source": "/home/xxl/nine-debug-failure-20260908-7d158f3-run2/demo-style.stdout.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "path": "7d158f3/demo.stderr.log",
+      "source": "/home/xxl/nine-debug-failure-20260908-7d158f3-run2/demo.stderr.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "path": "7d158f3/demo.stdout.log",
+      "source": "/home/xxl/nine-debug-failure-20260908-7d158f3-run2/demo.stdout.log",
+      "sha256": "881cccbfc4b0a6e29521d69380bd20cdd1b7dc3dee0d162da3185a222c885b8e",
+      "bytes": 1054
+    },
+    {
+      "path": "7d158f3/installed-demo.stderr.log",
+      "source": "/home/xxl/nine-debug-failure-20260908-7d158f3-run2/installed-demo.stderr.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "path": "7d158f3/installed-demo.stdout.log",
+      "source": "/home/xxl/nine-debug-failure-20260908-7d158f3-run2/installed-demo.stdout.log",
+      "sha256": "56daac3d7d809477aa65b8de2ae897cd314035da858b056c951b7931b69e10ea",
+      "bytes": 1059
+    },
+    {
+      "path": "7d158f3/installed-probe.stderr.log",
+      "source": "/home/xxl/nine-debug-failure-20260908-7d158f3-run2/installed-probe.stderr.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "path": "7d158f3/installed-probe.stdout.log",
+      "source": "/home/xxl/nine-debug-failure-20260908-7d158f3-run2/installed-probe.stdout.log",
+      "sha256": "b37a6506a8d84e905374aa86a1c4a02bd9cbd78b4ebeee94d20a82c156c29597",
+      "bytes": 174
+    },
+    {
+      "path": "7d158f3/installed-replay.stderr.log",
+      "source": "/home/xxl/nine-debug-failure-20260908-7d158f3-run2/installed-replay.stderr.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "path": "7d158f3/installed-replay.stdout.log",
+      "source": "/home/xxl/nine-debug-failure-20260908-7d158f3-run2/installed-replay.stdout.log",
+      "sha256": "2b50395549a538e8cad371c09ff303c67e8e89993185b784e5ab0f053e78f236",
+      "bytes": 601
+    },
+    {
+      "path": "7d158f3/installed_probe.py",
+      "source": "/home/xxl/nine-debug-failure-20260908-7d158f3-run2/installed_probe.py",
+      "sha256": "eedbdfb9502f2e8762392ccc94f922fef3d74d0f11af15bc3250b739823cb584",
+      "bytes": 617
+    },
+    {
+      "path": "7d158f3/manifest.json",
+      "source": "/home/xxl/nine-debug-failure-20260908-7d158f3-run2/manifest.json",
+      "sha256": "a5f1269705a9c655cab9e5ee6e7255028e56c5fc4a1ef1d01d1afbce5ca5a13b",
+      "bytes": 83474
+    },
+    {
+      "path": "7d158f3/replay.stderr.log",
+      "source": "/home/xxl/nine-debug-failure-20260908-7d158f3-run2/replay.stderr.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "path": "7d158f3/replay.stdout.log",
+      "source": "/home/xxl/nine-debug-failure-20260908-7d158f3-run2/replay.stdout.log",
+      "sha256": "2b50395549a538e8cad371c09ff303c67e8e89993185b784e5ab0f053e78f236",
+      "bytes": 601
+    },
+    {
+      "path": "7d158f3/ruff-check.stderr.log",
+      "source": "/home/xxl/nine-debug-failure-20260908-7d158f3-run2/ruff-check.stderr.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "path": "7d158f3/ruff-check.stdout.log",
+      "source": "/home/xxl/nine-debug-failure-20260908-7d158f3-run2/ruff-check.stdout.log",
+      "sha256": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18",
+      "bytes": 19
+    },
+    {
+      "path": "7d158f3/ruff-format.stderr.log",
+      "source": "/home/xxl/nine-debug-failure-20260908-7d158f3-run2/ruff-format.stderr.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "path": "7d158f3/ruff-format.stdout.log",
+      "source": "/home/xxl/nine-debug-failure-20260908-7d158f3-run2/ruff-format.stdout.log",
+      "sha256": "c98b86154f37b741528126f09d3e8f3665921b1c314835ab85d52088185e14af",
+      "bytes": 28
+    },
+    {
+      "path": "7d158f3/sphinx.stderr.log",
+      "source": "/home/xxl/nine-debug-failure-20260908-7d158f3-run2/sphinx.stderr.log",
+      "sha256": "3478429e01a0215a7221f90ca7834aba089ce562f212db899c69e7b4600548bd",
+      "bytes": 9305
+    },
+    {
+      "path": "7d158f3/sphinx.stdout.log",
+      "source": "/home/xxl/nine-debug-failure-20260908-7d158f3-run2/sphinx.stdout.log",
+      "sha256": "1379f092fac61384e76eb1dd87b00301c832c2eefae826095f04dee3ff6514a2",
+      "bytes": 352
+    },
+    {
+      "path": "7d158f3/style.stderr.log",
+      "source": "/home/xxl/nine-debug-failure-20260908-7d158f3-run2/style.stderr.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "path": "7d158f3/style.stdout.log",
+      "source": "/home/xxl/nine-debug-failure-20260908-7d158f3-run2/style.stdout.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "path": "7d158f3/wheel-build.stderr.log",
+      "source": "/home/xxl/nine-debug-failure-20260908-7d158f3-run2/wheel-build.stderr.log",
+      "sha256": "d98568df1e10a237fc861b02a7ba24bfc6cdb12cb4cc97256089fde6e30e2edb",
+      "bytes": 80
+    },
+    {
+      "path": "7d158f3/wheel-build.stdout.log",
+      "source": "/home/xxl/nine-debug-failure-20260908-7d158f3-run2/wheel-build.stdout.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "path": "7d158f3/wheel-dependencies.stderr.log",
+      "source": "/home/xxl/nine-debug-failure-20260908-7d158f3-run2/wheel-dependencies.stderr.log",
+      "sha256": "ee4ca72f4ade18f6ea830d1fdf0fcbaaaf05453445900ed866a80bce3c68c0cd",
+      "bytes": 150
+    },
+    {
+      "path": "7d158f3/wheel-dependencies.stdout.log",
+      "source": "/home/xxl/nine-debug-failure-20260908-7d158f3-run2/wheel-dependencies.stdout.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "path": "7d158f3/wheel-install.stderr.log",
+      "source": "/home/xxl/nine-debug-failure-20260908-7d158f3-run2/wheel-install.stderr.log",
+      "sha256": "3e109a682b98de7b9c79208a270e60d417caec7c74a22b939655375af58211b2",
+      "bytes": 252
+    },
+    {
+      "path": "7d158f3/wheel-install.stdout.log",
+      "source": "/home/xxl/nine-debug-failure-20260908-7d158f3-run2/wheel-install.stdout.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "path": "7d158f3/wheel-venv.stderr.log",
+      "source": "/home/xxl/nine-debug-failure-20260908-7d158f3-run2/wheel-venv.stderr.log",
+      "sha256": "7f17d39aec87506f19e180d9e37152a777650b3fb34176e88ce0feb3b590b500",
+      "bytes": 161
+    },
+    {
+      "path": "7d158f3/wheel-venv.stdout.log",
+      "source": "/home/xxl/nine-debug-failure-20260908-7d158f3-run2/wheel-venv.stdout.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "path": "7d158f3/demo-case/failure.json",
+      "source": "/home/xxl/nine-debug-failure-20260908-7d158f3-run2/demo-case/failure.json",
+      "sha256": "a06130bc3b0cf8bc3f48b473d70227d0995c116a3f166b8d7f5bb0b8eabcafeb",
+      "bytes": 2776
+    },
+    {
+      "path": "7d158f3/demo-case/replay.py",
+      "source": "/home/xxl/nine-debug-failure-20260908-7d158f3-run2/demo-case/replay.py",
+      "sha256": "c3d02d7fc29a134143e884e58491a646619bf97de7deb16fae0f1a5d79403f2b",
+      "bytes": 198
+    },
+    {
+      "path": "7d158f3/installed-case/failure.json",
+      "source": "/home/xxl/nine-debug-failure-20260908-7d158f3-run2/installed-case/failure.json",
+      "sha256": "edbd58f4c821ff4ab63870ea7519986f367eca904fdbfaf5cc1f4bee730c9244",
+      "bytes": 2780
+    },
+    {
+      "path": "7d158f3/installed-case/replay.py",
+      "source": "/home/xxl/nine-debug-failure-20260908-7d158f3-run2/installed-case/replay.py",
+      "sha256": "c3d02d7fc29a134143e884e58491a646619bf97de7deb16fae0f1a5d79403f2b",
+      "bytes": 198
+    },
+    {
+      "path": "7d158f3/demo-case/candidate/inputs.npz",
+      "source": "/home/xxl/nine-debug-failure-20260908-7d158f3-run2/demo-case/candidate/inputs.npz",
+      "sha256": "ec9425a8ea63321beb9b92ca811a7b5bee33d2d5a943fcf55b774d332e21e90e",
+      "bytes": 446
+    },
+    {
+      "path": "7d158f3/demo-case/candidate/manifest.json",
+      "source": "/home/xxl/nine-debug-failure-20260908-7d158f3-run2/demo-case/candidate/manifest.json",
+      "sha256": "d189052bd31d5e84f1e6c554f9fcbe7d33edf70ae03b05b4fc5d1c7dcd72b0bd",
+      "bytes": 46802
+    },
+    {
+      "path": "7d158f3/demo-case/candidate/program.json",
+      "source": "/home/xxl/nine-debug-failure-20260908-7d158f3-run2/demo-case/candidate/program.json",
+      "sha256": "3cfaed57e2d68fe656929a9cc4baf8e315080c8043b2ac4cd2236d2fdccdd1bd",
+      "bytes": 18521
+    },
+    {
+      "path": "7d158f3/demo-case/candidate/program.ssa",
+      "source": "/home/xxl/nine-debug-failure-20260908-7d158f3-run2/demo-case/candidate/program.ssa",
+      "sha256": "4dbbf6c90658e65c9a751d40793047427d905cfcaa22c7a9a11323cdd3dab210",
+      "bytes": 289
+    },
+    {
+      "path": "7d158f3/demo-case/candidate/replay.py",
+      "source": "/home/xxl/nine-debug-failure-20260908-7d158f3-run2/demo-case/candidate/replay.py",
+      "sha256": "ecffc8c5aff638f536362deedf6f1ae92c7a9b61caaba7a1f6cdc4bbdd1d81fc",
+      "bytes": 424
+    },
+    {
+      "path": "7d158f3/demo-case/previous/inputs.npz",
+      "source": "/home/xxl/nine-debug-failure-20260908-7d158f3-run2/demo-case/previous/inputs.npz",
+      "sha256": "ec9425a8ea63321beb9b92ca811a7b5bee33d2d5a943fcf55b774d332e21e90e",
+      "bytes": 446
+    },
+    {
+      "path": "7d158f3/demo-case/previous/manifest.json",
+      "source": "/home/xxl/nine-debug-failure-20260908-7d158f3-run2/demo-case/previous/manifest.json",
+      "sha256": "d189052bd31d5e84f1e6c554f9fcbe7d33edf70ae03b05b4fc5d1c7dcd72b0bd",
+      "bytes": 46802
+    },
+    {
+      "path": "7d158f3/demo-case/previous/program.json",
+      "source": "/home/xxl/nine-debug-failure-20260908-7d158f3-run2/demo-case/previous/program.json",
+      "sha256": "0c77e790857931cab0e9a172b17b5ada73d639a4bdcac8f15d97e5148fb61b9a",
+      "bytes": 16295
+    },
+    {
+      "path": "7d158f3/demo-case/previous/program.ssa",
+      "source": "/home/xxl/nine-debug-failure-20260908-7d158f3-run2/demo-case/previous/program.ssa",
+      "sha256": "6df3bb3a6593264a92a7d82385f5dae1dc6479b796ea66193258b62e51bee1de",
+      "bytes": 289
+    },
+    {
+      "path": "7d158f3/demo-case/previous/replay.py",
+      "source": "/home/xxl/nine-debug-failure-20260908-7d158f3-run2/demo-case/previous/replay.py",
+      "sha256": "ecffc8c5aff638f536362deedf6f1ae92c7a9b61caaba7a1f6cdc4bbdd1d81fc",
+      "bytes": 424
+    },
+    {
+      "path": "7d158f3/demo-case/reference/inputs.npz",
+      "source": "/home/xxl/nine-debug-failure-20260908-7d158f3-run2/demo-case/reference/inputs.npz",
+      "sha256": "ec9425a8ea63321beb9b92ca811a7b5bee33d2d5a943fcf55b774d332e21e90e",
+      "bytes": 446
+    },
+    {
+      "path": "7d158f3/demo-case/reference/manifest.json",
+      "source": "/home/xxl/nine-debug-failure-20260908-7d158f3-run2/demo-case/reference/manifest.json",
+      "sha256": "d189052bd31d5e84f1e6c554f9fcbe7d33edf70ae03b05b4fc5d1c7dcd72b0bd",
+      "bytes": 46802
+    },
+    {
+      "path": "7d158f3/demo-case/reference/program.json",
+      "source": "/home/xxl/nine-debug-failure-20260908-7d158f3-run2/demo-case/reference/program.json",
+      "sha256": "9075c2333875981411c4a23a9ff91ffe3a16895f9a5d80d12eef863f99b5fa4f",
+      "bytes": 14122
+    },
+    {
+      "path": "7d158f3/demo-case/reference/program.ssa",
+      "source": "/home/xxl/nine-debug-failure-20260908-7d158f3-run2/demo-case/reference/program.ssa",
+      "sha256": "6df3bb3a6593264a92a7d82385f5dae1dc6479b796ea66193258b62e51bee1de",
+      "bytes": 289
+    },
+    {
+      "path": "7d158f3/demo-case/reference/replay.py",
+      "source": "/home/xxl/nine-debug-failure-20260908-7d158f3-run2/demo-case/reference/replay.py",
+      "sha256": "ecffc8c5aff638f536362deedf6f1ae92c7a9b61caaba7a1f6cdc4bbdd1d81fc",
+      "bytes": 424
+    },
+    {
+      "path": "7d158f3/installed-case/candidate/inputs.npz",
+      "source": "/home/xxl/nine-debug-failure-20260908-7d158f3-run2/installed-case/candidate/inputs.npz",
+      "sha256": "ec9425a8ea63321beb9b92ca811a7b5bee33d2d5a943fcf55b774d332e21e90e",
+      "bytes": 446
+    },
+    {
+      "path": "7d158f3/installed-case/candidate/manifest.json",
+      "source": "/home/xxl/nine-debug-failure-20260908-7d158f3-run2/installed-case/candidate/manifest.json",
+      "sha256": "d189052bd31d5e84f1e6c554f9fcbe7d33edf70ae03b05b4fc5d1c7dcd72b0bd",
+      "bytes": 46802
+    },
+    {
+      "path": "7d158f3/installed-case/candidate/program.json",
+      "source": "/home/xxl/nine-debug-failure-20260908-7d158f3-run2/installed-case/candidate/program.json",
+      "sha256": "3cfaed57e2d68fe656929a9cc4baf8e315080c8043b2ac4cd2236d2fdccdd1bd",
+      "bytes": 18521
+    },
+    {
+      "path": "7d158f3/installed-case/candidate/program.ssa",
+      "source": "/home/xxl/nine-debug-failure-20260908-7d158f3-run2/installed-case/candidate/program.ssa",
+      "sha256": "4dbbf6c90658e65c9a751d40793047427d905cfcaa22c7a9a11323cdd3dab210",
+      "bytes": 289
+    },
+    {
+      "path": "7d158f3/installed-case/candidate/replay.py",
+      "source": "/home/xxl/nine-debug-failure-20260908-7d158f3-run2/installed-case/candidate/replay.py",
+      "sha256": "ecffc8c5aff638f536362deedf6f1ae92c7a9b61caaba7a1f6cdc4bbdd1d81fc",
+      "bytes": 424
+    },
+    {
+      "path": "7d158f3/installed-case/previous/inputs.npz",
+      "source": "/home/xxl/nine-debug-failure-20260908-7d158f3-run2/installed-case/previous/inputs.npz",
+      "sha256": "ec9425a8ea63321beb9b92ca811a7b5bee33d2d5a943fcf55b774d332e21e90e",
+      "bytes": 446
+    },
+    {
+      "path": "7d158f3/installed-case/previous/manifest.json",
+      "source": "/home/xxl/nine-debug-failure-20260908-7d158f3-run2/installed-case/previous/manifest.json",
+      "sha256": "d189052bd31d5e84f1e6c554f9fcbe7d33edf70ae03b05b4fc5d1c7dcd72b0bd",
+      "bytes": 46802
+    },
+    {
+      "path": "7d158f3/installed-case/previous/program.json",
+      "source": "/home/xxl/nine-debug-failure-20260908-7d158f3-run2/installed-case/previous/program.json",
+      "sha256": "0c77e790857931cab0e9a172b17b5ada73d639a4bdcac8f15d97e5148fb61b9a",
+      "bytes": 16295
+    },
+    {
+      "path": "7d158f3/installed-case/previous/program.ssa",
+      "source": "/home/xxl/nine-debug-failure-20260908-7d158f3-run2/installed-case/previous/program.ssa",
+      "sha256": "6df3bb3a6593264a92a7d82385f5dae1dc6479b796ea66193258b62e51bee1de",
+      "bytes": 289
+    },
+    {
+      "path": "7d158f3/installed-case/previous/replay.py",
+      "source": "/home/xxl/nine-debug-failure-20260908-7d158f3-run2/installed-case/previous/replay.py",
+      "sha256": "ecffc8c5aff638f536362deedf6f1ae92c7a9b61caaba7a1f6cdc4bbdd1d81fc",
+      "bytes": 424
+    },
+    {
+      "path": "7d158f3/installed-case/reference/inputs.npz",
+      "source": "/home/xxl/nine-debug-failure-20260908-7d158f3-run2/installed-case/reference/inputs.npz",
+      "sha256": "ec9425a8ea63321beb9b92ca811a7b5bee33d2d5a943fcf55b774d332e21e90e",
+      "bytes": 446
+    },
+    {
+      "path": "7d158f3/installed-case/reference/manifest.json",
+      "source": "/home/xxl/nine-debug-failure-20260908-7d158f3-run2/installed-case/reference/manifest.json",
+      "sha256": "d189052bd31d5e84f1e6c554f9fcbe7d33edf70ae03b05b4fc5d1c7dcd72b0bd",
+      "bytes": 46802
+    },
+    {
+      "path": "7d158f3/installed-case/reference/program.json",
+      "source": "/home/xxl/nine-debug-failure-20260908-7d158f3-run2/installed-case/reference/program.json",
+      "sha256": "9075c2333875981411c4a23a9ff91ffe3a16895f9a5d80d12eef863f99b5fa4f",
+      "bytes": 14122
+    },
+    {
+      "path": "7d158f3/installed-case/reference/program.ssa",
+      "source": "/home/xxl/nine-debug-failure-20260908-7d158f3-run2/installed-case/reference/program.ssa",
+      "sha256": "6df3bb3a6593264a92a7d82385f5dae1dc6479b796ea66193258b62e51bee1de",
+      "bytes": 289
+    },
+    {
+      "path": "7d158f3/installed-case/reference/replay.py",
+      "source": "/home/xxl/nine-debug-failure-20260908-7d158f3-run2/installed-case/reference/replay.py",
+      "sha256": "ecffc8c5aff638f536362deedf6f1ae92c7a9b61caaba7a1f6cdc4bbdd1d81fc",
+      "bytes": 424
+    },
+    {
+      "path": "9c5ffba/cpu.junit.xml",
+      "source": "/home/xxl/nine-debug-failure-20260908-9c5ffba/cpu.junit.xml",
+      "sha256": "3a669b8d74f33f9b11dd92bd5de232d81445370299683b0c58862023d2f7be1b",
+      "bytes": 50154
+    },
+    {
+      "path": "9c5ffba/cpu.stderr.log",
+      "source": "/home/xxl/nine-debug-failure-20260908-9c5ffba/cpu.stderr.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "path": "9c5ffba/cpu.stdout.log",
+      "source": "/home/xxl/nine-debug-failure-20260908-9c5ffba/cpu.stdout.log",
+      "sha256": "f5ad53364e93f436c9e8617c46fe6f334a860ba577ee2d8e4df24408e9159f94",
+      "bytes": 436
+    },
+    {
+      "path": "9c5ffba/demo-style.stderr.log",
+      "source": "/home/xxl/nine-debug-failure-20260908-9c5ffba/demo-style.stderr.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "path": "9c5ffba/demo-style.stdout.log",
+      "source": "/home/xxl/nine-debug-failure-20260908-9c5ffba/demo-style.stdout.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "path": "9c5ffba/demo.stderr.log",
+      "source": "/home/xxl/nine-debug-failure-20260908-9c5ffba/demo.stderr.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "path": "9c5ffba/demo.stdout.log",
+      "source": "/home/xxl/nine-debug-failure-20260908-9c5ffba/demo.stdout.log",
+      "sha256": "a0a427d6b2e103f5e3c7f92b8181e1397ebb0b1f9f751863cc580d33fc075977",
+      "bytes": 1049
+    },
+    {
+      "path": "9c5ffba/installed-demo.stderr.log",
+      "source": "/home/xxl/nine-debug-failure-20260908-9c5ffba/installed-demo.stderr.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "path": "9c5ffba/installed-demo.stdout.log",
+      "source": "/home/xxl/nine-debug-failure-20260908-9c5ffba/installed-demo.stdout.log",
+      "sha256": "49e40e55a9fd81d8721e75015e4b99014e529bda35701019d6f0bdcdfd885eec",
+      "bytes": 1054
+    },
+    {
+      "path": "9c5ffba/installed-probe.stderr.log",
+      "source": "/home/xxl/nine-debug-failure-20260908-9c5ffba/installed-probe.stderr.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "path": "9c5ffba/installed-probe.stdout.log",
+      "source": "/home/xxl/nine-debug-failure-20260908-9c5ffba/installed-probe.stdout.log",
+      "sha256": "a0f2078954b2b6ca137cb2ae07495879a65e8583df92f42c08cc04da6fa7a481",
+      "bytes": 169
+    },
+    {
+      "path": "9c5ffba/installed-replay.stderr.log",
+      "source": "/home/xxl/nine-debug-failure-20260908-9c5ffba/installed-replay.stderr.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "path": "9c5ffba/installed-replay.stdout.log",
+      "source": "/home/xxl/nine-debug-failure-20260908-9c5ffba/installed-replay.stdout.log",
+      "sha256": "2b50395549a538e8cad371c09ff303c67e8e89993185b784e5ab0f053e78f236",
+      "bytes": 601
+    },
+    {
+      "path": "9c5ffba/installed_probe.py",
+      "source": "/home/xxl/nine-debug-failure-20260908-9c5ffba/installed_probe.py",
+      "sha256": "eedbdfb9502f2e8762392ccc94f922fef3d74d0f11af15bc3250b739823cb584",
+      "bytes": 617
+    },
+    {
+      "path": "9c5ffba/manifest.json",
+      "source": "/home/xxl/nine-debug-failure-20260908-9c5ffba/manifest.json",
+      "sha256": "2bab38cbb2338e1ad02ef2faa61975e91628dfd2d72070372bc51846f558538f",
+      "bytes": 82870
+    },
+    {
+      "path": "9c5ffba/replay.stderr.log",
+      "source": "/home/xxl/nine-debug-failure-20260908-9c5ffba/replay.stderr.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "path": "9c5ffba/replay.stdout.log",
+      "source": "/home/xxl/nine-debug-failure-20260908-9c5ffba/replay.stdout.log",
+      "sha256": "2b50395549a538e8cad371c09ff303c67e8e89993185b784e5ab0f053e78f236",
+      "bytes": 601
+    },
+    {
+      "path": "9c5ffba/ruff-check.stderr.log",
+      "source": "/home/xxl/nine-debug-failure-20260908-9c5ffba/ruff-check.stderr.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "path": "9c5ffba/ruff-check.stdout.log",
+      "source": "/home/xxl/nine-debug-failure-20260908-9c5ffba/ruff-check.stdout.log",
+      "sha256": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18",
+      "bytes": 19
+    },
+    {
+      "path": "9c5ffba/ruff-format.stderr.log",
+      "source": "/home/xxl/nine-debug-failure-20260908-9c5ffba/ruff-format.stderr.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "path": "9c5ffba/ruff-format.stdout.log",
+      "source": "/home/xxl/nine-debug-failure-20260908-9c5ffba/ruff-format.stdout.log",
+      "sha256": "c98b86154f37b741528126f09d3e8f3665921b1c314835ab85d52088185e14af",
+      "bytes": 28
+    },
+    {
+      "path": "9c5ffba/style.stderr.log",
+      "source": "/home/xxl/nine-debug-failure-20260908-9c5ffba/style.stderr.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "path": "9c5ffba/style.stdout.log",
+      "source": "/home/xxl/nine-debug-failure-20260908-9c5ffba/style.stdout.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "path": "9c5ffba/validation-runner.py",
+      "source": "/home/xxl/nine-debug-failure-20260908-9c5ffba/validation-runner.py",
+      "sha256": "f599663dbd434230fd656eeea6edf48bf9372a9e72b9a4c9390d46b90340392b",
+      "bytes": 8178
+    },
+    {
+      "path": "9c5ffba/wheel-build.stderr.log",
+      "source": "/home/xxl/nine-debug-failure-20260908-9c5ffba/wheel-build.stderr.log",
+      "sha256": "d98568df1e10a237fc861b02a7ba24bfc6cdb12cb4cc97256089fde6e30e2edb",
+      "bytes": 80
+    },
+    {
+      "path": "9c5ffba/wheel-build.stdout.log",
+      "source": "/home/xxl/nine-debug-failure-20260908-9c5ffba/wheel-build.stdout.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "path": "9c5ffba/wheel-dependencies.stderr.log",
+      "source": "/home/xxl/nine-debug-failure-20260908-9c5ffba/wheel-dependencies.stderr.log",
+      "sha256": "76ad8920f152d4551dab1739b7a4b23cae9b18dc9938112bb9e8a0e7adb2106e",
+      "bytes": 148
+    },
+    {
+      "path": "9c5ffba/wheel-dependencies.stdout.log",
+      "source": "/home/xxl/nine-debug-failure-20260908-9c5ffba/wheel-dependencies.stdout.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "path": "9c5ffba/wheel-install.stderr.log",
+      "source": "/home/xxl/nine-debug-failure-20260908-9c5ffba/wheel-install.stderr.log",
+      "sha256": "923150cead14ec0809b659f0f3d6e54250306d72197a480218377205d7bd1987",
+      "bytes": 247
+    },
+    {
+      "path": "9c5ffba/wheel-install.stdout.log",
+      "source": "/home/xxl/nine-debug-failure-20260908-9c5ffba/wheel-install.stdout.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "path": "9c5ffba/wheel-venv.stderr.log",
+      "source": "/home/xxl/nine-debug-failure-20260908-9c5ffba/wheel-venv.stderr.log",
+      "sha256": "7f17d39aec87506f19e180d9e37152a777650b3fb34176e88ce0feb3b590b500",
+      "bytes": 161
+    },
+    {
+      "path": "9c5ffba/wheel-venv.stdout.log",
+      "source": "/home/xxl/nine-debug-failure-20260908-9c5ffba/wheel-venv.stdout.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "path": "9c5ffba/demo-case/failure.json",
+      "source": "/home/xxl/nine-debug-failure-20260908-9c5ffba/demo-case/failure.json",
+      "sha256": "a06130bc3b0cf8bc3f48b473d70227d0995c116a3f166b8d7f5bb0b8eabcafeb",
+      "bytes": 2776
+    },
+    {
+      "path": "9c5ffba/demo-case/replay.py",
+      "source": "/home/xxl/nine-debug-failure-20260908-9c5ffba/demo-case/replay.py",
+      "sha256": "c3d02d7fc29a134143e884e58491a646619bf97de7deb16fae0f1a5d79403f2b",
+      "bytes": 198
+    },
+    {
+      "path": "9c5ffba/documentation/manifest.json",
+      "source": "/home/xxl/nine-debug-failure-20260908-9c5ffba/documentation/manifest.json",
+      "sha256": "58da9abf80352a7d481f730697627bd049991d200c2da261d510897169c76f09",
+      "bytes": 38050
+    },
+    {
+      "path": "9c5ffba/documentation/runner.py",
+      "source": "/home/xxl/nine-debug-failure-20260908-9c5ffba/documentation/runner.py",
+      "sha256": "6a59942f06892fd99110bfde933da4024c9ac89b6250c35c92f96b9385f68400",
+      "bytes": 4181
+    },
+    {
+      "path": "9c5ffba/documentation/sphinx.stderr.log",
+      "source": "/home/xxl/nine-debug-failure-20260908-9c5ffba/documentation/sphinx.stderr.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "path": "9c5ffba/documentation/sphinx.stdout.log",
+      "source": "/home/xxl/nine-debug-failure-20260908-9c5ffba/documentation/sphinx.stdout.log",
+      "sha256": "bcdfd6f55905905a9c19a7fc4f9e8661b919daf4722de6f6b8778753464e4339",
+      "bytes": 6298
+    },
+    {
+      "path": "9c5ffba/documentation/torch-replay.stderr.log",
+      "source": "/home/xxl/nine-debug-failure-20260908-9c5ffba/documentation/torch-replay.stderr.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "path": "9c5ffba/documentation/torch-replay.stdout.log",
+      "source": "/home/xxl/nine-debug-failure-20260908-9c5ffba/documentation/torch-replay.stdout.log",
+      "sha256": "b9a6e49b9577c889b56ceec934b28e3b51641ce8263bbf7f280368fb3ed1f15c",
+      "bytes": 220
+    },
+    {
+      "path": "9c5ffba/installed-case/failure.json",
+      "source": "/home/xxl/nine-debug-failure-20260908-9c5ffba/installed-case/failure.json",
+      "sha256": "edbd58f4c821ff4ab63870ea7519986f367eca904fdbfaf5cc1f4bee730c9244",
+      "bytes": 2780
+    },
+    {
+      "path": "9c5ffba/installed-case/replay.py",
+      "source": "/home/xxl/nine-debug-failure-20260908-9c5ffba/installed-case/replay.py",
+      "sha256": "c3d02d7fc29a134143e884e58491a646619bf97de7deb16fae0f1a5d79403f2b",
+      "bytes": 198
+    },
+    {
+      "path": "9c5ffba/pipeline-replays/cuda-dot.stderr.log",
+      "source": "/home/xxl/nine-debug-failure-20260908-9c5ffba/pipeline-replays/cuda-dot.stderr.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "path": "9c5ffba/pipeline-replays/cuda-dot.stdout.log",
+      "source": "/home/xxl/nine-debug-failure-20260908-9c5ffba/pipeline-replays/cuda-dot.stdout.log",
+      "sha256": "8dd607a34a833d38009c4620eceae500354197be0d510e81b5e7d614a3611e67",
+      "bytes": 478
+    },
+    {
+      "path": "9c5ffba/pipeline-replays/cuda-transpose.stderr.log",
+      "source": "/home/xxl/nine-debug-failure-20260908-9c5ffba/pipeline-replays/cuda-transpose.stderr.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "path": "9c5ffba/pipeline-replays/cuda-transpose.stdout.log",
+      "source": "/home/xxl/nine-debug-failure-20260908-9c5ffba/pipeline-replays/cuda-transpose.stdout.log",
+      "sha256": "9107e4451f8f812f34916c5b30b5868cbcc118b4468cd00f95c6e378601aa1ca",
+      "bytes": 447
+    },
+    {
+      "path": "9c5ffba/pipeline-replays/manifest.json",
+      "source": "/home/xxl/nine-debug-failure-20260908-9c5ffba/pipeline-replays/manifest.json",
+      "sha256": "9944ee3adf691104587944e9f486cdc2c188cb4cd90a838e56f5dfb7d2316143",
+      "bytes": 15856
+    },
+    {
+      "path": "9c5ffba/pipeline-replays/runner.py",
+      "source": "/home/xxl/nine-debug-failure-20260908-9c5ffba/pipeline-replays/runner.py",
+      "sha256": "bd251cdfa815cc1bb5dc479b66d79b068f62c681e63abe1cbe03db194a331daf",
+      "bytes": 3924
+    },
+    {
+      "path": "9c5ffba/pipeline-replays/triton-dot.stderr.log",
+      "source": "/home/xxl/nine-debug-failure-20260908-9c5ffba/pipeline-replays/triton-dot.stderr.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "path": "9c5ffba/pipeline-replays/triton-dot.stdout.log",
+      "source": "/home/xxl/nine-debug-failure-20260908-9c5ffba/pipeline-replays/triton-dot.stdout.log",
+      "sha256": "8dd607a34a833d38009c4620eceae500354197be0d510e81b5e7d614a3611e67",
+      "bytes": 478
+    },
+    {
+      "path": "9c5ffba/pipeline-replays/triton-transpose.stderr.log",
+      "source": "/home/xxl/nine-debug-failure-20260908-9c5ffba/pipeline-replays/triton-transpose.stderr.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "path": "9c5ffba/pipeline-replays/triton-transpose.stdout.log",
+      "source": "/home/xxl/nine-debug-failure-20260908-9c5ffba/pipeline-replays/triton-transpose.stdout.log",
+      "sha256": "9107e4451f8f812f34916c5b30b5868cbcc118b4468cd00f95c6e378601aa1ca",
+      "bytes": 447
+    },
+    {
+      "path": "9c5ffba/demo-case/candidate/inputs.npz",
+      "source": "/home/xxl/nine-debug-failure-20260908-9c5ffba/demo-case/candidate/inputs.npz",
+      "sha256": "ec9425a8ea63321beb9b92ca811a7b5bee33d2d5a943fcf55b774d332e21e90e",
+      "bytes": 446
+    },
+    {
+      "path": "9c5ffba/demo-case/candidate/manifest.json",
+      "source": "/home/xxl/nine-debug-failure-20260908-9c5ffba/demo-case/candidate/manifest.json",
+      "sha256": "d189052bd31d5e84f1e6c554f9fcbe7d33edf70ae03b05b4fc5d1c7dcd72b0bd",
+      "bytes": 46802
+    },
+    {
+      "path": "9c5ffba/demo-case/candidate/program.json",
+      "source": "/home/xxl/nine-debug-failure-20260908-9c5ffba/demo-case/candidate/program.json",
+      "sha256": "3cfaed57e2d68fe656929a9cc4baf8e315080c8043b2ac4cd2236d2fdccdd1bd",
+      "bytes": 18521
+    },
+    {
+      "path": "9c5ffba/demo-case/candidate/program.ssa",
+      "source": "/home/xxl/nine-debug-failure-20260908-9c5ffba/demo-case/candidate/program.ssa",
+      "sha256": "4dbbf6c90658e65c9a751d40793047427d905cfcaa22c7a9a11323cdd3dab210",
+      "bytes": 289
+    },
+    {
+      "path": "9c5ffba/demo-case/candidate/replay.py",
+      "source": "/home/xxl/nine-debug-failure-20260908-9c5ffba/demo-case/candidate/replay.py",
+      "sha256": "ecffc8c5aff638f536362deedf6f1ae92c7a9b61caaba7a1f6cdc4bbdd1d81fc",
+      "bytes": 424
+    },
+    {
+      "path": "9c5ffba/demo-case/previous/inputs.npz",
+      "source": "/home/xxl/nine-debug-failure-20260908-9c5ffba/demo-case/previous/inputs.npz",
+      "sha256": "ec9425a8ea63321beb9b92ca811a7b5bee33d2d5a943fcf55b774d332e21e90e",
+      "bytes": 446
+    },
+    {
+      "path": "9c5ffba/demo-case/previous/manifest.json",
+      "source": "/home/xxl/nine-debug-failure-20260908-9c5ffba/demo-case/previous/manifest.json",
+      "sha256": "d189052bd31d5e84f1e6c554f9fcbe7d33edf70ae03b05b4fc5d1c7dcd72b0bd",
+      "bytes": 46802
+    },
+    {
+      "path": "9c5ffba/demo-case/previous/program.json",
+      "source": "/home/xxl/nine-debug-failure-20260908-9c5ffba/demo-case/previous/program.json",
+      "sha256": "0c77e790857931cab0e9a172b17b5ada73d639a4bdcac8f15d97e5148fb61b9a",
+      "bytes": 16295
+    },
+    {
+      "path": "9c5ffba/demo-case/previous/program.ssa",
+      "source": "/home/xxl/nine-debug-failure-20260908-9c5ffba/demo-case/previous/program.ssa",
+      "sha256": "6df3bb3a6593264a92a7d82385f5dae1dc6479b796ea66193258b62e51bee1de",
+      "bytes": 289
+    },
+    {
+      "path": "9c5ffba/demo-case/previous/replay.py",
+      "source": "/home/xxl/nine-debug-failure-20260908-9c5ffba/demo-case/previous/replay.py",
+      "sha256": "ecffc8c5aff638f536362deedf6f1ae92c7a9b61caaba7a1f6cdc4bbdd1d81fc",
+      "bytes": 424
+    },
+    {
+      "path": "9c5ffba/demo-case/reference/inputs.npz",
+      "source": "/home/xxl/nine-debug-failure-20260908-9c5ffba/demo-case/reference/inputs.npz",
+      "sha256": "ec9425a8ea63321beb9b92ca811a7b5bee33d2d5a943fcf55b774d332e21e90e",
+      "bytes": 446
+    },
+    {
+      "path": "9c5ffba/demo-case/reference/manifest.json",
+      "source": "/home/xxl/nine-debug-failure-20260908-9c5ffba/demo-case/reference/manifest.json",
+      "sha256": "d189052bd31d5e84f1e6c554f9fcbe7d33edf70ae03b05b4fc5d1c7dcd72b0bd",
+      "bytes": 46802
+    },
+    {
+      "path": "9c5ffba/demo-case/reference/program.json",
+      "source": "/home/xxl/nine-debug-failure-20260908-9c5ffba/demo-case/reference/program.json",
+      "sha256": "9075c2333875981411c4a23a9ff91ffe3a16895f9a5d80d12eef863f99b5fa4f",
+      "bytes": 14122
+    },
+    {
+      "path": "9c5ffba/demo-case/reference/program.ssa",
+      "source": "/home/xxl/nine-debug-failure-20260908-9c5ffba/demo-case/reference/program.ssa",
+      "sha256": "6df3bb3a6593264a92a7d82385f5dae1dc6479b796ea66193258b62e51bee1de",
+      "bytes": 289
+    },
+    {
+      "path": "9c5ffba/demo-case/reference/replay.py",
+      "source": "/home/xxl/nine-debug-failure-20260908-9c5ffba/demo-case/reference/replay.py",
+      "sha256": "ecffc8c5aff638f536362deedf6f1ae92c7a9b61caaba7a1f6cdc4bbdd1d81fc",
+      "bytes": 424
+    },
+    {
+      "path": "9c5ffba/documentation/torch-cpu-case/failure.json",
+      "source": "/home/xxl/nine-debug-failure-20260908-9c5ffba/documentation/torch-cpu-case/failure.json",
+      "sha256": "f99aab4ffd98b403282a39051b04c9c1016dc61f6f4b23675b8d5bb1aa244564",
+      "bytes": 1113
+    },
+    {
+      "path": "9c5ffba/documentation/torch-cpu-case/replay.py",
+      "source": "/home/xxl/nine-debug-failure-20260908-9c5ffba/documentation/torch-cpu-case/replay.py",
+      "sha256": "c3d02d7fc29a134143e884e58491a646619bf97de7deb16fae0f1a5d79403f2b",
+      "bytes": 198
+    },
+    {
+      "path": "9c5ffba/documentation/torch-cpu-case/candidate/inputs.npz",
+      "source": "/home/xxl/nine-debug-failure-20260908-9c5ffba/documentation/torch-cpu-case/candidate/inputs.npz",
+      "sha256": "96e0e223ce054e56e3af870ccb2c6baf2f6b7ee9e86176f4c7f377884165dcd3",
+      "bytes": 419
+    },
+    {
+      "path": "9c5ffba/documentation/torch-cpu-case/candidate/manifest.json",
+      "source": "/home/xxl/nine-debug-failure-20260908-9c5ffba/documentation/torch-cpu-case/candidate/manifest.json",
+      "sha256": "143f01c3b8ea45f29d60e3a9a466f617706f0ccfe40fb49d63203aeefb91c545",
+      "bytes": 46801
+    },
+    {
+      "path": "9c5ffba/documentation/torch-cpu-case/candidate/program.json",
+      "source": "/home/xxl/nine-debug-failure-20260908-9c5ffba/documentation/torch-cpu-case/candidate/program.json",
+      "sha256": "de8f604d5d53b43c3bfd835a5a99dc24a16f96df0986242e9f221b563eb84344",
+      "bytes": 12216
+    },
+    {
+      "path": "9c5ffba/documentation/torch-cpu-case/candidate/program.ssa",
+      "source": "/home/xxl/nine-debug-failure-20260908-9c5ffba/documentation/torch-cpu-case/candidate/program.ssa",
+      "sha256": "4dbbf6c90658e65c9a751d40793047427d905cfcaa22c7a9a11323cdd3dab210",
+      "bytes": 289
+    },
+    {
+      "path": "9c5ffba/documentation/torch-cpu-case/candidate/replay.py",
+      "source": "/home/xxl/nine-debug-failure-20260908-9c5ffba/documentation/torch-cpu-case/candidate/replay.py",
+      "sha256": "ecffc8c5aff638f536362deedf6f1ae92c7a9b61caaba7a1f6cdc4bbdd1d81fc",
+      "bytes": 424
+    },
+    {
+      "path": "9c5ffba/documentation/torch-cpu-case/reference/inputs.npz",
+      "source": "/home/xxl/nine-debug-failure-20260908-9c5ffba/documentation/torch-cpu-case/reference/inputs.npz",
+      "sha256": "96e0e223ce054e56e3af870ccb2c6baf2f6b7ee9e86176f4c7f377884165dcd3",
+      "bytes": 419
+    },
+    {
+      "path": "9c5ffba/documentation/torch-cpu-case/reference/manifest.json",
+      "source": "/home/xxl/nine-debug-failure-20260908-9c5ffba/documentation/torch-cpu-case/reference/manifest.json",
+      "sha256": "143f01c3b8ea45f29d60e3a9a466f617706f0ccfe40fb49d63203aeefb91c545",
+      "bytes": 46801
+    },
+    {
+      "path": "9c5ffba/documentation/torch-cpu-case/reference/program.json",
+      "source": "/home/xxl/nine-debug-failure-20260908-9c5ffba/documentation/torch-cpu-case/reference/program.json",
+      "sha256": "902f3f4fd12c412c512d660541bb6eec6cbbf963b4b0d6efcb61aa3fd9269ed4",
+      "bytes": 12216
+    },
+    {
+      "path": "9c5ffba/documentation/torch-cpu-case/reference/program.ssa",
+      "source": "/home/xxl/nine-debug-failure-20260908-9c5ffba/documentation/torch-cpu-case/reference/program.ssa",
+      "sha256": "6df3bb3a6593264a92a7d82385f5dae1dc6479b796ea66193258b62e51bee1de",
+      "bytes": 289
+    },
+    {
+      "path": "9c5ffba/documentation/torch-cpu-case/reference/replay.py",
+      "source": "/home/xxl/nine-debug-failure-20260908-9c5ffba/documentation/torch-cpu-case/reference/replay.py",
+      "sha256": "ecffc8c5aff638f536362deedf6f1ae92c7a9b61caaba7a1f6cdc4bbdd1d81fc",
+      "bytes": 424
+    },
+    {
+      "path": "9c5ffba/installed-case/candidate/inputs.npz",
+      "source": "/home/xxl/nine-debug-failure-20260908-9c5ffba/installed-case/candidate/inputs.npz",
+      "sha256": "ec9425a8ea63321beb9b92ca811a7b5bee33d2d5a943fcf55b774d332e21e90e",
+      "bytes": 446
+    },
+    {
+      "path": "9c5ffba/installed-case/candidate/manifest.json",
+      "source": "/home/xxl/nine-debug-failure-20260908-9c5ffba/installed-case/candidate/manifest.json",
+      "sha256": "d189052bd31d5e84f1e6c554f9fcbe7d33edf70ae03b05b4fc5d1c7dcd72b0bd",
+      "bytes": 46802
+    },
+    {
+      "path": "9c5ffba/installed-case/candidate/program.json",
+      "source": "/home/xxl/nine-debug-failure-20260908-9c5ffba/installed-case/candidate/program.json",
+      "sha256": "3cfaed57e2d68fe656929a9cc4baf8e315080c8043b2ac4cd2236d2fdccdd1bd",
+      "bytes": 18521
+    },
+    {
+      "path": "9c5ffba/installed-case/candidate/program.ssa",
+      "source": "/home/xxl/nine-debug-failure-20260908-9c5ffba/installed-case/candidate/program.ssa",
+      "sha256": "4dbbf6c90658e65c9a751d40793047427d905cfcaa22c7a9a11323cdd3dab210",
+      "bytes": 289
+    },
+    {
+      "path": "9c5ffba/installed-case/candidate/replay.py",
+      "source": "/home/xxl/nine-debug-failure-20260908-9c5ffba/installed-case/candidate/replay.py",
+      "sha256": "ecffc8c5aff638f536362deedf6f1ae92c7a9b61caaba7a1f6cdc4bbdd1d81fc",
+      "bytes": 424
+    },
+    {
+      "path": "9c5ffba/installed-case/previous/inputs.npz",
+      "source": "/home/xxl/nine-debug-failure-20260908-9c5ffba/installed-case/previous/inputs.npz",
+      "sha256": "ec9425a8ea63321beb9b92ca811a7b5bee33d2d5a943fcf55b774d332e21e90e",
+      "bytes": 446
+    },
+    {
+      "path": "9c5ffba/installed-case/previous/manifest.json",
+      "source": "/home/xxl/nine-debug-failure-20260908-9c5ffba/installed-case/previous/manifest.json",
+      "sha256": "d189052bd31d5e84f1e6c554f9fcbe7d33edf70ae03b05b4fc5d1c7dcd72b0bd",
+      "bytes": 46802
+    },
+    {
+      "path": "9c5ffba/installed-case/previous/program.json",
+      "source": "/home/xxl/nine-debug-failure-20260908-9c5ffba/installed-case/previous/program.json",
+      "sha256": "0c77e790857931cab0e9a172b17b5ada73d639a4bdcac8f15d97e5148fb61b9a",
+      "bytes": 16295
+    },
+    {
+      "path": "9c5ffba/installed-case/previous/program.ssa",
+      "source": "/home/xxl/nine-debug-failure-20260908-9c5ffba/installed-case/previous/program.ssa",
+      "sha256": "6df3bb3a6593264a92a7d82385f5dae1dc6479b796ea66193258b62e51bee1de",
+      "bytes": 289
+    },
+    {
+      "path": "9c5ffba/installed-case/previous/replay.py",
+      "source": "/home/xxl/nine-debug-failure-20260908-9c5ffba/installed-case/previous/replay.py",
+      "sha256": "ecffc8c5aff638f536362deedf6f1ae92c7a9b61caaba7a1f6cdc4bbdd1d81fc",
+      "bytes": 424
+    },
+    {
+      "path": "9c5ffba/installed-case/reference/inputs.npz",
+      "source": "/home/xxl/nine-debug-failure-20260908-9c5ffba/installed-case/reference/inputs.npz",
+      "sha256": "ec9425a8ea63321beb9b92ca811a7b5bee33d2d5a943fcf55b774d332e21e90e",
+      "bytes": 446
+    },
+    {
+      "path": "9c5ffba/installed-case/reference/manifest.json",
+      "source": "/home/xxl/nine-debug-failure-20260908-9c5ffba/installed-case/reference/manifest.json",
+      "sha256": "d189052bd31d5e84f1e6c554f9fcbe7d33edf70ae03b05b4fc5d1c7dcd72b0bd",
+      "bytes": 46802
+    },
+    {
+      "path": "9c5ffba/installed-case/reference/program.json",
+      "source": "/home/xxl/nine-debug-failure-20260908-9c5ffba/installed-case/reference/program.json",
+      "sha256": "9075c2333875981411c4a23a9ff91ffe3a16895f9a5d80d12eef863f99b5fa4f",
+      "bytes": 14122
+    },
+    {
+      "path": "9c5ffba/installed-case/reference/program.ssa",
+      "source": "/home/xxl/nine-debug-failure-20260908-9c5ffba/installed-case/reference/program.ssa",
+      "sha256": "6df3bb3a6593264a92a7d82385f5dae1dc6479b796ea66193258b62e51bee1de",
+      "bytes": 289
+    },
+    {
+      "path": "9c5ffba/installed-case/reference/replay.py",
+      "source": "/home/xxl/nine-debug-failure-20260908-9c5ffba/installed-case/reference/replay.py",
+      "sha256": "ecffc8c5aff638f536362deedf6f1ae92c7a9b61caaba7a1f6cdc4bbdd1d81fc",
+      "bytes": 424
+    },
+    {
+      "path": "9c5ffba/pipeline-replays/cuda-dot/failure.json",
+      "source": "/home/xxl/nine-debug-failure-20260908-9c5ffba/pipeline-replays/cuda-dot/failure.json",
+      "sha256": "de11f98205f5f514d35e931b829a1855b68c8afab2947820ef8859f5b99aab97",
+      "bytes": 3993
+    },
+    {
+      "path": "9c5ffba/pipeline-replays/cuda-dot/replay.py",
+      "source": "/home/xxl/nine-debug-failure-20260908-9c5ffba/pipeline-replays/cuda-dot/replay.py",
+      "sha256": "c3d02d7fc29a134143e884e58491a646619bf97de7deb16fae0f1a5d79403f2b",
+      "bytes": 198
+    },
+    {
+      "path": "9c5ffba/pipeline-replays/cuda-transpose/failure.json",
+      "source": "/home/xxl/nine-debug-failure-20260908-9c5ffba/pipeline-replays/cuda-transpose/failure.json",
+      "sha256": "ad742216c90efcdcb1bc19c4c011fde6f2a30b2634a61c4f8d43bc7884511694",
+      "bytes": 3942
+    },
+    {
+      "path": "9c5ffba/pipeline-replays/cuda-transpose/replay.py",
+      "source": "/home/xxl/nine-debug-failure-20260908-9c5ffba/pipeline-replays/cuda-transpose/replay.py",
+      "sha256": "c3d02d7fc29a134143e884e58491a646619bf97de7deb16fae0f1a5d79403f2b",
+      "bytes": 198
+    },
+    {
+      "path": "9c5ffba/pipeline-replays/triton-dot/failure.json",
+      "source": "/home/xxl/nine-debug-failure-20260908-9c5ffba/pipeline-replays/triton-dot/failure.json",
+      "sha256": "618fe5faebcbf34e8717e6b18054b5eb0222e22ed36e31e28a9f4c8fdfe11d79",
+      "bytes": 3995
+    },
+    {
+      "path": "9c5ffba/pipeline-replays/triton-dot/replay.py",
+      "source": "/home/xxl/nine-debug-failure-20260908-9c5ffba/pipeline-replays/triton-dot/replay.py",
+      "sha256": "c3d02d7fc29a134143e884e58491a646619bf97de7deb16fae0f1a5d79403f2b",
+      "bytes": 198
+    },
+    {
+      "path": "9c5ffba/pipeline-replays/triton-transpose/failure.json",
+      "source": "/home/xxl/nine-debug-failure-20260908-9c5ffba/pipeline-replays/triton-transpose/failure.json",
+      "sha256": "7115d581eba84e3daef3b0cffed0a435c550b33ad2e148e36d6780d5b80e2c2a",
+      "bytes": 3944
+    },
+    {
+      "path": "9c5ffba/pipeline-replays/triton-transpose/replay.py",
+      "source": "/home/xxl/nine-debug-failure-20260908-9c5ffba/pipeline-replays/triton-transpose/replay.py",
+      "sha256": "c3d02d7fc29a134143e884e58491a646619bf97de7deb16fae0f1a5d79403f2b",
+      "bytes": 198
+    },
+    {
+      "path": "9c5ffba/pipeline-replays/cuda-dot/candidate/inputs.npz",
+      "source": "/home/xxl/nine-debug-failure-20260908-9c5ffba/pipeline-replays/cuda-dot/candidate/inputs.npz",
+      "sha256": "f53fb75b8024e83c2e2d3f479352ccf7c4c8838ce3d9b5798d80d4d4cfeadbd4",
+      "bytes": 691
+    },
+    {
+      "path": "9c5ffba/pipeline-replays/cuda-dot/candidate/manifest.json",
+      "source": "/home/xxl/nine-debug-failure-20260908-9c5ffba/pipeline-replays/cuda-dot/candidate/manifest.json",
+      "sha256": "2776a448a5502c81a38e48023ae7493b6bfffe19a121972bca8d4a70df54fc8b",
+      "bytes": 387083
+    },
+    {
+      "path": "9c5ffba/pipeline-replays/cuda-dot/candidate/program.json",
+      "source": "/home/xxl/nine-debug-failure-20260908-9c5ffba/pipeline-replays/cuda-dot/candidate/program.json",
+      "sha256": "a5324a43dbf521db81a0a1e34000a448d46023e11d42304492a958be2a539d83",
+      "bytes": 38712
+    },
+    {
+      "path": "9c5ffba/pipeline-replays/cuda-dot/candidate/program.ssa",
+      "source": "/home/xxl/nine-debug-failure-20260908-9c5ffba/pipeline-replays/cuda-dot/candidate/program.ssa",
+      "sha256": "a6b7d6f89f7dfdbd4f87e90a479709416ac385b8666bdc35ddbfb3c375c18899",
+      "bytes": 1163
+    },
+    {
+      "path": "9c5ffba/pipeline-replays/cuda-dot/candidate/replay.py",
+      "source": "/home/xxl/nine-debug-failure-20260908-9c5ffba/pipeline-replays/cuda-dot/candidate/replay.py",
+      "sha256": "ecffc8c5aff638f536362deedf6f1ae92c7a9b61caaba7a1f6cdc4bbdd1d81fc",
+      "bytes": 424
+    },
+    {
+      "path": "9c5ffba/pipeline-replays/cuda-dot/previous/inputs.npz",
+      "source": "/home/xxl/nine-debug-failure-20260908-9c5ffba/pipeline-replays/cuda-dot/previous/inputs.npz",
+      "sha256": "f53fb75b8024e83c2e2d3f479352ccf7c4c8838ce3d9b5798d80d4d4cfeadbd4",
+      "bytes": 691
+    },
+    {
+      "path": "9c5ffba/pipeline-replays/cuda-dot/previous/manifest.json",
+      "source": "/home/xxl/nine-debug-failure-20260908-9c5ffba/pipeline-replays/cuda-dot/previous/manifest.json",
+      "sha256": "2776a448a5502c81a38e48023ae7493b6bfffe19a121972bca8d4a70df54fc8b",
+      "bytes": 387083
+    },
+    {
+      "path": "9c5ffba/pipeline-replays/cuda-dot/previous/program.json",
+      "source": "/home/xxl/nine-debug-failure-20260908-9c5ffba/pipeline-replays/cuda-dot/previous/program.json",
+      "sha256": "8d4f965ba75d8bea1610ce2dd4f600bf782eac02f3e1a1c19704be26c8a237cf",
+      "bytes": 32022
+    },
+    {
+      "path": "9c5ffba/pipeline-replays/cuda-dot/previous/program.ssa",
+      "source": "/home/xxl/nine-debug-failure-20260908-9c5ffba/pipeline-replays/cuda-dot/previous/program.ssa",
+      "sha256": "ac04a35836d51dcaa1d8e530db486817530a6da35666b97a487c60ccee817294",
+      "bytes": 1163
+    },
+    {
+      "path": "9c5ffba/pipeline-replays/cuda-dot/previous/replay.py",
+      "source": "/home/xxl/nine-debug-failure-20260908-9c5ffba/pipeline-replays/cuda-dot/previous/replay.py",
+      "sha256": "ecffc8c5aff638f536362deedf6f1ae92c7a9b61caaba7a1f6cdc4bbdd1d81fc",
+      "bytes": 424
+    },
+    {
+      "path": "9c5ffba/pipeline-replays/cuda-dot/reference/inputs.npz",
+      "source": "/home/xxl/nine-debug-failure-20260908-9c5ffba/pipeline-replays/cuda-dot/reference/inputs.npz",
+      "sha256": "f53fb75b8024e83c2e2d3f479352ccf7c4c8838ce3d9b5798d80d4d4cfeadbd4",
+      "bytes": 691
+    },
+    {
+      "path": "9c5ffba/pipeline-replays/cuda-dot/reference/manifest.json",
+      "source": "/home/xxl/nine-debug-failure-20260908-9c5ffba/pipeline-replays/cuda-dot/reference/manifest.json",
+      "sha256": "2776a448a5502c81a38e48023ae7493b6bfffe19a121972bca8d4a70df54fc8b",
+      "bytes": 387083
+    },
+    {
+      "path": "9c5ffba/pipeline-replays/cuda-dot/reference/program.json",
+      "source": "/home/xxl/nine-debug-failure-20260908-9c5ffba/pipeline-replays/cuda-dot/reference/program.json",
+      "sha256": "1b9df9c6c674793d0bedb1c1017931d0aa29895affa49c5d3fdee81622337312",
+      "bytes": 19292
+    },
+    {
+      "path": "9c5ffba/pipeline-replays/cuda-dot/reference/program.ssa",
+      "source": "/home/xxl/nine-debug-failure-20260908-9c5ffba/pipeline-replays/cuda-dot/reference/program.ssa",
+      "sha256": "de7b501bf104b6160787e3eb4b009e1a54666a35d504ebea3a2c75bbe37ce846",
+      "bytes": 228
+    },
+    {
+      "path": "9c5ffba/pipeline-replays/cuda-dot/reference/replay.py",
+      "source": "/home/xxl/nine-debug-failure-20260908-9c5ffba/pipeline-replays/cuda-dot/reference/replay.py",
+      "sha256": "ecffc8c5aff638f536362deedf6f1ae92c7a9b61caaba7a1f6cdc4bbdd1d81fc",
+      "bytes": 424
+    },
+    {
+      "path": "9c5ffba/pipeline-replays/cuda-transpose/candidate/inputs.npz",
+      "source": "/home/xxl/nine-debug-failure-20260908-9c5ffba/pipeline-replays/cuda-transpose/candidate/inputs.npz",
+      "sha256": "1e0354de99188eb5e49063c355f4e5c2c836377be7300eb4c3c9d368d3b040d8",
+      "bytes": 437
+    },
+    {
+      "path": "9c5ffba/pipeline-replays/cuda-transpose/candidate/manifest.json",
+      "source": "/home/xxl/nine-debug-failure-20260908-9c5ffba/pipeline-replays/cuda-transpose/candidate/manifest.json",
+      "sha256": "59d8e1e71817daf145a6ec563eae5a92abd58fd542c2798c87f650a4db2aded3",
+      "bytes": 258146
+    },
+    {
+      "path": "9c5ffba/pipeline-replays/cuda-transpose/candidate/program.json",
+      "source": "/home/xxl/nine-debug-failure-20260908-9c5ffba/pipeline-replays/cuda-transpose/candidate/program.json",
+      "sha256": "c3dd0449ecad3907476f47eaceab33289e1f35f4a8c23d187d04a0a5ab616ba5",
+      "bytes": 22278
+    },
+    {
+      "path": "9c5ffba/pipeline-replays/cuda-transpose/candidate/program.ssa",
+      "source": "/home/xxl/nine-debug-failure-20260908-9c5ffba/pipeline-replays/cuda-transpose/candidate/program.ssa",
+      "sha256": "95b684f9099172a3fb2b0dd5c67423fc17dcc282a208954dc9065a40c8cac4f0",
+      "bytes": 399
+    },
+    {
+      "path": "9c5ffba/pipeline-replays/cuda-transpose/candidate/replay.py",
+      "source": "/home/xxl/nine-debug-failure-20260908-9c5ffba/pipeline-replays/cuda-transpose/candidate/replay.py",
+      "sha256": "ecffc8c5aff638f536362deedf6f1ae92c7a9b61caaba7a1f6cdc4bbdd1d81fc",
+      "bytes": 424
+    },
+    {
+      "path": "9c5ffba/pipeline-replays/cuda-transpose/previous/inputs.npz",
+      "source": "/home/xxl/nine-debug-failure-20260908-9c5ffba/pipeline-replays/cuda-transpose/previous/inputs.npz",
+      "sha256": "1e0354de99188eb5e49063c355f4e5c2c836377be7300eb4c3c9d368d3b040d8",
+      "bytes": 437
+    },
+    {
+      "path": "9c5ffba/pipeline-replays/cuda-transpose/previous/manifest.json",
+      "source": "/home/xxl/nine-debug-failure-20260908-9c5ffba/pipeline-replays/cuda-transpose/previous/manifest.json",
+      "sha256": "59d8e1e71817daf145a6ec563eae5a92abd58fd542c2798c87f650a4db2aded3",
+      "bytes": 258146
+    },
+    {
+      "path": "9c5ffba/pipeline-replays/cuda-transpose/previous/program.json",
+      "source": "/home/xxl/nine-debug-failure-20260908-9c5ffba/pipeline-replays/cuda-transpose/previous/program.json",
+      "sha256": "5e24e402698d7dabc6f4e027d142da28c0be5768cedf2c211c9dd26ce8b7beb9",
+      "bytes": 20030
+    },
+    {
+      "path": "9c5ffba/pipeline-replays/cuda-transpose/previous/program.ssa",
+      "source": "/home/xxl/nine-debug-failure-20260908-9c5ffba/pipeline-replays/cuda-transpose/previous/program.ssa",
+      "sha256": "e70aa6714bffe77a6bcd0d0d967ed836987044268c0cafc17aa1f057d3939a0b",
+      "bytes": 399
+    },
+    {
+      "path": "9c5ffba/pipeline-replays/cuda-transpose/previous/replay.py",
+      "source": "/home/xxl/nine-debug-failure-20260908-9c5ffba/pipeline-replays/cuda-transpose/previous/replay.py",
+      "sha256": "ecffc8c5aff638f536362deedf6f1ae92c7a9b61caaba7a1f6cdc4bbdd1d81fc",
+      "bytes": 424
+    },
+    {
+      "path": "9c5ffba/pipeline-replays/cuda-transpose/reference/inputs.npz",
+      "source": "/home/xxl/nine-debug-failure-20260908-9c5ffba/pipeline-replays/cuda-transpose/reference/inputs.npz",
+      "sha256": "1e0354de99188eb5e49063c355f4e5c2c836377be7300eb4c3c9d368d3b040d8",
+      "bytes": 437
+    },
+    {
+      "path": "9c5ffba/pipeline-replays/cuda-transpose/reference/manifest.json",
+      "source": "/home/xxl/nine-debug-failure-20260908-9c5ffba/pipeline-replays/cuda-transpose/reference/manifest.json",
+      "sha256": "59d8e1e71817daf145a6ec563eae5a92abd58fd542c2798c87f650a4db2aded3",
+      "bytes": 258146
+    },
+    {
+      "path": "9c5ffba/pipeline-replays/cuda-transpose/reference/program.json",
+      "source": "/home/xxl/nine-debug-failure-20260908-9c5ffba/pipeline-replays/cuda-transpose/reference/program.json",
+      "sha256": "641cca78be805be1401c3a223e075521c824d88529224eeb289328d9951b219c",
+      "bytes": 15914
+    },
+    {
+      "path": "9c5ffba/pipeline-replays/cuda-transpose/reference/program.ssa",
+      "source": "/home/xxl/nine-debug-failure-20260908-9c5ffba/pipeline-replays/cuda-transpose/reference/program.ssa",
+      "sha256": "231feba1f72526d4e073c4d8103dc71d88a214a96599486c0beae1a2aa254160",
+      "bytes": 203
+    },
+    {
+      "path": "9c5ffba/pipeline-replays/cuda-transpose/reference/replay.py",
+      "source": "/home/xxl/nine-debug-failure-20260908-9c5ffba/pipeline-replays/cuda-transpose/reference/replay.py",
+      "sha256": "ecffc8c5aff638f536362deedf6f1ae92c7a9b61caaba7a1f6cdc4bbdd1d81fc",
+      "bytes": 424
+    },
+    {
+      "path": "9c5ffba/pipeline-replays/triton-dot/candidate/inputs.npz",
+      "source": "/home/xxl/nine-debug-failure-20260908-9c5ffba/pipeline-replays/triton-dot/candidate/inputs.npz",
+      "sha256": "f53fb75b8024e83c2e2d3f479352ccf7c4c8838ce3d9b5798d80d4d4cfeadbd4",
+      "bytes": 691
+    },
+    {
+      "path": "9c5ffba/pipeline-replays/triton-dot/candidate/manifest.json",
+      "source": "/home/xxl/nine-debug-failure-20260908-9c5ffba/pipeline-replays/triton-dot/candidate/manifest.json",
+      "sha256": "2776a448a5502c81a38e48023ae7493b6bfffe19a121972bca8d4a70df54fc8b",
+      "bytes": 387083
+    },
+    {
+      "path": "9c5ffba/pipeline-replays/triton-dot/candidate/program.json",
+      "source": "/home/xxl/nine-debug-failure-20260908-9c5ffba/pipeline-replays/triton-dot/candidate/program.json",
+      "sha256": "2eed338a74ba715eba3732fe92ede8cd8351c636e39f3e0b66d0ff2714b215d1",
+      "bytes": 39923
+    },
+    {
+      "path": "9c5ffba/pipeline-replays/triton-dot/candidate/program.ssa",
+      "source": "/home/xxl/nine-debug-failure-20260908-9c5ffba/pipeline-replays/triton-dot/candidate/program.ssa",
+      "sha256": "a6b7d6f89f7dfdbd4f87e90a479709416ac385b8666bdc35ddbfb3c375c18899",
+      "bytes": 1163
+    },
+    {
+      "path": "9c5ffba/pipeline-replays/triton-dot/candidate/replay.py",
+      "source": "/home/xxl/nine-debug-failure-20260908-9c5ffba/pipeline-replays/triton-dot/candidate/replay.py",
+      "sha256": "ecffc8c5aff638f536362deedf6f1ae92c7a9b61caaba7a1f6cdc4bbdd1d81fc",
+      "bytes": 424
+    },
+    {
+      "path": "9c5ffba/pipeline-replays/triton-dot/previous/inputs.npz",
+      "source": "/home/xxl/nine-debug-failure-20260908-9c5ffba/pipeline-replays/triton-dot/previous/inputs.npz",
+      "sha256": "f53fb75b8024e83c2e2d3f479352ccf7c4c8838ce3d9b5798d80d4d4cfeadbd4",
+      "bytes": 691
+    },
+    {
+      "path": "9c5ffba/pipeline-replays/triton-dot/previous/manifest.json",
+      "source": "/home/xxl/nine-debug-failure-20260908-9c5ffba/pipeline-replays/triton-dot/previous/manifest.json",
+      "sha256": "2776a448a5502c81a38e48023ae7493b6bfffe19a121972bca8d4a70df54fc8b",
+      "bytes": 387083
+    },
+    {
+      "path": "9c5ffba/pipeline-replays/triton-dot/previous/program.json",
+      "source": "/home/xxl/nine-debug-failure-20260908-9c5ffba/pipeline-replays/triton-dot/previous/program.json",
+      "sha256": "3558c6342af18bd4d5795c9e86320334e4b7e9310cf04bff5bbeffc92ca952c7",
+      "bytes": 33233
+    },
+    {
+      "path": "9c5ffba/pipeline-replays/triton-dot/previous/program.ssa",
+      "source": "/home/xxl/nine-debug-failure-20260908-9c5ffba/pipeline-replays/triton-dot/previous/program.ssa",
+      "sha256": "ac04a35836d51dcaa1d8e530db486817530a6da35666b97a487c60ccee817294",
+      "bytes": 1163
+    },
+    {
+      "path": "9c5ffba/pipeline-replays/triton-dot/previous/replay.py",
+      "source": "/home/xxl/nine-debug-failure-20260908-9c5ffba/pipeline-replays/triton-dot/previous/replay.py",
+      "sha256": "ecffc8c5aff638f536362deedf6f1ae92c7a9b61caaba7a1f6cdc4bbdd1d81fc",
+      "bytes": 424
+    },
+    {
+      "path": "9c5ffba/pipeline-replays/triton-dot/reference/inputs.npz",
+      "source": "/home/xxl/nine-debug-failure-20260908-9c5ffba/pipeline-replays/triton-dot/reference/inputs.npz",
+      "sha256": "f53fb75b8024e83c2e2d3f479352ccf7c4c8838ce3d9b5798d80d4d4cfeadbd4",
+      "bytes": 691
+    },
+    {
+      "path": "9c5ffba/pipeline-replays/triton-dot/reference/manifest.json",
+      "source": "/home/xxl/nine-debug-failure-20260908-9c5ffba/pipeline-replays/triton-dot/reference/manifest.json",
+      "sha256": "2776a448a5502c81a38e48023ae7493b6bfffe19a121972bca8d4a70df54fc8b",
+      "bytes": 387083
+    },
+    {
+      "path": "9c5ffba/pipeline-replays/triton-dot/reference/program.json",
+      "source": "/home/xxl/nine-debug-failure-20260908-9c5ffba/pipeline-replays/triton-dot/reference/program.json",
+      "sha256": "1b9df9c6c674793d0bedb1c1017931d0aa29895affa49c5d3fdee81622337312",
+      "bytes": 19292
+    },
+    {
+      "path": "9c5ffba/pipeline-replays/triton-dot/reference/program.ssa",
+      "source": "/home/xxl/nine-debug-failure-20260908-9c5ffba/pipeline-replays/triton-dot/reference/program.ssa",
+      "sha256": "de7b501bf104b6160787e3eb4b009e1a54666a35d504ebea3a2c75bbe37ce846",
+      "bytes": 228
+    },
+    {
+      "path": "9c5ffba/pipeline-replays/triton-dot/reference/replay.py",
+      "source": "/home/xxl/nine-debug-failure-20260908-9c5ffba/pipeline-replays/triton-dot/reference/replay.py",
+      "sha256": "ecffc8c5aff638f536362deedf6f1ae92c7a9b61caaba7a1f6cdc4bbdd1d81fc",
+      "bytes": 424
+    },
+    {
+      "path": "9c5ffba/pipeline-replays/triton-transpose/candidate/inputs.npz",
+      "source": "/home/xxl/nine-debug-failure-20260908-9c5ffba/pipeline-replays/triton-transpose/candidate/inputs.npz",
+      "sha256": "1e0354de99188eb5e49063c355f4e5c2c836377be7300eb4c3c9d368d3b040d8",
+      "bytes": 437
+    },
+    {
+      "path": "9c5ffba/pipeline-replays/triton-transpose/candidate/manifest.json",
+      "source": "/home/xxl/nine-debug-failure-20260908-9c5ffba/pipeline-replays/triton-transpose/candidate/manifest.json",
+      "sha256": "59d8e1e71817daf145a6ec563eae5a92abd58fd542c2798c87f650a4db2aded3",
+      "bytes": 258146
+    },
+    {
+      "path": "9c5ffba/pipeline-replays/triton-transpose/candidate/program.json",
+      "source": "/home/xxl/nine-debug-failure-20260908-9c5ffba/pipeline-replays/triton-transpose/candidate/program.json",
+      "sha256": "80eab9e57f8722d75acd6dbfa6544e36b385303a460511dce482d20a6df17ce0",
+      "bytes": 22358
+    },
+    {
+      "path": "9c5ffba/pipeline-replays/triton-transpose/candidate/program.ssa",
+      "source": "/home/xxl/nine-debug-failure-20260908-9c5ffba/pipeline-replays/triton-transpose/candidate/program.ssa",
+      "sha256": "95b684f9099172a3fb2b0dd5c67423fc17dcc282a208954dc9065a40c8cac4f0",
+      "bytes": 399
+    },
+    {
+      "path": "9c5ffba/pipeline-replays/triton-transpose/candidate/replay.py",
+      "source": "/home/xxl/nine-debug-failure-20260908-9c5ffba/pipeline-replays/triton-transpose/candidate/replay.py",
+      "sha256": "ecffc8c5aff638f536362deedf6f1ae92c7a9b61caaba7a1f6cdc4bbdd1d81fc",
+      "bytes": 424
+    },
+    {
+      "path": "9c5ffba/pipeline-replays/triton-transpose/previous/inputs.npz",
+      "source": "/home/xxl/nine-debug-failure-20260908-9c5ffba/pipeline-replays/triton-transpose/previous/inputs.npz",
+      "sha256": "1e0354de99188eb5e49063c355f4e5c2c836377be7300eb4c3c9d368d3b040d8",
+      "bytes": 437
+    },
+    {
+      "path": "9c5ffba/pipeline-replays/triton-transpose/previous/manifest.json",
+      "source": "/home/xxl/nine-debug-failure-20260908-9c5ffba/pipeline-replays/triton-transpose/previous/manifest.json",
+      "sha256": "59d8e1e71817daf145a6ec563eae5a92abd58fd542c2798c87f650a4db2aded3",
+      "bytes": 258146
+    },
+    {
+      "path": "9c5ffba/pipeline-replays/triton-transpose/previous/program.json",
+      "source": "/home/xxl/nine-debug-failure-20260908-9c5ffba/pipeline-replays/triton-transpose/previous/program.json",
+      "sha256": "1fce51e1e6077dafffffdd15ca0b2df703d2eb5d4f90e44d6f0b9af7adb94d38",
+      "bytes": 20110
+    },
+    {
+      "path": "9c5ffba/pipeline-replays/triton-transpose/previous/program.ssa",
+      "source": "/home/xxl/nine-debug-failure-20260908-9c5ffba/pipeline-replays/triton-transpose/previous/program.ssa",
+      "sha256": "e70aa6714bffe77a6bcd0d0d967ed836987044268c0cafc17aa1f057d3939a0b",
+      "bytes": 399
+    },
+    {
+      "path": "9c5ffba/pipeline-replays/triton-transpose/previous/replay.py",
+      "source": "/home/xxl/nine-debug-failure-20260908-9c5ffba/pipeline-replays/triton-transpose/previous/replay.py",
+      "sha256": "ecffc8c5aff638f536362deedf6f1ae92c7a9b61caaba7a1f6cdc4bbdd1d81fc",
+      "bytes": 424
+    },
+    {
+      "path": "9c5ffba/pipeline-replays/triton-transpose/reference/inputs.npz",
+      "source": "/home/xxl/nine-debug-failure-20260908-9c5ffba/pipeline-replays/triton-transpose/reference/inputs.npz",
+      "sha256": "1e0354de99188eb5e49063c355f4e5c2c836377be7300eb4c3c9d368d3b040d8",
+      "bytes": 437
+    },
+    {
+      "path": "9c5ffba/pipeline-replays/triton-transpose/reference/manifest.json",
+      "source": "/home/xxl/nine-debug-failure-20260908-9c5ffba/pipeline-replays/triton-transpose/reference/manifest.json",
+      "sha256": "59d8e1e71817daf145a6ec563eae5a92abd58fd542c2798c87f650a4db2aded3",
+      "bytes": 258146
+    },
+    {
+      "path": "9c5ffba/pipeline-replays/triton-transpose/reference/program.json",
+      "source": "/home/xxl/nine-debug-failure-20260908-9c5ffba/pipeline-replays/triton-transpose/reference/program.json",
+      "sha256": "641cca78be805be1401c3a223e075521c824d88529224eeb289328d9951b219c",
+      "bytes": 15914
+    },
+    {
+      "path": "9c5ffba/pipeline-replays/triton-transpose/reference/program.ssa",
+      "source": "/home/xxl/nine-debug-failure-20260908-9c5ffba/pipeline-replays/triton-transpose/reference/program.ssa",
+      "sha256": "231feba1f72526d4e073c4d8103dc71d88a214a96599486c0beae1a2aa254160",
+      "bytes": 203
+    },
+    {
+      "path": "9c5ffba/pipeline-replays/triton-transpose/reference/replay.py",
+      "source": "/home/xxl/nine-debug-failure-20260908-9c5ffba/pipeline-replays/triton-transpose/reference/replay.py",
+      "sha256": "ecffc8c5aff638f536362deedf6f1ae92c7a9b61caaba7a1f6cdc4bbdd1d81fc",
+      "bytes": 424
+    }
+  ]
+}

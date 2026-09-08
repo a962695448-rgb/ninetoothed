@@ -1,0 +1,121 @@
+{
+  "schema": 1,
+  "kind": "passes",
+  "phase": "execution",
+  "replayable": true,
+  "seed": 2026,
+  "rtol": 0.001,
+  "atol": 0.001,
+  "error": null,
+  "report": {
+    "passed": false,
+    "checked_passes": [
+      "unchanged",
+      "injected_bad_constant"
+    ],
+    "first_bad_pass": "injected_bad_constant",
+    "difference": {
+      "equal": false,
+      "output_differences": [
+        "out"
+      ],
+      "first_operation": {
+        "program_id": [
+          0,
+          0,
+          0
+        ],
+        "location": "entry:0:arith.constant",
+        "opcode": "arith.constant",
+        "result_name": "%0",
+        "iteration": [],
+        "lane": null,
+        "component": "result"
+      },
+      "traces_aligned": true,
+      "source_candidates": [],
+      "aligned_prefix_operation": {
+        "program_id": [
+          0,
+          0,
+          0
+        ],
+        "location": "entry:0:arith.constant",
+        "opcode": "arith.constant",
+        "result_name": "%0",
+        "iteration": [],
+        "lane": null,
+        "component": "result"
+      },
+      "reproducer": null,
+      "export_error": null,
+      "retained_operation": null
+    },
+    "error": null,
+    "source_candidates": [],
+    "adjacent_difference": {
+      "equal": false,
+      "output_differences": [
+        "out"
+      ],
+      "first_operation": {
+        "program_id": [
+          0,
+          0,
+          0
+        ],
+        "location": "entry:0:arith.constant",
+        "opcode": "arith.constant",
+        "result_name": "%0",
+        "iteration": [],
+        "lane": null,
+        "component": "result"
+      },
+      "traces_aligned": true,
+      "source_candidates": [],
+      "aligned_prefix_operation": {
+        "program_id": [
+          0,
+          0,
+          0
+        ],
+        "location": "entry:0:arith.constant",
+        "opcode": "arith.constant",
+        "result_name": "%0",
+        "iteration": [],
+        "lane": null,
+        "component": "result"
+      },
+      "reproducer": null,
+      "export_error": null,
+      "retained_operation": null
+    },
+    "localization": {
+      "operation": {
+        "program_id": [
+          0,
+          0,
+          0
+        ],
+        "location": "entry:0:arith.constant",
+        "opcode": "arith.constant",
+        "result_name": "%0",
+        "iteration": [],
+        "lane": null,
+        "component": "result"
+      },
+      "reference": "previous",
+      "traces_aligned": true,
+      "basis": "full_trace",
+      "reference_location": "entry:0:arith.constant"
+    },
+    "reproducer": null,
+    "export_error": null
+  },
+  "environment": {
+    "python": "3.12.3",
+    "numpy": "2.5.2",
+    "ninetoothed": null
+  },
+  "scope": "Exact supplied SSA and inputs; no automatic program or shape minimization."
+}

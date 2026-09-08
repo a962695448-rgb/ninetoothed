@@ -1,0 +1,4 @@
+Running Sphinx v9.1.0
+loading translations [en]... done
+making output directory... done
+[autosummary] generating autosummary for: basics.rst, build.rst, cpu_interpreter.rst, index.rst, installation.rst, python_api.rst, python_api/code_generation.rst, python_api/debugging.rst, python_api/symbol.rst, python_api/tensor.rst, python_api/visualization.rst

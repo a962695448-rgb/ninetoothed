@@ -1,0 +1,616 @@
+{
+  "kind": "application",
+  "inputs": [
+    {
+      "name": "x",
+      "type": {
+        "kind": "tensor",
+        "shape": [
+          "4"
+        ],
+        "dtype": "float32",
+        "attrs": {
+          "ndim": 1,
+          "constexpr": false,
+          "jagged_dim": null,
+          "dtype_level": 0,
+          "source_name": "x",
+          "source_ndim": 1,
+          "source_shape": [
+            "ninetoothed_x_size_0"
+          ],
+          "source_dtype": "float32",
+          "other": null,
+          "source_strides": [
+            "ninetoothed_x_stride_0"
+          ],
+          "target_dims": [
+            "0"
+          ],
+          "view_ndim": 1,
+          "view_shape": [
+            "(ninetoothed_x_size_0 - 3 - 1 + 4 - 1) // 4 + 1"
+          ],
+          "view_linear_offset": "0 * ninetoothed_x_stride_0",
+          "view_mask": "True & (index < (ninetoothed_x_size_0 - 3 - 1 + 4 - 1) // 4 + 1) & (index >= 0)",
+          "view_offsets": [
+            "0"
+          ],
+          "application_shape": [
+            "4"
+          ],
+          "application_ndim": 1,
+          "dtype_shapes": [
+            [
+              "4"
+            ]
+          ],
+          "dtype_target_dims": [
+            [
+              "0"
+            ]
+          ],
+          "access_templates": [
+            {
+              "level": 0,
+              "shape": [
+                "4"
+              ],
+              "linear_offset": "(outer_index * 4 + value_0) * ninetoothed_x_stride_0",
+              "offsets": [
+                "outer_index * 4 + value_0"
+              ],
+              "mask": "True & (outer_index < (ninetoothed_x_size_0 - 3 - 1 + 4 - 1) // 4 + 1) & (outer_index >= 0) & (value_0 < 4) & (value_0 >= 0) & (outer_index * 4 + value_0 < ninetoothed_x_size_0) & (outer_index * 4 + value_0 >= 0)"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "out",
+      "type": {
+        "kind": "tensor",
+        "shape": [
+          "4"
+        ],
+        "dtype": "float32",
+        "attrs": {
+          "ndim": 1,
+          "constexpr": false,
+          "jagged_dim": null,
+          "dtype_level": 0,
+          "source_name": "out",
+          "source_ndim": 1,
+          "source_shape": [
+            "ninetoothed_out_size_0"
+          ],
+          "source_dtype": "float32",
+          "other": null,
+          "source_strides": [
+            "ninetoothed_out_stride_0"
+          ],
+          "target_dims": [
+            "0"
+          ],
+          "view_ndim": 1,
+          "view_shape": [
+            "(ninetoothed_out_size_0 - 3 - 1 + 4 - 1) // 4 + 1"
+          ],
+          "view_linear_offset": "0 * ninetoothed_out_stride_0",
+          "view_mask": "True & (index < (ninetoothed_out_size_0 - 3 - 1 + 4 - 1) // 4 + 1) & (index >= 0)",
+          "view_offsets": [
+            "0"
+          ],
+          "application_shape": [
+            "4"
+          ],
+          "application_ndim": 1,
+          "dtype_shapes": [
+            [
+              "4"
+            ]
+          ],
+          "dtype_target_dims": [
+            [
+              "0"
+            ]
+          ],
+          "access_templates": [
+            {
+              "level": 0,
+              "shape": [
+                "4"
+              ],
+              "linear_offset": "(outer_index * 4 + value_0) * ninetoothed_out_stride_0",
+              "offsets": [
+                "outer_index * 4 + value_0"
+              ],
+              "mask": "True & (outer_index < (ninetoothed_out_size_0 - 3 - 1 + 4 - 1) // 4 + 1) & (outer_index >= 0) & (value_0 < 4) & (value_0 >= 0) & (outer_index * 4 + value_0 < ninetoothed_out_size_0) & (outer_index * 4 + value_0 >= 0)"
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "outputs": [
+    {
+      "name": "out",
+      "type": {
+        "kind": "tensor",
+        "shape": [
+          "4"
+        ],
+        "dtype": "float32",
+        "attrs": {
+          "ndim": 1,
+          "constexpr": false,
+          "jagged_dim": null,
+          "dtype_level": 0,
+          "source_name": "out",
+          "source_ndim": 1,
+          "source_shape": [
+            "ninetoothed_out_size_0"
+          ],
+          "source_dtype": "float32",
+          "other": null,
+          "source_strides": [
+            "ninetoothed_out_stride_0"
+          ],
+          "target_dims": [
+            "0"
+          ],
+          "view_ndim": 1,
+          "view_shape": [
+            "(ninetoothed_out_size_0 - 3 - 1 + 4 - 1) // 4 + 1"
+          ],
+          "view_linear_offset": "0 * ninetoothed_out_stride_0",
+          "view_mask": "True & (index < (ninetoothed_out_size_0 - 3 - 1 + 4 - 1) // 4 + 1) & (index >= 0)",
+          "view_offsets": [
+            "0"
+          ],
+          "application_shape": [
+            "4"
+          ],
+          "application_ndim": 1,
+          "dtype_shapes": [
+            [
+              "4"
+            ]
+          ],
+          "dtype_target_dims": [
+            [
+              "0"
+            ]
+          ],
+          "access_templates": [
+            {
+              "level": 0,
+              "shape": [
+                "4"
+              ],
+              "linear_offset": "(outer_index * 4 + value_0) * ninetoothed_out_stride_0",
+              "offsets": [
+                "outer_index * 4 + value_0"
+              ],
+              "mask": "True & (outer_index < (ninetoothed_out_size_0 - 3 - 1 + 4 - 1) // 4 + 1) & (outer_index >= 0) & (value_0 < 4) & (value_0 >= 0) & (outer_index * 4 + value_0 < ninetoothed_out_size_0) & (outer_index * 4 + value_0 >= 0)"
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "blocks": [
+    {
+      "name": "entry",
+      "args": [],
+      "operations": [
+        {
+          "opcode": "arith.constant",
+          "operands": [],
+          "results": [
+            {
+              "name": "%0",
+              "type": {
+                "kind": "scalar",
+                "shape": [],
+                "dtype": "int64",
+                "attrs": {}
+              }
+            }
+          ],
+          "attrs": {
+            "value": 3
+          },
+          "regions": [],
+          "origins": []
+        },
+        {
+          "opcode": "arith.mul",
+          "operands": [
+            "x",
+            "%0"
+          ],
+          "results": [
+            {
+              "name": "%1",
+              "type": {
+                "kind": "tensor",
+                "shape": [
+                  "4"
+                ],
+                "dtype": "float32",
+                "attrs": {
+                  "ndim": 1,
+                  "constexpr": false,
+                  "jagged_dim": null,
+                  "dtype_level": 0,
+                  "source_name": "x",
+                  "source_ndim": 1,
+                  "source_shape": [
+                    "ninetoothed_x_size_0"
+                  ],
+                  "source_dtype": "float32",
+                  "other": null,
+                  "source_strides": [
+                    "ninetoothed_x_stride_0"
+                  ],
+                  "target_dims": [
+                    "0"
+                  ],
+                  "view_ndim": 1,
+                  "view_shape": [
+                    "(ninetoothed_x_size_0 - 3 - 1 + 4 - 1) // 4 + 1"
+                  ],
+                  "view_linear_offset": "0 * ninetoothed_x_stride_0",
+                  "view_mask": "True & (index < (ninetoothed_x_size_0 - 3 - 1 + 4 - 1) // 4 + 1) & (index >= 0)",
+                  "view_offsets": [
+                    "0"
+                  ],
+                  "application_shape": [
+                    "4"
+                  ],
+                  "application_ndim": 1,
+                  "dtype_shapes": [
+                    [
+                      "4"
+                    ]
+                  ],
+                  "dtype_target_dims": [
+                    [
+                      "0"
+                    ]
+                  ],
+                  "access_templates": [
+                    {
+                      "level": 0,
+                      "shape": [
+                        "4"
+                      ],
+                      "linear_offset": "(outer_index * 4 + value_0) * ninetoothed_x_stride_0",
+                      "offsets": [
+                        "outer_index * 4 + value_0"
+                      ],
+                      "mask": "True & (outer_index < (ninetoothed_x_size_0 - 3 - 1 + 4 - 1) // 4 + 1) & (outer_index >= 0) & (value_0 < 4) & (value_0 >= 0) & (outer_index * 4 + value_0 < ninetoothed_x_size_0) & (outer_index * 4 + value_0 >= 0)"
+                    }
+                  ]
+                }
+              }
+            }
+          ],
+          "attrs": {},
+          "regions": [],
+          "origins": [
+            "6df3bb3a6593264a92a7d82385f5dae1dc6479b796ea66193258b62e51bee1de:entry:1:arith.mul"
+          ]
+        },
+        {
+          "opcode": "arith.constant",
+          "operands": [],
+          "results": [
+            {
+              "name": "%2",
+              "type": {
+                "kind": "scalar",
+                "shape": [],
+                "dtype": "int64",
+                "attrs": {}
+              }
+            }
+          ],
+          "attrs": {
+            "value": 1
+          },
+          "regions": [],
+          "origins": [
+            "6df3bb3a6593264a92a7d82385f5dae1dc6479b796ea66193258b62e51bee1de:entry:2:arith.constant"
+          ]
+        },
+        {
+          "opcode": "arith.add",
+          "operands": [
+            "%1",
+            "%2"
+          ],
+          "results": [
+            {
+              "name": "%3",
+              "type": {
+                "kind": "tensor",
+                "shape": [
+                  "4"
+                ],
+                "dtype": "float32",
+                "attrs": {
+                  "ndim": 1,
+                  "constexpr": false,
+                  "jagged_dim": null,
+                  "dtype_level": 0,
+                  "source_name": "x",
+                  "source_ndim": 1,
+                  "source_shape": [
+                    "ninetoothed_x_size_0"
+                  ],
+                  "source_dtype": "float32",
+                  "other": null,
+                  "source_strides": [
+                    "ninetoothed_x_stride_0"
+                  ],
+                  "target_dims": [
+                    "0"
+                  ],
+                  "view_ndim": 1,
+                  "view_shape": [
+                    "(ninetoothed_x_size_0 - 3 - 1 + 4 - 1) // 4 + 1"
+                  ],
+                  "view_linear_offset": "0 * ninetoothed_x_stride_0",
+                  "view_mask": "True & (index < (ninetoothed_x_size_0 - 3 - 1 + 4 - 1) // 4 + 1) & (index >= 0)",
+                  "view_offsets": [
+                    "0"
+                  ],
+                  "application_shape": [
+                    "4"
+                  ],
+                  "application_ndim": 1,
+                  "dtype_shapes": [
+                    [
+                      "4"
+                    ]
+                  ],
+                  "dtype_target_dims": [
+                    [
+                      "0"
+                    ]
+                  ],
+                  "access_templates": [
+                    {
+                      "level": 0,
+                      "shape": [
+                        "4"
+                      ],
+                      "linear_offset": "(outer_index * 4 + value_0) * ninetoothed_x_stride_0",
+                      "offsets": [
+                        "outer_index * 4 + value_0"
+                      ],
+                      "mask": "True & (outer_index < (ninetoothed_x_size_0 - 3 - 1 + 4 - 1) // 4 + 1) & (outer_index >= 0) & (value_0 < 4) & (value_0 >= 0) & (outer_index * 4 + value_0 < ninetoothed_x_size_0) & (outer_index * 4 + value_0 >= 0)"
+                    }
+                  ]
+                }
+              }
+            }
+          ],
+          "attrs": {},
+          "regions": [],
+          "origins": [
+            "6df3bb3a6593264a92a7d82385f5dae1dc6479b796ea66193258b62e51bee1de:entry:3:arith.add"
+          ]
+        },
+        {
+          "opcode": "mem.store",
+          "operands": [
+            "%3",
+            "out"
+          ],
+          "results": [],
+          "attrs": {
+            "target": "out"
+          },
+          "regions": [],
+          "origins": [
+            "6df3bb3a6593264a92a7d82385f5dae1dc6479b796ea66193258b62e51bee1de:entry:4:mem.store"
+          ]
+        }
+      ]
+    }
+  ],
+  "metadata": {
+    "source": "application_ast",
+    "function": "application",
+    "coarse_operator_nodes": false,
+    "ssa_operation_count": 5,
+    "symbols": [
+      "ninetoothed_out_size_0",
+      "ninetoothed_x_size_0"
+    ],
+    "provenance": {
+      "schema": 1,
+      "namespace": "6df3bb3a6593264a92a7d82385f5dae1dc6479b796ea66193258b62e51bee1de",
+      "sources": {
+        "6df3bb3a6593264a92a7d82385f5dae1dc6479b796ea66193258b62e51bee1de:entry:0:arith.constant": {
+          "location": "entry:0:arith.constant",
+          "opcode": "arith.constant",
+          "results": [
+            "%0"
+          ]
+        },
+        "6df3bb3a6593264a92a7d82385f5dae1dc6479b796ea66193258b62e51bee1de:entry:1:arith.mul": {
+          "location": "entry:1:arith.mul",
+          "opcode": "arith.mul",
+          "results": [
+            "%1"
+          ]
+        },
+        "6df3bb3a6593264a92a7d82385f5dae1dc6479b796ea66193258b62e51bee1de:entry:2:arith.constant": {
+          "location": "entry:2:arith.constant",
+          "opcode": "arith.constant",
+          "results": [
+            "%2"
+          ]
+        },
+        "6df3bb3a6593264a92a7d82385f5dae1dc6479b796ea66193258b62e51bee1de:entry:3:arith.add": {
+          "location": "entry:3:arith.add",
+          "opcode": "arith.add",
+          "results": [
+            "%3"
+          ]
+        },
+        "6df3bb3a6593264a92a7d82385f5dae1dc6479b796ea66193258b62e51bee1de:entry:4:mem.store": {
+          "location": "entry:4:mem.store",
+          "opcode": "mem.store",
+          "results": []
+        }
+      },
+      "passes": [
+        {
+          "name": "unchanged",
+          "input_fingerprint": "6df3bb3a6593264a92a7d82385f5dae1dc6479b796ea66193258b62e51bee1de",
+          "output_fingerprint": "6df3bb3a6593264a92a7d82385f5dae1dc6479b796ea66193258b62e51bee1de",
+          "relations": [
+            {
+              "relation": "preserve",
+              "inputs": [
+                "entry:0:arith.constant"
+              ],
+              "outputs": [
+                "entry:0:arith.constant"
+              ],
+              "origins": [
+                "6df3bb3a6593264a92a7d82385f5dae1dc6479b796ea66193258b62e51bee1de:entry:0:arith.constant"
+              ]
+            },
+            {
+              "relation": "preserve",
+              "inputs": [
+                "entry:1:arith.mul"
+              ],
+              "outputs": [
+                "entry:1:arith.mul"
+              ],
+              "origins": [
+                "6df3bb3a6593264a92a7d82385f5dae1dc6479b796ea66193258b62e51bee1de:entry:1:arith.mul"
+              ]
+            },
+            {
+              "relation": "preserve",
+              "inputs": [
+                "entry:2:arith.constant"
+              ],
+              "outputs": [
+                "entry:2:arith.constant"
+              ],
+              "origins": [
+                "6df3bb3a6593264a92a7d82385f5dae1dc6479b796ea66193258b62e51bee1de:entry:2:arith.constant"
+              ]
+            },
+            {
+              "relation": "preserve",
+              "inputs": [
+                "entry:3:arith.add"
+              ],
+              "outputs": [
+                "entry:3:arith.add"
+              ],
+              "origins": [
+                "6df3bb3a6593264a92a7d82385f5dae1dc6479b796ea66193258b62e51bee1de:entry:3:arith.add"
+              ]
+            },
+            {
+              "relation": "preserve",
+              "inputs": [
+                "entry:4:mem.store"
+              ],
+              "outputs": [
+                "entry:4:mem.store"
+              ],
+              "origins": [
+                "6df3bb3a6593264a92a7d82385f5dae1dc6479b796ea66193258b62e51bee1de:entry:4:mem.store"
+              ]
+            }
+          ]
+        },
+        {
+          "name": "injected_bad_constant",
+          "input_fingerprint": "6df3bb3a6593264a92a7d82385f5dae1dc6479b796ea66193258b62e51bee1de",
+          "output_fingerprint": "4dbbf6c90658e65c9a751d40793047427d905cfcaa22c7a9a11323cdd3dab210",
+          "relations": [
+            {
+              "relation": "unmapped",
+              "inputs": [],
+              "outputs": [
+                "entry:0:arith.constant"
+              ],
+              "origins": []
+            },
+            {
+              "relation": "preserve",
+              "inputs": [
+                "entry:1:arith.mul"
+              ],
+              "outputs": [
+                "entry:1:arith.mul"
+              ],
+              "origins": [
+                "6df3bb3a6593264a92a7d82385f5dae1dc6479b796ea66193258b62e51bee1de:entry:1:arith.mul"
+              ]
+            },
+            {
+              "relation": "preserve",
+              "inputs": [
+                "entry:2:arith.constant"
+              ],
+              "outputs": [
+                "entry:2:arith.constant"
+              ],
+              "origins": [
+                "6df3bb3a6593264a92a7d82385f5dae1dc6479b796ea66193258b62e51bee1de:entry:2:arith.constant"
+              ]
+            },
+            {
+              "relation": "preserve",
+              "inputs": [
+                "entry:3:arith.add"
+              ],
+              "outputs": [
+                "entry:3:arith.add"
+              ],
+              "origins": [
+                "6df3bb3a6593264a92a7d82385f5dae1dc6479b796ea66193258b62e51bee1de:entry:3:arith.add"
+              ]
+            },
+            {
+              "relation": "preserve",
+              "inputs": [
+                "entry:4:mem.store"
+              ],
+              "outputs": [
+                "entry:4:mem.store"
+              ],
+              "origins": [
+                "6df3bb3a6593264a92a7d82385f5dae1dc6479b796ea66193258b62e51bee1de:entry:4:mem.store"
+              ]
+            },
+            {
+              "relation": "unmapped_removal",
+              "inputs": [
+                "entry:0:arith.constant"
+              ],
+              "outputs": [],
+              "origins": [
+                "6df3bb3a6593264a92a7d82385f5dae1dc6479b796ea66193258b62e51bee1de:entry:0:arith.constant"
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  }
+}

@@ -1,6 +1,12 @@
 # 九齿解释器实施与优化计划
 
-## 2026-09-08 当前验收状态
+## 2026-09-08 阶段定位与失败复现实现
+
+源码 `9c5ffbad6d75e8b7f083270f08dc4009a8fe4424` 补齐相邻 pass 与原始基准的双重比较、带对齐依据的 SSA 观测位置、失败自动导出、通用独立回放和异常诊断。328 项选定 CPU 回归、隔离 wheel 回放、4 组真实默认管线案例与4组修复对照通过；文档构建在真实 CPU Torch 环境通过。详见[实施与验证说明](pass_failure_workflow_20260908.md)和[原始证据](../results/pass_failure_workflow_20260908/README.md)。
+
+没有对应关系的重构仍报告来源候选，不推断唯一错误指令；Python pass 本身抛出的异常仅导出诊断信息，不导出可执行 Python。此轮没有 GPU 运行，历史 A100 与当前 CPU 证据分别保留，用户验收前不提交上游 PR。
+
+## 2026-09-08 A100 阶段验收记录
 
 最终计算与测试源码 `59200180717a45f173a37ee8da5356d31e02018c` 已完成 **A100 完整 682 passed / 2 双卡 skips（467.20 s）**、15/15 Triton 差分和独立 CUDA dot；同一提交无 Torch/Triton 的 CPU 选择 307 passed / 15 deselected（32.49 s）。Ruff、格式和项目自定义风格通过。见[最终报告](a100_final_validation_20260908.md)与[原始证据](../results/a100_final_20260908/README.md)。
 

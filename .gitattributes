@@ -1,1 +1,4 @@
 *.png filter=lfs diff=lfs merge=lfs -text
+# Preserve the exact bytes of archived evidence, including raw log whitespace.
+results/pass_failure_workflow_20260908/** -text
+results/pass_failure_workflow_20260908/**/*.log -whitespace

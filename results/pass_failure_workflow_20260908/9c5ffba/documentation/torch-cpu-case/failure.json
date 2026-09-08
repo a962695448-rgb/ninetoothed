@@ -1,0 +1,53 @@
+{
+  "schema": 1,
+  "kind": "comparison",
+  "phase": "execution",
+  "replayable": true,
+  "seed": null,
+  "rtol": 0.001,
+  "atol": 0.001,
+  "error": null,
+  "report": {
+    "equal": false,
+    "output_differences": [
+      "out"
+    ],
+    "first_operation": {
+      "program_id": [
+        0,
+        0,
+        0
+      ],
+      "location": "entry:0:arith.constant",
+      "opcode": "arith.constant",
+      "result_name": "%0",
+      "iteration": [],
+      "lane": null,
+      "component": "result"
+    },
+    "traces_aligned": true,
+    "source_candidates": [],
+    "aligned_prefix_operation": {
+      "program_id": [
+        0,
+        0,
+        0
+      ],
+      "location": "entry:0:arith.constant",
+      "opcode": "arith.constant",
+      "result_name": "%0",
+      "iteration": [],
+      "lane": null,
+      "component": "result"
+    },
+    "reproducer": null,
+    "export_error": null,
+    "retained_operation": null
+  },
+  "environment": {
+    "python": "3.12.3",
+    "numpy": "2.5.2",
+    "ninetoothed": null
+  },
+  "scope": "Exact supplied SSA and inputs; no automatic program or shape minimization."
+}

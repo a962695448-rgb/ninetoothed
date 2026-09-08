@@ -1,0 +1,146 @@
+{
+  "schema": 1,
+  "kind": "passes",
+  "phase": "execution",
+  "replayable": true,
+  "seed": null,
+  "rtol": 0.001,
+  "atol": 0.001,
+  "error": null,
+  "report": {
+    "passed": false,
+    "checked_passes": [
+      "ssa.canonicalize",
+      "ssa.analyze_effects",
+      "ssa.select_schedule",
+      "ssa.cuda.optimize_schedule",
+      "ssa.decompose_linalg",
+      "diagnostic.inject_transpose_fault"
+    ],
+    "first_bad_pass": "diagnostic.inject_transpose_fault",
+    "difference": {
+      "equal": false,
+      "output_differences": [
+        "out"
+      ],
+      "first_operation": null,
+      "traces_aligned": false,
+      "source_candidates": [
+        {
+          "origin_id": "231feba1f72526d4e073c4d8103dc71d88a214a96599486c0beae1a2aa254160:entry:0:linalg.transpose",
+          "location": "entry:0:linalg.transpose",
+          "opcode": "linalg.transpose",
+          "result_names": [
+            "%0"
+          ]
+        },
+        {
+          "origin_id": "231feba1f72526d4e073c4d8103dc71d88a214a96599486c0beae1a2aa254160:entry:1:mem.store",
+          "location": "entry:1:mem.store",
+          "opcode": "mem.store",
+          "result_names": []
+        }
+      ],
+      "aligned_prefix_operation": null,
+      "reproducer": null,
+      "export_error": null,
+      "retained_operation": null
+    },
+    "error": null,
+    "source_candidates": [
+      {
+        "origin_id": "231feba1f72526d4e073c4d8103dc71d88a214a96599486c0beae1a2aa254160:entry:0:linalg.transpose",
+        "location": "entry:0:linalg.transpose",
+        "opcode": "linalg.transpose",
+        "result_names": [
+          "%0"
+        ]
+      },
+      {
+        "origin_id": "231feba1f72526d4e073c4d8103dc71d88a214a96599486c0beae1a2aa254160:entry:1:mem.store",
+        "location": "entry:1:mem.store",
+        "opcode": "mem.store",
+        "result_names": []
+      }
+    ],
+    "adjacent_difference": {
+      "equal": false,
+      "output_differences": [
+        "out"
+      ],
+      "first_operation": null,
+      "traces_aligned": false,
+      "source_candidates": [
+        {
+          "origin_id": "231feba1f72526d4e073c4d8103dc71d88a214a96599486c0beae1a2aa254160:entry:0:linalg.transpose",
+          "location": "entry:0:linalg.transpose",
+          "opcode": "linalg.transpose",
+          "result_names": [
+            "%0"
+          ]
+        },
+        {
+          "origin_id": "231feba1f72526d4e073c4d8103dc71d88a214a96599486c0beae1a2aa254160:entry:1:mem.store",
+          "location": "entry:1:mem.store",
+          "opcode": "mem.store",
+          "result_names": []
+        }
+      ],
+      "aligned_prefix_operation": null,
+      "reproducer": null,
+      "export_error": null,
+      "retained_operation": {
+        "operation": {
+          "program_id": [
+            0,
+            0,
+            0
+          ],
+          "location": "entry:3:mem.store",
+          "opcode": "mem.store",
+          "result_name": "%3",
+          "iteration": [],
+          "lane": [
+            0,
+            1
+          ],
+          "component": "input"
+        },
+        "reference": "reference",
+        "traces_aligned": false,
+        "basis": "retained_boundary",
+        "reference_location": "entry:3:mem.store"
+      }
+    },
+    "localization": {
+      "operation": {
+        "program_id": [
+          0,
+          0,
+          0
+        ],
+        "location": "entry:3:mem.store",
+        "opcode": "mem.store",
+        "result_name": "%3",
+        "iteration": [],
+        "lane": [
+          0,
+          1
+        ],
+        "component": "input"
+      },
+      "reference": "previous",
+      "traces_aligned": false,
+      "basis": "retained_boundary",
+      "reference_location": "entry:3:mem.store"
+    },
+    "reproducer": null,
+    "export_error": null
+  },
+  "environment": {
+    "python": "3.12.3",
+    "numpy": "2.5.2",
+    "ninetoothed": null
+  },
+  "scope": "Exact supplied SSA and inputs; no automatic program or shape minimization."
+}

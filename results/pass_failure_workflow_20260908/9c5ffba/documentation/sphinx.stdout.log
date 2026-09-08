@@ -1,0 +1,89 @@
+Running Sphinx v7.3.7
+making output directory... done
+[autosummary] generating autosummary for: basics.rst, build.rst, cpu_interpreter.rst, index.rst, installation.rst, python_api.rst, python_api/code_generation.rst, python_api/debugging.rst, python_api/symbol.rst, python_api/tensor.rst, python_api/visualization.rst
+[autosummary] generating autosummary for: /home/xxl/nine-debug-failure-20260908-9c5ffba/source/docs/source/python_api/generated/ninetoothed.Tensor.eval.rst, /home/xxl/nine-debug-failure-20260908-9c5ffba/source/docs/source/python_api/generated/ninetoothed.Tensor.expand.rst, /home/xxl/nine-debug-failure-20260908-9c5ffba/source/docs/source/python_api/generated/ninetoothed.Tensor.flatten.rst, /home/xxl/nine-debug-failure-20260908-9c5ffba/source/docs/source/python_api/generated/ninetoothed.Tensor.pad.rst, /home/xxl/nine-debug-failure-20260908-9c5ffba/source/docs/source/python_api/generated/ninetoothed.Tensor.permute.rst, /home/xxl/nine-debug-failure-20260908-9c5ffba/source/docs/source/python_api/generated/ninetoothed.Tensor.ravel.rst, /home/xxl/nine-debug-failure-20260908-9c5ffba/source/docs/source/python_api/generated/ninetoothed.Tensor.squeeze.rst, /home/xxl/nine-debug-failure-20260908-9c5ffba/source/docs/source/python_api/generated/ninetoothed.Tensor.subs.rst, /home/xxl/nine-debug-failure-20260908-9c5ffba/source/docs/source/python_api/generated/ninetoothed.Tensor.tile.rst, /home/xxl/nine-debug-failure-20260908-9c5ffba/source/docs/source/python_api/generated/ninetoothed.Tensor.unsqueeze.rst, /home/xxl/nine-debug-failure-20260908-9c5ffba/source/docs/source/python_api/generated/ninetoothed.build.rst, /home/xxl/nine-debug-failure-20260908-9c5ffba/source/docs/source/python_api/generated/ninetoothed.debugging.simulate_arrangement.rst, /home/xxl/nine-debug-failure-20260908-9c5ffba/source/docs/source/python_api/generated/ninetoothed.jit.rst, /home/xxl/nine-debug-failure-20260908-9c5ffba/source/docs/source/python_api/generated/ninetoothed.make.rst
+building [mo]: targets for 0 po files that are out of date
+writing output... 
+building [html]: targets for 11 source files that are out of date
+updating environment: [new config] 25 added, 0 changed, 0 removed
+reading sources... [  4%] basics
+reading sources... [  8%] build
+reading sources... [ 12%] cpu_interpreter
+reading sources... [ 16%] index
+reading sources... [ 20%] installation
+reading sources... [ 24%] python_api
+reading sources... [ 28%] python_api/code_generation
+reading sources... [ 32%] python_api/debugging
+reading sources... [ 36%] python_api/generated/ninetoothed.Tensor.eval
+reading sources... [ 40%] python_api/generated/ninetoothed.Tensor.expand
+reading sources... [ 44%] python_api/generated/ninetoothed.Tensor.flatten
+reading sources... [ 48%] python_api/generated/ninetoothed.Tensor.pad
+reading sources... [ 52%] python_api/generated/ninetoothed.Tensor.permute
+reading sources... [ 56%] python_api/generated/ninetoothed.Tensor.ravel
+reading sources... [ 60%] python_api/generated/ninetoothed.Tensor.squeeze
+reading sources... [ 64%] python_api/generated/ninetoothed.Tensor.subs
+reading sources... [ 68%] python_api/generated/ninetoothed.Tensor.tile
+reading sources... [ 72%] python_api/generated/ninetoothed.Tensor.unsqueeze
+reading sources... [ 76%] python_api/generated/ninetoothed.build
+reading sources... [ 80%] python_api/generated/ninetoothed.debugging.simulate_arrangement
+reading sources... [ 84%] python_api/generated/ninetoothed.jit
+reading sources... [ 88%] python_api/generated/ninetoothed.make
+reading sources... [ 92%] python_api/symbol
+reading sources... [ 96%] python_api/tensor
+reading sources... [100%] python_api/visualization
+
+looking for now-outdated files... none found
+pickling environment... done
+checking consistency... done
+preparing documents... done
+copying assets... copying static files... done
+copying extra files... done
+done
+writing output... [  4%] basics
+writing output... [  8%] build
+writing output... [ 12%] cpu_interpreter
+writing output... [ 16%] index
+writing output... [ 20%] installation
+writing output... [ 24%] python_api
+writing output... [ 28%] python_api/code_generation
+writing output... [ 32%] python_api/debugging
+writing output... [ 36%] python_api/generated/ninetoothed.Tensor.eval
+writing output... [ 40%] python_api/generated/ninetoothed.Tensor.expand
+writing output... [ 44%] python_api/generated/ninetoothed.Tensor.flatten
+writing output... [ 48%] python_api/generated/ninetoothed.Tensor.pad
+writing output... [ 52%] python_api/generated/ninetoothed.Tensor.permute
+writing output... [ 56%] python_api/generated/ninetoothed.Tensor.ravel
+writing output... [ 60%] python_api/generated/ninetoothed.Tensor.squeeze
+writing output... [ 64%] python_api/generated/ninetoothed.Tensor.subs
+writing output... [ 68%] python_api/generated/ninetoothed.Tensor.tile
+writing output... [ 72%] python_api/generated/ninetoothed.Tensor.unsqueeze
+writing output... [ 76%] python_api/generated/ninetoothed.build
+writing output... [ 80%] python_api/generated/ninetoothed.debugging.simulate_arrangement
+writing output... [ 84%] python_api/generated/ninetoothed.jit
+writing output... [ 88%] python_api/generated/ninetoothed.make
+writing output... [ 92%] python_api/symbol
+writing output... [ 96%] python_api/tensor
+writing output... [100%] python_api/visualization
+
+generating indices... genindex done
+writing additional pages... search done
+copying images... [  7%] generated/x-tiled.png
+copying images... [ 14%] generated/x-arranged.png
+copying images... [ 21%] generated/y-arranged.png
+copying images... [ 29%] generated/z-arranged.png
+copying images... [ 36%] generated/tiled-matrix-multiplication.png
+copying images... [ 43%] generated/input-arranged-0.png
+copying images... [ 50%] generated/other-arranged-0.png
+copying images... [ 57%] generated/output-arranged-0.png
+copying images... [ 64%] generated/input-arranged-1.png
+copying images... [ 71%] generated/other-arranged-1.png
+copying images... [ 79%] generated/input-arranged-2.png
+copying images... [ 86%] generated/other-arranged-2.png
+copying images... [ 93%] generated/input-arranged-3.png
+copying images... [100%] generated/other-arranged-3.png
+
+dumping search index in English (code: en)... done
+dumping object inventory... done
+build succeeded.
+
+The HTML pages are in ../documentation/html.

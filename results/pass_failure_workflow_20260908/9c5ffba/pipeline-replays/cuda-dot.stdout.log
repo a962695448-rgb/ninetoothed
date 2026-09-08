@@ -1,0 +1,4 @@
+First bad pass (saved boundary): diagnostic.inject_dot_fault
+Operation localization: {'operation': {'program_id': [0, 0, 0], 'location': 'entry:6:scf.for/region0:3:arith.add', 'opcode': 'arith.add', 'result_name': '%8', 'iteration': [0], 'lane': [0, 0], 'component': 'input'}, 'reference': 'previous', 'traces_aligned': False, 'basis': 'retained_boundary', 'reference_location': 'entry:6:scf.for/region0:3:arith.add'}
+Different outputs: ('out',)
+First different operation: None
