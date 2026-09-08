@@ -1,0 +1,23 @@
+ssa @nine_opt_cuda_dot_probe {
+  inputs:
+    a : tensor<4x4>xfloat32
+    b : tensor<4x4>xfloat32
+    out : tensor<4x4>xfloat32
+  outputs:
+    out : tensor<4x4>xfloat32
+  ^entry:
+    %1 = index.offset out {dim=0, decomposition='matmul', coordinate_space='value'}
+    %2 = index.offset out {dim=1, decomposition='matmul', coordinate_space='value'}
+    %3 = arith.constant {value=0, decomposition='matmul'}
+    %4 = arith.constant {value=1, decomposition='matmul'}
+    %5 = arith.constant {value=0.0, decomposition='matmul'}
+    %11 = shape.dim a {dim=-1}
+    %10 = scf.for %3, %11, %4, %5 {induction='%kk', iter_args=(FrozenMap({'name': 'acc', 'initial': '%5', 'block_arg': '%acc_iter'})), decomposition='matmul', m='m', n='n', k='4'}
+      ^matmul_k(%kk: index, %acc_iter: scalarxfloat32):
+        %6 = tensor.extract a, %1, %kk {decomposition='matmul', operand='lhs'}
+        %7 = tensor.extract b, %kk, %2 {decomposition='matmul', operand='rhs'}
+        %8 = arith.mul %6, %7 {decomposition='matmul'}
+        %9 = arith.add %acc_iter, %8 {decomposition='matmul'}
+        scf.yield %9
+    mem.store %10, out {target='out', decomposition='matmul', matmul_operands=('a', 'b')}
+}

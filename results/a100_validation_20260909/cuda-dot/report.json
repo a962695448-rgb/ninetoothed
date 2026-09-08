@@ -1,0 +1,169 @@
+{
+  "status": "PASS",
+  "case": "dot_float32_multi_program_tail",
+  "backend_requested": "cuda",
+  "expected_head": "3fc27e0399d82b02be5407b9542c67763c4631a7",
+  "script_sha256": "754c2fdee535ff3fb63fe99cd85a08a49ec039e7b6192a306ea8f4109518c8b7",
+  "python": "3.12.7",
+  "gpu_launch_attempted": true,
+  "started_at_utc": "2026-09-08T17:03:49.691684+00:00",
+  "limitations": [
+    "One scalar float32 CUDA-backend correctness case; not a full suite or performance benchmark.",
+    "Four 4x4 M/N output tiles with complete K, including M/N/K tails; no split-K or Tensor Core claim.",
+    "Results apply only to the GPU identified by this run; the script alone is not GPU evidence."
+  ],
+  "numpy_version": "2.1.3",
+  "torch_version": "2.5.0+cu124",
+  "torch_cuda_version": "12.4",
+  "gpu_name": "NVIDIA A100-SXM4-40GB",
+  "compute_capability": [
+    8,
+    0
+  ],
+  "device_index": 0,
+  "architecture": "sm_80",
+  "seed": 2026,
+  "rtol": 0.001,
+  "atol": 0.001,
+  "input_shapes": {
+    "a": [
+      7,
+      3
+    ],
+    "b": [
+      3,
+      6
+    ]
+  },
+  "output_shape": [
+    7,
+    6
+  ],
+  "program": "matrix_dot",
+  "dtype": "float32",
+  "emitted_backend": "cuda",
+  "complete_ir_roundtrip": true,
+  "pass_trace": [
+    "ssa.canonicalize",
+    "ssa.analyze_effects",
+    "ssa.select_schedule",
+    "ssa.cuda.optimize_schedule",
+    "ssa.decompose_linalg"
+  ],
+  "scalar_dot_decomposition_verified": true,
+  "emitted_source_sha256": "a2e4dd1317008238618e9b116d4382cc7767de13d76fd752a237fa0c9840f3ed",
+  "runtime_backend": "cuda",
+  "max_abs_error_vs_numpy": {
+    "frontend_cpu": 0.0,
+    "cuda_ssa_cpu": 1.1920928955078125e-07,
+    "cuda_gpu": 0.0
+  },
+  "materialized_source_sha256": "a2e4dd1317008238618e9b116d4382cc7767de13d76fd752a237fa0c9840f3ed",
+  "cuda_binary_sha256": "e1c35ac67c899882dc6d2e1fbc4abb404992938305b5114ab8703b560dd020fc",
+  "all_input_and_output_guards_unchanged": true,
+  "inputs_unchanged": true,
+  "four_way_comparison_passed": true,
+  "source_commit": "3fc27e0399d82b02be5407b9542c67763c4631a7",
+  "source_unchanged": true,
+  "exit_code": 0,
+  "elapsed_seconds": 6.053,
+  "ended_at_utc": "2026-09-08T17:03:55.745479+00:00",
+  "artifacts": {
+    "artifact-ir.json": {
+      "bytes": 32863,
+      "sha256": "169dff2246cfb45919518e9877c86e19261e59bdf56147b2319297b0aa3a7536"
+    },
+    "build/nine_opt_cuda_dot_probe.cuda.manifest.json": {
+      "bytes": 14037,
+      "sha256": "f14be288a072b905b22e46a2b6d3c43e07d4ae95186e6d6bb69a317bee9fa995"
+    },
+    "build/nine_opt_cuda_dot_probe.cuda.manifest.json.lock": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "build/nine_opt_cuda_dot_probe.cuda.so": {
+      "bytes": 1042896,
+      "sha256": "e1c35ac67c899882dc6d2e1fbc4abb404992938305b5114ab8703b560dd020fc"
+    },
+    "build/nine_opt_cuda_dot_probe.cuda.so.lock": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "build-cache/artifacts/47422d5e82d96c8338f2414d2a026ea13dd1bd687714191ce023597dea6e4e22/nine_opt_cuda_dot_probe.cu": {
+      "bytes": 21021,
+      "sha256": "a2e4dd1317008238618e9b116d4382cc7767de13d76fd752a237fa0c9840f3ed"
+    },
+    "build-cache/artifacts/47422d5e82d96c8338f2414d2a026ea13dd1bd687714191ce023597dea6e4e22/nine_opt_cuda_dot_probe.cu.lock": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "build-cache/artifacts/47422d5e82d96c8338f2414d2a026ea13dd1bd687714191ce023597dea6e4e22/nine_opt_cuda_dot_probe.cuda.manifest.json": {
+      "bytes": 14118,
+      "sha256": "ca7e543ac8aba1ebfb8e48a378a4809d34207a42b2b3ceb7bc117cf6ac51aafd"
+    },
+    "build-cache/artifacts/47422d5e82d96c8338f2414d2a026ea13dd1bd687714191ce023597dea6e4e22/nine_opt_cuda_dot_probe.cuda.manifest.json.lock": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "build-cache/artifacts/47422d5e82d96c8338f2414d2a026ea13dd1bd687714191ce023597dea6e4e22/nine_opt_cuda_dot_probe.cuda.so": {
+      "bytes": 1042896,
+      "sha256": "e1c35ac67c899882dc6d2e1fbc4abb404992938305b5114ab8703b560dd020fc"
+    },
+    "build-cache/artifacts/47422d5e82d96c8338f2414d2a026ea13dd1bd687714191ce023597dea6e4e22/nine_opt_cuda_dot_probe.cuda.so.lock": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "build-cache/toolchains/nvcc.lock": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "cuda_gpu.npz": {
+      "bytes": 1148,
+      "sha256": "57a3bbd83a9b7fc9a2d0997627e913e6ff32d852045f02b6fc8e7426d426ed20"
+    },
+    "cuda_ssa_cpu.npz": {
+      "bytes": 1148,
+      "sha256": "4d99ef34693bbbeaa8803ff941bd07b5a702391ff01721828e9b3d0ada7d0e18"
+    },
+    "emitted-ir.json": {
+      "bytes": 32863,
+      "sha256": "169dff2246cfb45919518e9877c86e19261e59bdf56147b2319297b0aa3a7536"
+    },
+    "emitted.ssa.txt": {
+      "bytes": 1176,
+      "sha256": "0e42836c7b8f9241f79c8245f0a3fd94c99c6f5aa4e6f1366263c74f54b717d8"
+    },
+    "frontend.ssa.txt": {
+      "bytes": 228,
+      "sha256": "de7b501bf104b6160787e3eb4b009e1a54666a35d504ebea3a2c75bbe37ce846"
+    },
+    "frontend_cpu.npz": {
+      "bytes": 1148,
+      "sha256": "57a3bbd83a9b7fc9a2d0997627e913e6ff32d852045f02b6fc8e7426d426ed20"
+    },
+    "kernel.cu": {
+      "bytes": 21021,
+      "sha256": "a2e4dd1317008238618e9b116d4382cc7767de13d76fd752a237fa0c9840f3ed"
+    },
+    "nvcc-version.txt": {
+      "bytes": 208,
+      "sha256": "c2a3e2a4025d1be81124baae1f7cd5909fe3f1d87d1d82343b47f2a7c8b8f267"
+    },
+    "oracle.npz": {
+      "bytes": 1062,
+      "sha256": "8484a1b03b775ed987ecf1b55542b649a1e169d88c4fd846f146d845c9306a93"
+    },
+    "probe-script.py": {
+      "bytes": 14510,
+      "sha256": "754c2fdee535ff3fb63fe99cd85a08a49ec039e7b6192a306ea8f4109518c8b7"
+    },
+    "source-after.json": {
+      "bytes": 40535,
+      "sha256": "b606036d9729555f496b8d5dcf41bcec9c9a912d16573cd5d57a22e176333e07"
+    },
+    "source-before.json": {
+      "bytes": 40535,
+      "sha256": "b606036d9729555f496b8d5dcf41bcec9c9a912d16573cd5d57a22e176333e07"
+    }
+  }
+}

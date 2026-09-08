@@ -1,0 +1,173 @@
+{
+  "source_commit": "3fc27e0399d82b02be5407b9542c67763c4631a7",
+  "sequence_status": "FAIL",
+  "archive_sha256": "d5497b8d58cfa3079332524ba9779d4a945c389c0669339e5bbb71e7eeebf41c",
+  "downloaded_files_verified": 55,
+  "gpu-differential": {
+    "status": "PASS",
+    "exit_code": 0,
+    "runtime": {
+      "python": "3.12.7 | packaged by Anaconda, Inc. | (main, Oct  4 2024, 13:27:36) [GCC 11.2.0]",
+      "python_executable": "/home/vipuser/infinitensor-2026/.venv/bin/python",
+      "platform": {
+        "system": "Linux",
+        "machine": "x86_64"
+      },
+      "packages": {
+        "torch": "2.5.0",
+        "triton": "3.1.0",
+        "numpy": "2.1.3",
+        "sympy": "1.13.1",
+        "pytest": "8.1.1",
+        "pytest-cov": "7.1.0",
+        "coverage": "7.16.0",
+        "tilelang": "0.1.14",
+        "matplotlib": "3.11.1",
+        "pandas": "3.0.5",
+        "jupyter": "1.1.1",
+        "jupytext": "1.19.5",
+        "nbconvert": "7.17.1",
+        "ipykernel": "7.3.0",
+        "ninetoothed": null
+      },
+      "torch_import_version": "2.5.0+cu124",
+      "torch_cuda_build_version": "12.4",
+      "torch_cuda_available": true,
+      "torch_float8_e5m2_attribute": true,
+      "cuda_devices": [
+        {
+          "index": 0,
+          "name": "NVIDIA A100-SXM4-40GB",
+          "compute_capability": [
+            8,
+            0
+          ],
+          "total_memory_bytes": 42285268992,
+          "multiprocessor_count": 108
+        }
+      ]
+    }
+  },
+  "full": {
+    "status": "FAIL",
+    "exit_code": 2,
+    "runtime": {
+      "python": "3.12.7 | packaged by Anaconda, Inc. | (main, Oct  4 2024, 13:27:36) [GCC 11.2.0]",
+      "python_executable": "/home/vipuser/infinitensor-2026/.venv/bin/python",
+      "platform": {
+        "system": "Linux",
+        "machine": "x86_64"
+      },
+      "packages": {
+        "torch": "2.5.0",
+        "triton": "3.1.0",
+        "numpy": "2.1.3",
+        "sympy": "1.13.1",
+        "pytest": "8.1.1",
+        "pytest-cov": "7.1.0",
+        "coverage": "7.16.0",
+        "tilelang": "0.1.14",
+        "matplotlib": "3.11.1",
+        "pandas": "3.0.5",
+        "jupyter": "1.1.1",
+        "jupytext": "1.19.5",
+        "nbconvert": "7.17.1",
+        "ipykernel": "7.3.0",
+        "ninetoothed": null
+      },
+      "torch_import_version": "2.5.0+cu124",
+      "torch_cuda_build_version": "12.4",
+      "torch_cuda_available": true,
+      "torch_float8_e5m2_attribute": true,
+      "cuda_devices": [
+        {
+          "index": 0,
+          "name": "NVIDIA A100-SXM4-40GB",
+          "compute_capability": [
+            8,
+            0
+          ],
+          "total_memory_bytes": 42285268992,
+          "multiprocessor_count": 108
+        }
+      ]
+    }
+  },
+  "gpu_cases": {
+    "status": "PASS",
+    "passed_cases": 15,
+    "total_cases": 15,
+    "passed_programs": [
+      "broadcast_add",
+      "comparison",
+      "control_flow",
+      "matrix_dot",
+      "row_softmax",
+      "row_sum",
+      "vector_add",
+      "vector_floor_divide",
+      "vector_remainder"
+    ],
+    "passed_categories": [
+      "broadcast",
+      "comparison",
+      "dot",
+      "elementwise",
+      "floor_div",
+      "if_for",
+      "masked_tail",
+      "remainder",
+      "row_reduction",
+      "softmax"
+    ],
+    "gpu_name": "NVIDIA A100-SXM4-40GB",
+    "compute_capability": [
+      8,
+      0
+    ]
+  },
+  "cuda_dot": {
+    "status": "PASS",
+    "exit_code": 0,
+    "gpu_name": "NVIDIA A100-SXM4-40GB",
+    "four_way_comparison_passed": true,
+    "inputs_unchanged": true,
+    "all_input_and_output_guards_unchanged": true,
+    "source_commit": "3fc27e0399d82b02be5407b9542c67763c4631a7",
+    "source_unchanged": true
+  },
+  "junit": {
+    "tests": 86,
+    "testcase_elements": 87,
+    "unclassified_extra_elements": 1,
+    "passed": 84,
+    "failed_or_error": 0,
+    "skipped": [
+      {
+        "name": "test_add[True-45327-dtype0-bf16-cuda]",
+        "class": "tests.test_aot",
+        "reason": "multi-device testing requires at least 2 devices"
+      },
+      {
+        "name": "test_triton_aot_handle_is_reusable_across_cuda_contexts",
+        "class": "tests.test_built_artifact_reload",
+        "reason": "Triton multi-context testing requires at least 2 CUDA devices"
+      }
+    ],
+    "suites": [
+      {
+        "name": "pytest",
+        "errors": "0",
+        "failures": "0",
+        "skipped": "2",
+        "tests": "86",
+        "time": "2645.266",
+        "timestamp": "2026-09-09T01:04:00.886466",
+        "hostname": "ubuntu22"
+      }
+    ],
+    "failures": []
+  },
+  "pytest_console_summary": "================== 84 passed, 2 skipped in 2645.26s (0:44:05) ==================",
+  "verified_pass": false
+}

@@ -2,3 +2,5 @@
 # Preserve the exact bytes of archived evidence, including raw log whitespace.
 results/pass_failure_workflow_20260908/** -text
 results/pass_failure_workflow_20260908/**/*.log -whitespace
+results/a100_validation_20260909/** -text whitespace=cr-at-eol
+results/a100_validation_20260909/**/*.log -whitespace

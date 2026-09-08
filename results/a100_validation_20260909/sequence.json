@@ -1,0 +1,65 @@
+{
+  "status": "FAIL",
+  "source_commit": "3fc27e0399d82b02be5407b9542c67763c4631a7",
+  "pid": 2202,
+  "steps": [
+    {
+      "name": "gpu-differential",
+      "argv": [
+        "/home/vipuser/infinitensor-2026/.venv/bin/python",
+        "/home/vipuser/infinitensor-2026/tools/nine-a100-20260909/a100_final_runner.py",
+        "--mode",
+        "gpu-report",
+        "--repo",
+        "/home/vipuser/infinitensor-2026/ninetoothed-a100-20260909",
+        "--out",
+        "/home/vipuser/infinitensor-2026/runs/nine-a100-20260909/gpu-differential",
+        "--expected-sha",
+        "3fc27e0399d82b02be5407b9542c67763c4631a7"
+      ],
+      "started_at_utc": "2026-09-08T17:03:34.046855+00:00",
+      "pid": 2205,
+      "exit_code": 0,
+      "ended_at_utc": "2026-09-08T17:03:49.636647+00:00"
+    },
+    {
+      "name": "cuda-dot",
+      "argv": [
+        "/home/vipuser/infinitensor-2026/.venv/bin/python",
+        "/home/vipuser/infinitensor-2026/tools/nine-a100-20260909/cuda_dot_probe.py",
+        "--repo",
+        "/home/vipuser/infinitensor-2026/ninetoothed-a100-20260909",
+        "--out",
+        "/home/vipuser/infinitensor-2026/runs/nine-a100-20260909/cuda-dot"
+      ],
+      "started_at_utc": "2026-09-08T17:03:49.637807+00:00",
+      "pid": 2337,
+      "exit_code": 0,
+      "ended_at_utc": "2026-09-08T17:03:56.259874+00:00"
+    },
+    {
+      "name": "full",
+      "argv": [
+        "/home/vipuser/infinitensor-2026/.venv/bin/python",
+        "/home/vipuser/infinitensor-2026/tools/nine-a100-20260909/a100_final_runner.py",
+        "--mode",
+        "full",
+        "--repo",
+        "/home/vipuser/infinitensor-2026/ninetoothed-a100-20260909",
+        "--out",
+        "/home/vipuser/infinitensor-2026/runs/nine-a100-20260909/full",
+        "--expected-sha",
+        "3fc27e0399d82b02be5407b9542c67763c4631a7"
+      ],
+      "started_at_utc": "2026-09-08T17:03:56.260483+00:00",
+      "pid": 2386,
+      "exit_code": 2,
+      "ended_at_utc": "2026-09-08T17:48:07.822982+00:00"
+    }
+  ],
+  "started_at_utc": "2026-09-08T17:03:33.964934+00:00",
+  "active_stage": "full",
+  "error": "Stage full failed; retain its evidence before any retry.",
+  "traceback": "Traceback (most recent call last):\n  File \"/home/vipuser/infinitensor-2026/tools/nine-a100-20260909/sequence.py\", line 53, in <module>\n    raise RuntimeError(f\"Stage {name} failed; retain its evidence before any retry.\")\nRuntimeError: Stage full failed; retain its evidence before any retry.\n",
+  "finished_at_utc": "2026-09-08T17:48:07.829424+00:00"
+}
