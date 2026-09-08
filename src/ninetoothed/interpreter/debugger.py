@@ -1,7 +1,8 @@
 """CPU differential checks and portable, non-executable SSA replay bundles."""
 
+import hashlib
 import json
-from dataclasses import dataclass
+from dataclasses import dataclass, replace
 from pathlib import Path
 
 import numpy as np
@@ -15,7 +16,12 @@ from ninetoothed.ir import (
     ir_to_dict,
     ssa,
 )
-from ninetoothed.ir.provenance import record_pass, seed_origins, source_candidates
+from ninetoothed.ir.provenance import (
+    operation_locations,
+    record_pass,
+    seed_origins,
+    source_candidates,
+)
 
 from .runtime import InterpretationError, _adapt_inputs, interpret_program
 
@@ -174,6 +180,7 @@ class OperationDifference:
     result_name: str
     iteration: tuple
     lane: tuple | None = None
+    component: str = "result"
 
 
 @dataclass(frozen=True)
@@ -189,6 +196,25 @@ class ProgramComparison:
     first_operation: OperationDifference | None
     traces_aligned: bool
     source_candidates: tuple = ()
+    aligned_prefix_operation: OperationDifference | None = None
+    reproducer: Path | None = None
+    export_error: str | None = None
+    retained_operation: "OperationLocalization | None" = None
+
+
+@dataclass(frozen=True)
+class OperationLocalization:
+    """An observed SSA difference, with its reference and alignment scope.
+
+    This identifies a differing execution event, not unique causal blame.
+    A prefix location is valid only before the first unmatched trace event.
+    """
+
+    operation: OperationDifference
+    reference: str
+    traces_aligned: bool
+    basis: str = "full_trace"
+    reference_location: str | None = None
 
 
 @dataclass(frozen=True)
@@ -201,6 +227,10 @@ class PassCheck:
     difference: ProgramComparison | None = None
     error: str | None = None
     source_candidates: tuple = ()
+    adjacent_difference: ProgramComparison | None = None
+    localization: OperationLocalization | None = None
+    reproducer: Path | None = None
+    export_error: str | None = None
 
 
 def _copy_array_layout(value, *, strides=None, writeable=None):
@@ -301,7 +331,114 @@ def _structure(program):
     return tuple(block(value) for value in program.blocks)
 
 
-def compare_programs(
+def _event_difference(left, right, rtol, atol, *, inputs_first=False):
+    components = [
+        ("input", left.inputs or {}, right.inputs or {}),
+        ("mask", {"mask": left.mask}, {"mask": right.mask}),
+        ("result", left.results, right.results),
+    ]
+
+    if not inputs_first:
+        components = [components[2], *components[:2]]
+
+    for component, left_values, right_values in components:
+        for name in sorted(set(left_values) | set(right_values)):
+            lhs, rhs = left_values.get(name), right_values.get(name)
+
+            if (lhs is None or rhs is None) and lhs == rhs:
+                continue
+
+            if lhs is None or rhs is None or not _same_snapshot(lhs, rhs, rtol, atol):
+                return OperationDifference(
+                    right.program_id,
+                    right.location,
+                    right.opcode,
+                    name,
+                    right.iteration,
+                    right.lane,
+                    component,
+                )
+
+    return None
+
+
+def _retained_difference(reference, candidate, first, second, rtol, atol):
+    """Compare explicitly retained operations across one recorded pass boundary.
+
+    These are execution observations at unchanged consumers, not an assertion
+    that generated intermediates correspond to their source operations. The
+    entire filtered event sequence must align, including loops and scalar lanes.
+    """
+    history = candidate.metadata.get("provenance", {}).get("passes", ())
+
+    if not history:
+        return None
+
+    latest = history[-1]
+
+    for key, program in (
+        ("input_fingerprint", reference),
+        ("output_fingerprint", candidate),
+    ):
+        if latest[key] != hashlib.sha256(ssa.render(program).encode()).hexdigest():
+            return None
+
+    before = dict(operation_locations(reference))
+    after = dict(operation_locations(candidate))
+    locations = {}
+
+    for relation in latest["relations"]:
+        if relation["relation"] != "preserve":
+            continue
+
+        source, target = relation["inputs"], relation["outputs"]
+
+        if len(source) != 1 or len(target) != 1:
+            return None
+
+        if (
+            source[0] not in before
+            or target[0] not in after
+            or before[source[0]] != after[target[0]]
+        ):
+            return None
+
+        if target[0] in locations or source[0] in locations.values():
+            return None
+
+        locations[target[0]] = source[0]
+
+    sources = set(locations.values())
+    left_events = tuple(event for event in first.trace if event.location in sources)
+    right_events = tuple(event for event in second.trace if event.location in locations)
+    left_keys = tuple(
+        (event.program_id, event.location, event.iteration, event.lane)
+        for event in left_events
+    )
+    right_keys = tuple(
+        (event.program_id, locations[event.location], event.iteration, event.lane)
+        for event in right_events
+    )
+
+    if left_keys != right_keys:
+        return None
+
+    for left, right in zip(left_events, right_events):
+        operation = _event_difference(left, right, rtol, atol, inputs_first=True)
+
+        if operation is not None:
+            return OperationLocalization(
+                operation,
+                "reference",
+                False,
+                "retained_boundary",
+                left.location,
+            )
+
+    return None
+
+
+def _compare_programs(
     reference,
     candidate,
     inputs,
@@ -341,31 +478,19 @@ def compare_programs(
     aligned = _structure(reference) == _structure(candidate) and tuple(
         map(key, first.trace)
     ) == tuple(map(key, second.trace))
-    first_operation = None
+    prefix_operation = None
 
-    if aligned:
+    if _structure(reference) == _structure(candidate):
         for left, right in zip(first.trace, second.trace):
-            for name in sorted(set(left.results) | set(right.results)):
-                if (
-                    name not in left.results
-                    or name not in right.results
-                    or not _same_snapshot(
-                        left.results[name], right.results[name], rtol, atol
-                    )
-                ):
-                    first_operation = OperationDifference(
-                        left.program_id,
-                        left.location,
-                        left.opcode,
-                        name,
-                        left.iteration,
-                        left.lane,
-                    )
-                    break
-
-            if first_operation is not None:
+            if key(left) != key(right):
                 break
 
+            prefix_operation = _event_difference(left, right, rtol, atol)
+
+            if prefix_operation is not None:
+                break
+
+    first_operation = prefix_operation if aligned else None
     candidates = (
         source_candidates(
             candidate,
@@ -375,9 +500,99 @@ def compare_programs(
         else ()
     )
 
-    return ProgramComparison(
-        not differing, differing, first_operation, aligned, candidates
+    retained = (
+        _retained_difference(reference, candidate, first, second, rtol, atol)
+        if differing and not aligned
+        else None
     )
+
+    return ProgramComparison(
+        not differing,
+        differing,
+        first_operation,
+        aligned,
+        candidates,
+        prefix_operation,
+        retained_operation=retained,
+    )
+
+
+def _capture_failure(directory, reference, candidate, inputs, **options):
+    if directory is None:
+        return None, None
+
+    from .failure import export_failure
+
+    try:
+        return export_failure(directory, reference, candidate, inputs, **options), None
+    except (OSError, ValueError, TypeError, InterpretationError) as exc:
+        return None, f"{type(exc).__name__}: {exc}"
+
+
+def compare_programs(
+    reference,
+    candidate,
+    inputs,
+    *,
+    tensors=(),
+    grid=None,
+    symbols=None,
+    rtol=1e-3,
+    atol=1e-3,
+    failure_dir=None,
+    seed=None,
+):
+    """Compare independent CPU executions and optionally capture any failure.
+
+    Set ``failure_dir`` to a new directory to export SSA, exact numeric inputs,
+    tolerance, seed and an executable differential replay automatically. An
+    export failure is reported separately and never hides the semantic failure.
+    Execution errors keep their exception type and gain ``reproducer`` and
+    ``export_error`` attributes when capture is enabled.
+
+    ``first_operation`` still requires full structural/event alignment.
+    ``aligned_prefix_operation`` can additionally identify a difference before
+    control flow diverges, but never after the first unmatched event. Neither
+    field guesses equivalence across a restructuring pass from origins alone.
+    ``retained_operation`` instead reports the earliest differing observation
+    at a pass-declared unchanged operation, when its filtered traces align.
+    """
+    options = dict(
+        tensors=tuple(tensors), grid=grid, symbols=symbols, rtol=rtol, atol=atol
+    )
+
+    try:
+        report = _compare_programs(reference, candidate, inputs, **options)
+    except (InterpretationError, ValueError, TypeError) as exc:
+        if failure_dir is not None:
+            exc.reproducer, exc.export_error = _capture_failure(
+                failure_dir,
+                reference,
+                candidate,
+                inputs,
+                **options,
+                seed=seed,
+                error=exc,
+                phase="verification"
+                if isinstance(exc, ssa.VerificationError)
+                else "execution",
+            )
+
+        raise
+
+    if not report.equal:
+        directory, error = _capture_failure(
+            failure_dir,
+            reference,
+            candidate,
+            inputs,
+            **options,
+            seed=seed,
+            report=report,
+        )
+        report = replace(report, reproducer=directory, export_error=error)
+
+    return report
 
 
 def check_passes(
@@ -390,54 +605,126 @@ def check_passes(
     symbols=None,
     rtol=1e-3,
     atol=1e-3,
+    failure_dir=None,
+    seed=None,
 ):
     """Stop at the first bad named ``(name, Program -> Program)`` pass.
 
     Adapters can call existing pass objects with their genuine pass Context.
-    Each transformed program is compared to the original semantic reference,
-    preventing accumulated small differences from escaping detection.
+    Compare both the adjacent pass boundary and the original semantic reference,
+    preventing accumulated small differences from escaping detection. The
+    original must execute successfully before any pass can be blamed.
+
+    ``difference`` retains the original-reference comparison. The additional
+    ``adjacent_difference`` and ``localization`` describe the failing boundary
+    without implying that restructured SSA values are automatically equivalent.
+    With ``failure_dir``, capture the original, last-good and candidate SSA and
+    the exact inputs immediately on the first failure; later passes do not run.
     """
     program = seed_origins(program)
     current = program
     checked = []
+    inputs = _copy_inputs(inputs)
+    tensors = tuple(tensors)
+    options = dict(tensors=tensors, grid=grid, symbols=symbols, rtol=rtol, atol=atol)
+    interpret_program(
+        program, _copy_inputs(inputs), tensors=tensors, grid=grid, symbols=symbols
+    )
 
     for name, transform in passes:
         checked.append(str(name))
         transformed = None
+        previous = current
+        phase = "transform"
 
         try:
-            previous = current
-            transformed = record_pass(previous, transform(previous), str(name))
+            transformed = transform(previous)
+            phase = "record"
+            transformed = record_pass(previous, transformed, str(name))
+            ssa.verify_program(transformed)
             current = transformed
-            difference = compare_programs(
-                program,
-                current,
-                inputs,
-                tensors=tensors,
-                grid=grid,
-                symbols=symbols,
-                rtol=rtol,
-                atol=atol,
+            phase = "execution"
+            adjacent = _compare_programs(previous, current, inputs, **options)
+            difference = (
+                adjacent
+                if previous is program
+                else _compare_programs(program, current, inputs, **options)
             )
         except (InterpretationError, ValueError, TypeError) as exc:
-            return PassCheck(
+            report = PassCheck(
                 False,
                 tuple(checked),
                 str(name),
                 error=str(exc),
                 source_candidates=(
-                    source_candidates(transformed) if transformed is not None else ()
+                    source_candidates(transformed) if phase == "execution" else ()
                 ),
             )
+            directory, error = _capture_failure(
+                failure_dir,
+                program,
+                transformed,
+                inputs,
+                **options,
+                seed=seed,
+                previous=previous,
+                report=report,
+                error=exc,
+                phase=phase,
+            )
 
-        if not difference.equal:
-            return PassCheck(
+            return replace(report, reproducer=directory, export_error=error)
+
+        if not difference.equal or not adjacent.equal:
+            localization = None
+
+            for reference_name, comparison in (
+                ("previous", adjacent),
+                ("original", difference),
+            ):
+                operation = comparison.aligned_prefix_operation
+
+                if not comparison.equal and operation is not None:
+                    localization = OperationLocalization(
+                        operation,
+                        reference_name,
+                        comparison.traces_aligned,
+                        "full_trace" if comparison.traces_aligned else "aligned_prefix",
+                        operation.location,
+                    )
+                    break
+
+                if not comparison.equal and comparison.retained_operation is not None:
+                    localization = replace(
+                        comparison.retained_operation, reference=reference_name
+                    )
+                    break
+
+            report = PassCheck(
                 False,
                 tuple(checked),
                 str(name),
                 difference,
-                source_candidates=difference.source_candidates,
+                source_candidates=(
+                    difference.source_candidates
+                    if not difference.equal
+                    else adjacent.source_candidates
+                ),
+                adjacent_difference=adjacent,
+                localization=localization,
             )
+            directory, error = _capture_failure(
+                failure_dir,
+                program,
+                current,
+                inputs,
+                **options,
+                seed=seed,
+                previous=previous,
+                report=report,
+            )
+
+            return replace(report, reproducer=directory, export_error=error)
     return PassCheck(True, tuple(checked), None)
 
 
@@ -650,4 +937,5 @@ __all__ = [
     "ProgramComparison",
     "PassCheck",
     "OperationDifference",
+    "OperationLocalization",
 ]

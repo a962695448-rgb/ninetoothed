@@ -10,41 +10,7 @@ from ninetoothed import Tensor, interpret
 from ninetoothed.interpreter.debugger import (
     StepDebugger,
     check_passes,
-    export_reproducer,
 )
-
-_DIFFERENTIAL_REPLAY = '''"""Replay the deliberately injected fault from saved SSA and inputs."""
-
-from pathlib import Path
-
-import numpy as np
-
-from ninetoothed.interpreter import interpret_program
-from ninetoothed.interpreter.debugger import compare_programs, load_reproducer
-
-directory = Path(__file__).parent
-reference, inputs, options = load_reproducer(directory / "reference")
-candidate, candidate_inputs, candidate_options = load_reproducer(directory / "candidate")
-comparison = compare_programs(reference, candidate, inputs, **options)
-assert not comparison.equal, "The saved candidate no longer reproduces the injected fault."
-assert comparison.output_differences == ("out",)
-assert comparison.first_operation is not None
-assert comparison.first_operation.opcode == "arith.constant"
-expected = inputs["x"] * 2 + 1
-result = interpret_program(reference, inputs, **options)
-np.testing.assert_allclose(result.outputs["out"], expected, rtol=1e-3, atol=1e-3)
-candidate_result = interpret_program(candidate, candidate_inputs, **candidate_options)
-np.testing.assert_allclose(
-    candidate_result.outputs["out"],
-    candidate_inputs["x"] * 3 + 1,
-    rtol=1e-3,
-    atol=1e-3,
-)
-print("Fault type: deliberately injected constant 2 -> 3; saved SSA comparison")
-print("Correct reference output verified against NumPy")
-print(f"Different outputs: {comparison.output_differences}")
-print(f"First different operation: {comparison.first_operation}")
-'''
 
 
 def arrangement(x, out):
@@ -121,6 +87,8 @@ def main():
         inputs,
         tensors=kernel.tensors,
         symbols=kernel.meta,
+        failure_dir=arguments.export,
+        seed=seed,
     )
     assert report.first_bad_pass == "injected_bad_constant"
     print(f"First bad pass: {report.first_bad_pass}")
@@ -128,25 +96,12 @@ def main():
     print("Fault type: deliberately injected constant 2 -> 3; not a historical bug")
 
     if arguments.export:
-        directory = arguments.export
-        directory.mkdir(parents=True)
-        candidate = deliberately_bad_pass(kernel.frontend_program)
-
-        for name, program in (
-            ("reference", kernel.frontend_program),
-            ("candidate", candidate),
-        ):
-            export_reproducer(
-                directory / name,
-                program,
-                inputs,
-                tensors=kernel.tensors,
-                symbols=kernel.meta,
-                seed=seed,
+        if report.export_error is not None:
+            raise RuntimeError(
+                f"Failure capture did not complete: {report.export_error}."
             )
 
-        (directory / "replay.py").write_text(_DIFFERENTIAL_REPLAY, encoding="utf-8")
-        print(f"Differential replay: {directory / 'replay.py'}")
+        print(f"Differential replay: {report.reproducer / 'replay.py'}")
 
 
 if __name__ == "__main__":

@@ -801,6 +801,11 @@ def test_real_decomposition_fault_reports_injected_pass_and_original_source_rang
         assert report.difference.output_differences == ("out",)
         assert not report.difference.traces_aligned
         assert report.difference.first_operation is None
+        assert report.adjacent_difference is not None
+        assert not report.adjacent_difference.equal
+        assert report.localization is not None
+        assert report.localization.reference == "previous"
+        assert report.localization.operation.lane is not None
         assert {source.opcode for source in report.source_candidates} == {
             f"linalg.{kind}",
             "mem.store",

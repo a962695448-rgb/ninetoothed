@@ -280,14 +280,15 @@ separate process, without rerunning the frontend or the injected pass:
    python -I docs/cpu_interpreter_demo.py --debug --export /tmp/nine-demo
    python -I /tmp/nine-demo/replay.py
 
-The directory contains ``reference/`` and ``candidate/`` replay bundles plus a
-top-level ``replay.py``. Both bundles preserve the original inputs, layouts,
-dtype and seed. The top-level script checks the reference result against NumPy,
-verifies the injected candidate's result, and prints ``Different outputs:
-('out',)`` and the first different operation. Exit code zero means the expected
-injected fault was reproduced; if the saved candidate no longer differs, the
-script fails. The saved-SSA comparison does not claim to rerun or independently
-identify the pass. Reusing an existing export directory is rejected.
+``check_passes`` automatically creates ``reference/``, ``previous/`` and
+``candidate/`` bundles, ``failure.json`` and a generic top-level ``replay.py``.
+The demo checks the correct result against NumPy before injecting the fault;
+the replay independently compares the saved SSA, without a hard-coded affine
+formula. All bundles preserve the original inputs, layouts, dtype and seed.
+Exit code zero means the recorded output/operation difference or execution
+exception was reproduced. A repaired candidate or a different failure makes
+the replay fail, including under ``python -O``. The saved boundary does not
+claim to rerun or independently rediscover the Python pass.
 
 An extension can register a handler for an individual operation without changing
 the frontend or matching an entire application:
@@ -321,17 +322,47 @@ SSA results, and remain responsible for their operation's semantics.
    report = check_passes(
        kernel.frontend_program, checks, {"x": x, "out": out},
        tensors=kernel.tensors, symbols=kernel.meta,
+       failure_dir="/tmp/nine-pass-failure", seed=2026,
    )
+   print(report.first_bad_pass, report.localization)
+   print(report.reproducer, report.export_error)
 
-``check_passes`` compares every intermediate program to the original reference
-using independent input copies, stopping at the first bad pass. Integer and
+``check_passes`` first verifies that the original reference executes, then
+compares every intermediate program both to the original and to the preceding
+pass output using independent input copies. It stops at the first failing
+boundary. The original comparison detects cumulative drift; the adjacent
+comparison also catches differences hidden by cancellation against the original.
+Integer and
 boolean outputs require exact equality. Floating outputs default to
-``rtol=1e-3, atol=1e-3``. ``compare_programs`` additionally identifies the first
+``rtol=1e-3, atol=1e-3``. ``ProgramComparison.first_operation`` identifies the first
 different corresponding operation only when SSA structures and the complete
 trace event sequence align, including program ID, operation location, opcode,
-loop iteration and scalar lane. If a pass changes structure or control flow,
-output comparison remains valid but ``first_operation`` is ``None``. A
-provenance relation does not by itself establish value correspondence.
+loop iteration and scalar lane. Input, result and effective memory-mask snapshots
+are compared; ``OperationDifference.component`` tells which snapshot differed.
+
+``PassCheck.difference`` retains the original-reference result.
+``adjacent_difference`` adds the preceding-pass result, allowing an earlier
+correct restructuring without losing later operation localization.
+``localization.reference`` explicitly names ``original`` or ``previous``.
+``localization.basis`` distinguishes three observation scopes:
+
+* ``full_trace``: corresponding operations across the entire aligned trace.
+* ``aligned_prefix``: a difference before the first unmatched execution event,
+  for example a changed condition before the branches diverge. Static SSA
+  structure must still align; no later events are paired by position.
+* ``retained_boundary``: the earliest differing input/mask/result at an operation
+  explicitly preserved by one pass. Input/output fingerprints, operation
+  equality, one-to-one preserve relations, and the complete filtered event
+  sequence must match. This can locate a changed value at an unchanged consumer
+  after a split or merge. ``reference_location`` records the pre-pass location;
+  ``operation.location`` records the candidate location.
+
+These identify observed differences, not necessarily the unique faulty generated
+instruction. When no valid observation correspondence exists, ``localization``
+is ``None`` and declared source candidates remain available. A split/merge
+origin alone never establishes equivalent intermediate values. Unmapped
+restructuring and changed event counts therefore do not acquire guessed exact
+locations.
 
 Explicit SSA provenance
 -----------------------
@@ -386,6 +417,37 @@ that an opcode has been eliminated.
 
 Replay bundles
 --------------
+
+``compare_programs(..., failure_dir=PATH, seed=SEED)`` and
+``check_passes(..., failure_dir=PATH, seed=SEED)`` automatically export at the
+first failure. The directory must not exist; success writes nothing. With
+``failure_dir=None`` (the default), neither API writes files. The seed is supplied
+by the caller and stored as metadata; replay uses the saved numeric inputs and
+does not attempt to infer or regenerate their random seed.
+
+``failure.json`` contains schema, failure type, named pass history, both
+comparison reports, localization scope, tolerances and environment versions.
+Each program bundle contains readable SSA, structured SSA, numeric input data,
+shape, dtype, strides, aliases, grid and symbols. The optional ``previous/``
+bundle is the last program accepted before the failing pass. A generic replay
+uses an installed version with this API:
+
+.. code-block:: console
+
+   python /tmp/nine-pass-failure/replay.py
+
+The replay requires the same differing outputs, operation observations, trace
+alignment or execution exception. It is a reproducer for saved SSA, not an
+export of arbitrary executable Python pass code. A transform that raises or
+produces invalid SSA instead exports an explicitly non-replayable diagnostic
+snapshot. No pickled callables are written or loaded.
+
+``reproducer`` is the completed directory; ``export_error`` separately reports
+capture failures such as an existing directory or full disk. A partial export
+retains an ``INCOMPLETE`` marker and the replay refuses it. The original mismatch
+or exception is preserved; a capture error never converts failure into success.
+For direct comparison execution exceptions, these two fields are attached to
+the exception when capture is requested. Check ``export_error`` in automation.
 
 ``export_reproducer(directory, program, inputs, tensors=..., symbols=..., seed=...)``
 exports structured JSON, readable SSA, numeric NPZ inputs, shape/dtype/seed metadata,

@@ -73,8 +73,8 @@ def test_demo_exports_the_fault_and_replay_rejects_a_missing_fault(tmp_path):
         timeout=60,
     )
     assert replay.returncode == 0, replay.stdout + replay.stderr
-    assert "deliberately injected constant 2 -> 3" in replay.stdout
-    assert "Correct reference output verified against NumPy" in replay.stdout
+    assert "First bad pass (saved boundary): injected_bad_constant" in replay.stdout
+    assert (directory / "failure.json").is_file()
     assert "Different outputs: ('out',)" in replay.stdout
     assert "arith.constant" in replay.stdout
     candidate_path = directory / "candidate/program.json"
@@ -88,4 +88,4 @@ def test_demo_exports_the_fault_and_replay_rejects_a_missing_fault(tmp_path):
         timeout=60,
     )
     assert without_fault.returncode != 0
-    assert "no longer reproduces the injected fault" in without_fault.stderr
+    assert "no longer reproduces the recorded output difference" in without_fault.stderr
