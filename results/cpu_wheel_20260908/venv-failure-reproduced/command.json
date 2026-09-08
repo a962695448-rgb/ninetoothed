@@ -1,0 +1,10 @@
+{
+  "argv": [
+    "/usr/bin/python3",
+    "-m",
+    "venv",
+    "/home/xxl/ninetoothed-cpu-wheel-20260908-no-ensurepip"
+  ],
+  "returncode": 1,
+  "purpose": "Reproduce the first attempt: system Python lacks ensurepip. Original /tmp run1 files were unavailable when archiving; this is a new reproduction, not the original run."
+}

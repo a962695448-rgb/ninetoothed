@@ -1,0 +1,433 @@
+{
+  "status": "PASS",
+  "commands": [
+    {
+      "name": "00-uv-version",
+      "argv": [
+        "/home/xxl/.local/bin/uv",
+        "--version"
+      ],
+      "cwd": "/tmp/ninetoothed-cpu-wheel-20260908-run2/work",
+      "returncode": 0,
+      "expected_returncode": 0,
+      "elapsed_seconds": 0.065
+    },
+    {
+      "name": "01-venv",
+      "argv": [
+        "/home/xxl/.local/bin/uv",
+        "venv",
+        "--seed",
+        "--python",
+        "/usr/bin/python3",
+        "/tmp/ninetoothed-cpu-wheel-20260908-run2/work/venv"
+      ],
+      "cwd": "/tmp/ninetoothed-cpu-wheel-20260908-run2/work",
+      "returncode": 0,
+      "expected_returncode": 0,
+      "elapsed_seconds": 2.192
+    },
+    {
+      "name": "02-build-wheel",
+      "argv": [
+        "/tmp/ninetoothed-cpu-wheel-20260908-run2/work/venv/bin/python",
+        "-m",
+        "pip",
+        "wheel",
+        "--verbose",
+        "--no-deps",
+        "--wheel-dir",
+        "/tmp/ninetoothed-cpu-wheel-20260908-run2/work/wheels",
+        "."
+      ],
+      "cwd": "/tmp/ninetoothed-cpu-wheel-20260908-run2/source",
+      "returncode": 0,
+      "expected_returncode": 0,
+      "elapsed_seconds": 7.263
+    },
+    {
+      "name": "03-cpu-dependencies",
+      "argv": [
+        "/tmp/ninetoothed-cpu-wheel-20260908-run2/work/venv/bin/python",
+        "-m",
+        "pip",
+        "install",
+        "numpy>=1.26.4",
+        "sympy>=1.13.0"
+      ],
+      "cwd": "/tmp/ninetoothed-cpu-wheel-20260908-run2/work",
+      "returncode": 0,
+      "expected_returncode": 0,
+      "elapsed_seconds": 15.821
+    },
+    {
+      "name": "04-install-wheel",
+      "argv": [
+        "/tmp/ninetoothed-cpu-wheel-20260908-run2/work/venv/bin/python",
+        "-m",
+        "pip",
+        "install",
+        "--no-deps",
+        "/tmp/ninetoothed-cpu-wheel-20260908-run2/work/wheels/ninetoothed-0.26.0-py3-none-any.whl"
+      ],
+      "cwd": "/tmp/ninetoothed-cpu-wheel-20260908-run2/work",
+      "returncode": 0,
+      "expected_returncode": 0,
+      "elapsed_seconds": 1.126
+    },
+    {
+      "name": "05-demo-debug-export",
+      "argv": [
+        "/tmp/ninetoothed-cpu-wheel-20260908-run2/work/venv/bin/python",
+        "-I",
+        "/tmp/ninetoothed-cpu-wheel-20260908-run2/work/guard.py",
+        "script",
+        "/tmp/ninetoothed-cpu-wheel-20260908-run2/work/demo.py",
+        "--debug",
+        "--export",
+        "/tmp/ninetoothed-cpu-wheel-20260908-run2/work/replay"
+      ],
+      "cwd": "/tmp/ninetoothed-cpu-wheel-20260908-run2/work",
+      "returncode": 0,
+      "expected_returncode": 0,
+      "elapsed_seconds": 0.52
+    },
+    {
+      "name": "06-replay",
+      "argv": [
+        "/tmp/ninetoothed-cpu-wheel-20260908-run2/work/venv/bin/python",
+        "-I",
+        "/tmp/ninetoothed-cpu-wheel-20260908-run2/work/guard.py",
+        "script",
+        "/tmp/ninetoothed-cpu-wheel-20260908-run2/work/replay/replay.py"
+      ],
+      "cwd": "/tmp/ninetoothed-cpu-wheel-20260908-run2/work",
+      "returncode": 0,
+      "expected_returncode": 0,
+      "elapsed_seconds": 0.419
+    },
+    {
+      "name": "07-pip-check",
+      "argv": [
+        "/tmp/ninetoothed-cpu-wheel-20260908-run2/work/venv/bin/python",
+        "-m",
+        "pip",
+        "check"
+      ],
+      "cwd": "/tmp/ninetoothed-cpu-wheel-20260908-run2/work",
+      "returncode": 1,
+      "expected_returncode": 1,
+      "elapsed_seconds": 0.419
+    },
+    {
+      "name": "08-test-dependency",
+      "argv": [
+        "/tmp/ninetoothed-cpu-wheel-20260908-run2/work/venv/bin/python",
+        "-m",
+        "pip",
+        "install",
+        "pytest"
+      ],
+      "cwd": "/tmp/ninetoothed-cpu-wheel-20260908-run2/work",
+      "returncode": 0,
+      "expected_returncode": 0,
+      "elapsed_seconds": 6.99
+    },
+    {
+      "name": "09-cpu-regression",
+      "argv": [
+        "/tmp/ninetoothed-cpu-wheel-20260908-run2/work/venv/bin/python",
+        "/tmp/ninetoothed-cpu-wheel-20260908-run2/work/guard.py",
+        "pytest",
+        "--import-mode=importlib",
+        "-q",
+        "-ra",
+        "--tb=short",
+        "--color=no",
+        "tests/test_interpreter_applications.py",
+        "tests/test_interpreter_debugger.py",
+        "tests/test_interpreter_gpu.py",
+        "tests/test_interpreter_ssa.py",
+        "tests/test_interpreter_step_debugger.py",
+        "tests/test_interpreter_default_pipeline.py",
+        "tests/test_interpreter_demo.py",
+        "tests/test_interpreter_matmul.py",
+        "tests/test_interpreter_provenance.py",
+        "tests/test_ssa_application_lowering.py",
+        "tests/test_ssa_first_backend_lowering.py",
+        "tests/test_ssa_pass_pipeline.py",
+        "tests/test_ssa_program_domain_regressions.py",
+        "tests/test_ssa_validation.py",
+        "tests/test_ir_immutability.py",
+        "tests/test_kernel_ir.py",
+        "-k",
+        "not test_cpu_interpreter_matches_actual_triton_gpu",
+        "--junitxml=/tmp/ninetoothed-cpu-wheel-20260908-run2/junit.xml"
+      ],
+      "cwd": "/tmp/ninetoothed-cpu-wheel-20260908-run2/work",
+      "returncode": 0,
+      "expected_returncode": 0,
+      "elapsed_seconds": 21.711
+    },
+    {
+      "name": "10-installed-packages",
+      "argv": [
+        "/tmp/ninetoothed-cpu-wheel-20260908-run2/work/venv/bin/python",
+        "-m",
+        "pip",
+        "list",
+        "--format=json"
+      ],
+      "cwd": "/tmp/ninetoothed-cpu-wheel-20260908-run2/work",
+      "returncode": 0,
+      "expected_returncode": 0,
+      "elapsed_seconds": 0.365
+    }
+  ],
+  "environment_overrides": {
+    "CUDA_VISIBLE_DEVICES": "",
+    "PYTEST_DISABLE_PLUGIN_AUTOLOAD": "1",
+    "PYTHONDONTWRITEBYTECODE": "1",
+    "OMP_NUM_THREADS": "2"
+  },
+  "source_commit": "d9acc12711e378ad045629959a8639d991fa2f43",
+  "git_archive_sha256": "fc59220c3f2a98ea21061ddfd24601bf09dfbb6306d0ff6aca158cc99bf96983",
+  "source_files": {
+    "LICENSE": "c71d239df91726fc519c6eb72d318ec65820627232b2f796219e87dcf35d0ab4",
+    "README.md": "68f06c0553a3f596a46149094bbad799dfa0ac0782dfa330ad1e7bef8cd2af84",
+    "pyproject.toml": "8a2605b3851a93380adb1f2c6e9347a2616ea43451f027751b03e39c505dec5e",
+    "tests/test_attention.py": "9d679eb22dbdfa8d4e7cb9a90da082d60aeb3b0d43129d08b91212a839cbf4de",
+    "tests/test_softmax.py": "e595e039334094be4831c99b6024b28f6839f0a443303e1670b2a1d114abf4c2",
+    "tests/test_triton_reduction_schedule.py": "5f3167603ca771ec0a3f024f6079ceca91b75326f87a32480c4ba3b7bc9cfd9f",
+    "tests/test_interpreter_step_debugger.py": "e70b8ce3486ebaffc875d449cad1d62b1415fde9aa20bc1952b78aa1526c9f2f",
+    "tests/test_triton_layout_transfer_runtime.py": "b71aa485852e626a1b6c92ee06e3b4caf895c93b47545b4acfbc804cb7c2b1d8",
+    "tests/test_lowering_inference.py": "d1b07e4065e97418c9c4f7ac773bfd887915e780cc5b388e13289da10102513f",
+    "tests/test_backend_registry.py": "c5cb3c514973d6700680e59964cba2c4efe1c86dbccc71e24104b86f8c5f6f57",
+    "tests/test_addmm.py": "8a4ede201c90935a37922f208c7bb296f7abb69bce93317c32f0ebfe58202e73",
+    "tests/test_conv2d.py": "76d38a450f973e853dee97cd2abf5f9f08a915b9cb835bae139a548568a99be1",
+    "tests/test_interpreter_provenance.py": "5f0a17b56345ae5d3d59593f7331c7def3c80fdc458bf89895b216544aee3bb7",
+    "tests/test_interpreter_matmul.py": "5ba31810cf1b42bda5c4ce56fbdf4afa6f591fd380b1b6850ae1085af68af5f9",
+    "tests/test_interpreter_ssa.py": "b01b361670a61b408c88e8107f49b63604f9c154758734729a573de1a2667c91",
+    "tests/test_unsqueeze.py": "b7c095851663eb1b349d2ca573936099a0760d5c8af0480b88dfb47d3bb44443",
+    "tests/test_emitter_boundaries.py": "218caa3d53c27792d6a05b43a60ecd84fdbc6231eecb641e94761769c436237e",
+    "tests/test_compiler_cache_runtime.py": "f13f998caf376b325d0ac67bbf2539277b65b37111941c38ed75d83768ff03be",
+    "tests/test_triton_runtime_auto_tuning.py": "9f394fcb65fbd60e90da4b500a86ea7832c4cde4016d7077070ee7062f12004c",
+    "tests/test_debugging.py": "a7f23e11ca9bfb7e0d556139fd5e9c79668752a773b527c8c4852a68fcb8ed8d",
+    "tests/test_aot.py": "8592037d28583b2eeaf3e9e8541c1a258cd39eb5297a5d40c2845f0396af3f7f",
+    "tests/test_max_pool2d.py": "7209d47a7bfc8800f80eb5a6e81ef4faa56242ed02cc76c664203834c92ef41f",
+    "tests/__init__.py": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "tests/test_matmul.py": "11123f0c95d28812f80ef7eee39239528b5fd680d706699d97c7b2d13a5460d8",
+    "tests/test_ipynb.py": "7b6fd96cd0a950a009705c45ac8983a13dedbb592fa0bab74ee34dff6df7e3cb",
+    "tests/test_dropout.py": "1a4cbb56d54cc4411240141bc36d156c7cb68978b92b416436cb2023287e10dc",
+    "tests/test_ssa_pass_pipeline.py": "55610281390fa882caec7a64969178d4e23831d37aa29fb6a4211d9012d7dbe6",
+    "tests/test_ssa_program_domain_regressions.py": "0eefb53ba1b197c7e9b12db7a9028507009ae88562965a966fad9ba6ab678d0f",
+    "tests/test_materializer_registry.py": "552199186d00e7d31baef6de6e641ddc2a511d488f182eb8843e09410f06a888",
+    "tests/test_auto_tuner.py": "727a898e54059e9919d5b07a021edf6313e0d60026fb71b2353c37f478aeb53e",
+    "tests/utils.py": "ac6d11dadf896b4e1ca9d169bccb34db93d76b14fbcb12427f71595c5ce7e7a4",
+    "tests/test_expand.py": "a0f173145b3dc9e650a2a3484174eae5ec1996098d6677adc4f2a2cebbda14b2",
+    "tests/test_interpreter_debugger.py": "b3e590022187c46aeb1c0dcb26c53b2bee1d7a661cc9630ba4ff2a19bd609b34",
+    "tests/test_generation.py": "913317bb29d8d5a69ce7aa047c48adc6ee12e03e5aa1305db0a199920e5bf4df",
+    "tests/test_interpreter_demo.py": "86daa3326aaff58058ceec5084d6692b6d05b1176e9ba95cd8e424f05b561fb6",
+    "tests/test_aot_auto_tuning.py": "3b5f76b5a7f209c24e5acec86681aa725593cbcbc349de26742a5361693ecd3d",
+    "tests/test_compiler_entrypoints.py": "d6190f8c32e28ba6c2c43abc865cef42f5671fde68e311dac10c320a456f4581",
+    "tests/test_eval.py": "54ab58a33febe557d04b106b61c98f645fdb0aacb9f5966d2eac76f5a9f636fa",
+    "tests/test_naming.py": "3d2427638258f8796e9146ac45d708b86697b9b1bfb1adfccbc7992186e42143",
+    "tests/test_triton_aot_materializer.py": "d21e414451fdfbed20c8d86b945931cd9157e64b54c666d83e312d3f53bf3fe3",
+    "tests/test_interpreter_applications.py": "360acae5c7dcaad530b87969f279dd5c245c93c6a3f4b0e67c1523c42df70472",
+    "tests/test_built_artifact_reload.py": "3057bf727ced0eed84a552af20b30dba8de3a490f325896a7cdcba25ac780a07",
+    "tests/test_layout_transfer_analysis.py": "1ac31eead037ca934b2b9a8ad7001d4c61de8885b2f91e98566dce24fd50471a",
+    "tests/test_ir_immutability.py": "a7719afc86a7533ca37aa5027a7373704635ec2bc610a6b2a43e6a57454be4ba",
+    "tests/test_pow.py": "a40f57166d585bf57acd211ebfe22dcf6d6cf17766f79a70a2bab95f98272abe",
+    "tests/test_triton_layout_transfer.py": "7d3d3fda407fef70d83e064345d4b0ec12d30564400cbcc41fb26cfae053ae8b",
+    "tests/test_jagged.py": "d56e84a49115198f343c413a5b258c1360fc5c1d014fe93a71a2e781ff3bb4aa",
+    "tests/test_pad.py": "55489bf06c7ec965dc502aa002e6bb9d62d6da5c7de2cf5e79eac982ca7fb681",
+    "tests/test_getitem.py": "f52fadbb2ca661680e7c889b425348ded6de52e44c8b5bbff8fb2a516bfccea4",
+    "tests/test_interpreter_gpu.py": "657781e19cd2e6a1b620d2d6012726eddfe4d71b15619d67ab0d617b835646ec",
+    "tests/test_interpreter_default_pipeline.py": "dddda52e4cec8bf3427b96d886195c9490ccca25481effdce4df42e99bb9bb8c",
+    "tests/test_kernel_ir.py": "85c8b4731ecab7a464c462ab281fdd7cfb6c2afb4a13601a53fc0cb20b3e2b8d",
+    "tests/conftest.py": "8ea96ee05c3e1d617e9a66a02dedded9649737cbd95b28e9951f5dc87473169b",
+    "tests/test_add.py": "f1f57dad5c9636ea95991fd88b5b44e869679136bccc5f8f3382b6a41a480137",
+    "tests/test_ssa_application_lowering.py": "043a5cea8c7cef33a18473cd5038c94ed37ad073e9fd02dbb0147418a357aee5",
+    "tests/test_data_ptr.py": "9e104ef1f9b6463f70a73f4ce649a83a867c0db1266613ae301d0b67b4eebf83",
+    "tests/test_ssa_first_backend_lowering.py": "1c37a144e21340d1fca77cd91bbd906b071100535cc0f0150cbbdd2cf2167af0",
+    "tests/test_cuda_reduction_schedule.py": "d3fef33b95a3e90c829aaa901f44515c60ea323712f7bf237e0cbcf6d516c9c7",
+    "tests/test_interpreter_torch.py": "6faa449f9dd633a79744d525bb1751bffa57131adf2e059ffa5305835703f685",
+    "tests/test_ssa_validation.py": "396dabc68b037e4247e98800fc35ae5e116e0b134f836ed2535f12f7a5ec4f38",
+    "tests/test_clone.py": "f28b6a1a5f432e36bc40d801750bd9fb0a1aa6f7a8ab8e542dbe43f483d0139a",
+    "docs/cpu_interpreter_demo.py": "57cedb0615f8d13d92e4678dfdefca2f0c796e721f93b5de96f96ae0167e1295",
+    "src/ninetoothed/visualization.py": "535761a95197b4ce8413483008d61b49c1c071c39b5ad71fa8546008757107a0",
+    "src/ninetoothed/cudaifier.py": "223aade73e7cf5e2c1be53b597f6c10bc5a73ad2ba5c8dc316d45c6bc1d215d3",
+    "src/ninetoothed/__init__.py": "f3e0b21cfda64055226b0a38ec461dc9bdd87d0871b78898f129e63d434134d6",
+    "src/ninetoothed/make.py": "46645b1b10c2d943aa31f6fc7fec39c5ca98a1b16ae707363bfc1a09106acff2",
+    "src/ninetoothed/utils.py": "9ad4570010553e79607769f544487da01decff96d4b0a85dde2c2ede82790d24",
+    "src/ninetoothed/symbol.py": "d2af70f4317eb1db46a9599e08bfac9d7a218b29e9cf6f90c4f42b0c51c7dbc4",
+    "src/ninetoothed/aot.py": "de891f25469fe3ca49a4fe56376ab3b833b39bfc0806c917052742dfbaa1407e",
+    "src/ninetoothed/eval.py": "dfdfff38f134c4d40a3740861c4cd2ec3e4cff5a237b43c2a43b98d467ef74d9",
+    "src/ninetoothed/tensor.py": "0048b18325b4b58b44a29e20330c5f57fd3ed94cce2d0fe1eefd3ceae5762ff6",
+    "src/ninetoothed/dtype.py": "727c8d92bedaf0f0c112456c170d47144e135cc864c1d9bdde6b31b4b0c519ec",
+    "src/ninetoothed/naming.py": "165d31e1e0d14ad4e99178c983ad7bf44ac49d8edb479422d004fa457f42ddf5",
+    "src/ninetoothed/debugging.py": "7c9b4fd83c4ddc23c4bc347579ea7b9dadb92fbe7000dcfb939c9aad755f35ee",
+    "src/ninetoothed/language.py": "d8fe2a3db8a42d07593853847418fcb762abd802dafc6f7258170b303423c27e",
+    "src/ninetoothed/torchifier.py": "e1c37afa36c9590b1cbaeaa69023987b4184b25f051c3ceb493beba027f2d9cd",
+    "src/ninetoothed/auto_tuner.py": "ee899792d605125c5742cc71a705dd2c6fb5aee5f3f93b77c479888da725d9f1",
+    "src/ninetoothed/build.py": "a1323b0ba64901b655aacd9d0c59f76e3e2704cc6fd4c44242b9dcd9c717174c",
+    "src/ninetoothed/ir/ssa.py": "9f42d641b79edb10807733df553c40dbe2a392a61fc5a436bd4f0f7ba5247f45",
+    "src/ninetoothed/ir/provenance.py": "ccf114453c2a806723392716a4d4855923a8b22b4778fc4269bbb279f96cbc50",
+    "src/ninetoothed/ir/frozen.py": "eec5ca66d01db1ddb5e8def281ccd29b3085f3388705de30fb8cef7d24d4ac27",
+    "src/ninetoothed/ir/__init__.py": "54ec8b1f37f2c73bf30a0d6598ea66183c102c50400a2d8f63766cd6473ea186",
+    "src/ninetoothed/ir/kernel.py": "7fbc0ef4ade6e46d430c13dfc2e34e4297cc3d1499f90d22e8c08907eb02ebb7",
+    "src/ninetoothed/templates/auto_tuning_cache.h": "a4196dc30e0fa6b27a2e718294912fa890bf6834ddead31897ca950428a177cf",
+    "src/ninetoothed/templates/thread_safe_unordered_map.h": "e1b618a39f9e06a00f2dd59e010916d7a13dd57c84da269f66b791ef7e64d17a",
+    "src/ninetoothed/frontend/types.py": "a92650d6013160dcb7c3929cc602a484f5ffa97a8a755c2699f96691ee67da61",
+    "src/ninetoothed/frontend/preparation.py": "fc3802724d66671e2e26c385ff666f7f83a01c019819ea7f0c2c3faad17ef129",
+    "src/ninetoothed/frontend/__init__.py": "802336da2fc225aa1c26e4f9f52f7fefa77742323b50157679a026ea5f6f44d7",
+    "src/ninetoothed/frontend/layout.py": "a9761ae357c24a9335e8a0a3c9a1a7297e6979cea5e2bc32695081f4401d308b",
+    "src/ninetoothed/frontend/python.py": "50c0e327672de05f3711bbfab34a8de6c12da354c9aa9c52e8d3f8d357baf9f1",
+    "src/ninetoothed/frontend/errors.py": "72bbfd47d7440e5b4cdabe669a20562fbae199dea65c1029854b3dfd295d9e2f",
+    "src/ninetoothed/backends/toolchain.py": "deea242e4c179c8a81f0d3428777c63ecbe4543ae9fc261d0ee0be6d8da6e1bf",
+    "src/ninetoothed/backends/registry.py": "b3772ef8a35a0fecdc10d7db5093cc705bb84e0f8a2292ed08b05bbba21a2aec",
+    "src/ninetoothed/backends/__init__.py": "f11e4b4f0c008b6afb70800e72bf8c9c0de96e48cc86fc88dd7921b8b7acab38",
+    "src/ninetoothed/backends/cuda.py": "d55f6566c7dc2a6b4bd4fecf03645fe34dae9aefae016da06fbb61128d1a55ca",
+    "src/ninetoothed/backends/tilelang.py": "6e85b73a9692884649ea946fb5d89d8e9ed0357fc8b145279ae94c30b0282b5a",
+    "src/ninetoothed/backends/core.py": "cd90aef2b85d6b7eb928d1c15862f05f48aa340d851ee695d32595df0b180c01",
+    "src/ninetoothed/backends/triton.py": "178697f6ddd19dda1168c3ff40700873d45cd5549aaea5721571c45fde078b5f",
+    "src/ninetoothed/compiler/specialization.py": "b5edb2824593b8d03ce1a16a514c23817b2a1ee5361ee53c719a56c343ded78d",
+    "src/ninetoothed/compiler/driver.py": "c1a529d8da5e8dd3629b34b0f59c35674131b37f3f838a543c58dbf74d59dbdd",
+    "src/ninetoothed/compiler/layout_runtime.py": "e7b9342f6099f706c593e64abf4e98d121fe35f8a0599b51a0fbd812d37fff76",
+    "src/ninetoothed/compiler/__init__.py": "7dcd408ea54ea35923cb9993a09edb8ecb5c8ea54827c99332aa3333cd15dc1a",
+    "src/ninetoothed/compiler/reductions.py": "7e05d3d78f48d20419090240048cb68ce84e602f875e9656273aec0768d2591c",
+    "src/ninetoothed/compiler/cache.py": "8fac3e22576151992741f3baa9d0316666b31c47ea5c179113ff11050ee41a72",
+    "src/ninetoothed/compiler/jit.py": "4a5429683b7d7270087805215cf1d74020ac910ac9f743e27d13851735e83dc7",
+    "src/ninetoothed/compiler/layout.py": "ec131626d28a7a983260a38c90f76c90aef4059cd57a0af423176744896e8743",
+    "src/ninetoothed/compiler/passes.py": "f2a59f4a9a1e6e155990ff948515dc26f79faeaefd13025bba58bd1bb9da93b9",
+    "src/ninetoothed/compiler/runtime.py": "44558febe08bd13a31f3706d01a860686c2febb858749f201dddd2bdd64d79db",
+    "src/ninetoothed/interpreter/__init__.py": "a13fe1e8cf02cc44b18ed60cadecb66459553f010c4ec6e060e6fc984dfc8818",
+    "src/ninetoothed/interpreter/memory.py": "ec034452d764000f1693152a58ffa0c0f531ce39fe8fae16dd88f95bfb12a2f0",
+    "src/ninetoothed/interpreter/debugger.py": "b00cdb31571b61c5ad918baa77d149798d196626e86cca6d4d5e7a86b9683495",
+    "src/ninetoothed/interpreter/expressions.py": "4d6c23cc52d7ea70351fde2d450ff07c32b4063c0678256f47debdb2a5fd8158",
+    "src/ninetoothed/interpreter/runtime.py": "83a0ba0f300c842cd45f41db571394fe043d3fdd80b8c9853b0096738355cfa7",
+    "src/ninetoothed/backends/emitters/ssa.py": "9896488be47445e39280fac3c492340512c620e09f01572b1d278cd0f7f89fab",
+    "src/ninetoothed/backends/emitters/analysis.py": "54219cd51b407d6f17ce44ddc9cb491bd38015a5f49c4b0b1e2d588fa537e841",
+    "src/ninetoothed/backends/emitters/__init__.py": "12ba7cc758a60cc4940dad7578a7bfe1edc0e29dcb78776194c2b82881b39531",
+    "src/ninetoothed/backends/emitters/expressions.py": "51200e5b494ed37c96c790c45f2ce0ee386cd7043a4a50f604be0fc18095ff35",
+    "src/ninetoothed/backends/emitters/cuda.py": "89b17fa2994b7bdfd88e0ed591503e9469d9cd8ac935d47d0d8ce503b4b7b62e",
+    "src/ninetoothed/backends/emitters/base.py": "e60343534f31f9dbf814ad291998dc5572922e08d186bfee7410648d4c649e00",
+    "src/ninetoothed/backends/emitters/tilelang.py": "60e07c4e7c07c8c3814e748ccbeae41e2cf7e2ae84cce0bcb8b53d1faf2f4451",
+    "src/ninetoothed/backends/emitters/context.py": "4159452a85aa28e5284d3358debc6c36e2023d3ef7bb6c29d50908e6ca5507b4",
+    "src/ninetoothed/backends/emitters/triton.py": "12c6b51e29d89385bcd84d68c6d0a82825b74b964098a639b035bcce10e2bb12",
+    "src/ninetoothed/backends/materializers/__init__.py": "be074239a6e83602ce271956dbd3a43c7c6e0cd6b4709e9ef243d32f9dc0a344",
+    "src/ninetoothed/backends/materializers/cuda.py": "a5c5da8ba560478c374523d52c03f63c008f472d46102306f772add01f059767",
+    "src/ninetoothed/backends/materializers/base.py": "9b86e3e8667828b59e7895016c86f1f37e54591fb2cfbd369766e5241eec7c60",
+    "src/ninetoothed/backends/materializers/tilelang.py": "648c935b82980dbd6743e9445bbb0c64637b3a02ce7d37568952b70557ef757f",
+    "src/ninetoothed/backends/materializers/triton.py": "7d83e642777424bacea72565fe5a8667c1e9c8115c97cd3b326c9e690af2b7f3"
+  },
+  "wheel": {
+    "path": "/tmp/ninetoothed-cpu-wheel-20260908-run2/work/wheels/ninetoothed-0.26.0-py3-none-any.whl",
+    "sha256": "42c0ed739949659bd558df9bd41d1ed1358a755acac5a7abc75d6312c8f1e4c7",
+    "bytes": 198532,
+    "source_package_files_verified": 65
+  },
+  "installed_package_files_verified_after_execution": 65,
+  "artifacts": {
+    "08-test-dependency.stdout.log": {
+      "bytes": 1092,
+      "sha256": "9b9e30c7c92a903f0c57d933066de0acf93251cf891a8a0fa000bcf0bc4078a7"
+    },
+    "05-demo-debug-export.stdout.log": {
+      "bytes": 14496,
+      "sha256": "35847dc4848ab2883fd7da34eb50ca408a148ec38cf519f8fdf13007c115593c"
+    },
+    "09-cpu-regression.stdout.log": {
+      "bytes": 14210,
+      "sha256": "b2f591e41084e6a0acd8b94a2912979d5c83299c0fc6acff97cf5463d44ecb1f"
+    },
+    "01-venv.stderr.log": {
+      "bytes": 166,
+      "sha256": "90dfde3c856b5d81b908fd7f7e434e5a3e21c09030acafbd055817c8b5da3292"
+    },
+    "07-pip-check.stdout.log": {
+      "bytes": 60,
+      "sha256": "ec47479890c0be63e2ccc17b0865f668a80c2fcbe52a29520b1f4b40fd64f37c"
+    },
+    "validate-original.py": {
+      "bytes": 8423,
+      "sha256": "3048ff5bc65ec16ebf11f6df6677539bc0735f9fc95a0ca0f5b5996b3516e1ac"
+    },
+    "10-installed-packages.stdout.log": {
+      "bytes": 412,
+      "sha256": "f900b37df3362a5fdfb0df5eef15e73d459958916da4ec9e690f956b6c9db737"
+    },
+    "04-install-wheel.stderr.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "05-demo-debug-export.stderr.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "06-replay.stdout.log": {
+      "bytes": 11144,
+      "sha256": "4f1ecffa452b5688c3f840627f67ea40d3fe0382702c606b8c3e547f7eb69d14"
+    },
+    "08-test-dependency.stderr.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "02-build-wheel.stderr.log": {
+      "bytes": 3066,
+      "sha256": "b65f60844d6d825209566fb93a86559a9532a4c44c8377322d55fc034c1aaaba"
+    },
+    "00-uv-version.stdout.log": {
+      "bytes": 38,
+      "sha256": "6598b066dc6729b7e303227c9c897f0bc5c571f20e1a016fc49ff7705cd0a7d8"
+    },
+    "01-venv.stdout.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "02-build-wheel.stdout.log": {
+      "bytes": 854,
+      "sha256": "988b2a8ffeedb42e20a1f1987fb964ce4f89c0a491a6fac67ecb1155fe05119b"
+    },
+    "07-pip-check.stderr.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "06-replay.stderr.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "10-installed-packages.stderr.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "junit.xml": {
+      "bytes": 47008,
+      "sha256": "228f4326084fc1504454a3eb7ab999e2e484dfab1e6d71384a35889c02c35663"
+    },
+    "03-cpu-dependencies.stdout.log": {
+      "bytes": 1106,
+      "sha256": "f438f9afd08f8831a474df298d4883cc96903e77f2ae07584e17b1ebf116b1b5"
+    },
+    "04-install-wheel.stdout.log": {
+      "bytes": 141,
+      "sha256": "71d2ec3e3b01071b5bc59a5d8624db39a8d629af7eb4c58796cf8cb917818351"
+    },
+    "wheel-METADATA.txt": {
+      "bytes": 4315,
+      "sha256": "047f4dd3e6b113df48391459248980481f203b80c8b27a95de1b8cbd4022c1cc"
+    },
+    "09-cpu-regression.stderr.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "03-cpu-dependencies.stderr.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "00-uv-version.stderr.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  }
+}

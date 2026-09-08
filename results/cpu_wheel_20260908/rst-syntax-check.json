@@ -1,0 +1,10 @@
+{
+  "status": "PASS",
+  "scope": "Installation RST syntax only; Sphinx doc role replaced with plain text for standalone docutils. This is not a full Sphinx build.",
+  "path": "docs/source/installation.rst",
+  "raw_sha256": "6706e8d275e181965b3c715158ed49babf9e0ab6a518deb5e1c9ca948eb34db0",
+  "preliminary_findings": [
+    "Initial title underline was one character short; fixed.",
+    "Second shell invocation did not preserve backticks in the role replacement; here-string invocation corrected that check setup."
+  ]
+}

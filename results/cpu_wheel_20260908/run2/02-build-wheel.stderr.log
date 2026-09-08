@@ -1,0 +1,35 @@
+  Running command installing build dependencies
+  Using pip 26.2.1 from /tmp/ninetoothed-cpu-wheel-20260908-run2/work/venv/lib/python3.12/site-packages/pip (python 3.12)
+  Collecting hatchling
+    Obtaining dependency information for hatchling from https://files.pythonhosted.org/packages/a9/84/1798b6d85ecde0e31546004efd25c5de1b1f49250644a60cce460e12593a/hatchling-1.32.0-py3-none-any.whl.metadata
+    Downloading hatchling-1.32.0-py3-none-any.whl.metadata (3.9 kB)
+  Collecting packaging>=24.2 (from hatchling)
+    Obtaining dependency information for packaging>=24.2 from https://files.pythonhosted.org/packages/63/34/ba1c580383c9eada3711951fef0795c80b829a078d72188184bcab9dd527/packaging-26.3-py3-none-any.whl.metadata
+    Downloading packaging-26.3-py3-none-any.whl.metadata (3.5 kB)
+  Collecting pathspec>=0.10.1 (from hatchling)
+    Obtaining dependency information for pathspec>=0.10.1 from https://files.pythonhosted.org/packages/f1/d9/7fb5aa316bc299258e68c73ba3bddbc499654a07f151cba08f6153988714/pathspec-1.1.1-py3-none-any.whl.metadata
+    Downloading pathspec-1.1.1-py3-none-any.whl.metadata (14 kB)
+  Collecting pluggy>=1.0.0 (from hatchling)
+    Obtaining dependency information for pluggy>=1.0.0 from https://files.pythonhosted.org/packages/54/20/4d324d65cc6d9205fabedc306948156824eb9f0ee1633355a8f7ec5c66bf/pluggy-1.6.0-py3-none-any.whl.metadata
+    Downloading pluggy-1.6.0-py3-none-any.whl.metadata (4.8 kB)
+  Collecting tomlkit>=0.11.1 (from hatchling)
+    Obtaining dependency information for tomlkit>=0.11.1 from https://files.pythonhosted.org/packages/13/bc/8c13eb66537dce1d2bd3a57132902f38d0e7f5bb46fa9f4daed9fe9d76ee/tomlkit-0.15.1-py3-none-any.whl.metadata
+    Downloading tomlkit-0.15.1-py3-none-any.whl.metadata (3.3 kB)
+  Collecting trove-classifiers (from hatchling)
+    Obtaining dependency information for trove-classifiers from https://files.pythonhosted.org/packages/7c/a4/81502f486f01db95bc8320646a8a12511f5e556cb63d5e224d91816605c4/trove_classifiers-2026.6.1.19-py3-none-any.whl.metadata
+    Downloading trove_classifiers-2026.6.1.19-py3-none-any.whl.metadata (2.3 kB)
+  Downloading hatchling-1.32.0-py3-none-any.whl (78 kB)
+  Downloading packaging-26.3-py3-none-any.whl (129 kB)
+  Downloading pathspec-1.1.1-py3-none-any.whl (57 kB)
+  Downloading pluggy-1.6.0-py3-none-any.whl (20 kB)
+  Downloading tomlkit-0.15.1-py3-none-any.whl (49 kB)
+  Downloading trove_classifiers-2026.6.1.19-py3-none-any.whl (14 kB)
+  Installing collected packages: trove-classifiers, tomlkit, pluggy, pathspec, packaging, hatchling
+    Creating /tmp/pip-build-env-f2w7c3nl/overlay/bin
+    changing mode of /tmp/pip-build-env-f2w7c3nl/overlay/bin/trove-classifiers to 755
+    changing mode of /tmp/pip-build-env-f2w7c3nl/overlay/bin/hatchling to 755
+
+  Successfully installed hatchling-1.32.0 packaging-26.3 pathspec-1.1.1 pluggy-1.6.0 tomlkit-0.15.1 trove-classifiers-2026.6.1.19
+  Running command Getting requirements to build wheel
+  Running command Preparing metadata (pyproject.toml)
+  Running command Building wheel for ninetoothed (pyproject.toml)

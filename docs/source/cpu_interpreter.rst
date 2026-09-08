@@ -257,12 +257,13 @@ region-local name remains in scope. Dynamic watch names are requested from the
 execution engine at each event. Avoid trace filters during full debugging if
 all intermediate definitions should remain observable.
 
-The runnable example accepts ``--debug`` for scripted stepping and breakpoints,
-or ``--interactive-debug`` to read commands from the terminal:
+After installation, run the example from the repository root. It accepts
+``--debug`` for scripted stepping and breakpoints, or ``--interactive-debug``
+to read commands from the terminal. ``-I`` uses the installed package:
 
 .. code-block:: console
 
-   PYTHONPATH=src python docs/cpu_interpreter_demo.py --debug
+   python -I docs/cpu_interpreter_demo.py --debug
 
 The demo checks the correct ``x * 2 + 1`` result against NumPy, then deliberately
 changes the SSA constant ``2`` to ``3``. ``check_passes`` identifies
@@ -276,8 +277,8 @@ separate process, without rerunning the frontend or the injected pass:
 
 .. code-block:: console
 
-   PYTHONPATH=src python docs/cpu_interpreter_demo.py --debug --export /tmp/nine-demo
-   PYTHONPATH=src python /tmp/nine-demo/replay.py
+   python -I docs/cpu_interpreter_demo.py --debug --export /tmp/nine-demo
+   python -I /tmp/nine-demo/replay.py
 
 The directory contains ``reference/`` and ``candidate/`` replay bundles plus a
 top-level ``replay.py``. Both bundles preserve the original inputs, layouts,

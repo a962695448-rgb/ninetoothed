@@ -1,0 +1,13 @@
+Processing ./.
+  Installing build dependencies: started
+  Installing build dependencies: finished with status 'done'
+  Getting requirements to build wheel: started
+  Getting requirements to build wheel: finished with status 'done'
+  Preparing metadata (pyproject.toml): started
+  Preparing metadata (pyproject.toml): finished with status 'done'
+Building wheels for collected packages: ninetoothed
+  Building wheel for ninetoothed (pyproject.toml): started
+  Building wheel for ninetoothed (pyproject.toml): finished with status 'done'
+  Created wheel for ninetoothed: filename=ninetoothed-0.26.0-py3-none-any.whl size=198532 sha256=42c0ed739949659bd558df9bd41d1ed1358a755acac5a7abc75d6312c8f1e4c7
+  Stored in directory: /tmp/pip-ephem-wheel-cache-3vfzogyh/wheels/2c/eb/85/30c6cf918ae0e099e06526c4f1c89082c10a1bc332f875cecb
+Successfully built ninetoothed

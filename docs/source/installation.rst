@@ -14,7 +14,7 @@ It is generally considered good practice to use a virtual environment when insta
 .. _cpu-wheel-install:
 
 CPU interpreter without GPU packages
------------------------------------
+------------------------------------
 
 The NumPy reference interpreter and its step debugger can run without Torch,
 Triton, or a GPU. Use this checkout containing ``ninetoothed.interpret``; an
@@ -43,6 +43,12 @@ or a populated local cache.
    python -I -c 'import importlib.util, ninetoothed; print(ninetoothed.__file__); assert all(importlib.util.find_spec(p) is None for p in ("torch", "triton"))'
    python -I demo.py --debug --export replay
    python -I replay/replay.py
+
+If your Python distribution lacks ``ensurepip``, install its OS ``venv`` support,
+or use an existing ``uv`` installation to replace the environment-creation line
+with ``uv venv --seed --python python3 "$CPU_WORK/venv"``. Then continue with
+activation and the same pip commands. The isolated Linux validation used this
+``uv`` alternative because its system Python lacked ``ensurepip``.
 
 The printed package path should be inside ``venv/lib/python*/site-packages``.
 ``-I`` ignores ``PYTHONPATH`` and excludes the current/script directory from

@@ -1,0 +1,44 @@
+[
+  {
+    "argv": [
+      "uvx",
+      "--offline",
+      "ruff",
+      "format",
+      "--check"
+    ],
+    "returncode": 0,
+    "stdout": "136 files already formatted\n",
+    "stderr": ""
+  },
+  {
+    "argv": [
+      "uvx",
+      "--offline",
+      "ruff",
+      "check"
+    ],
+    "returncode": 0,
+    "stdout": "All checks passed!\n",
+    "stderr": ""
+  },
+  {
+    "argv": [
+      "C:\\Users\\xxl\\.cache\\codex-runtimes\\codex-primary-runtime\\dependencies\\python\\python.exe",
+      "scripts/check_contributing_style.py"
+    ],
+    "returncode": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "argv": [
+      "git",
+      "diff",
+      "--check"
+    ],
+    "returncode": 0,
+    "stdout": "",
+    "stderr": "warning: in the working copy of 'docs/source/cpu_interpreter.rst', LF will be replaced by CRLF the next time Git touches it\nwarning: in the working copy of 'docs/source/installation.rst', LF will be replaced by CRLF the next time Git touches it\n"
+  }
+]
