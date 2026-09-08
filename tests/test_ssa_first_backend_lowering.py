@@ -19,6 +19,7 @@ def _ssa_opcodes(artifact):
                 yield from visit(operation.get("regions", ()))
 
     program = artifact.metadata.get("ssa") or {}
+
     return set(visit(program.get("blocks", ())))
 
 

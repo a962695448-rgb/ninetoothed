@@ -374,6 +374,7 @@ def compare_programs(
         if differing
         else ()
     )
+
     return ProgramComparison(
         not differing, differing, first_operation, aligned, candidates
     )

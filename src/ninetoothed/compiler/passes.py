@@ -1104,6 +1104,7 @@ def _decompose_linalg_block(
             _decompose_linalg_block(region, value_types, provenance, existing_names)
             for region in operation.regions
         )
+
         if all(
             mapped is original for mapped, original in zip(regions, operation.regions)
         ):

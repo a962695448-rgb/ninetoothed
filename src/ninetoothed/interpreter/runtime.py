@@ -389,6 +389,7 @@ class _Execution:
             "potentially overlapping input and output storage is not supported",
         )
         metadata_operations = {"index.offset", "shape.dim", "tensor.stride"}
+
         for read_location, other in operation_locations(self.program):
             require(
                 other is operation
@@ -460,6 +461,7 @@ class _Execution:
                         f"Operation {location}: scalar matmul operand program domains "
                         "cannot be broadcast to the output."
                     ) from error
+
                 refs.append(
                     TensorRef(array, self.specs[name], self.symbols, outer_index=local)
                 )
@@ -928,6 +930,7 @@ class _Execution:
                     raise UnsupportedOperationError(
                         "Value-space scalar offsets require an enclosing scalar-lane output domain."
                     )
+
                 dim = int(op.attrs.get("dim", 0))
 
                 if not -len(self.lane) <= dim < len(self.lane):

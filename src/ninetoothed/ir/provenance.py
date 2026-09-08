@@ -20,6 +20,7 @@ def operation_locations(program):
         for index, operation in enumerate(block.operations):
             location = f"{path}:{index}:{operation.opcode}"
             yield location, operation
+
             for region_index, region in enumerate(operation.regions):
                 yield from visit(region, f"{location}/region{region_index}")
 
@@ -34,9 +35,12 @@ def _fingerprint(program):
 
 def _metadata(program):
     data = program.metadata.get("provenance")
+
     if data is None or data.get("schema") != 1:
         raise ValueError("Seed SSA origins before recording a pass.")
+
     sources = set(data["sources"])
+
     for _location, operation in operation_locations(program):
         if any(origin not in sources for origin in operation.origins):
             raise ValueError("Operation refers to an unknown SSA origin.")
@@ -46,6 +50,7 @@ def _metadata(program):
 def _map_locations(program, transform):
     def block(value, path):
         operations = []
+
         for index, operation in enumerate(value.operations):
             location = f"{path}:{index}:{operation.opcode}"
             regions = tuple(
@@ -61,12 +66,17 @@ def _map_locations(program, transform):
 def seed_origins(program):
     """Assign deterministic original-SSA IDs once, preserving existing histories."""
     ssa.verify_program(program)
+
     if "provenance" in program.metadata:
         _metadata(program)
+
         return program
+
     locations = operation_locations(program)
+
     if any(operation.origins for _location, operation in locations):
         raise ValueError("Cannot seed operations with origins but no source catalog.")
+
     namespace = _fingerprint(program)
     sources = {
         f"{namespace}:{location}": {
@@ -82,6 +92,7 @@ def seed_origins(program):
             operation, origins=(f"{namespace}:{location}",)
         ),
     )
+
     return replace(
         seeded,
         metadata=dict(program.metadata)
@@ -105,19 +116,25 @@ class ProvenancePass:
         self.data = _metadata(before)
         self.inputs = operation_locations(before)
         self._input_locations = {}
+
         for location, operation in self.inputs:
             self._input_locations.setdefault(id(operation), []).append(location)
+
         self._relations = []
 
     def _source_locations(self, sources):
         locations = []
+
         for source in sources:
             matches = self._input_locations.get(id(source), ())
+
             if len(matches) != 1:
                 raise ValueError(
                     "Each declared source must be one unique input operation."
                 )
+
             locations.append(matches[0])
+
         if len(set(locations)) != len(locations):
             raise ValueError("A provenance relation cannot repeat a source operation.")
         return tuple(locations)
@@ -130,18 +147,23 @@ class ProvenancePass:
         rather than presenting a known subset as a complete source set.
         """
         sources, targets = tuple(sources), tuple(targets)
+
         if not sources or not targets:
             raise ValueError(
                 "Use delete for deletions; derivations need sources and targets."
             )
+
         if relation not in {"replace", "split", "merge"}:
             raise ValueError("A derivation relation must be replace, split or merge.")
+
         locations = self._source_locations(sources)
+
         if any(
             kind == "delete" and set(locations).intersection(previous_sources)
             for kind, previous_sources, _targets, _origins in self._relations
         ):
             raise ValueError("A deleted input cannot also have a derived successor.")
+
         origins = (
             tuple(sorted({origin for source in sources for origin in source.origins}))
             if all(source.origins for source in sources)
@@ -161,28 +183,37 @@ class ProvenancePass:
                         for region in operation.regions
                     ),
                 )
+
             operation = replace(operation, origins=origins)
             generated.append(operation)
+
             return operation
 
         result = tuple(map(derive_operation, targets))
+
         if relation == "split" and len(generated) < 2:
             raise ValueError("A split must declare at least two generated operations.")
+
         if relation == "merge" and len(sources) < 2:
             raise ValueError("A merge must declare at least two source operations.")
+
         self._relations.append((relation, locations, tuple(generated), origins))
+
         return result
 
     def delete(self, *sources):
         """Declare deletion, reporting original sources only when all are known."""
         if not sources:
             raise ValueError("A deletion must name at least one input operation.")
+
         locations = self._source_locations(sources)
+
         if any(
             set(locations).intersection(previous_sources)
             for _kind, previous_sources, _targets, _origins in self._relations
         ):
             raise ValueError("A deletion conflicts with an existing source relation.")
+
         origins = (
             tuple(sorted({origin for source in sources for origin in source.origins}))
             if all(source.origins for source in sources)
@@ -194,30 +225,39 @@ class ProvenancePass:
         """Append a pass record; unrecorded replacements and removals stay unknown."""
         outputs = operation_locations(after)
         output_locations = {}
+
         for location, operation in outputs:
             output_locations.setdefault(id(operation), []).append(location)
+
         records, handled_inputs, handled_outputs, declared_origins = (
             [],
             set(),
             set(),
             {},
         )
+
         for relation, source_locations, targets, origins in self._relations:
             target_locations = []
+
             for target in targets:
                 matches = output_locations.get(id(target), ())
+
                 if len(matches) != 1:
                     raise ValueError(
                         "Each declared target must occur once in the output program."
                     )
+
                 location = matches[0]
+
                 if location in handled_outputs:
                     raise ValueError(
                         "An output operation has more than one provenance relation."
                     )
+
                 target_locations.append(location)
                 declared_origins[location] = origins
                 handled_outputs.add(location)
+
             if relation == "delete" and any(
                 source is target
                 for location, source in self.inputs
@@ -227,6 +267,7 @@ class ProvenancePass:
                 raise ValueError(
                     "A deleted operation is still present in the output program."
                 )
+
             handled_inputs.update(source_locations)
             records.append(
                 {
@@ -236,10 +277,13 @@ class ProvenancePass:
                     "origins": origins,
                 }
             )
+
         for location, operation in outputs:
             if location in handled_outputs:
                 continue
+
             matches = self._input_locations.get(id(operation), ())
+
             if len(matches) == 1 and len(output_locations[id(operation)]) == 1:
                 source_location = matches[0]
                 origins = operation.origins
@@ -247,6 +291,7 @@ class ProvenancePass:
                 handled_inputs.add(source_location)
             else:
                 origins, relation, source_locations = (), "unmapped", ()
+
             declared_origins[location] = origins
             records.append(
                 {
@@ -256,6 +301,7 @@ class ProvenancePass:
                     "origins": origins,
                 }
             )
+
         for location, operation in self.inputs:
             if location not in handled_inputs:
                 records.append(
@@ -266,6 +312,7 @@ class ProvenancePass:
                         "origins": operation.origins,
                     }
                 )
+
         normalized = _map_locations(
             after,
             lambda location, operation: replace(
@@ -278,6 +325,7 @@ class ProvenancePass:
             "output_fingerprint": _fingerprint(after),
             "relations": tuple(records),
         }
+
         return replace(
             normalized,
             metadata=dict(after.metadata)
@@ -296,9 +344,11 @@ def record_pass(before, after, name):
     """
     tracker = ProvenancePass(before, name)
     data = after.metadata.get("provenance")
+
     if data is not None and data.get("schema") == 1:
         history = data.get("passes", ())
         previous = tracker.data["passes"]
+
         if (
             data.get("namespace") == tracker.data["namespace"]
             and data.get("sources") == tracker.data["sources"]
@@ -309,6 +359,7 @@ def record_pass(before, after, name):
             and history[-1]["output_fingerprint"] == _fingerprint(after)
         ):
             _metadata(after)
+
             return after
     return tracker.finish(after)
 
@@ -331,7 +382,9 @@ def source_candidates(program, locations=None):
     """
     if "provenance" not in program.metadata:
         return ()
+
     data = _metadata(program)
+
     if locations is not None:
         requested = set(locations)
         origins = {

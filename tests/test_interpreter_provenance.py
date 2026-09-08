@@ -82,6 +82,7 @@ def _branch_case():
             ),
         ),
     )
+
     return reference, candidate
 
 
@@ -158,6 +159,7 @@ def _arithmetic():
     x, zero, two, scaled, output = map(
         _value, ("x", "%zero", "%two", "%scaled", "%output")
     )
+
     return ssa.Program(
         kind="arithmetic_provenance",
         inputs=(x,),
@@ -203,6 +205,7 @@ def _split_scale(program, *, wrong=False):
         (scale,),
         relation="split",
     )
+
     return tracker.finish(
         replace(
             program,
@@ -436,10 +439,13 @@ def test_declared_targets_must_really_occur_and_deleted_sources_must_be_absent()
     source = before.blocks[0].operations[0]
     tracker = ProvenancePass(before, "missing_target")
     tracker.derive((replace(source),), (source,))
+
     with pytest.raises(ValueError, match="declared target"):
         tracker.finish(before)
+
     tracker = ProvenancePass(before, "false_deletion")
     tracker.delete(source)
+
     with pytest.raises(ValueError, match="still present"):
         tracker.finish(before)
 
@@ -483,6 +489,7 @@ def test_runtime_errors_retain_declared_source_scope_without_a_fake_exact_locati
         operations[2] = tracker.derive(
             (replace(source, opcode="test.unsupported"),), (source,)
         )[0]
+
         return tracker.finish(
             replace(
                 program,
@@ -542,8 +549,10 @@ def test_reproducer_preserves_provenance_and_legacy_json_remains_readable(tmp_pa
     # Old schema-1 bundles predate both Operation.origins and provenance metadata.
     program_path = directory / "program.json"
     data = json.loads(program_path.read_text(encoding="utf-8"))
+
     for operation in data["blocks"][0]["operations"]:
         operation.pop("origins")
+
     data["metadata"].pop("provenance")
     program_path.write_text(json.dumps(data), encoding="utf-8")
     legacy, legacy_inputs, legacy_options = load_reproducer(directory)
@@ -600,6 +609,7 @@ def _real_pipeline_case(backend, case):
     options = {"tensors": kernel.tensors, "symbols": kernel.meta}
     # Neither execution is the oracle for the other: check the original frontend
     # and actual default-pipeline result independently against NumPy first.
+
     for program in (kernel.frontend_program, kernel.program):
         result = interpret_program(
             program, {name: value.copy() for name, value in inputs.items()}, **options
@@ -623,6 +633,7 @@ def test_real_default_linalg_passes_have_complete_nonduplicated_origin_records(
     def run_pass(pass_, before):
         after = record_pass(before, pass_.run(before, context), pass_.name)
         snapshots.append(after)
+
         return after
 
     checks = tuple((pass_.name, partial(run_pass, pass_)) for pass_ in pipeline.passes)
@@ -678,6 +689,7 @@ def test_real_default_linalg_passes_have_complete_nonduplicated_origin_records(
     assert comparison.equal
     assert not comparison.traces_aligned
     assert comparison.first_operation is None
+
     for name, original in originals.items():
         np.testing.assert_array_equal(inputs[name], original)
 
@@ -699,6 +711,7 @@ def _inject_decomposed_fault(program, *, kind, name, wrong):
 
     def transform_block(block):
         operations = []
+
         for operation in block.operations:
             if operation is target:
                 if kind == "dot":
@@ -711,10 +724,12 @@ def _inject_decomposed_fault(program, *, kind, name, wrong):
                         operation,
                         operands=(tensor, column, row) if wrong else operation.operands,
                     )
+
                 operations.extend(tracker.derive((replacement,), (operation,)))
                 touched.append(operation)
             else:
                 regions = tuple(transform_block(region) for region in operation.regions)
+
                 if all(new is old for new, old in zip(regions, operation.regions)):
                     operations.append(operation)
                 else:
@@ -723,12 +738,14 @@ def _inject_decomposed_fault(program, *, kind, name, wrong):
                             (replace(operation, regions=regions),), (operation,)
                         )
                     )
+
         if all(new is old for new, old in zip(operations, block.operations)):
             return block
         return replace(block, operations=tuple(operations))
 
     blocks = tuple(transform_block(block) for block in program.blocks)
     assert touched == [target]
+
     return tracker.finish(replace(program, blocks=blocks))
 
 
@@ -752,17 +769,22 @@ def test_real_decomposition_fault_reports_injected_pass_and_original_source_rang
             program, kind=kind, name=injected_name, wrong=wrong
         )
         mutated.append(candidate)
+
         return candidate
 
     def after_fault(program):
         visited_after.append(True)
+
         return program
 
     checks = []
+
     for pass_ in pipeline.passes:
         checks.append((pass_.name, partial(pass_.run, context=context)))
+
         if pass_.name == "ssa.decompose_linalg":
             checks.append((injected_name, inject))
+
     checks.append(("diagnostic.after_fault", after_fault))
     report = check_passes(kernel.frontend_program, tuple(checks), inputs, **options)
     assert len(mutated) == 1
@@ -794,5 +816,6 @@ def test_real_decomposition_fault_reports_injected_pass_and_original_source_rang
         assert report.first_bad_pass is None
         assert report.source_candidates == ()
         assert visited_after == [True]
+
     for name, original in originals.items():
         np.testing.assert_array_equal(inputs[name], original)
