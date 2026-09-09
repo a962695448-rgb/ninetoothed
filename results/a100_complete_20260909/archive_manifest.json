@@ -1,0 +1,183 @@
+{
+  "status": "VERIFIED_PASS",
+  "source_commit": "3fc27e0399d82b02be5407b9542c67763c4631a7",
+  "downloaded_file_count": 96,
+  "local_zip_sha256": "d2b2a9fde1b9324647e7c0a77b1ec1ecf848708fe5ae90dc81e4d6c89b99bbfb",
+  "omitted_from_public_copy": [
+    "default-full/full/coverage-html/z_e3fb515eb243242f_triton_py.html",
+    "default-full/full/coverage-html/z_f4de2b9ae40c3ecf_eval_py.html",
+    "default-full/full/coverage-html/z_f4de2b9ae40c3ecf_language_py.html",
+    "default-full/full/coverage-html/z_f4de2b9ae40c3ecf_torchifier_py.html",
+    "default-full/full/coverage-html/z_355c34310e5e5c7e_passes_py.html",
+    "default-full/full/coverage-html/z_ae109258bdb02488_layout_py.html",
+    "default-full/full/coverage-html/z_ae109258bdb02488_types_py.html",
+    "default-full/full/coverage-html/z_a8c3344f7e36d9e0_triton_py.html",
+    "default-full/full/coverage-html/class_index.html",
+    "default-full/full/coverage-html/z_355c34310e5e5c7e_reductions_py.html",
+    "default-full/full/coverage-html/z_355c34310e5e5c7e___init___py.html",
+    "default-full/full/coverage-html/z_7ac4a2cf9cf7419c_base_py.html",
+    "default-full/full/coverage-html/z_986b5054bea1d775_frozen_py.html",
+    "default-full/full/coverage-html/z_f4de2b9ae40c3ecf_dtype_py.html",
+    "default-full/full/coverage-html/z_a8c3344f7e36d9e0_core_py.html",
+    "default-full/full/coverage-html/z_ae109258bdb02488_python_py.html",
+    "default-full/full/coverage-html/z_355c34310e5e5c7e_layout_py.html",
+    "default-full/full/coverage-html/z_355c34310e5e5c7e_driver_py.html",
+    "default-full/full/coverage-html/z_f4de2b9ae40c3ecf___init___py.html",
+    "default-full/full/coverage-html/z_986b5054bea1d775_kernel_py.html",
+    "default-full/full/coverage-html/z_8929899950fd8d46___init___py.html",
+    "default-full/full/coverage-html/z_986b5054bea1d775_provenance_py.html",
+    "default-full/full/coverage-html/z_7ac4a2cf9cf7419c_context_py.html",
+    "default-full/full/coverage-html/z_ae109258bdb02488_errors_py.html",
+    "default-full/full/coverage-html/z_ae109258bdb02488___init___py.html",
+    "default-full/full/coverage-html/z_a8c3344f7e36d9e0_cuda_py.html",
+    "default-full/full/coverage-html/z_f4de2b9ae40c3ecf_utils_py.html",
+    "default-full/full/coverage-html/z_f4de2b9ae40c3ecf_naming_py.html",
+    "default-full/full/coverage-html/z_355c34310e5e5c7e_jit_py.html",
+    "default-full/full/coverage-html/z_e3fb515eb243242f___init___py.html",
+    "default-full/full/coverage-html/z_355c34310e5e5c7e_runtime_py.html",
+    "default-full/full/coverage-html/z_7ac4a2cf9cf7419c_expressions_py.html",
+    "default-full/full/coverage-html/z_8929899950fd8d46_runtime_py.html",
+    "default-full/full/coverage-html/style_cb_4667309f.css",
+    "default-full/full/coverage-html/z_7ac4a2cf9cf7419c_ssa_py.html",
+    "default-full/full/coverage-html/z_a8c3344f7e36d9e0___init___py.html",
+    "default-full/full/coverage-html/z_7ac4a2cf9cf7419c___init___py.html",
+    "default-full/full/coverage-html/z_f4de2b9ae40c3ecf_auto_tuner_py.html",
+    "default-full/full/coverage-html/function_index.html",
+    "default-full/full/coverage-html/z_8929899950fd8d46_memory_py.html",
+    "default-full/full/coverage-html/.gitignore",
+    "default-full/full/coverage-html/z_e3fb515eb243242f_cuda_py.html",
+    "default-full/full/coverage-html/z_8929899950fd8d46_debugger_py.html",
+    "default-full/full/coverage-html/z_986b5054bea1d775___init___py.html",
+    "default-full/full/coverage-html/z_f4de2b9ae40c3ecf_tensor_py.html",
+    "default-full/full/coverage-html/z_e3fb515eb243242f_tilelang_py.html",
+    "default-full/full/coverage-html/z_f4de2b9ae40c3ecf_visualization_py.html",
+    "default-full/full/coverage-html/favicon_32_cb_c827f16f.png",
+    "default-full/full/coverage-html/z_8929899950fd8d46_expressions_py.html",
+    "default-full/full/coverage-html/z_355c34310e5e5c7e_layout_runtime_py.html",
+    "default-full/full/coverage-html/z_f4de2b9ae40c3ecf_aot_py.html",
+    "default-full/full/coverage-html/z_355c34310e5e5c7e_cache_py.html",
+    "default-full/full/coverage-html/z_a8c3344f7e36d9e0_registry_py.html",
+    "default-full/full/coverage-html/z_a8c3344f7e36d9e0_tilelang_py.html",
+    "default-full/full/coverage-html/z_8929899950fd8d46_failure_py.html",
+    "default-full/full/coverage-html/z_7ac4a2cf9cf7419c_tilelang_py.html",
+    "default-full/full/coverage-html/z_f4de2b9ae40c3ecf_cudaifier_py.html",
+    "default-full/full/coverage-html/z_7ac4a2cf9cf7419c_cuda_py.html",
+    "default-full/full/coverage-html/z_7ac4a2cf9cf7419c_analysis_py.html",
+    "default-full/full/coverage-html/z_a8c3344f7e36d9e0_toolchain_py.html",
+    "default-full/full/coverage-html/z_f4de2b9ae40c3ecf_make_py.html",
+    "default-full/full/coverage-html/z_f4de2b9ae40c3ecf_symbol_py.html",
+    "default-full/full/coverage-html/z_ae109258bdb02488_preparation_py.html",
+    "default-full/full/coverage-html/index.html",
+    "default-full/full/coverage-html/z_e3fb515eb243242f_base_py.html",
+    "default-full/full/coverage-html/z_986b5054bea1d775_ssa_py.html",
+    "default-full/full/coverage-html/keybd_closed_cb_900cfef5.png",
+    "default-full/full/coverage-html/z_f4de2b9ae40c3ecf_debugging_py.html",
+    "default-full/full/coverage-html/coverage_html_cb_dd2e7eb5.js",
+    "default-full/full/coverage-html/z_7ac4a2cf9cf7419c_triton_py.html",
+    "default-full/full/coverage-html/z_355c34310e5e5c7e_specialization_py.html",
+    "default-full/full/coverage-html/status.json",
+    "default-full/full/coverage-html/z_f4de2b9ae40c3ecf_build_py.html"
+  ],
+  "files": {
+    "default-full/controller.log": {
+      "bytes": 193,
+      "sha256": "933e3413e32df02e943f97a3ec6fc76d2fe41a7f701ba96e36b389a734375ee2"
+    },
+    "default-full/launch.json": {
+      "bytes": 684,
+      "sha256": "12044de0756c84be708868fcb9ab576c52786ddec448f3266cf2a90a2ea56af5"
+    },
+    "default-full/full/nvidia-smi.stderr.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "default-full/full/before-head.stderr.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "default-full/full/validation.stdout.log": {
+      "bytes": 81781,
+      "sha256": "35720ba9394097282b69003d981081d419b21757d502e904cce3255fa86fde8b"
+    },
+    "default-full/full/environment.stdout.log": {
+      "bytes": 1012,
+      "sha256": "598c620f3b621d5240851b77fe6301e946e49e9d4b58fcf6326dcd5e0b485e04"
+    },
+    "default-full/full/nvidia-smi.stdout.log": {
+      "bytes": 54,
+      "sha256": "771ef0404d0da497e135edd0d1fa56773141b94fd22133ea98ec8c1d5ba8d0a8"
+    },
+    "default-full/full/after-status.stderr.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "default-full/full/validation.stderr.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "default-full/full/before-status.stdout.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "default-full/full/junit.xml": {
+      "bytes": 98553,
+      "sha256": "e714790fd9a0b81128787deaf201ed6778124ecacef464e76ae0f372a3f577b7"
+    },
+    "default-full/full/manifest.json": {
+      "bytes": 24859,
+      "sha256": "2708d1a155e0cd0745cd97f97a3f104947ef337a55d46cc805ebacaf4771dd60"
+    },
+    "default-full/full/after-head.stdout.log": {
+      "bytes": 41,
+      "sha256": "e9244f3602e6d0fa6eac85367de319b390a3741c56727df1f110e814dd99971e"
+    },
+    "default-full/full/before-head.stdout.log": {
+      "bytes": 41,
+      "sha256": "e9244f3602e6d0fa6eac85367de319b390a3741c56727df1f110e814dd99971e"
+    },
+    "default-full/full/environment.stderr.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "default-full/full/after-head.stderr.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "default-full/full/after-status.stdout.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "default-full/full/coverage.xml": {
+      "bytes": 410338,
+      "sha256": "59310320a792d17a63d87908ab747d3adead05f881434364dd3f67c5d1662994"
+    },
+    "default-full/full/before-status.stderr.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "bounded-canary/sequence.json": {
+      "bytes": 1692,
+      "sha256": "9f8eedff542bb867a4fd600765ab8847f3467bf9891da17913972f5fd3753383"
+    },
+    "bounded-canary/sequence.py": {
+      "bytes": 4351,
+      "sha256": "4d0a3229d1f00c9ba4aeaa0e18977587a431ce2dfc3c28d777f047c837c99fef"
+    },
+    "bounded-canary/canary.controller.log": {
+      "bytes": 394,
+      "sha256": "20934ffd406fb461a4db0b4309be879828bdd40bf85be229316789c34d59fd15"
+    },
+    "bounded-canary/canary/junit.xml": {
+      "bytes": 244,
+      "sha256": "13fa574d2b0f355e2455dcfb0a45d9b87d6b8c7b1439a000248d61b87175d231"
+    },
+    "verified_summary.json": {
+      "bytes": 5407,
+      "sha256": "b2b32916372ecff2a74e2345f375612d6d8873c6e303c3912ed000a0951d6f21"
+    },
+    "verification_script.py": {
+      "bytes": 3163,
+      "sha256": "90b5172348411c0aedcce293cd1d1e5842419557679b5ad113f35bfaec395ed9"
+    }
+  }
+}

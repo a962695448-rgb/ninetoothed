@@ -1,0 +1,18 @@
+{
+  "pid": 2730,
+  "source_commit": "3fc27e0399d82b02be5407b9542c67763c4631a7",
+  "started_at_utc": "2026-09-09T04:07:05.770942+00:00",
+  "argv": [
+    "/home/vipuser/infinitensor-2026/.venv/bin/python",
+    "/home/vipuser/infinitensor-2026/tools/nine-a100-20260909/a100_final_runner.py",
+    "--mode",
+    "full",
+    "--repo",
+    "/home/vipuser/infinitensor-2026/ninetoothed-a100-20260909",
+    "--out",
+    "/home/vipuser/infinitensor-2026/runs/nine-a100-20260909-default-full/full",
+    "--expected-sha",
+    "3fc27e0399d82b02be5407b9542c67763c4631a7"
+  ],
+  "cache_policy": "Default ~/.ninetoothed, normal full-suite collection/execution order; no test or tolerance changes."
+}

@@ -1,5 +1,7 @@
 # A100 验证原始证据
 
+后续完整回归已通过，见[703/2完整证据](../a100_complete_20260909/README.md)。本目录的原始中断状态不改写。
+
 源码：`3fc27e0399d82b02be5407b9542c67763c4631a7`。本轮 **GPU 差分和 CUDA dot 通过，完整套件中断，整体不能标为完整验收通过**。
 
 - [GPU 差分](gpu-differential/interpreter_gpu_validation.json)：15/15，9个程序、10个类别。

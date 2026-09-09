@@ -1,0 +1,33 @@
+{
+  "status": "FAIL",
+  "source_commit": "3fc27e0399d82b02be5407b9542c67763c4631a7",
+  "pid": 2081,
+  "steps": [
+    {
+      "name": "canary",
+      "argv": [
+        "/home/vipuser/infinitensor-2026/.venv/bin/python",
+        "-m",
+        "pytest",
+        "-q",
+        "--color=no",
+        "--tb=short",
+        "-ra",
+        "tests/test_conv2d.py::test[4-64-16-16-512-3-3-padding3-dtype0-0.001-0.001-cuda]",
+        "--junitxml=/home/vipuser/infinitensor-2026/runs/nine-a100-20260909-warm/canary/junit.xml"
+      ],
+      "started_at_utc": "2026-09-09T04:00:00.429474+00:00",
+      "pid": 2087,
+      "timed_out": true,
+      "exit_code": 2,
+      "ended_at_utc": "2026-09-09T04:01:32.347482+00:00"
+    }
+  ],
+  "started_at_utc": "2026-09-09T04:00:00.409194+00:00",
+  "cache_policy": "Retained default ~/.ninetoothed; no new empty cache for full regression.",
+  "controller_sha256": "4d0a3229d1f00c9ba4aeaa0e18977587a431ce2dfc3c28d777f047c837c99fef",
+  "active_stage": "canary",
+  "error": "Stage canary did not pass; inspect its preserved log before continuing.",
+  "traceback": "Traceback (most recent call last):\n  File \"/home/vipuser/infinitensor-2026/tools/nine_a100_warm_sequence_20260909.py\", line 71, in <module>\n    execute(\"canary\", [python, \"-m\", \"pytest\", \"-q\", \"--color=no\", \"--tb=short\", \"-ra\",\n  File \"/home/vipuser/infinitensor-2026/tools/nine_a100_warm_sequence_20260909.py\", line 61, in execute\n    raise RuntimeError(f\"Stage {name} did not pass; inspect its preserved log before continuing.\")\nRuntimeError: Stage canary did not pass; inspect its preserved log before continuing.\n",
+  "finished_at_utc": "2026-09-09T04:01:32.350366+00:00"
+}

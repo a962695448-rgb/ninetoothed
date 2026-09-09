@@ -1,0 +1,133 @@
+{
+  "status": "VERIFIED_PASS",
+  "source_commit": "3fc27e0399d82b02be5407b9542c67763c4631a7",
+  "files_verified": 96,
+  "archive_sha256": "d2b2a9fde1b9324647e7c0a77b1ec1ecf848708fe5ae90dc81e4d6c89b99bbfb",
+  "tests": 705,
+  "passed": 703,
+  "skipped": [
+    {
+      "name": "test_add[True-45327-dtype0-bf16-cuda]",
+      "reason": "multi-device testing requires at least 2 devices"
+    },
+    {
+      "name": "test_triton_aot_handle_is_reusable_across_cuda_contexts",
+      "reason": "Triton multi-context testing requires at least 2 CUDA devices"
+    }
+  ],
+  "gpu_test_cases_from_junit": [
+    "test_cpu_interpreter_matches_actual_triton_gpu[elementwise_float32_aligned]",
+    "test_cpu_interpreter_matches_actual_triton_gpu[masked_float32_tail]",
+    "test_cpu_interpreter_matches_actual_triton_gpu[masked_int32_tail]",
+    "test_cpu_interpreter_matches_actual_triton_gpu[broadcast_float32_tail]",
+    "test_cpu_interpreter_matches_actual_triton_gpu[broadcast_row_matrix_float32_tail]",
+    "test_cpu_interpreter_matches_actual_triton_gpu[broadcast_column_matrix_float32_tail]",
+    "test_cpu_interpreter_matches_actual_triton_gpu[row_reduction_float32]",
+    "test_cpu_interpreter_matches_actual_triton_gpu[row_reduction_int32]",
+    "test_cpu_interpreter_matches_actual_triton_gpu[comparison_bool_exact]",
+    "test_cpu_interpreter_matches_actual_triton_gpu[if_for_true]",
+    "test_cpu_interpreter_matches_actual_triton_gpu[if_for_false]",
+    "test_cpu_interpreter_matches_actual_triton_gpu[softmax_float32]",
+    "test_cpu_interpreter_matches_actual_triton_gpu[floor_div_int32_mixed_sign_tail]",
+    "test_cpu_interpreter_matches_actual_triton_gpu[remainder_int32_mixed_sign_tail]",
+    "test_cpu_interpreter_matches_actual_triton_gpu[dot_float32_multi_program_tail]"
+  ],
+  "suites": [
+    {
+      "name": "pytest",
+      "errors": "0",
+      "failures": "0",
+      "skipped": "2",
+      "tests": "705",
+      "time": "929.311",
+      "timestamp": "2026-09-09T12:07:09.029874",
+      "hostname": "ubuntu22"
+    }
+  ],
+  "coverage": {
+    "version": "7.16.0",
+    "timestamp": "1788927757575",
+    "lines-valid": "11032",
+    "lines-covered": "9560",
+    "line-rate": "0.8666",
+    "branches-covered": "0",
+    "branches-valid": "0",
+    "branch-rate": "0",
+    "complexity": "0"
+  },
+  "runtime": {
+    "python": "3.12.7 | packaged by Anaconda, Inc. | (main, Oct  4 2024, 13:27:36) [GCC 11.2.0]",
+    "python_executable": "/home/vipuser/infinitensor-2026/.venv/bin/python",
+    "platform": {
+      "system": "Linux",
+      "machine": "x86_64"
+    },
+    "packages": {
+      "torch": "2.5.0",
+      "triton": "3.1.0",
+      "numpy": "2.1.3",
+      "sympy": "1.13.1",
+      "pytest": "8.1.1",
+      "pytest-cov": "7.1.0",
+      "coverage": "7.16.0",
+      "tilelang": "0.1.14",
+      "matplotlib": "3.11.1",
+      "pandas": "3.0.5",
+      "jupyter": "1.1.1",
+      "jupytext": "1.19.5",
+      "nbconvert": "7.17.1",
+      "ipykernel": "7.3.0",
+      "ninetoothed": null
+    },
+    "torch_import_version": "2.5.0+cu124",
+    "torch_cuda_build_version": "12.4",
+    "torch_cuda_available": true,
+    "torch_float8_e5m2_attribute": true,
+    "cuda_devices": [
+      {
+        "index": 0,
+        "name": "NVIDIA A100-SXM4-40GB",
+        "compute_capability": [
+          8,
+          0
+        ],
+        "total_memory_bytes": 42285268992,
+        "multiprocessor_count": 108
+      }
+    ]
+  },
+  "console_summary": "================== 703 passed, 2 skipped in 929.31s (0:15:29) ==================",
+  "canary": {
+    "status": "FAIL",
+    "source_commit": "3fc27e0399d82b02be5407b9542c67763c4631a7",
+    "pid": 2081,
+    "steps": [
+      {
+        "name": "canary",
+        "argv": [
+          "/home/vipuser/infinitensor-2026/.venv/bin/python",
+          "-m",
+          "pytest",
+          "-q",
+          "--color=no",
+          "--tb=short",
+          "-ra",
+          "tests/test_conv2d.py::test[4-64-16-16-512-3-3-padding3-dtype0-0.001-0.001-cuda]",
+          "--junitxml=/home/vipuser/infinitensor-2026/runs/nine-a100-20260909-warm/canary/junit.xml"
+        ],
+        "started_at_utc": "2026-09-09T04:00:00.429474+00:00",
+        "pid": 2087,
+        "timed_out": true,
+        "exit_code": 2,
+        "ended_at_utc": "2026-09-09T04:01:32.347482+00:00"
+      }
+    ],
+    "started_at_utc": "2026-09-09T04:00:00.409194+00:00",
+    "cache_policy": "Retained default ~/.ninetoothed; no new empty cache for full regression.",
+    "controller_sha256": "4d0a3229d1f00c9ba4aeaa0e18977587a431ce2dfc3c28d777f047c837c99fef",
+    "active_stage": "canary",
+    "error": "Stage canary did not pass; inspect its preserved log before continuing.",
+    "traceback": "Traceback (most recent call last):\n  File \"/home/vipuser/infinitensor-2026/tools/nine_a100_warm_sequence_20260909.py\", line 71, in <module>\n    execute(\"canary\", [python, \"-m\", \"pytest\", \"-q\", \"--color=no\", \"--tb=short\", \"-ra\",\n  File \"/home/vipuser/infinitensor-2026/tools/nine_a100_warm_sequence_20260909.py\", line 61, in execute\n    raise RuntimeError(f\"Stage {name} did not pass; inspect its preserved log before continuing.\")\nRuntimeError: Stage canary did not pass; inspect its preserved log before continuing.\n",
+    "finished_at_utc": "2026-09-09T04:01:32.350366+00:00"
+  }
+}

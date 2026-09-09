@@ -1,0 +1,6 @@
+
+- generated xml file: /home/vipuser/infinitensor-2026/runs/nine-a100-20260909-warm/canary/junit.xml -
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! KeyboardInterrupt !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+/home/vipuser/miniconda3/lib/python3.12/site-packages/triton/backends/nvidia/compiler.py:220: KeyboardInterrupt
+(to show a full traceback on KeyboardInterrupt use --full-trace)
+no tests ran in 88.15s (0:01:28)
