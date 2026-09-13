@@ -121,6 +121,7 @@ class ProvenancePass:
             self._input_locations.setdefault(id(operation), []).append(location)
 
         self._relations = []
+        self._result_mappings = []
 
     def _source_locations(self, sources):
         locations = []
@@ -200,6 +201,66 @@ class ProvenancePass:
         self._relations.append((relation, locations, tuple(generated), origins))
 
         return result
+
+    def map_result(
+        self,
+        source,
+        target,
+        *,
+        source_result=None,
+        target_result=None,
+        projection="identity",
+    ):
+        """Declare a result equality to check, separately from operation origins.
+
+        This is a pass author's semantic contract, not proof of equivalence.
+        ``lane`` compares a numeric reference tile at the candidate's scalar
+        lane. Neither names nor split/merge origins imply such a contract.
+        """
+        self._source_locations((source,))
+
+        def select(operation, name):
+            if name is None and len(operation.results) == 1:
+                return operation.results[0]
+
+            matches = [value for value in operation.results if value.name == name]
+
+            if len(matches) != 1:
+                raise ValueError("A result mapping must name one actual SSA result.")
+            return matches[0]
+
+        left, right = select(source, source_result), select(target, target_result)
+
+        if projection == "identity":
+            compatible = left.type == right.type
+        elif projection == "lane":
+            compatible = (
+                left.type.kind == "tensor"
+                and right.type.kind == "scalar"
+                and left.type.dtype == right.type.dtype
+                and not right.type.shape
+            )
+        else:
+            raise ValueError("Result projection must be identity or lane.")
+
+        if not compatible or left.type.kind in {"pointer", "tuple"}:
+            raise ValueError("Result mapping types are incompatible.")
+
+        for (
+            _previous_source,
+            previous_target,
+            _previous_left,
+            previous_right,
+            _,
+        ) in self._result_mappings:
+            if target is previous_target and right.name == previous_right:
+                raise ValueError(
+                    "A result cannot have ambiguous or duplicate mappings."
+                )
+
+        self._result_mappings.append(
+            (source, target, left.name, right.name, projection)
+        )
 
     def delete(self, *sources):
         """Declare deletion, reporting original sources only when all are known."""
@@ -325,6 +386,41 @@ class ProvenancePass:
             "output_fingerprint": _fingerprint(after),
             "relations": tuple(records),
         }
+        mappings = []
+
+        for source, target, left, right, projection in self._result_mappings:
+            (source_location,) = self._source_locations((source,))
+            target_locations = output_locations.get(id(target), ())
+
+            if len(target_locations) != 1:
+                raise ValueError(
+                    "A mapped result's producer must occur once in the output."
+                )
+
+            target_location = target_locations[0]
+
+            if not any(
+                source_location in record["inputs"]
+                and target_location in record["outputs"]
+                and record["relation"] in {"preserve", "replace", "split", "merge"}
+                for record in records
+            ):
+                raise ValueError(
+                    "Result mapping requires an explicit operation relation."
+                )
+
+            mappings.append(
+                {
+                    "source_location": source_location,
+                    "target_location": target_location,
+                    "source_result": left,
+                    "target_result": right,
+                    "projection": projection,
+                }
+            )
+
+        if mappings:
+            entry["value_mappings"] = tuple(mappings)
 
         return replace(
             normalized,

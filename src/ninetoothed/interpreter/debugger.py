@@ -23,6 +23,7 @@ from ninetoothed.ir.provenance import (
     source_candidates,
 )
 
+from .localization import DependencySlice, backward_slice, compare_mapped_results
 from .runtime import InterpretationError, _adapt_inputs, interpret_program
 
 
@@ -200,6 +201,10 @@ class ProgramComparison:
     reproducer: Path | None = None
     export_error: str | None = None
     retained_operation: "OperationLocalization | None" = None
+    mapped_operation: "OperationLocalization | None" = None
+    localization: "OperationLocalization | None" = None
+    dependency_slice: DependencySlice | None = None
+    mapping_issues: tuple[str, ...] = ()
 
 
 @dataclass(frozen=True)
@@ -231,6 +236,7 @@ class PassCheck:
     localization: OperationLocalization | None = None
     reproducer: Path | None = None
     export_error: str | None = None
+    dependency_slice: DependencySlice | None = None
 
 
 def _copy_array_layout(value, *, strides=None, writeable=None):
@@ -505,6 +511,64 @@ def _compare_programs(
         if differing and not aligned
         else None
     )
+    mismatch, mapping_issues = compare_mapped_results(
+        reference, candidate, first, second, _same_snapshot, rtol, atol
+    )
+    mapped = None
+
+    if differing and mismatch is not None:
+        left, right = (
+            first.trace[mismatch.reference_index],
+            second.trace[mismatch.candidate_index],
+        )
+        mapped = OperationLocalization(
+            OperationDifference(
+                right.program_id,
+                right.location,
+                right.opcode,
+                mismatch.candidate_result,
+                right.iteration,
+                right.lane,
+            ),
+            "reference",
+            False,
+            "mapped_result",
+            left.location,
+        )
+
+    observations = [item for item in (retained, mapped) if item is not None]
+
+    if differing and prefix_operation is not None:
+        observations.append(
+            OperationLocalization(
+                prefix_operation,
+                "reference",
+                aligned,
+                "full_trace" if aligned else "aligned_prefix",
+                prefix_operation.location,
+            )
+        )
+
+    def observation_index(item):
+        operation = item.operation
+
+        return next(
+            index
+            for index, event in enumerate(second.trace)
+            if (
+                event.program_id == operation.program_id
+                and event.location == operation.location
+                and event.iteration == operation.iteration
+                and event.lane == operation.lane
+            )
+        )
+
+    localization = min(observations, key=observation_index, default=None)
+    dependencies = (
+        None
+        if localization is None
+        else backward_slice(candidate, second.trace, localization.operation)
+    )
 
     return ProgramComparison(
         not differing,
@@ -514,6 +578,10 @@ def _compare_programs(
         candidates,
         prefix_operation,
         retained_operation=retained,
+        mapped_operation=mapped,
+        localization=localization,
+        dependency_slice=dependencies,
+        mapping_issues=mapping_issues,
     )
 
 
@@ -557,6 +625,10 @@ def compare_programs(
     field guesses equivalence across a restructuring pass from origins alone.
     ``retained_operation`` instead reports the earliest differing observation
     at a pass-declared unchanged operation, when its filtered traces align.
+    ``mapped_operation`` checks an explicit result equality, including declared
+    tile-to-lane projections. ``localization`` selects the earliest available
+    observation; ``dependency_slice`` follows its executed value dependencies
+    and states where memory/alias reconstruction is unavailable.
     """
     options = dict(
         tensors=tuple(tensors), grid=grid, symbols=symbols, rtol=rtol, atol=atol
@@ -683,27 +755,17 @@ def check_passes(
 
         if not difference.equal or not adjacent.equal:
             localization = None
+            dependencies = None
 
             for reference_name, comparison in (
                 ("previous", adjacent),
                 ("original", difference),
             ):
-                operation = comparison.aligned_prefix_operation
-
-                if not comparison.equal and operation is not None:
-                    localization = OperationLocalization(
-                        operation,
-                        reference_name,
-                        comparison.traces_aligned,
-                        "full_trace" if comparison.traces_aligned else "aligned_prefix",
-                        operation.location,
-                    )
-                    break
-
-                if not comparison.equal and comparison.retained_operation is not None:
+                if not comparison.equal and comparison.localization is not None:
                     localization = replace(
-                        comparison.retained_operation, reference=reference_name
+                        comparison.localization, reference=reference_name
                     )
+                    dependencies = comparison.dependency_slice
                     break
 
             report = PassCheck(
@@ -718,6 +780,7 @@ def check_passes(
                 ),
                 adjacent_difference=adjacent,
                 localization=localization,
+                dependency_slice=dependencies,
             )
             directory, error = _capture_failure(
                 failure_dir,

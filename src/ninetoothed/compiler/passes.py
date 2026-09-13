@@ -1075,6 +1075,8 @@ def _decompose_linalg_block(
                     relation="split",
                 )
             )
+            # The generated extract is one scalar lane of the original tile.
+            provenance.map_result(transpose, operations[-2], projection="lane")
             continue
 
         if (
@@ -1097,6 +1099,8 @@ def _decompose_linalg_block(
                     recursive=True,
                 )
             )
+            # Compare the completed K-loop result, not each partial accumulator.
+            provenance.map_result(matmul, operations[-2], projection="lane")
             temp_index = _next_temp_index(existing_names)
             continue
 

@@ -2,7 +2,7 @@
 
 import json
 import platform
-from dataclasses import asdict
+from dataclasses import asdict, replace
 from importlib.metadata import PackageNotFoundError, version
 from pathlib import Path
 
@@ -107,7 +107,18 @@ def _verify_comparison(actual, expected):
             "The saved candidate no longer reproduces the recorded output difference."
         )
 
-    for name in ("first_operation", "aligned_prefix_operation", "retained_operation"):
+    for name in (
+        "first_operation",
+        "aligned_prefix_operation",
+        "retained_operation",
+        "mapped_operation",
+        "localization",
+        "dependency_slice",
+    ):
+        # Older bundles predate result mappings and dependency slices.
+        if name not in expected:
+            continue
+
         observed = getattr(actual, name)
         observed = (
             None if observed is None else json.loads(json.dumps(asdict(observed)))
@@ -121,6 +132,14 @@ def _verify_comparison(actual, expected):
     if actual.traces_aligned != expected["traces_aligned"]:
         raise RuntimeError(
             "The saved candidate no longer reproduces the recorded trace alignment."
+        )
+
+    if (
+        "mapping_issues" in expected
+        and list(actual.mapping_issues) != expected["mapping_issues"]
+    ):
+        raise RuntimeError(
+            "The saved candidate produced different result-mapping diagnostics."
         )
 
 
@@ -177,6 +196,35 @@ def replay_failure(directory):
         adjacent = compare_programs(previous, candidate, inputs, **options)
         _verify_comparison(adjacent, report["adjacent_difference"])
         _verify_comparison(comparison, report["difference"])
+        selected = next(
+            (
+                (name, item)
+                for name, item in (("previous", adjacent), ("original", comparison))
+                if not item.equal and item.localization is not None
+            ),
+            None,
+        )
+        location = (
+            None
+            if selected is None
+            else replace(selected[1].localization, reference=selected[0])
+        )
+        dependencies = None if selected is None else selected[1].dependency_slice
+
+        for key, value in (
+            ("localization", location),
+            ("dependency_slice", dependencies),
+        ):
+            if key in report:
+                actual = (
+                    None if value is None else json.loads(json.dumps(asdict(value)))
+                )
+
+                if actual != report[key]:
+                    raise RuntimeError(
+                        "The saved pass no longer reproduces the recorded localization or dependencies."
+                    )
+
         print(f"First bad pass (saved boundary): {report['first_bad_pass']}")
         print(f"Operation localization: {report['localization']}")
         displayed = comparison if not comparison.equal else adjacent

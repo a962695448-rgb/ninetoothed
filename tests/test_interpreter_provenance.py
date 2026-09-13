@@ -694,7 +694,7 @@ def test_real_default_linalg_passes_have_complete_nonduplicated_origin_records(
         np.testing.assert_array_equal(inputs[name], original)
 
 
-def _inject_decomposed_fault(program, *, kind, name, wrong):
+def _inject_decomposed_fault(program, *, kind, name, wrong, map_values=False):
     """Inject a diagnostic-only bug into an actual default-pass instruction."""
     tracker = ProvenancePass(program, name)
     opcode = "arith.mul" if kind == "dot" else "tensor.extract"
@@ -725,7 +725,12 @@ def _inject_decomposed_fault(program, *, kind, name, wrong):
                         operands=(tensor, column, row) if wrong else operation.operands,
                     )
 
-                operations.extend(tracker.derive((replacement,), (operation,)))
+                derived = tracker.derive((replacement,), (operation,))
+                operations.extend(derived)
+
+                if map_values:
+                    tracker.map_result(operation, derived[0])
+
                 touched.append(operation)
             else:
                 regions = tuple(transform_block(region) for region in operation.regions)

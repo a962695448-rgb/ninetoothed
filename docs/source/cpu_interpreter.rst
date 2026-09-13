@@ -415,6 +415,58 @@ Provenance catalogs intentionally retain names of removed operations, so a
 substring search over the entire serialized SSA metadata is not a valid check
 that an opcode has been eliminated.
 
+Declared result correspondence
+------------------------------
+
+Operation origins alone do not establish result equality. A pass can separately
+declare an equality that the debugger should check:
+
+.. code-block:: python
+
+   tracker = ProvenancePass(before, "split_scale")
+   generated = tracker.derive(new_operations, (old_operation,), relation="split")
+   tracker.map_result(old_operation, generated[-1])
+   after = tracker.finish(rewritten_program)
+
+``map_result`` accepts ``source_result`` and ``target_result`` when a producer
+has several results. The default ``projection="identity"`` requires matching
+SSA types. ``projection="lane"`` compares a reference numeric tile with the
+candidate's executed scalar lane. The actual linalg decomposition declares
+this mapping for the completed matmul K-loop result and transpose extract;
+partial accumulators are not compared with the final matrix result.
+
+Mappings require recorded producer relations, matching SSA fingerprints and
+compatible enclosing control-flow headers. Every occurrence must align by
+program ID, iteration and scalar lane before that mapping reports a mismatch.
+One reference result may feed several explicitly mapped targets, but a target
+result cannot have conflicting mappings. A mapping is the pass author's
+semantic contract, checked on the supplied inputs, not a proof for all inputs.
+Unknown, stale and unaligned mappings do not acquire guessed correspondences.
+
+``ProgramComparison.mapped_operation`` reports a failing mapped result.
+``localization`` selects the earliest candidate execution event among valid
+full-trace, prefix, retained-consumer and mapped-result observations.
+Its ``basis="mapped_result"`` names a producer where a declared equality
+fails. It does not prove that this producer uniquely caused the error; for a
+split operation the mapping can name the group's completed result, while an
+unmapped internal instruction remains unresolved. Output equality remains
+the pass success condition, so dead or cancelled internal changes do not by
+themselves turn a successful output comparison into a failed pass.
+
+``dependency_slice`` on both ``ProgramComparison`` and ``PassCheck`` follows
+executed SSA producers, loop-carried values, selected yields and control
+operands. Each event retains its trace index, program ID, iteration and lane.
+The slice is a value-dependency explanation, not a minimal reproducer or a set
+of independently faulty operations. Its ``boundaries`` explicitly identifies
+memory/alias history that was not reconstructed and any unresolved values.
+``mapping_issues`` explains unavailable correspondences.
+
+Automatic failure bundles include these observations and dependencies. Replay
+checks them, including the pass-level selected location; legacy bundles without
+the additional fields remain readable. See the CPU tests in
+``tests/test_interpreter_value_mapping.py`` and the dated acceptance reports for
+verified scope. These checks do not extend the existing GPU race/alias model.
+
 Replay bundles
 --------------
 
