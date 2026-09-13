@@ -1076,7 +1076,10 @@ def _decompose_linalg_block(
                 )
             )
             # The generated extract is one scalar lane of the original tile.
-            provenance.map_result(transpose, operations[-2], projection="lane")
+
+            if transpose.results[0].type.kind == "tensor":
+                provenance.map_result(transpose, operations[-2], projection="lane")
+
             continue
 
         if (
@@ -1100,7 +1103,13 @@ def _decompose_linalg_block(
                 )
             )
             # Compare the completed K-loop result, not each partial accumulator.
-            provenance.map_result(matmul, operations[-2], projection="lane")
+
+            if (
+                matmul.results[0].type.kind == "tensor"
+                and matmul.results[0].type.dtype == operations[-2].results[0].type.dtype
+            ):
+                provenance.map_result(matmul, operations[-2], projection="lane")
+
             temp_index = _next_temp_index(existing_names)
             continue
 

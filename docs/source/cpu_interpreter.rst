@@ -434,6 +434,9 @@ SSA types. ``projection="lane"`` compares a reference numeric tile with the
 candidate's executed scalar lane. The actual linalg decomposition declares
 this mapping for the completed matmul K-loop result and transpose extract;
 partial accumulators are not compared with the final matrix result.
+Mixed-dtype lowering remains available: where the original result and generated
+accumulator have different dtypes, this optional equality is not declared.
+Omitting an unrepresentable debug contract does not change the generated SSA.
 
 Mappings require recorded producer relations, matching SSA fingerprints and
 compatible enclosing control-flow headers. Every occurrence must align by

@@ -7,9 +7,11 @@ from functools import partial
 import numpy as np
 import pytest
 
+from ninetoothed.compiler.passes import lower_for_target
+from ninetoothed.frontend.python import from_source
 from ninetoothed.interpreter.debugger import check_passes, compare_programs
 from ninetoothed.interpreter.failure import replay_failure
-from ninetoothed.ir import ssa
+from ninetoothed.ir import TensorSpec, ssa
 from ninetoothed.ir.provenance import (
     ProvenancePass,
     operation_locations,
@@ -583,3 +585,26 @@ def test_replay_checks_new_localization_and_dependency_evidence(field, tmp_path)
 
     with pytest.raises(RuntimeError, match="no longer reproduces"):
         replay_failure(report.reproducer)
+
+
+@pytest.mark.parametrize("backend", ("triton", "cuda"))
+@pytest.mark.parametrize("output_dtype", ("float16", "float64"))
+def test_debug_contracts_preserve_mixed_dtype_lowering(
+    backend, output_dtype, monkeypatch
+):
+    tensors = (
+        TensorSpec(ndim=2, shape=("m", "k"), dtype="float32", name="a"),
+        TensorSpec(ndim=2, shape=("k", "n"), dtype="float32", name="b"),
+        TensorSpec(ndim=2, shape=("m", "n"), dtype=output_dtype, name="out"),
+    )
+    program = from_source(
+        "def matmul(a, b, out):\n    out = a @ b\n", tensors, kind="matmul"
+    )
+    actual = lower_for_target(program, backend=backend)
+
+    with monkeypatch.context() as context:
+        context.setattr(ProvenancePass, "map_result", lambda *args, **kwargs: None)
+        without_debug_contract = lower_for_target(program, backend=backend)
+
+    assert ssa.render(actual) == ssa.render(without_debug_contract)
+    assert not actual.metadata["provenance"]["passes"][-1].get("value_mappings")
