@@ -1,0 +1,72 @@
+{
+  "status": "RECHECK_LAUNCHED",
+  "old_source": "adf658e6077768f22af7d3cce2e6b3efdb9dc3c0",
+  "expected_source": "c180e280de7de9e2b57e4eaa56dea80373fe5d83",
+  "started_at_utc": "2026-09-13T10:25:27.710196+00:00",
+  "steps": [
+    {
+      "name": "install",
+      "argv": [
+        "/root/infinitensor-2026/.venv/bin/python",
+        "-m",
+        "pip",
+        "install",
+        "--disable-pip-version-check",
+        "--retries",
+        "1",
+        "--timeout",
+        "15",
+        "-c",
+        "/root/infinitensor-2026/tools/nine-a100-20260913/constraints.txt",
+        "/root/infinitensor-2026/tools/nine-a100-20260913/wheelhouse/tilelang-0.1.14-cp39-abi3-manylinux_2_27_x86_64.manylinux_2_28_x86_64.whl"
+      ],
+      "exit_code": 0
+    },
+    {
+      "name": "fetch",
+      "argv": [
+        "git",
+        "fetch",
+        "/root/infinitensor-2026/tools/nine-a100-20260913/dependency.bundle",
+        "HEAD"
+      ],
+      "exit_code": 0
+    },
+    {
+      "name": "checkout",
+      "argv": [
+        "git",
+        "checkout",
+        "--detach",
+        "c180e280de7de9e2b57e4eaa56dea80373fe5d83"
+      ],
+      "exit_code": 0
+    },
+    {
+      "name": "environment",
+      "argv": [
+        "/root/infinitensor-2026/.venv/bin/python",
+        "-c",
+        "import json,torch,tilelang,triton,numpy; print(json.dumps({'torch':torch.__version__,'tilelang':tilelang.__version__,'triton':triton.__version__,'numpy':numpy.__version__,'gpu':torch.cuda.get_device_name(0)}))"
+      ],
+      "exit_code": 0
+    },
+    {
+      "name": "targeted",
+      "argv": [
+        "/root/infinitensor-2026/.venv/bin/python",
+        "-m",
+        "pytest",
+        "-q",
+        "--color=no",
+        "--tb=short",
+        "tests/test_built_artifact_reload.py::test_aot_built_artifact_can_be_reloaded[tilelang-cuda]",
+        "--junitxml=/root/infinitensor-2026/runs/nine-a100-20260913-tilelang-repair/targeted.junit.xml"
+      ],
+      "exit_code": 0
+    }
+  ],
+  "controller_pid": 9181,
+  "run": "/root/infinitensor-2026/runs/nine-a100-20260913-tilelang",
+  "finished_at_utc": "2026-09-13T10:25:56.555369+00:00"
+}

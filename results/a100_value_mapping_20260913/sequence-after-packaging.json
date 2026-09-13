@@ -1,0 +1,69 @@
+{
+  "status": "PASS",
+  "source_commit": "c180e280de7de9e2b57e4eaa56dea80373fe5d83",
+  "pid": 9181,
+  "steps": [
+    {
+      "name": "gpu-differential",
+      "argv": [
+        "/root/infinitensor-2026/.venv/bin/python",
+        "/root/infinitensor-2026/tools/nine-a100-20260913/a100_final_runner.py",
+        "--mode",
+        "gpu-report",
+        "--repo",
+        "/root/infinitensor-2026/ninetoothed-a100-20260913",
+        "--out",
+        "/root/infinitensor-2026/runs/nine-a100-20260913-tilelang/gpu-differential",
+        "--expected-sha",
+        "c180e280de7de9e2b57e4eaa56dea80373fe5d83"
+      ],
+      "started_at_utc": "2026-09-13T10:25:56.591305+00:00",
+      "pid": 9183,
+      "exit_code": 0,
+      "finished_at_utc": "2026-09-13T10:26:02.362310+00:00"
+    },
+    {
+      "name": "cuda-dot",
+      "argv": [
+        "/root/infinitensor-2026/.venv/bin/python",
+        "/root/infinitensor-2026/tools/nine-a100-20260913/cuda_dot_probe_tilelang.py",
+        "--repo",
+        "/root/infinitensor-2026/ninetoothed-a100-20260913",
+        "--out",
+        "/root/infinitensor-2026/runs/nine-a100-20260913-tilelang/cuda-dot"
+      ],
+      "started_at_utc": "2026-09-13T10:26:02.366747+00:00",
+      "pid": 9204,
+      "exit_code": 0,
+      "finished_at_utc": "2026-09-13T10:26:06.377798+00:00"
+    },
+    {
+      "name": "full",
+      "argv": [
+        "/root/infinitensor-2026/.venv/bin/python",
+        "/root/infinitensor-2026/tools/nine-a100-20260913/a100_final_runner.py",
+        "--mode",
+        "full",
+        "--repo",
+        "/root/infinitensor-2026/ninetoothed-a100-20260913",
+        "--out",
+        "/root/infinitensor-2026/runs/nine-a100-20260913-tilelang/full",
+        "--expected-sha",
+        "c180e280de7de9e2b57e4eaa56dea80373fe5d83"
+      ],
+      "started_at_utc": "2026-09-13T10:26:06.463448+00:00",
+      "pid": 9253,
+      "exit_code": 0,
+      "finished_at_utc": "2026-09-13T10:40:23.045874+00:00"
+    }
+  ],
+  "started_at_utc": "2026-09-13T10:25:56.589732+00:00",
+  "active_stage": "full",
+  "download": {
+    "path": "/root/infinitensor-2026/runs/nine-a100-20260913-tilelang-completed.zip",
+    "bytes": 1527020,
+    "sha256": "1ec8f450448662d545ff3587b4340473eed1b56149a2e63a241e07f16421bb5b",
+    "files": 136
+  },
+  "finished_at_utc": "2026-09-13T10:40:23.247890+00:00"
+}

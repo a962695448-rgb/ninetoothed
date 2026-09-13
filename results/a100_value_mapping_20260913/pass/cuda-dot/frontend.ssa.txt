@@ -1,0 +1,11 @@
+ssa @matrix_dot {
+  inputs:
+    a : tensor<4x4>xfloat32
+    b : tensor<4x4>xfloat32
+    out : tensor<4x4>xfloat32
+  outputs:
+    out : tensor<4x4>xfloat32
+  ^entry:
+    %0 = linalg.dot a, b
+    mem.store %0, out {target='out'}
+}

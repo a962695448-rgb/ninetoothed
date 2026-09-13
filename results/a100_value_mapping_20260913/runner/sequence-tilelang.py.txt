@@ -1,0 +1,78 @@
+"""Run frozen A100 checks and atomically package completed stages for download."""
+from datetime import datetime, timezone
+from pathlib import Path
+import hashlib
+import json
+import os
+import subprocess
+import traceback
+import zipfile
+
+root = Path.home() / "infinitensor-2026"
+repo = root / "ninetoothed-a100-20260913"
+run = root / "runs/nine-a100-20260913-tilelang"
+tools = root / "tools/nine-a100-20260913"
+expected = "c180e280de7de9e2b57e4eaa56dea80373fe5d83"
+run.mkdir(parents=True, exist_ok=False)
+state = {"status": "STARTING", "source_commit": expected, "pid": os.getpid(), "steps": [], "started_at_utc": datetime.now(timezone.utc).isoformat()}
+
+
+def save():
+    pending = run / "sequence.json.tmp"
+    pending.write_text(json.dumps(state, indent=2)+"\n")
+    pending.replace(run / "sequence.json")
+
+
+def package():
+    target = root / "runs/nine-a100-20260913-tilelang-completed.zip"
+    pending = target.with_suffix(".zip.tmp")
+    files = [run / "sequence.json"]
+    for record in state["steps"]:
+        if "exit_code" in record:
+            files.extend(path for path in (run / record["name"]).rglob("*") if path.is_file())
+            files.append(run / (record["name"] + ".controller.log"))
+    manifest = {}
+    with zipfile.ZipFile(pending, "w", zipfile.ZIP_DEFLATED) as archive:
+        for path in sorted(set(files)):
+            name = str(path.relative_to(run))
+            data = path.read_bytes()
+            archive.writestr(name, data)
+            manifest[name] = {"bytes": len(data), "sha256": hashlib.sha256(data).hexdigest()}
+        archive.writestr("download-manifest.json", json.dumps(manifest, indent=2)+"\n")
+    pending.replace(target)
+    state["download"] = {"path": str(target), "bytes": target.stat().st_size, "sha256": hashlib.sha256(target.read_bytes()).hexdigest(), "files": len(manifest)}
+    save()
+
+
+python = Path(os.sys.executable)
+try:
+    save()
+    assert subprocess.check_output(["git", "rev-parse", "HEAD"], cwd=repo, text=True).strip() == expected
+    stages = [
+        ("gpu-differential", [python, tools / "a100_final_runner.py", "--mode", "gpu-report", "--repo", repo, "--out", run / "gpu-differential", "--expected-sha", expected]),
+        ("cuda-dot", [python, tools / "cuda_dot_probe_tilelang.py", "--repo", repo, "--out", run / "cuda-dot"]),
+        ("full", [python, tools / "a100_final_runner.py", "--mode", "full", "--repo", repo, "--out", run / "full", "--expected-sha", expected]),
+    ]
+    for name, argv in stages:
+        record = {"name": name, "argv": list(map(str, argv)), "started_at_utc": datetime.now(timezone.utc).isoformat()}
+        state.update(status="RUNNING", active_stage=name)
+        state["steps"].append(record)
+        save()
+        with (run / (name + ".controller.log")).open("xb") as log:
+            child = subprocess.Popen(record["argv"], cwd=repo, stdout=log, stderr=subprocess.STDOUT, stdin=subprocess.DEVNULL)
+            record["pid"] = child.pid
+            save()
+            record["exit_code"] = child.wait()
+        record["finished_at_utc"] = datetime.now(timezone.utc).isoformat()
+        save()
+        package()
+        if record["exit_code"] != 0:
+            raise RuntimeError(f"Stage {name} failed; retain evidence before retrying")
+    state["status"] = "PASS"
+except Exception as error:
+    state.update(status="FAIL", error=str(error), traceback=traceback.format_exc())
+state["finished_at_utc"] = datetime.now(timezone.utc).isoformat()
+save()
+package()
+print(json.dumps(state), flush=True)
+raise SystemExit(0 if state["status"] == "PASS" else 1)
