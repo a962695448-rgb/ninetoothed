@@ -72,3 +72,28 @@ def test_many_mappings_do_not_rescan_every_trace_for_every_producer(count):
     assert issues == ()
     assert first.trace.traversals <= 2
     assert second.trace.traversals <= 2
+
+
+def test_value_only_trace_does_not_build_a_memory_history(monkeypatch):
+    from ninetoothed.interpreter import localization
+    from ninetoothed.interpreter.debugger import OperationDifference
+
+    _, program, _, result = mapped_constants(32)
+    event = result.trace[-1]
+    observation = OperationDifference(
+        event.program_id,
+        event.location,
+        event.opcode,
+        "%v31",
+        event.iteration,
+        event.lane,
+    )
+
+    def refuse(trace):
+        raise AssertionError("A value-only trace has no memory history to analyze.")
+
+    monkeypatch.setattr(localization, "_memory_edges", refuse)
+    dependencies = localization.backward_slice(program, result.trace, observation)
+    assert [item.trace_index for item in dependencies.events] == [31]
+    assert dependencies.memory_dependencies == ()
+    assert dependencies.boundaries == ()

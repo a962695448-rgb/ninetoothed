@@ -498,8 +498,8 @@ def backward_slice(program, trace, observation, *, memory=True):
     describe(program.blocks[0], "entry")
     memory_links, memory_boundaries, memory_dependencies = (
         _memory_edges(trace)
-        if memory
-        else ([set() for _ in trace], [set() for _ in trace], ())
+        if memory and any(event.memory for event in trace)
+        else (None, None, ())
     )
     definitions, yields, edges, boundaries = {}, {}, [], []
     roots = {value.name for value in program.inputs} | set(
@@ -508,7 +508,11 @@ def backward_slice(program, trace, observation, *, memory=True):
 
     for index, event in enumerate(trace):
         operation = operations[event.location]
-        links, stops = memory_links[index], memory_boundaries[index]
+        links, stops = (
+            (set(), set())
+            if memory_links is None
+            else (memory_links[index], memory_boundaries[index])
+        )
 
         def resolve(name, seen=()):
             if name in seen:
