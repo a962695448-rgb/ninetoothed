@@ -1,0 +1,503 @@
+{
+  "status": "PASS_CPU_ONLY",
+  "source_commit": "adf658e6077768f22af7d3cce2e6b3efdb9dc3c0",
+  "cpu_passed": 383,
+  "gpu_deselected": 15,
+  "mapping_tests_in_cpu": 55,
+  "installed_mapped_replays": 4,
+  "installed_legacy_replays": 4,
+  "wheel": {
+    "filename": "ninetoothed-0.26.0-py3-none-any.whl",
+    "bytes": 208644,
+    "sha256": "84c753ca7334571ce5f0e364d407ed8fb91f8f2fe2404e4c78577669d3acf223"
+  },
+  "cases": [
+    {
+      "directory": "adf658e/mapped-cases/0",
+      "localization": {
+        "operation": {
+          "program_id": [
+            0,
+            0,
+            0
+          ],
+          "location": "entry:6:scf.for/region0:2:arith.add",
+          "opcode": "arith.add",
+          "result_name": "%8",
+          "iteration": [
+            0
+          ],
+          "lane": [
+            0,
+            0
+          ],
+          "component": "result"
+        },
+        "reference": "previous",
+        "traces_aligned": false,
+        "basis": "mapped_result",
+        "reference_location": "entry:6:scf.for/region0:2:arith.mul"
+      },
+      "dependencies": {
+        "events": [
+          {
+            "trace_index": 0,
+            "location": "entry:0:index.offset",
+            "opcode": "index.offset",
+            "program_id": [
+              0,
+              0,
+              0
+            ],
+            "iteration": [],
+            "lane": [
+              0,
+              0
+            ]
+          },
+          {
+            "trace_index": 1,
+            "location": "entry:1:index.offset",
+            "opcode": "index.offset",
+            "program_id": [
+              0,
+              0,
+              0
+            ],
+            "iteration": [],
+            "lane": [
+              0,
+              0
+            ]
+          },
+          {
+            "trace_index": 2,
+            "location": "entry:2:arith.constant",
+            "opcode": "arith.constant",
+            "program_id": [
+              0,
+              0,
+              0
+            ],
+            "iteration": [],
+            "lane": [
+              0,
+              0
+            ]
+          },
+          {
+            "trace_index": 3,
+            "location": "entry:3:arith.constant",
+            "opcode": "arith.constant",
+            "program_id": [
+              0,
+              0,
+              0
+            ],
+            "iteration": [],
+            "lane": [
+              0,
+              0
+            ]
+          },
+          {
+            "trace_index": 5,
+            "location": "entry:5:shape.dim",
+            "opcode": "shape.dim",
+            "program_id": [
+              0,
+              0,
+              0
+            ],
+            "iteration": [],
+            "lane": [
+              0,
+              0
+            ]
+          },
+          {
+            "trace_index": 6,
+            "location": "entry:6:scf.for/region0:0:tensor.extract",
+            "opcode": "tensor.extract",
+            "program_id": [
+              0,
+              0,
+              0
+            ],
+            "iteration": [
+              0
+            ],
+            "lane": [
+              0,
+              0
+            ]
+          },
+          {
+            "trace_index": 7,
+            "location": "entry:6:scf.for/region0:1:tensor.extract",
+            "opcode": "tensor.extract",
+            "program_id": [
+              0,
+              0,
+              0
+            ],
+            "iteration": [
+              0
+            ],
+            "lane": [
+              0,
+              0
+            ]
+          },
+          {
+            "trace_index": 8,
+            "location": "entry:6:scf.for/region0:2:arith.add",
+            "opcode": "arith.add",
+            "program_id": [
+              0,
+              0,
+              0
+            ],
+            "iteration": [
+              0
+            ],
+            "lane": [
+              0,
+              0
+            ]
+          }
+        ],
+        "boundaries": [
+          "entry:6:scf.for/region0:0:tensor.extract: memory/alias history not reconstructed",
+          "entry:6:scf.for/region0:1:tensor.extract: memory/alias history not reconstructed"
+        ],
+        "scope": "Observed value dependencies; not a minimal slice or unique cause."
+      }
+    },
+    {
+      "directory": "adf658e/mapped-cases/1",
+      "localization": {
+        "operation": {
+          "program_id": [
+            0,
+            0,
+            0
+          ],
+          "location": "entry:6:scf.for/region0:2:arith.add",
+          "opcode": "arith.add",
+          "result_name": "%8",
+          "iteration": [
+            0
+          ],
+          "lane": [
+            0,
+            0
+          ],
+          "component": "result"
+        },
+        "reference": "previous",
+        "traces_aligned": false,
+        "basis": "mapped_result",
+        "reference_location": "entry:6:scf.for/region0:2:arith.mul"
+      },
+      "dependencies": {
+        "events": [
+          {
+            "trace_index": 0,
+            "location": "entry:0:index.offset",
+            "opcode": "index.offset",
+            "program_id": [
+              0,
+              0,
+              0
+            ],
+            "iteration": [],
+            "lane": [
+              0,
+              0
+            ]
+          },
+          {
+            "trace_index": 1,
+            "location": "entry:1:index.offset",
+            "opcode": "index.offset",
+            "program_id": [
+              0,
+              0,
+              0
+            ],
+            "iteration": [],
+            "lane": [
+              0,
+              0
+            ]
+          },
+          {
+            "trace_index": 2,
+            "location": "entry:2:arith.constant",
+            "opcode": "arith.constant",
+            "program_id": [
+              0,
+              0,
+              0
+            ],
+            "iteration": [],
+            "lane": [
+              0,
+              0
+            ]
+          },
+          {
+            "trace_index": 3,
+            "location": "entry:3:arith.constant",
+            "opcode": "arith.constant",
+            "program_id": [
+              0,
+              0,
+              0
+            ],
+            "iteration": [],
+            "lane": [
+              0,
+              0
+            ]
+          },
+          {
+            "trace_index": 5,
+            "location": "entry:5:shape.dim",
+            "opcode": "shape.dim",
+            "program_id": [
+              0,
+              0,
+              0
+            ],
+            "iteration": [],
+            "lane": [
+              0,
+              0
+            ]
+          },
+          {
+            "trace_index": 6,
+            "location": "entry:6:scf.for/region0:0:tensor.extract",
+            "opcode": "tensor.extract",
+            "program_id": [
+              0,
+              0,
+              0
+            ],
+            "iteration": [
+              0
+            ],
+            "lane": [
+              0,
+              0
+            ]
+          },
+          {
+            "trace_index": 7,
+            "location": "entry:6:scf.for/region0:1:tensor.extract",
+            "opcode": "tensor.extract",
+            "program_id": [
+              0,
+              0,
+              0
+            ],
+            "iteration": [
+              0
+            ],
+            "lane": [
+              0,
+              0
+            ]
+          },
+          {
+            "trace_index": 8,
+            "location": "entry:6:scf.for/region0:2:arith.add",
+            "opcode": "arith.add",
+            "program_id": [
+              0,
+              0,
+              0
+            ],
+            "iteration": [
+              0
+            ],
+            "lane": [
+              0,
+              0
+            ]
+          }
+        ],
+        "boundaries": [
+          "entry:6:scf.for/region0:0:tensor.extract: memory/alias history not reconstructed",
+          "entry:6:scf.for/region0:1:tensor.extract: memory/alias history not reconstructed"
+        ],
+        "scope": "Observed value dependencies; not a minimal slice or unique cause."
+      }
+    },
+    {
+      "directory": "adf658e/mapped-cases/2",
+      "localization": {
+        "operation": {
+          "program_id": [
+            0,
+            0,
+            0
+          ],
+          "location": "entry:2:tensor.extract",
+          "opcode": "tensor.extract",
+          "result_name": "%3",
+          "iteration": [],
+          "lane": [
+            0,
+            1
+          ],
+          "component": "result"
+        },
+        "reference": "previous",
+        "traces_aligned": false,
+        "basis": "mapped_result",
+        "reference_location": "entry:2:tensor.extract"
+      },
+      "dependencies": {
+        "events": [
+          {
+            "trace_index": 4,
+            "location": "entry:0:index.offset",
+            "opcode": "index.offset",
+            "program_id": [
+              0,
+              0,
+              0
+            ],
+            "iteration": [],
+            "lane": [
+              0,
+              1
+            ]
+          },
+          {
+            "trace_index": 5,
+            "location": "entry:1:index.offset",
+            "opcode": "index.offset",
+            "program_id": [
+              0,
+              0,
+              0
+            ],
+            "iteration": [],
+            "lane": [
+              0,
+              1
+            ]
+          },
+          {
+            "trace_index": 6,
+            "location": "entry:2:tensor.extract",
+            "opcode": "tensor.extract",
+            "program_id": [
+              0,
+              0,
+              0
+            ],
+            "iteration": [],
+            "lane": [
+              0,
+              1
+            ]
+          }
+        ],
+        "boundaries": [
+          "entry:2:tensor.extract: memory/alias history not reconstructed"
+        ],
+        "scope": "Observed value dependencies; not a minimal slice or unique cause."
+      }
+    },
+    {
+      "directory": "adf658e/mapped-cases/3",
+      "localization": {
+        "operation": {
+          "program_id": [
+            0,
+            0,
+            0
+          ],
+          "location": "entry:2:tensor.extract",
+          "opcode": "tensor.extract",
+          "result_name": "%3",
+          "iteration": [],
+          "lane": [
+            0,
+            1
+          ],
+          "component": "result"
+        },
+        "reference": "previous",
+        "traces_aligned": false,
+        "basis": "mapped_result",
+        "reference_location": "entry:2:tensor.extract"
+      },
+      "dependencies": {
+        "events": [
+          {
+            "trace_index": 4,
+            "location": "entry:0:index.offset",
+            "opcode": "index.offset",
+            "program_id": [
+              0,
+              0,
+              0
+            ],
+            "iteration": [],
+            "lane": [
+              0,
+              1
+            ]
+          },
+          {
+            "trace_index": 5,
+            "location": "entry:1:index.offset",
+            "opcode": "index.offset",
+            "program_id": [
+              0,
+              0,
+              0
+            ],
+            "iteration": [],
+            "lane": [
+              0,
+              1
+            ]
+          },
+          {
+            "trace_index": 6,
+            "location": "entry:2:tensor.extract",
+            "opcode": "tensor.extract",
+            "program_id": [
+              0,
+              0,
+              0
+            ],
+            "iteration": [],
+            "lane": [
+              0,
+              1
+            ]
+          }
+        ],
+        "boundaries": [
+          "entry:2:tensor.extract: memory/alias history not reconstructed"
+        ],
+        "scope": "Observed value dependencies; not a minimal slice or unique cause."
+      }
+    }
+  ],
+  "new_gpu_run": false,
+  "limitations": [
+    "Result contracts are checked on supplied inputs, not universally proved",
+    "A split-group result is an observed boundary, not a unique faulty internal instruction",
+    "Mutable memory/alias history is an explicit dependency-slice boundary",
+    "No new A100 run or PR submission"
+  ]
+}

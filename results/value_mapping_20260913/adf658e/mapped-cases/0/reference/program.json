@@ -1,0 +1,457 @@
+{
+  "kind": "matrix_dot",
+  "inputs": [
+    {
+      "name": "a",
+      "type": {
+        "kind": "tensor",
+        "shape": [
+          "4",
+          "4"
+        ],
+        "dtype": "float32",
+        "attrs": {
+          "ndim": 2,
+          "constexpr": false,
+          "jagged_dim": null,
+          "dtype_level": 0,
+          "source_name": "a",
+          "source_ndim": 2,
+          "source_shape": [
+            "ninetoothed_a_size_0",
+            "ninetoothed_a_size_1"
+          ],
+          "source_dtype": "float32",
+          "other": 0,
+          "source_strides": [
+            "ninetoothed_a_stride_0",
+            "ninetoothed_a_stride_1"
+          ],
+          "target_dims": [
+            "0",
+            "1"
+          ],
+          "view_ndim": 2,
+          "view_shape": [
+            "(ninetoothed_a_size_0 - 3 - 1 + 4 - 1) // 4 + 1",
+            "(ninetoothed_a_size_1 - 3 - 1 + 4 - 1) // 4 + 1"
+          ],
+          "view_linear_offset": "0 * ninetoothed_a_stride_0 + 0 * ninetoothed_a_stride_1",
+          "view_mask": "True & (index // ((ninetoothed_a_size_1 - 3 - 1 + 4 - 1) // 4 + 1) < (ninetoothed_a_size_0 - 3 - 1 + 4 - 1) // 4 + 1) & (index // ((ninetoothed_a_size_1 - 3 - 1 + 4 - 1) // 4 + 1) >= 0) & (index % ((ninetoothed_a_size_1 - 3 - 1 + 4 - 1) // 4 + 1) < ((ninetoothed_a_size_1 - 3 - 1 + 4 - 1) // 4 + 1)) & (index % ((ninetoothed_a_size_1 - 3 - 1 + 4 - 1) // 4 + 1) >= 0)",
+          "view_offsets": [
+            "0",
+            "0"
+          ],
+          "application_shape": [
+            "4",
+            "4"
+          ],
+          "application_ndim": 2,
+          "dtype_shapes": [
+            [
+              "4",
+              "4"
+            ]
+          ],
+          "dtype_target_dims": [
+            [
+              "0",
+              "1"
+            ]
+          ],
+          "access_templates": [
+            {
+              "level": 0,
+              "shape": [
+                "4",
+                "4"
+              ],
+              "linear_offset": "(outer_index // ((ninetoothed_a_size_1 - 3 - 1 + 4 - 1) // 4 + 1) * 4 + value_0) * ninetoothed_a_stride_0 + (outer_index % ((ninetoothed_a_size_1 - 3 - 1 + 4 - 1) // 4 + 1) * 4 + value_1) * ninetoothed_a_stride_1",
+              "offsets": [
+                "outer_index // ((ninetoothed_a_size_1 - 3 - 1 + 4 - 1) // 4 + 1) * 4 + value_0",
+                "outer_index % ((ninetoothed_a_size_1 - 3 - 1 + 4 - 1) // 4 + 1) * 4 + value_1"
+              ],
+              "mask": "True & (outer_index // ((ninetoothed_a_size_1 - 3 - 1 + 4 - 1) // 4 + 1) < (ninetoothed_a_size_0 - 3 - 1 + 4 - 1) // 4 + 1) & (outer_index // ((ninetoothed_a_size_1 - 3 - 1 + 4 - 1) // 4 + 1) >= 0) & (outer_index % ((ninetoothed_a_size_1 - 3 - 1 + 4 - 1) // 4 + 1) < ((ninetoothed_a_size_1 - 3 - 1 + 4 - 1) // 4 + 1)) & (outer_index % ((ninetoothed_a_size_1 - 3 - 1 + 4 - 1) // 4 + 1) >= 0) & (value_0 < 4) & (value_0 >= 0) & (value_1 < 4) & (value_1 >= 0) & (outer_index // ((ninetoothed_a_size_1 - 3 - 1 + 4 - 1) // 4 + 1) * 4 + value_0 < ninetoothed_a_size_0) & (outer_index // ((ninetoothed_a_size_1 - 3 - 1 + 4 - 1) // 4 + 1) * 4 + value_0 >= 0) & (outer_index % ((ninetoothed_a_size_1 - 3 - 1 + 4 - 1) // 4 + 1) * 4 + value_1 < ninetoothed_a_size_1) & (outer_index % ((ninetoothed_a_size_1 - 3 - 1 + 4 - 1) // 4 + 1) * 4 + value_1 >= 0)"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "b",
+      "type": {
+        "kind": "tensor",
+        "shape": [
+          "4",
+          "4"
+        ],
+        "dtype": "float32",
+        "attrs": {
+          "ndim": 2,
+          "constexpr": false,
+          "jagged_dim": null,
+          "dtype_level": 0,
+          "source_name": "b",
+          "source_ndim": 2,
+          "source_shape": [
+            "ninetoothed_b_size_0",
+            "ninetoothed_b_size_1"
+          ],
+          "source_dtype": "float32",
+          "other": 0,
+          "source_strides": [
+            "ninetoothed_b_stride_0",
+            "ninetoothed_b_stride_1"
+          ],
+          "target_dims": [
+            "0",
+            "1"
+          ],
+          "view_ndim": 2,
+          "view_shape": [
+            "(ninetoothed_b_size_0 - 3 - 1 + 4 - 1) // 4 + 1",
+            "(ninetoothed_b_size_1 - 3 - 1 + 4 - 1) // 4 + 1"
+          ],
+          "view_linear_offset": "0 * ninetoothed_b_stride_0 + 0 * ninetoothed_b_stride_1",
+          "view_mask": "True & (index // ((ninetoothed_b_size_1 - 3 - 1 + 4 - 1) // 4 + 1) < (ninetoothed_b_size_0 - 3 - 1 + 4 - 1) // 4 + 1) & (index // ((ninetoothed_b_size_1 - 3 - 1 + 4 - 1) // 4 + 1) >= 0) & (index % ((ninetoothed_b_size_1 - 3 - 1 + 4 - 1) // 4 + 1) < ((ninetoothed_b_size_1 - 3 - 1 + 4 - 1) // 4 + 1)) & (index % ((ninetoothed_b_size_1 - 3 - 1 + 4 - 1) // 4 + 1) >= 0)",
+          "view_offsets": [
+            "0",
+            "0"
+          ],
+          "application_shape": [
+            "4",
+            "4"
+          ],
+          "application_ndim": 2,
+          "dtype_shapes": [
+            [
+              "4",
+              "4"
+            ]
+          ],
+          "dtype_target_dims": [
+            [
+              "0",
+              "1"
+            ]
+          ],
+          "access_templates": [
+            {
+              "level": 0,
+              "shape": [
+                "4",
+                "4"
+              ],
+              "linear_offset": "(outer_index // ((ninetoothed_b_size_1 - 3 - 1 + 4 - 1) // 4 + 1) * 4 + value_0) * ninetoothed_b_stride_0 + (outer_index % ((ninetoothed_b_size_1 - 3 - 1 + 4 - 1) // 4 + 1) * 4 + value_1) * ninetoothed_b_stride_1",
+              "offsets": [
+                "outer_index // ((ninetoothed_b_size_1 - 3 - 1 + 4 - 1) // 4 + 1) * 4 + value_0",
+                "outer_index % ((ninetoothed_b_size_1 - 3 - 1 + 4 - 1) // 4 + 1) * 4 + value_1"
+              ],
+              "mask": "True & (outer_index // ((ninetoothed_b_size_1 - 3 - 1 + 4 - 1) // 4 + 1) < (ninetoothed_b_size_0 - 3 - 1 + 4 - 1) // 4 + 1) & (outer_index // ((ninetoothed_b_size_1 - 3 - 1 + 4 - 1) // 4 + 1) >= 0) & (outer_index % ((ninetoothed_b_size_1 - 3 - 1 + 4 - 1) // 4 + 1) < ((ninetoothed_b_size_1 - 3 - 1 + 4 - 1) // 4 + 1)) & (outer_index % ((ninetoothed_b_size_1 - 3 - 1 + 4 - 1) // 4 + 1) >= 0) & (value_0 < 4) & (value_0 >= 0) & (value_1 < 4) & (value_1 >= 0) & (outer_index // ((ninetoothed_b_size_1 - 3 - 1 + 4 - 1) // 4 + 1) * 4 + value_0 < ninetoothed_b_size_0) & (outer_index // ((ninetoothed_b_size_1 - 3 - 1 + 4 - 1) // 4 + 1) * 4 + value_0 >= 0) & (outer_index % ((ninetoothed_b_size_1 - 3 - 1 + 4 - 1) // 4 + 1) * 4 + value_1 < ninetoothed_b_size_1) & (outer_index % ((ninetoothed_b_size_1 - 3 - 1 + 4 - 1) // 4 + 1) * 4 + value_1 >= 0)"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "out",
+      "type": {
+        "kind": "tensor",
+        "shape": [
+          "4",
+          "4"
+        ],
+        "dtype": "float32",
+        "attrs": {
+          "ndim": 2,
+          "constexpr": false,
+          "jagged_dim": null,
+          "dtype_level": 0,
+          "source_name": "out",
+          "source_ndim": 2,
+          "source_shape": [
+            "ninetoothed_out_size_0",
+            "ninetoothed_out_size_1"
+          ],
+          "source_dtype": "float32",
+          "other": null,
+          "source_strides": [
+            "ninetoothed_out_stride_0",
+            "ninetoothed_out_stride_1"
+          ],
+          "target_dims": [
+            "0",
+            "1"
+          ],
+          "view_ndim": 2,
+          "view_shape": [
+            "(ninetoothed_out_size_0 - 3 - 1 + 4 - 1) // 4 + 1",
+            "(ninetoothed_out_size_1 - 3 - 1 + 4 - 1) // 4 + 1"
+          ],
+          "view_linear_offset": "0 * ninetoothed_out_stride_0 + 0 * ninetoothed_out_stride_1",
+          "view_mask": "True & (index // ((ninetoothed_out_size_1 - 3 - 1 + 4 - 1) // 4 + 1) < (ninetoothed_out_size_0 - 3 - 1 + 4 - 1) // 4 + 1) & (index // ((ninetoothed_out_size_1 - 3 - 1 + 4 - 1) // 4 + 1) >= 0) & (index % ((ninetoothed_out_size_1 - 3 - 1 + 4 - 1) // 4 + 1) < ((ninetoothed_out_size_1 - 3 - 1 + 4 - 1) // 4 + 1)) & (index % ((ninetoothed_out_size_1 - 3 - 1 + 4 - 1) // 4 + 1) >= 0)",
+          "view_offsets": [
+            "0",
+            "0"
+          ],
+          "application_shape": [
+            "4",
+            "4"
+          ],
+          "application_ndim": 2,
+          "dtype_shapes": [
+            [
+              "4",
+              "4"
+            ]
+          ],
+          "dtype_target_dims": [
+            [
+              "0",
+              "1"
+            ]
+          ],
+          "access_templates": [
+            {
+              "level": 0,
+              "shape": [
+                "4",
+                "4"
+              ],
+              "linear_offset": "(outer_index // ((ninetoothed_out_size_1 - 3 - 1 + 4 - 1) // 4 + 1) * 4 + value_0) * ninetoothed_out_stride_0 + (outer_index % ((ninetoothed_out_size_1 - 3 - 1 + 4 - 1) // 4 + 1) * 4 + value_1) * ninetoothed_out_stride_1",
+              "offsets": [
+                "outer_index // ((ninetoothed_out_size_1 - 3 - 1 + 4 - 1) // 4 + 1) * 4 + value_0",
+                "outer_index % ((ninetoothed_out_size_1 - 3 - 1 + 4 - 1) // 4 + 1) * 4 + value_1"
+              ],
+              "mask": "True & (outer_index // ((ninetoothed_out_size_1 - 3 - 1 + 4 - 1) // 4 + 1) < (ninetoothed_out_size_0 - 3 - 1 + 4 - 1) // 4 + 1) & (outer_index // ((ninetoothed_out_size_1 - 3 - 1 + 4 - 1) // 4 + 1) >= 0) & (outer_index % ((ninetoothed_out_size_1 - 3 - 1 + 4 - 1) // 4 + 1) < ((ninetoothed_out_size_1 - 3 - 1 + 4 - 1) // 4 + 1)) & (outer_index % ((ninetoothed_out_size_1 - 3 - 1 + 4 - 1) // 4 + 1) >= 0) & (value_0 < 4) & (value_0 >= 0) & (value_1 < 4) & (value_1 >= 0) & (outer_index // ((ninetoothed_out_size_1 - 3 - 1 + 4 - 1) // 4 + 1) * 4 + value_0 < ninetoothed_out_size_0) & (outer_index // ((ninetoothed_out_size_1 - 3 - 1 + 4 - 1) // 4 + 1) * 4 + value_0 >= 0) & (outer_index % ((ninetoothed_out_size_1 - 3 - 1 + 4 - 1) // 4 + 1) * 4 + value_1 < ninetoothed_out_size_1) & (outer_index % ((ninetoothed_out_size_1 - 3 - 1 + 4 - 1) // 4 + 1) * 4 + value_1 >= 0)"
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "outputs": [
+    {
+      "name": "out",
+      "type": {
+        "kind": "tensor",
+        "shape": [
+          "4",
+          "4"
+        ],
+        "dtype": "float32",
+        "attrs": {
+          "ndim": 2,
+          "constexpr": false,
+          "jagged_dim": null,
+          "dtype_level": 0,
+          "source_name": "out",
+          "source_ndim": 2,
+          "source_shape": [
+            "ninetoothed_out_size_0",
+            "ninetoothed_out_size_1"
+          ],
+          "source_dtype": "float32",
+          "other": null,
+          "source_strides": [
+            "ninetoothed_out_stride_0",
+            "ninetoothed_out_stride_1"
+          ],
+          "target_dims": [
+            "0",
+            "1"
+          ],
+          "view_ndim": 2,
+          "view_shape": [
+            "(ninetoothed_out_size_0 - 3 - 1 + 4 - 1) // 4 + 1",
+            "(ninetoothed_out_size_1 - 3 - 1 + 4 - 1) // 4 + 1"
+          ],
+          "view_linear_offset": "0 * ninetoothed_out_stride_0 + 0 * ninetoothed_out_stride_1",
+          "view_mask": "True & (index // ((ninetoothed_out_size_1 - 3 - 1 + 4 - 1) // 4 + 1) < (ninetoothed_out_size_0 - 3 - 1 + 4 - 1) // 4 + 1) & (index // ((ninetoothed_out_size_1 - 3 - 1 + 4 - 1) // 4 + 1) >= 0) & (index % ((ninetoothed_out_size_1 - 3 - 1 + 4 - 1) // 4 + 1) < ((ninetoothed_out_size_1 - 3 - 1 + 4 - 1) // 4 + 1)) & (index % ((ninetoothed_out_size_1 - 3 - 1 + 4 - 1) // 4 + 1) >= 0)",
+          "view_offsets": [
+            "0",
+            "0"
+          ],
+          "application_shape": [
+            "4",
+            "4"
+          ],
+          "application_ndim": 2,
+          "dtype_shapes": [
+            [
+              "4",
+              "4"
+            ]
+          ],
+          "dtype_target_dims": [
+            [
+              "0",
+              "1"
+            ]
+          ],
+          "access_templates": [
+            {
+              "level": 0,
+              "shape": [
+                "4",
+                "4"
+              ],
+              "linear_offset": "(outer_index // ((ninetoothed_out_size_1 - 3 - 1 + 4 - 1) // 4 + 1) * 4 + value_0) * ninetoothed_out_stride_0 + (outer_index % ((ninetoothed_out_size_1 - 3 - 1 + 4 - 1) // 4 + 1) * 4 + value_1) * ninetoothed_out_stride_1",
+              "offsets": [
+                "outer_index // ((ninetoothed_out_size_1 - 3 - 1 + 4 - 1) // 4 + 1) * 4 + value_0",
+                "outer_index % ((ninetoothed_out_size_1 - 3 - 1 + 4 - 1) // 4 + 1) * 4 + value_1"
+              ],
+              "mask": "True & (outer_index // ((ninetoothed_out_size_1 - 3 - 1 + 4 - 1) // 4 + 1) < (ninetoothed_out_size_0 - 3 - 1 + 4 - 1) // 4 + 1) & (outer_index // ((ninetoothed_out_size_1 - 3 - 1 + 4 - 1) // 4 + 1) >= 0) & (outer_index % ((ninetoothed_out_size_1 - 3 - 1 + 4 - 1) // 4 + 1) < ((ninetoothed_out_size_1 - 3 - 1 + 4 - 1) // 4 + 1)) & (outer_index % ((ninetoothed_out_size_1 - 3 - 1 + 4 - 1) // 4 + 1) >= 0) & (value_0 < 4) & (value_0 >= 0) & (value_1 < 4) & (value_1 >= 0) & (outer_index // ((ninetoothed_out_size_1 - 3 - 1 + 4 - 1) // 4 + 1) * 4 + value_0 < ninetoothed_out_size_0) & (outer_index // ((ninetoothed_out_size_1 - 3 - 1 + 4 - 1) // 4 + 1) * 4 + value_0 >= 0) & (outer_index % ((ninetoothed_out_size_1 - 3 - 1 + 4 - 1) // 4 + 1) * 4 + value_1 < ninetoothed_out_size_1) & (outer_index % ((ninetoothed_out_size_1 - 3 - 1 + 4 - 1) // 4 + 1) * 4 + value_1 >= 0)"
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "blocks": [
+    {
+      "name": "entry",
+      "args": [],
+      "operations": [
+        {
+          "opcode": "linalg.dot",
+          "operands": [
+            "a",
+            "b"
+          ],
+          "results": [
+            {
+              "name": "%0",
+              "type": {
+                "kind": "tensor",
+                "shape": [
+                  "4",
+                  "4"
+                ],
+                "dtype": "float32",
+                "attrs": {
+                  "ndim": 2,
+                  "constexpr": false,
+                  "jagged_dim": null,
+                  "dtype_level": 0,
+                  "source_name": "a",
+                  "source_ndim": 2,
+                  "source_shape": [
+                    "ninetoothed_a_size_0",
+                    "ninetoothed_a_size_1"
+                  ],
+                  "source_dtype": "float32",
+                  "other": 0,
+                  "source_strides": [
+                    "ninetoothed_a_stride_0",
+                    "ninetoothed_a_stride_1"
+                  ],
+                  "target_dims": [
+                    "0",
+                    "1"
+                  ],
+                  "view_ndim": 2,
+                  "view_shape": [
+                    "(ninetoothed_a_size_0 - 3 - 1 + 4 - 1) // 4 + 1",
+                    "(ninetoothed_a_size_1 - 3 - 1 + 4 - 1) // 4 + 1"
+                  ],
+                  "view_linear_offset": "0 * ninetoothed_a_stride_0 + 0 * ninetoothed_a_stride_1",
+                  "view_mask": "True & (index // ((ninetoothed_a_size_1 - 3 - 1 + 4 - 1) // 4 + 1) < (ninetoothed_a_size_0 - 3 - 1 + 4 - 1) // 4 + 1) & (index // ((ninetoothed_a_size_1 - 3 - 1 + 4 - 1) // 4 + 1) >= 0) & (index % ((ninetoothed_a_size_1 - 3 - 1 + 4 - 1) // 4 + 1) < ((ninetoothed_a_size_1 - 3 - 1 + 4 - 1) // 4 + 1)) & (index % ((ninetoothed_a_size_1 - 3 - 1 + 4 - 1) // 4 + 1) >= 0)",
+                  "view_offsets": [
+                    "0",
+                    "0"
+                  ],
+                  "application_shape": [
+                    "4",
+                    "4"
+                  ],
+                  "application_ndim": 2,
+                  "dtype_shapes": [
+                    [
+                      "4",
+                      "4"
+                    ]
+                  ],
+                  "dtype_target_dims": [
+                    [
+                      "0",
+                      "1"
+                    ]
+                  ],
+                  "access_templates": [
+                    {
+                      "level": 0,
+                      "shape": [
+                        "4",
+                        "4"
+                      ],
+                      "linear_offset": "(outer_index // ((ninetoothed_a_size_1 - 3 - 1 + 4 - 1) // 4 + 1) * 4 + value_0) * ninetoothed_a_stride_0 + (outer_index % ((ninetoothed_a_size_1 - 3 - 1 + 4 - 1) // 4 + 1) * 4 + value_1) * ninetoothed_a_stride_1",
+                      "offsets": [
+                        "outer_index // ((ninetoothed_a_size_1 - 3 - 1 + 4 - 1) // 4 + 1) * 4 + value_0",
+                        "outer_index % ((ninetoothed_a_size_1 - 3 - 1 + 4 - 1) // 4 + 1) * 4 + value_1"
+                      ],
+                      "mask": "True & (outer_index // ((ninetoothed_a_size_1 - 3 - 1 + 4 - 1) // 4 + 1) < (ninetoothed_a_size_0 - 3 - 1 + 4 - 1) // 4 + 1) & (outer_index // ((ninetoothed_a_size_1 - 3 - 1 + 4 - 1) // 4 + 1) >= 0) & (outer_index % ((ninetoothed_a_size_1 - 3 - 1 + 4 - 1) // 4 + 1) < ((ninetoothed_a_size_1 - 3 - 1 + 4 - 1) // 4 + 1)) & (outer_index % ((ninetoothed_a_size_1 - 3 - 1 + 4 - 1) // 4 + 1) >= 0) & (value_0 < 4) & (value_0 >= 0) & (value_1 < 4) & (value_1 >= 0) & (outer_index // ((ninetoothed_a_size_1 - 3 - 1 + 4 - 1) // 4 + 1) * 4 + value_0 < ninetoothed_a_size_0) & (outer_index // ((ninetoothed_a_size_1 - 3 - 1 + 4 - 1) // 4 + 1) * 4 + value_0 >= 0) & (outer_index % ((ninetoothed_a_size_1 - 3 - 1 + 4 - 1) // 4 + 1) * 4 + value_1 < ninetoothed_a_size_1) & (outer_index % ((ninetoothed_a_size_1 - 3 - 1 + 4 - 1) // 4 + 1) * 4 + value_1 >= 0)"
+                    }
+                  ]
+                }
+              }
+            }
+          ],
+          "attrs": {},
+          "regions": [],
+          "origins": [
+            "de7b501bf104b6160787e3eb4b009e1a54666a35d504ebea3a2c75bbe37ce846:entry:0:linalg.dot"
+          ]
+        },
+        {
+          "opcode": "mem.store",
+          "operands": [
+            "%0",
+            "out"
+          ],
+          "results": [],
+          "attrs": {
+            "target": "out"
+          },
+          "regions": [],
+          "origins": [
+            "de7b501bf104b6160787e3eb4b009e1a54666a35d504ebea3a2c75bbe37ce846:entry:1:mem.store"
+          ]
+        }
+      ]
+    }
+  ],
+  "metadata": {
+    "source": "application_ast",
+    "function": "matrix_dot",
+    "coarse_operator_nodes": false,
+    "ssa_operation_count": 2,
+    "symbols": [
+      "ninetoothed_a_size_0",
+      "ninetoothed_a_size_1",
+      "ninetoothed_b_size_0",
+      "ninetoothed_b_size_1",
+      "ninetoothed_out_size_0",
+      "ninetoothed_out_size_1"
+    ],
+    "provenance": {
+      "schema": 1,
+      "namespace": "de7b501bf104b6160787e3eb4b009e1a54666a35d504ebea3a2c75bbe37ce846",
+      "sources": {
+        "de7b501bf104b6160787e3eb4b009e1a54666a35d504ebea3a2c75bbe37ce846:entry:0:linalg.dot": {
+          "location": "entry:0:linalg.dot",
+          "opcode": "linalg.dot",
+          "results": [
+            "%0"
+          ]
+        },
+        "de7b501bf104b6160787e3eb4b009e1a54666a35d504ebea3a2c75bbe37ce846:entry:1:mem.store": {
+          "location": "entry:1:mem.store",
+          "opcode": "mem.store",
+          "results": []
+        }
+      },
+      "passes": []
+    }
+  }
+}

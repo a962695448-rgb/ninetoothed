@@ -1,0 +1,303 @@
+{
+  "schema": 1,
+  "kind": "passes",
+  "phase": "execution",
+  "replayable": true,
+  "seed": 2026,
+  "rtol": 0.001,
+  "atol": 0.001,
+  "error": null,
+  "report": {
+    "passed": false,
+    "checked_passes": [
+      "ssa.canonicalize",
+      "ssa.analyze_effects",
+      "ssa.select_schedule",
+      "ssa.triton.optimize_schedule",
+      "ssa.decompose_linalg",
+      "diagnostic.mapped_transpose"
+    ],
+    "first_bad_pass": "diagnostic.mapped_transpose",
+    "difference": {
+      "equal": false,
+      "output_differences": [
+        "out"
+      ],
+      "first_operation": null,
+      "traces_aligned": false,
+      "source_candidates": [
+        {
+          "origin_id": "231feba1f72526d4e073c4d8103dc71d88a214a96599486c0beae1a2aa254160:entry:0:linalg.transpose",
+          "location": "entry:0:linalg.transpose",
+          "opcode": "linalg.transpose",
+          "result_names": [
+            "%0"
+          ]
+        },
+        {
+          "origin_id": "231feba1f72526d4e073c4d8103dc71d88a214a96599486c0beae1a2aa254160:entry:1:mem.store",
+          "location": "entry:1:mem.store",
+          "opcode": "mem.store",
+          "result_names": []
+        }
+      ],
+      "aligned_prefix_operation": null,
+      "reproducer": null,
+      "export_error": null,
+      "retained_operation": null,
+      "mapped_operation": null,
+      "localization": null,
+      "dependency_slice": null,
+      "mapping_issues": [
+        "Result mapping does not match the compared SSA fingerprints."
+      ]
+    },
+    "error": null,
+    "source_candidates": [
+      {
+        "origin_id": "231feba1f72526d4e073c4d8103dc71d88a214a96599486c0beae1a2aa254160:entry:0:linalg.transpose",
+        "location": "entry:0:linalg.transpose",
+        "opcode": "linalg.transpose",
+        "result_names": [
+          "%0"
+        ]
+      },
+      {
+        "origin_id": "231feba1f72526d4e073c4d8103dc71d88a214a96599486c0beae1a2aa254160:entry:1:mem.store",
+        "location": "entry:1:mem.store",
+        "opcode": "mem.store",
+        "result_names": []
+      }
+    ],
+    "adjacent_difference": {
+      "equal": false,
+      "output_differences": [
+        "out"
+      ],
+      "first_operation": null,
+      "traces_aligned": false,
+      "source_candidates": [
+        {
+          "origin_id": "231feba1f72526d4e073c4d8103dc71d88a214a96599486c0beae1a2aa254160:entry:0:linalg.transpose",
+          "location": "entry:0:linalg.transpose",
+          "opcode": "linalg.transpose",
+          "result_names": [
+            "%0"
+          ]
+        },
+        {
+          "origin_id": "231feba1f72526d4e073c4d8103dc71d88a214a96599486c0beae1a2aa254160:entry:1:mem.store",
+          "location": "entry:1:mem.store",
+          "opcode": "mem.store",
+          "result_names": []
+        }
+      ],
+      "aligned_prefix_operation": null,
+      "reproducer": null,
+      "export_error": null,
+      "retained_operation": {
+        "operation": {
+          "program_id": [
+            0,
+            0,
+            0
+          ],
+          "location": "entry:3:mem.store",
+          "opcode": "mem.store",
+          "result_name": "%3",
+          "iteration": [],
+          "lane": [
+            0,
+            1
+          ],
+          "component": "input"
+        },
+        "reference": "reference",
+        "traces_aligned": false,
+        "basis": "retained_boundary",
+        "reference_location": "entry:3:mem.store"
+      },
+      "mapped_operation": {
+        "operation": {
+          "program_id": [
+            0,
+            0,
+            0
+          ],
+          "location": "entry:2:tensor.extract",
+          "opcode": "tensor.extract",
+          "result_name": "%3",
+          "iteration": [],
+          "lane": [
+            0,
+            1
+          ],
+          "component": "result"
+        },
+        "reference": "reference",
+        "traces_aligned": false,
+        "basis": "mapped_result",
+        "reference_location": "entry:2:tensor.extract"
+      },
+      "localization": {
+        "operation": {
+          "program_id": [
+            0,
+            0,
+            0
+          ],
+          "location": "entry:2:tensor.extract",
+          "opcode": "tensor.extract",
+          "result_name": "%3",
+          "iteration": [],
+          "lane": [
+            0,
+            1
+          ],
+          "component": "result"
+        },
+        "reference": "reference",
+        "traces_aligned": false,
+        "basis": "mapped_result",
+        "reference_location": "entry:2:tensor.extract"
+      },
+      "dependency_slice": {
+        "events": [
+          {
+            "trace_index": 4,
+            "location": "entry:0:index.offset",
+            "opcode": "index.offset",
+            "program_id": [
+              0,
+              0,
+              0
+            ],
+            "iteration": [],
+            "lane": [
+              0,
+              1
+            ]
+          },
+          {
+            "trace_index": 5,
+            "location": "entry:1:index.offset",
+            "opcode": "index.offset",
+            "program_id": [
+              0,
+              0,
+              0
+            ],
+            "iteration": [],
+            "lane": [
+              0,
+              1
+            ]
+          },
+          {
+            "trace_index": 6,
+            "location": "entry:2:tensor.extract",
+            "opcode": "tensor.extract",
+            "program_id": [
+              0,
+              0,
+              0
+            ],
+            "iteration": [],
+            "lane": [
+              0,
+              1
+            ]
+          }
+        ],
+        "boundaries": [
+          "entry:2:tensor.extract: memory/alias history not reconstructed"
+        ],
+        "scope": "Observed value dependencies; not a minimal slice or unique cause."
+      },
+      "mapping_issues": []
+    },
+    "localization": {
+      "operation": {
+        "program_id": [
+          0,
+          0,
+          0
+        ],
+        "location": "entry:2:tensor.extract",
+        "opcode": "tensor.extract",
+        "result_name": "%3",
+        "iteration": [],
+        "lane": [
+          0,
+          1
+        ],
+        "component": "result"
+      },
+      "reference": "previous",
+      "traces_aligned": false,
+      "basis": "mapped_result",
+      "reference_location": "entry:2:tensor.extract"
+    },
+    "reproducer": null,
+    "export_error": null,
+    "dependency_slice": {
+      "events": [
+        {
+          "trace_index": 4,
+          "location": "entry:0:index.offset",
+          "opcode": "index.offset",
+          "program_id": [
+            0,
+            0,
+            0
+          ],
+          "iteration": [],
+          "lane": [
+            0,
+            1
+          ]
+        },
+        {
+          "trace_index": 5,
+          "location": "entry:1:index.offset",
+          "opcode": "index.offset",
+          "program_id": [
+            0,
+            0,
+            0
+          ],
+          "iteration": [],
+          "lane": [
+            0,
+            1
+          ]
+        },
+        {
+          "trace_index": 6,
+          "location": "entry:2:tensor.extract",
+          "opcode": "tensor.extract",
+          "program_id": [
+            0,
+            0,
+            0
+          ],
+          "iteration": [],
+          "lane": [
+            0,
+            1
+          ]
+        }
+      ],
+      "boundaries": [
+        "entry:2:tensor.extract: memory/alias history not reconstructed"
+      ],
+      "scope": "Observed value dependencies; not a minimal slice or unique cause."
+    }
+  },
+  "environment": {
+    "python": "3.12.3",
+    "numpy": "2.5.2",
+    "ninetoothed": null
+  },
+  "scope": "Exact supplied SSA and inputs; no automatic program or shape minimization."
+}

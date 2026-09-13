@@ -1,0 +1,10 @@
+ssa @_transpose {
+  inputs:
+    x : tensor<4x4>xfloat32
+    out : tensor<4x4>xfloat32
+  outputs:
+    out : tensor<4x4>xfloat32
+  ^entry:
+    %0 = linalg.transpose x
+    mem.store %0, out {target='out'}
+}

@@ -1,0 +1,4 @@
+First bad pass (saved boundary): injected_bad_constant
+Operation localization: {'operation': {'program_id': [0, 0, 0], 'location': 'entry:0:arith.constant', 'opcode': 'arith.constant', 'result_name': '%0', 'iteration': [], 'lane': None, 'component': 'result'}, 'reference': 'previous', 'traces_aligned': True, 'basis': 'full_trace', 'reference_location': 'entry:0:arith.constant'}
+Different outputs: ('out',)
+First different operation: OperationDifference(program_id=(0, 0, 0), location='entry:0:arith.constant', opcode='arith.constant', result_name='%0', iteration=(), lane=None, component='result')

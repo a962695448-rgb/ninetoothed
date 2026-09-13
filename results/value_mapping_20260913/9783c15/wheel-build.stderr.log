@@ -1,0 +1,9 @@
+Building wheel...
+error: Failed to build `/mnt/c/Users/xxl/Projects/infinitensor-2026/evidence/nine-value-mapping-20260913/9783c15/source`
+  Caused by: Failed to resolve requirements from `build-system.requires`
+  Caused by: No solution found when resolving: `hatchling`
+  Caused by: Request failed after 3 retries in 25.2s
+  Caused by: Failed to fetch: `https://pypi.org/simple/hatchling/`
+  Caused by: error sending request for url (https://pypi.org/simple/hatchling/)
+  Caused by: client error (Connect)
+  Caused by: tls handshake eof

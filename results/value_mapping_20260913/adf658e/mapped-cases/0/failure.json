@@ -1,0 +1,475 @@
+{
+  "schema": 1,
+  "kind": "passes",
+  "phase": "execution",
+  "replayable": true,
+  "seed": 2026,
+  "rtol": 0.001,
+  "atol": 0.001,
+  "error": null,
+  "report": {
+    "passed": false,
+    "checked_passes": [
+      "ssa.canonicalize",
+      "ssa.analyze_effects",
+      "ssa.select_schedule",
+      "ssa.triton.optimize_schedule",
+      "ssa.decompose_linalg",
+      "diagnostic.mapped_dot"
+    ],
+    "first_bad_pass": "diagnostic.mapped_dot",
+    "difference": {
+      "equal": false,
+      "output_differences": [
+        "out"
+      ],
+      "first_operation": null,
+      "traces_aligned": false,
+      "source_candidates": [
+        {
+          "origin_id": "de7b501bf104b6160787e3eb4b009e1a54666a35d504ebea3a2c75bbe37ce846:entry:0:linalg.dot",
+          "location": "entry:0:linalg.dot",
+          "opcode": "linalg.dot",
+          "result_names": [
+            "%0"
+          ]
+        },
+        {
+          "origin_id": "de7b501bf104b6160787e3eb4b009e1a54666a35d504ebea3a2c75bbe37ce846:entry:1:mem.store",
+          "location": "entry:1:mem.store",
+          "opcode": "mem.store",
+          "result_names": []
+        }
+      ],
+      "aligned_prefix_operation": null,
+      "reproducer": null,
+      "export_error": null,
+      "retained_operation": null,
+      "mapped_operation": null,
+      "localization": null,
+      "dependency_slice": null,
+      "mapping_issues": [
+        "Result mapping does not match the compared SSA fingerprints."
+      ]
+    },
+    "error": null,
+    "source_candidates": [
+      {
+        "origin_id": "de7b501bf104b6160787e3eb4b009e1a54666a35d504ebea3a2c75bbe37ce846:entry:0:linalg.dot",
+        "location": "entry:0:linalg.dot",
+        "opcode": "linalg.dot",
+        "result_names": [
+          "%0"
+        ]
+      },
+      {
+        "origin_id": "de7b501bf104b6160787e3eb4b009e1a54666a35d504ebea3a2c75bbe37ce846:entry:1:mem.store",
+        "location": "entry:1:mem.store",
+        "opcode": "mem.store",
+        "result_names": []
+      }
+    ],
+    "adjacent_difference": {
+      "equal": false,
+      "output_differences": [
+        "out"
+      ],
+      "first_operation": null,
+      "traces_aligned": false,
+      "source_candidates": [
+        {
+          "origin_id": "de7b501bf104b6160787e3eb4b009e1a54666a35d504ebea3a2c75bbe37ce846:entry:0:linalg.dot",
+          "location": "entry:0:linalg.dot",
+          "opcode": "linalg.dot",
+          "result_names": [
+            "%0"
+          ]
+        },
+        {
+          "origin_id": "de7b501bf104b6160787e3eb4b009e1a54666a35d504ebea3a2c75bbe37ce846:entry:1:mem.store",
+          "location": "entry:1:mem.store",
+          "opcode": "mem.store",
+          "result_names": []
+        }
+      ],
+      "aligned_prefix_operation": null,
+      "reproducer": null,
+      "export_error": null,
+      "retained_operation": {
+        "operation": {
+          "program_id": [
+            0,
+            0,
+            0
+          ],
+          "location": "entry:6:scf.for/region0:3:arith.add",
+          "opcode": "arith.add",
+          "result_name": "%8",
+          "iteration": [
+            0
+          ],
+          "lane": [
+            0,
+            0
+          ],
+          "component": "input"
+        },
+        "reference": "reference",
+        "traces_aligned": false,
+        "basis": "retained_boundary",
+        "reference_location": "entry:6:scf.for/region0:3:arith.add"
+      },
+      "mapped_operation": {
+        "operation": {
+          "program_id": [
+            0,
+            0,
+            0
+          ],
+          "location": "entry:6:scf.for/region0:2:arith.add",
+          "opcode": "arith.add",
+          "result_name": "%8",
+          "iteration": [
+            0
+          ],
+          "lane": [
+            0,
+            0
+          ],
+          "component": "result"
+        },
+        "reference": "reference",
+        "traces_aligned": false,
+        "basis": "mapped_result",
+        "reference_location": "entry:6:scf.for/region0:2:arith.mul"
+      },
+      "localization": {
+        "operation": {
+          "program_id": [
+            0,
+            0,
+            0
+          ],
+          "location": "entry:6:scf.for/region0:2:arith.add",
+          "opcode": "arith.add",
+          "result_name": "%8",
+          "iteration": [
+            0
+          ],
+          "lane": [
+            0,
+            0
+          ],
+          "component": "result"
+        },
+        "reference": "reference",
+        "traces_aligned": false,
+        "basis": "mapped_result",
+        "reference_location": "entry:6:scf.for/region0:2:arith.mul"
+      },
+      "dependency_slice": {
+        "events": [
+          {
+            "trace_index": 0,
+            "location": "entry:0:index.offset",
+            "opcode": "index.offset",
+            "program_id": [
+              0,
+              0,
+              0
+            ],
+            "iteration": [],
+            "lane": [
+              0,
+              0
+            ]
+          },
+          {
+            "trace_index": 1,
+            "location": "entry:1:index.offset",
+            "opcode": "index.offset",
+            "program_id": [
+              0,
+              0,
+              0
+            ],
+            "iteration": [],
+            "lane": [
+              0,
+              0
+            ]
+          },
+          {
+            "trace_index": 2,
+            "location": "entry:2:arith.constant",
+            "opcode": "arith.constant",
+            "program_id": [
+              0,
+              0,
+              0
+            ],
+            "iteration": [],
+            "lane": [
+              0,
+              0
+            ]
+          },
+          {
+            "trace_index": 3,
+            "location": "entry:3:arith.constant",
+            "opcode": "arith.constant",
+            "program_id": [
+              0,
+              0,
+              0
+            ],
+            "iteration": [],
+            "lane": [
+              0,
+              0
+            ]
+          },
+          {
+            "trace_index": 5,
+            "location": "entry:5:shape.dim",
+            "opcode": "shape.dim",
+            "program_id": [
+              0,
+              0,
+              0
+            ],
+            "iteration": [],
+            "lane": [
+              0,
+              0
+            ]
+          },
+          {
+            "trace_index": 6,
+            "location": "entry:6:scf.for/region0:0:tensor.extract",
+            "opcode": "tensor.extract",
+            "program_id": [
+              0,
+              0,
+              0
+            ],
+            "iteration": [
+              0
+            ],
+            "lane": [
+              0,
+              0
+            ]
+          },
+          {
+            "trace_index": 7,
+            "location": "entry:6:scf.for/region0:1:tensor.extract",
+            "opcode": "tensor.extract",
+            "program_id": [
+              0,
+              0,
+              0
+            ],
+            "iteration": [
+              0
+            ],
+            "lane": [
+              0,
+              0
+            ]
+          },
+          {
+            "trace_index": 8,
+            "location": "entry:6:scf.for/region0:2:arith.add",
+            "opcode": "arith.add",
+            "program_id": [
+              0,
+              0,
+              0
+            ],
+            "iteration": [
+              0
+            ],
+            "lane": [
+              0,
+              0
+            ]
+          }
+        ],
+        "boundaries": [
+          "entry:6:scf.for/region0:0:tensor.extract: memory/alias history not reconstructed",
+          "entry:6:scf.for/region0:1:tensor.extract: memory/alias history not reconstructed"
+        ],
+        "scope": "Observed value dependencies; not a minimal slice or unique cause."
+      },
+      "mapping_issues": []
+    },
+    "localization": {
+      "operation": {
+        "program_id": [
+          0,
+          0,
+          0
+        ],
+        "location": "entry:6:scf.for/region0:2:arith.add",
+        "opcode": "arith.add",
+        "result_name": "%8",
+        "iteration": [
+          0
+        ],
+        "lane": [
+          0,
+          0
+        ],
+        "component": "result"
+      },
+      "reference": "previous",
+      "traces_aligned": false,
+      "basis": "mapped_result",
+      "reference_location": "entry:6:scf.for/region0:2:arith.mul"
+    },
+    "reproducer": null,
+    "export_error": null,
+    "dependency_slice": {
+      "events": [
+        {
+          "trace_index": 0,
+          "location": "entry:0:index.offset",
+          "opcode": "index.offset",
+          "program_id": [
+            0,
+            0,
+            0
+          ],
+          "iteration": [],
+          "lane": [
+            0,
+            0
+          ]
+        },
+        {
+          "trace_index": 1,
+          "location": "entry:1:index.offset",
+          "opcode": "index.offset",
+          "program_id": [
+            0,
+            0,
+            0
+          ],
+          "iteration": [],
+          "lane": [
+            0,
+            0
+          ]
+        },
+        {
+          "trace_index": 2,
+          "location": "entry:2:arith.constant",
+          "opcode": "arith.constant",
+          "program_id": [
+            0,
+            0,
+            0
+          ],
+          "iteration": [],
+          "lane": [
+            0,
+            0
+          ]
+        },
+        {
+          "trace_index": 3,
+          "location": "entry:3:arith.constant",
+          "opcode": "arith.constant",
+          "program_id": [
+            0,
+            0,
+            0
+          ],
+          "iteration": [],
+          "lane": [
+            0,
+            0
+          ]
+        },
+        {
+          "trace_index": 5,
+          "location": "entry:5:shape.dim",
+          "opcode": "shape.dim",
+          "program_id": [
+            0,
+            0,
+            0
+          ],
+          "iteration": [],
+          "lane": [
+            0,
+            0
+          ]
+        },
+        {
+          "trace_index": 6,
+          "location": "entry:6:scf.for/region0:0:tensor.extract",
+          "opcode": "tensor.extract",
+          "program_id": [
+            0,
+            0,
+            0
+          ],
+          "iteration": [
+            0
+          ],
+          "lane": [
+            0,
+            0
+          ]
+        },
+        {
+          "trace_index": 7,
+          "location": "entry:6:scf.for/region0:1:tensor.extract",
+          "opcode": "tensor.extract",
+          "program_id": [
+            0,
+            0,
+            0
+          ],
+          "iteration": [
+            0
+          ],
+          "lane": [
+            0,
+            0
+          ]
+        },
+        {
+          "trace_index": 8,
+          "location": "entry:6:scf.for/region0:2:arith.add",
+          "opcode": "arith.add",
+          "program_id": [
+            0,
+            0,
+            0
+          ],
+          "iteration": [
+            0
+          ],
+          "lane": [
+            0,
+            0
+          ]
+        }
+      ],
+      "boundaries": [
+        "entry:6:scf.for/region0:0:tensor.extract: memory/alias history not reconstructed",
+        "entry:6:scf.for/region0:1:tensor.extract: memory/alias history not reconstructed"
+      ],
+      "scope": "Observed value dependencies; not a minimal slice or unique cause."
+    }
+  },
+  "environment": {
+    "python": "3.12.3",
+    "numpy": "2.5.2",
+    "ninetoothed": null
+  },
+  "scope": "Exact supplied SSA and inputs; no automatic program or shape minimization."
+}
