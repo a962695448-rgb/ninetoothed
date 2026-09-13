@@ -1,0 +1,225 @@
+{
+  "archive_sha256": "5ac822a4859f9fcd0878fb9976806b924ded9f31979a15e8d05a5cb6fd580e08",
+  "files_verified": 138,
+  "source_commit": "ed332733db28dbf16de06f166b16766760148958",
+  "gpu": [
+    {
+      "index": 0,
+      "name": "NVIDIA A100-SXM4-40GB",
+      "compute_capability": [
+        8,
+        0
+      ],
+      "total_memory_bytes": 42285268992,
+      "multiprocessor_count": 108
+    }
+  ],
+  "gpu_report_status": "PASS",
+  "cuda_dot": {
+    "status": "PASS",
+    "case": "dot_float32_multi_program_tail",
+    "backend_requested": "cuda",
+    "expected_head": "ed332733db28dbf16de06f166b16766760148958",
+    "script_sha256": "d0ca23a0715ad985173f418d73d1dcc191880d8219121fe6f058adbf79349f5c",
+    "python": "3.12.7",
+    "gpu_launch_attempted": true,
+    "started_at_utc": "2026-09-13T17:35:48.708770+00:00",
+    "limitations": [
+      "One scalar float32 CUDA-backend correctness case; not a full suite or performance benchmark.",
+      "Four 4x4 M/N output tiles with complete K, including M/N/K tails; no split-K or Tensor Core claim.",
+      "Results apply only to the GPU identified by this run; the script alone is not GPU evidence."
+    ],
+    "numpy_version": "2.1.3",
+    "torch_version": "2.5.0+cu124",
+    "torch_cuda_version": "12.4",
+    "gpu_name": "NVIDIA A100-SXM4-40GB",
+    "compute_capability": [
+      8,
+      0
+    ],
+    "device_index": 0,
+    "architecture": "sm_80",
+    "seed": 2026,
+    "rtol": 0.001,
+    "atol": 0.001,
+    "input_shapes": {
+      "a": [
+        7,
+        3
+      ],
+      "b": [
+        3,
+        6
+      ]
+    },
+    "output_shape": [
+      7,
+      6
+    ],
+    "program": "matrix_dot",
+    "dtype": "float32",
+    "emitted_backend": "cuda",
+    "complete_ir_roundtrip": true,
+    "pass_trace": [
+      "ssa.canonicalize",
+      "ssa.analyze_effects",
+      "ssa.select_schedule",
+      "ssa.cuda.optimize_schedule",
+      "ssa.decompose_linalg"
+    ],
+    "scalar_dot_decomposition_verified": true,
+    "emitted_source_sha256": "a2e4dd1317008238618e9b116d4382cc7767de13d76fd752a237fa0c9840f3ed",
+    "runtime_backend": "cuda",
+    "max_abs_error_vs_numpy": {
+      "frontend_cpu": 0.0,
+      "cuda_ssa_cpu": 1.1920928955078125e-07,
+      "cuda_gpu": 0.0
+    },
+    "materialized_source_sha256": "a2e4dd1317008238618e9b116d4382cc7767de13d76fd752a237fa0c9840f3ed",
+    "cuda_binary_sha256": "c1f93ceb64519bd29925efb8f9e6c755a2c606b5967bd85090b74b214356878d",
+    "all_input_and_output_guards_unchanged": true,
+    "inputs_unchanged": true,
+    "four_way_comparison_passed": true,
+    "source_commit": "ed332733db28dbf16de06f166b16766760148958",
+    "source_unchanged": true,
+    "exit_code": 0,
+    "elapsed_seconds": 3.126,
+    "ended_at_utc": "2026-09-13T17:35:51.835410+00:00",
+    "artifacts": {
+      "artifact-ir.json": {
+        "bytes": 34249,
+        "sha256": "c33ccd01cef532625cbd693a0c7b7ca343746663370f5f693c287b0a136c981d"
+      },
+      "build/nine_opt_cuda_dot_probe.cuda.manifest.json": {
+        "bytes": 14037,
+        "sha256": "2e635dd8732b64a0b86270bf59e105161a79e3c021afa475999a885e72d5fef3"
+      },
+      "build/nine_opt_cuda_dot_probe.cuda.manifest.json.lock": {
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "build/nine_opt_cuda_dot_probe.cuda.so": {
+        "bytes": 1042896,
+        "sha256": "c1f93ceb64519bd29925efb8f9e6c755a2c606b5967bd85090b74b214356878d"
+      },
+      "build/nine_opt_cuda_dot_probe.cuda.so.lock": {
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "build-cache/artifacts/a86c6b5279f34699db5163e0e9f57f264f45af58264f311f206577275cee4e2e/nine_opt_cuda_dot_probe.cu": {
+        "bytes": 21021,
+        "sha256": "a2e4dd1317008238618e9b116d4382cc7767de13d76fd752a237fa0c9840f3ed"
+      },
+      "build-cache/artifacts/a86c6b5279f34699db5163e0e9f57f264f45af58264f311f206577275cee4e2e/nine_opt_cuda_dot_probe.cu.lock": {
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "build-cache/artifacts/a86c6b5279f34699db5163e0e9f57f264f45af58264f311f206577275cee4e2e/nine_opt_cuda_dot_probe.cuda.manifest.json": {
+        "bytes": 14118,
+        "sha256": "4d797c6b69e0b571e26c0d8143ef591a2bbf0f3878460699a10acdb1cd13ed9b"
+      },
+      "build-cache/artifacts/a86c6b5279f34699db5163e0e9f57f264f45af58264f311f206577275cee4e2e/nine_opt_cuda_dot_probe.cuda.manifest.json.lock": {
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "build-cache/artifacts/a86c6b5279f34699db5163e0e9f57f264f45af58264f311f206577275cee4e2e/nine_opt_cuda_dot_probe.cuda.so": {
+        "bytes": 1042896,
+        "sha256": "c1f93ceb64519bd29925efb8f9e6c755a2c606b5967bd85090b74b214356878d"
+      },
+      "build-cache/artifacts/a86c6b5279f34699db5163e0e9f57f264f45af58264f311f206577275cee4e2e/nine_opt_cuda_dot_probe.cuda.so.lock": {
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "build-cache/toolchains/nvcc.lock": {
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "cuda_gpu.npz": {
+        "bytes": 1148,
+        "sha256": "57a3bbd83a9b7fc9a2d0997627e913e6ff32d852045f02b6fc8e7426d426ed20"
+      },
+      "cuda_ssa_cpu.npz": {
+        "bytes": 1148,
+        "sha256": "4d99ef34693bbbeaa8803ff941bd07b5a702391ff01721828e9b3d0ada7d0e18"
+      },
+      "emitted-ir.json": {
+        "bytes": 34249,
+        "sha256": "c33ccd01cef532625cbd693a0c7b7ca343746663370f5f693c287b0a136c981d"
+      },
+      "emitted.ssa.txt": {
+        "bytes": 1176,
+        "sha256": "0e42836c7b8f9241f79c8245f0a3fd94c99c6f5aa4e6f1366263c74f54b717d8"
+      },
+      "frontend.ssa.txt": {
+        "bytes": 228,
+        "sha256": "de7b501bf104b6160787e3eb4b009e1a54666a35d504ebea3a2c75bbe37ce846"
+      },
+      "frontend_cpu.npz": {
+        "bytes": 1148,
+        "sha256": "57a3bbd83a9b7fc9a2d0997627e913e6ff32d852045f02b6fc8e7426d426ed20"
+      },
+      "kernel.cu": {
+        "bytes": 21021,
+        "sha256": "a2e4dd1317008238618e9b116d4382cc7767de13d76fd752a237fa0c9840f3ed"
+      },
+      "nvcc-version.txt": {
+        "bytes": 208,
+        "sha256": "c2a3e2a4025d1be81124baae1f7cd5909fe3f1d87d1d82343b47f2a7c8b8f267"
+      },
+      "oracle.npz": {
+        "bytes": 1062,
+        "sha256": "8484a1b03b775ed987ecf1b55542b649a1e169d88c4fd846f146d845c9306a93"
+      },
+      "probe-script.py": {
+        "bytes": 14891,
+        "sha256": "d0ca23a0715ad985173f418d73d1dcc191880d8219121fe6f058adbf79349f5c"
+      },
+      "source-after.json": {
+        "bytes": 42946,
+        "sha256": "41a4a73eaf454b8611a0fcbb185c43279603600b88c10c9bb9b6c8fc9b5eb4f3"
+      },
+      "source-before.json": {
+        "bytes": 42946,
+        "sha256": "41a4a73eaf454b8611a0fcbb185c43279603600b88c10c9bb9b6c8fc9b5eb4f3"
+      }
+    }
+  },
+  "added_test_groups": {
+    "test_interpreter_memory_dependencies": 35,
+    "test_interpreter_matmul_checkpoints": 24,
+    "test_interpreter_shared_storage": 15,
+    "test_interpreter_trace_index": 3
+  },
+  "full": {
+    "status": "PASS",
+    "exit_code": 0,
+    "passed": 835,
+    "failed_or_error": 0,
+    "skipped": 2,
+    "collected": 837,
+    "new_mapping_cases_in_full": 55,
+    "gpu_cases_in_full": 15,
+    "skip_details": [
+      {
+        "name": "test_add[True-45327-dtype0-bf16-cuda]",
+        "message": "multi-device testing requires at least 2 devices"
+      },
+      {
+        "name": "test_triton_aot_handle_is_reusable_across_cuda_contexts",
+        "message": "Triton multi-context testing requires at least 2 CUDA devices"
+      }
+    ],
+    "failure_details": [],
+    "coverage": {
+      "version": "7.16.0",
+      "timestamp": "1789321525255",
+      "lines-valid": "11650",
+      "lines-covered": "10069",
+      "line-rate": "0.8643",
+      "branches-covered": "0",
+      "branches-valid": "0",
+      "branch-rate": "0",
+      "complexity": "0"
+    }
+  }
+}

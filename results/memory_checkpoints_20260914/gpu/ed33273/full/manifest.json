@@ -1,0 +1,695 @@
+{
+  "status": "PASS",
+  "mode": "full",
+  "started_at_utc": "2026-09-13T17:35:52.307760+00:00",
+  "repo": "/root/infinitensor-2026/ninetoothed-a100-20260913",
+  "output_directory": "/root/infinitensor-2026/runs/nine-memory-final-20260914/full",
+  "expected_sha": "ed332733db28dbf16de06f166b16766760148958",
+  "python": "3.12.7 | packaged by Anaconda, Inc. | (main, Oct  4 2024, 13:27:36) [GCC 11.2.0]",
+  "python_executable": "/root/infinitensor-2026/.venv/bin/python",
+  "os": "Linux",
+  "runner_sha256": "bb6581c7fdd8743e67a4e2c290917b8221914230d4c40ce2c0ef163723f2154e",
+  "environment_overrides": {
+    "PYTHONPATH": "/root/infinitensor-2026/ninetoothed-a100-20260913/src:/root/infinitensor-2026/ninetoothed-a100-20260913",
+    "PYTEST_DISABLE_PLUGIN_AUTOLOAD": "1",
+    "PYTHONUNBUFFERED": "1",
+    "TRITON_INTERPRET": "0"
+  },
+  "environment_unset": [
+    "PYTEST_ADDOPTS",
+    "PYTEST_PLUGINS",
+    "PYTEST_XDIST_WORKER",
+    "NINETOOTHED_BACKEND"
+  ],
+  "observed_environment": {
+    "CUDA_VISIBLE_DEVICES": "0",
+    "CUDA_HOME": "/usr/local/cuda",
+    "CUDA_PATH": null,
+    "OMP_NUM_THREADS": "2",
+    "MKL_NUM_THREADS": null,
+    "TRITON_CACHE_DIR": null,
+    "NINETOOTHED_CACHE_DIR": null,
+    "MPLBACKEND": "Agg",
+    "TORCH_CUDA_ARCH_LIST": null,
+    "CC": null,
+    "CXX": null,
+    "TRITON_LIBCUDA_PATH": "/root/infinitensor-2026/.driver-libs",
+    "LIBRARY_PATH": "/root/infinitensor-2026/.driver-libs",
+    "LD_LIBRARY_PATH": null,
+    "PATH": "/root/infinitensor-2026/.venv/bin:/usr/local/cuda/bin:/home/vipuser/miniconda3/bin:/usr/bin:/bin"
+  },
+  "commands": [
+    {
+      "name": "before-head",
+      "argv": [
+        "git",
+        "rev-parse",
+        "HEAD"
+      ],
+      "cwd": "/root/infinitensor-2026/ninetoothed-a100-20260913",
+      "stdout": "before-head.stdout.log",
+      "stderr": "before-head.stderr.log",
+      "started_at_utc": "2026-09-13T17:35:52.308122+00:00",
+      "returncode": 0,
+      "pid": 4068,
+      "ended_at_utc": "2026-09-13T17:35:52.309549+00:00",
+      "elapsed_seconds": 0.001
+    },
+    {
+      "name": "before-status",
+      "argv": [
+        "git",
+        "status",
+        "--porcelain",
+        "--untracked-files=no"
+      ],
+      "cwd": "/root/infinitensor-2026/ninetoothed-a100-20260913",
+      "stdout": "before-status.stdout.log",
+      "stderr": "before-status.stderr.log",
+      "started_at_utc": "2026-09-13T17:35:52.309711+00:00",
+      "returncode": 0,
+      "pid": 4069,
+      "ended_at_utc": "2026-09-13T17:35:52.314691+00:00",
+      "elapsed_seconds": 0.005
+    },
+    {
+      "name": "environment",
+      "argv": [
+        "/root/infinitensor-2026/.venv/bin/python",
+        "-c",
+        "\nimport importlib.metadata\nimport json\nimport platform\nimport sys\nimport torch\n\npackages = {}\nfor name in (\n    \"torch\", \"triton\", \"numpy\", \"sympy\", \"pytest\", \"pytest-cov\", \"coverage\",\n    \"tilelang\", \"matplotlib\", \"pandas\", \"jupyter\", \"jupytext\", \"nbconvert\",\n    \"ipykernel\", \"ninetoothed\",\n):\n    try:\n        packages[name] = importlib.metadata.version(name)\n    except importlib.metadata.PackageNotFoundError:\n        packages[name] = None\ndevices = []\navailable = torch.cuda.is_available()\nif available:\n    for index in range(torch.cuda.device_count()):\n        prop = torch.cuda.get_device_properties(index)\n        devices.append({\n            \"index\": index,\n            \"name\": prop.name,\n            \"compute_capability\": [prop.major, prop.minor],\n            \"total_memory_bytes\": prop.total_memory,\n            \"multiprocessor_count\": prop.multi_processor_count,\n        })\nprint(json.dumps({\n    \"python\": sys.version,\n    \"python_executable\": sys.executable,\n    \"platform\": {\"system\": platform.system(), \"machine\": platform.machine()},\n    \"packages\": packages,\n    \"torch_import_version\": torch.__version__,\n    \"torch_cuda_build_version\": torch.version.cuda,\n    \"torch_cuda_available\": available,\n    \"torch_float8_e5m2_attribute\": hasattr(torch, \"float8_e5m2\"),\n    \"cuda_devices\": devices,\n}, indent=2))\n"
+      ],
+      "cwd": "/root/infinitensor-2026/ninetoothed-a100-20260913",
+      "stdout": "environment.stdout.log",
+      "stderr": "environment.stderr.log",
+      "started_at_utc": "2026-09-13T17:35:52.314916+00:00",
+      "returncode": 0,
+      "pid": 4070,
+      "ended_at_utc": "2026-09-13T17:35:53.740322+00:00",
+      "elapsed_seconds": 1.425
+    },
+    {
+      "name": "nvidia-smi",
+      "argv": [
+        "nvidia-smi",
+        "--query-gpu=index,name,memory.total,driver_version,mig.mode.current",
+        "--format=csv,noheader,nounits"
+      ],
+      "cwd": "/root/infinitensor-2026/ninetoothed-a100-20260913",
+      "stdout": "nvidia-smi.stdout.log",
+      "stderr": "nvidia-smi.stderr.log",
+      "started_at_utc": "2026-09-13T17:35:53.740763+00:00",
+      "returncode": 0,
+      "pid": 4076,
+      "ended_at_utc": "2026-09-13T17:35:53.760707+00:00",
+      "elapsed_seconds": 0.02
+    },
+    {
+      "name": "validation",
+      "argv": [
+        "/root/infinitensor-2026/.venv/bin/python",
+        "-m",
+        "pytest",
+        "--color=no",
+        "--tb=short",
+        "-ra",
+        "-p",
+        "pytest_cov",
+        "-v",
+        "--doctest-modules",
+        "--cov=ninetoothed",
+        "--cov-report=xml:/root/infinitensor-2026/runs/nine-memory-final-20260914/full/coverage.xml",
+        "--cov-report=html:/root/infinitensor-2026/runs/nine-memory-final-20260914/full/coverage-html",
+        "--junitxml=/root/infinitensor-2026/runs/nine-memory-final-20260914/full/junit.xml"
+      ],
+      "cwd": "/root/infinitensor-2026/ninetoothed-a100-20260913",
+      "stdout": "validation.stdout.log",
+      "stderr": "validation.stderr.log",
+      "started_at_utc": "2026-09-13T17:35:53.761005+00:00",
+      "returncode": 0,
+      "pid": 4077,
+      "ended_at_utc": "2026-09-13T17:45:27.107168+00:00",
+      "elapsed_seconds": 573.346
+    },
+    {
+      "name": "after-head",
+      "argv": [
+        "git",
+        "rev-parse",
+        "HEAD"
+      ],
+      "cwd": "/root/infinitensor-2026/ninetoothed-a100-20260913",
+      "stdout": "after-head.stdout.log",
+      "stderr": "after-head.stderr.log",
+      "started_at_utc": "2026-09-13T17:45:27.108290+00:00",
+      "returncode": 0,
+      "pid": 4276,
+      "ended_at_utc": "2026-09-13T17:45:27.111657+00:00",
+      "elapsed_seconds": 0.003
+    },
+    {
+      "name": "after-status",
+      "argv": [
+        "git",
+        "status",
+        "--porcelain",
+        "--untracked-files=no"
+      ],
+      "cwd": "/root/infinitensor-2026/ninetoothed-a100-20260913",
+      "stdout": "after-status.stdout.log",
+      "stderr": "after-status.stderr.log",
+      "started_at_utc": "2026-09-13T17:45:27.111911+00:00",
+      "returncode": 0,
+      "pid": 4277,
+      "ended_at_utc": "2026-09-13T17:45:27.117775+00:00",
+      "elapsed_seconds": 0.006
+    }
+  ],
+  "validation_exit_code": 0,
+  "notes": [
+    "One mode only; no dependency installation, test changes, or automatic retries.",
+    "GPU inventory initializes CUDA but does not launch validation kernels.",
+    "Existing matmul/addmm FP8 tests have no compute-capability skip.",
+    "A specialist/full run overlaps the smoke and GPU-report case coverage.",
+    "Artifact hashes exclude this manifest itself; hash it externally when archiving."
+  ],
+  "before_source": {
+    "head": "ed332733db28dbf16de06f166b16766760148958",
+    "tracked_status": ""
+  },
+  "runtime": {
+    "python": "3.12.7 | packaged by Anaconda, Inc. | (main, Oct  4 2024, 13:27:36) [GCC 11.2.0]",
+    "python_executable": "/root/infinitensor-2026/.venv/bin/python",
+    "platform": {
+      "system": "Linux",
+      "machine": "x86_64"
+    },
+    "packages": {
+      "torch": "2.5.0",
+      "triton": "3.1.0",
+      "numpy": "2.1.3",
+      "sympy": "1.13.1",
+      "pytest": "8.1.1",
+      "pytest-cov": "7.1.0",
+      "coverage": "7.16.0",
+      "tilelang": "0.1.14",
+      "matplotlib": "3.11.1",
+      "pandas": "3.0.5",
+      "jupyter": "1.1.1",
+      "jupytext": "1.19.5",
+      "nbconvert": "7.17.1",
+      "ipykernel": "7.3.0",
+      "ninetoothed": null
+    },
+    "torch_import_version": "2.5.0+cu124",
+    "torch_cuda_build_version": "12.4",
+    "torch_cuda_available": true,
+    "torch_float8_e5m2_attribute": true,
+    "cuda_devices": [
+      {
+        "index": 0,
+        "name": "NVIDIA A100-SXM4-40GB",
+        "compute_capability": [
+          8,
+          0
+        ],
+        "total_memory_bytes": 42285268992,
+        "multiprocessor_count": 108
+      }
+    ]
+  },
+  "expected_artifacts": [
+    "junit.xml",
+    "coverage.xml",
+    "coverage-html/index.html"
+  ],
+  "after_source": {
+    "head": "ed332733db28dbf16de06f166b16766760148958",
+    "tracked_status": ""
+  },
+  "missing_artifacts": [],
+  "ended_at_utc": "2026-09-13T17:45:27.118186+00:00",
+  "wrapper_exit_code": 0,
+  "artifacts": [
+    {
+      "path": "after-head.stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "after-head.stdout.log",
+      "bytes": 41,
+      "sha256": "2427f6976d9ff2e62f58c1df1fe2ff34202d7ea28c29162122b0615be6059899"
+    },
+    {
+      "path": "after-status.stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "after-status.stdout.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "before-head.stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "before-head.stdout.log",
+      "bytes": 41,
+      "sha256": "2427f6976d9ff2e62f58c1df1fe2ff34202d7ea28c29162122b0615be6059899"
+    },
+    {
+      "path": "before-status.stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "before-status.stdout.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "coverage-html/.gitignore",
+      "bytes": 27,
+      "sha256": "8c2eb1fa82c314dc11791274cb7aa967245d1908442d6e788bc77f6e1aa5c2b8"
+    },
+    {
+      "path": "coverage-html/class_index.html",
+      "bytes": 119123,
+      "sha256": "701f39427302e09ef3185cc1b9ddd68d372ffd96497636ab30a5f36e5470aa95"
+    },
+    {
+      "path": "coverage-html/coverage_html_cb_dd2e7eb5.js",
+      "bytes": 25450,
+      "sha256": "7378f969dfb8c57a9fdeefda04fa62361a07627da64d8b0a99eadc5cfd975b73"
+    },
+    {
+      "path": "coverage-html/favicon_32_cb_c827f16f.png",
+      "bytes": 1732,
+      "sha256": "bc8100fa8743c11bd243eb3259f4b012758651612fd9bf93bf8b734d17f02561"
+    },
+    {
+      "path": "coverage-html/function_index.html",
+      "bytes": 752652,
+      "sha256": "b3860037c25b08519fad26bb4cb0da93a6c085167ecf36b20e6f9c3ab61b2025"
+    },
+    {
+      "path": "coverage-html/index.html",
+      "bytes": 36105,
+      "sha256": "134a441202f4042dbe1c3dce471003ad65940498af602ae0554490b186b5a7f0"
+    },
+    {
+      "path": "coverage-html/keybd_closed_cb_900cfef5.png",
+      "bytes": 9004,
+      "sha256": "7d9bf8ae66370e4349b4f423ac5279501384e4374da1fde675e099582ed33a8a"
+    },
+    {
+      "path": "coverage-html/status.json",
+      "bytes": 22753,
+      "sha256": "0a682241842825cb2940215967994b9dfc12e6e81f5e81926580d5cdab711018"
+    },
+    {
+      "path": "coverage-html/style_cb_4667309f.css",
+      "bytes": 16131,
+      "sha256": "1b54edba892874f987fd65a5f0fc992bf4f5923ef6e53c687eb0ac0923dd932a"
+    },
+    {
+      "path": "coverage-html/z_355c34310e5e5c7e___init___py.html",
+      "bytes": 10843,
+      "sha256": "1e57975d4591a4a8fabaf352d01ab863f4971808665e78595962ac62b82f73e3"
+    },
+    {
+      "path": "coverage-html/z_355c34310e5e5c7e_cache_py.html",
+      "bytes": 80388,
+      "sha256": "9ae0272e711f69bdb3e9c79f4f9a325679ac7f673621646312218ea126f70e0f"
+    },
+    {
+      "path": "coverage-html/z_355c34310e5e5c7e_driver_py.html",
+      "bytes": 285292,
+      "sha256": "2cfc888d6568e7d4341adc6d9ccdfe35dd10687d8d5e99f2498871848df3c1c2"
+    },
+    {
+      "path": "coverage-html/z_355c34310e5e5c7e_jit_py.html",
+      "bytes": 15427,
+      "sha256": "739d23ac51e8f5e67753e70188298eb3a6c4d24e6d50b11d0f260a14fbedcfc5"
+    },
+    {
+      "path": "coverage-html/z_355c34310e5e5c7e_layout_py.html",
+      "bytes": 228652,
+      "sha256": "f6b39b3c0b0f9c23db79aebd66a3d50fed6a84ca54ac77a30d185c4a96eed59b"
+    },
+    {
+      "path": "coverage-html/z_355c34310e5e5c7e_layout_runtime_py.html",
+      "bytes": 67687,
+      "sha256": "b958ae4c82de88e7dde0044e88937c609c43185efdcd2e1b88ea7979775d8a94"
+    },
+    {
+      "path": "coverage-html/z_355c34310e5e5c7e_passes_py.html",
+      "bytes": 433795,
+      "sha256": "23f45ab637d1ffd5bc5d349c07641b8da2d7931eed8d7346725cc5aec948eb21"
+    },
+    {
+      "path": "coverage-html/z_355c34310e5e5c7e_reductions_py.html",
+      "bytes": 208785,
+      "sha256": "4915a87192fc42e1fbd8769ba2768e26e5be2480ec7ab76f5e6c643f660bb302"
+    },
+    {
+      "path": "coverage-html/z_355c34310e5e5c7e_runtime_py.html",
+      "bytes": 422028,
+      "sha256": "dc0cc25c6c560c94eb6bf178b8de3c97863744a46b3663bca82521bd4577c75b"
+    },
+    {
+      "path": "coverage-html/z_355c34310e5e5c7e_specialization_py.html",
+      "bytes": 61194,
+      "sha256": "26fe87ef0cef3f94ae731f3814ea1447d2fb94f286a511c94b04c4b9dda86661"
+    },
+    {
+      "path": "coverage-html/z_7ac4a2cf9cf7419c___init___py.html",
+      "bytes": 5266,
+      "sha256": "6cdb2d00478de8e9efce1dcb3266876ff687c5df379e1d428ba16ac387be3e03"
+    },
+    {
+      "path": "coverage-html/z_7ac4a2cf9cf7419c_analysis_py.html",
+      "bytes": 38035,
+      "sha256": "fef8e1f7e583e9a77639b41d734281c5ff6d5c547753dd4f20ac1ef4a4ba2501"
+    },
+    {
+      "path": "coverage-html/z_7ac4a2cf9cf7419c_base_py.html",
+      "bytes": 69967,
+      "sha256": "b04d30fcddb5f75dc1227531c2f3fe3f963a12da43202440767b70ab8ea82275"
+    },
+    {
+      "path": "coverage-html/z_7ac4a2cf9cf7419c_context_py.html",
+      "bytes": 41635,
+      "sha256": "57be68d32e120c145356bf0c73d0eaec9ae452ad79413cfda19bd747da46a4ff"
+    },
+    {
+      "path": "coverage-html/z_7ac4a2cf9cf7419c_cuda_py.html",
+      "bytes": 304630,
+      "sha256": "f532a9c86465e0d4e9f10ecee919a2a6cc5d9c35ba56d3405b8040bd5d127ad5"
+    },
+    {
+      "path": "coverage-html/z_7ac4a2cf9cf7419c_expressions_py.html",
+      "bytes": 76920,
+      "sha256": "aafb1761fa75270d9dc0193f33e163ce1ff622244371a04119a993f210094008"
+    },
+    {
+      "path": "coverage-html/z_7ac4a2cf9cf7419c_ssa_py.html",
+      "bytes": 1309271,
+      "sha256": "210d7c0ba4421c3c55ac9c58915a8b6e584484b3b47edb821cb3e611cca16987"
+    },
+    {
+      "path": "coverage-html/z_7ac4a2cf9cf7419c_tilelang_py.html",
+      "bytes": 156494,
+      "sha256": "9cba770d0f0ac64a57b7acbf5d2710bb5373898587436b86e5ab9cd22f9b38c2"
+    },
+    {
+      "path": "coverage-html/z_7ac4a2cf9cf7419c_triton_py.html",
+      "bytes": 160264,
+      "sha256": "399b8b27678bab98f9c18f35ab4da66430a43784d739d69d2fad975320ec60ef"
+    },
+    {
+      "path": "coverage-html/z_8929899950fd8d46___init___py.html",
+      "bytes": 49015,
+      "sha256": "4013849cf32c1c4a987db78767f3e1ecda94d87295477042b6f8410dcf5478ec"
+    },
+    {
+      "path": "coverage-html/z_8929899950fd8d46_access_py.html",
+      "bytes": 58036,
+      "sha256": "76d0d5ff4e480a7c8d8409c0447306754e06d1a20596eb9d7abd3149ed17f2a8"
+    },
+    {
+      "path": "coverage-html/z_8929899950fd8d46_debugger_py.html",
+      "bytes": 297727,
+      "sha256": "5027258de6d363f6dece41f215677371a7e7f787a6bd5ebffc164c1fd413e4bf"
+    },
+    {
+      "path": "coverage-html/z_8929899950fd8d46_expressions_py.html",
+      "bytes": 49323,
+      "sha256": "76c1a0d9b52885f1f5eb6e19ca4babfd2f6d37a150e9b6ac35263aaff36d1ee8"
+    },
+    {
+      "path": "coverage-html/z_8929899950fd8d46_failure_py.html",
+      "bytes": 82956,
+      "sha256": "8f9ca3c42ebf9817935e8d1ad52c7ad47b33e47e6e24482322b29e44aca3fd46"
+    },
+    {
+      "path": "coverage-html/z_8929899950fd8d46_localization_py.html",
+      "bytes": 199050,
+      "sha256": "16573a93642a6684c7bb22fba1b729faf7322251203d75bb29f9e7a124dacdf9"
+    },
+    {
+      "path": "coverage-html/z_8929899950fd8d46_memory_py.html",
+      "bytes": 77031,
+      "sha256": "5cbf0faf0648ce689b513e3e35488bbe6af23c84e7d01f23569c495ea2e56dd2"
+    },
+    {
+      "path": "coverage-html/z_8929899950fd8d46_runtime_py.html",
+      "bytes": 437313,
+      "sha256": "cee596a520b55788b4117377021f0d53bcd94636b15ee8f9d2429358c5fcc41c"
+    },
+    {
+      "path": "coverage-html/z_8929899950fd8d46_storage_py.html",
+      "bytes": 53938,
+      "sha256": "51bf20b9b94bdb47c308c21c4a15ac2299eb9eba2dc928812ea7c43e3336101c"
+    },
+    {
+      "path": "coverage-html/z_986b5054bea1d775___init___py.html",
+      "bytes": 11202,
+      "sha256": "66ba886a95db0b2c9fdc549febe240e5ca1a445c4cb31de95bdb6c77972c1741"
+    },
+    {
+      "path": "coverage-html/z_986b5054bea1d775_frozen_py.html",
+      "bytes": 19941,
+      "sha256": "0c757309ee39ea4ed7a483a32b5f3a7bbf7a2eb9f4c88e31ffa0129f85e1088e"
+    },
+    {
+      "path": "coverage-html/z_986b5054bea1d775_kernel_py.html",
+      "bytes": 154034,
+      "sha256": "710cf54130ca81a60a706f1ae879c3fb6092306c22d2adf229595c1bbbbd3014"
+    },
+    {
+      "path": "coverage-html/z_986b5054bea1d775_provenance_py.html",
+      "bytes": 160930,
+      "sha256": "e6f9691772431a2f7121498eb870315472534e3330d91467aa1efab01bd276ef"
+    },
+    {
+      "path": "coverage-html/z_986b5054bea1d775_ssa_py.html",
+      "bytes": 110005,
+      "sha256": "2b89d4c854536402c55868bae8b2a3b0357b3402ef3e8c4bc7f2965af623edad"
+    },
+    {
+      "path": "coverage-html/z_a8c3344f7e36d9e0___init___py.html",
+      "bytes": 35713,
+      "sha256": "409f84105e52efcc437989af580eef66a216b14ff13d1b6c9841ed57b7a3d917"
+    },
+    {
+      "path": "coverage-html/z_a8c3344f7e36d9e0_core_py.html",
+      "bytes": 50394,
+      "sha256": "c994f99aff91803ce30ee30c46fbeaf2d9b92ed30e806b54dea22acca8accc91"
+    },
+    {
+      "path": "coverage-html/z_a8c3344f7e36d9e0_cuda_py.html",
+      "bytes": 50419,
+      "sha256": "41e2041a2c76402ba01bcdd5a0247832fa05a285dc528c81b2c9219821a2a7f1"
+    },
+    {
+      "path": "coverage-html/z_a8c3344f7e36d9e0_registry_py.html",
+      "bytes": 19592,
+      "sha256": "207828019d173746dde1f6e3d053fd88db505d0a2f21e17cf0c188affdc51dcc"
+    },
+    {
+      "path": "coverage-html/z_a8c3344f7e36d9e0_tilelang_py.html",
+      "bytes": 36087,
+      "sha256": "6f0c68e44e1d3bff23c8bb797d38063b377838587e04f4dbbfce3cc77af5b915"
+    },
+    {
+      "path": "coverage-html/z_a8c3344f7e36d9e0_toolchain_py.html",
+      "bytes": 25342,
+      "sha256": "ad7551ffb5d72f89d95a66bf22668ad9c6348a0a7acb38f0856fe22833639ae8"
+    },
+    {
+      "path": "coverage-html/z_a8c3344f7e36d9e0_triton_py.html",
+      "bytes": 50146,
+      "sha256": "2733ae1b79fc0ca66546a40f4b835194de3c01e7a3492b00cf3664ddc1556a70"
+    },
+    {
+      "path": "coverage-html/z_ae109258bdb02488___init___py.html",
+      "bytes": 5223,
+      "sha256": "babcca2ca3ea9bc8035be4c0bb0822f5cc009a93195dabf9b8bd375354420a3a"
+    },
+    {
+      "path": "coverage-html/z_ae109258bdb02488_errors_py.html",
+      "bytes": 6216,
+      "sha256": "bf8c7c1468b158b061dba768ce4b6bff17c4c03168ec1c18038772ae8dc5140c"
+    },
+    {
+      "path": "coverage-html/z_ae109258bdb02488_layout_py.html",
+      "bytes": 129642,
+      "sha256": "4d5c155c26782adcf96e548b4087537c6c8aee4d04d10d09902da7907bd70821"
+    },
+    {
+      "path": "coverage-html/z_ae109258bdb02488_preparation_py.html",
+      "bytes": 24927,
+      "sha256": "5921a5a15ec6c53fb409b8a6a3027f0a214f064822baa36a2148df53ee77087c"
+    },
+    {
+      "path": "coverage-html/z_ae109258bdb02488_python_py.html",
+      "bytes": 605019,
+      "sha256": "3d36015313853fa80a2c234c02233c7a7eaaba0a4f6a7c7d504dce21ae7f57c5"
+    },
+    {
+      "path": "coverage-html/z_ae109258bdb02488_types_py.html",
+      "bytes": 149592,
+      "sha256": "49f1c3b73e61223ee11abfe765c0090a3b3bc483d5c6ab8f6b3fd9c512c0b47a"
+    },
+    {
+      "path": "coverage-html/z_e3fb515eb243242f___init___py.html",
+      "bytes": 12984,
+      "sha256": "48a0a39150002c1f4f92c98bcc601119820c482f9a783eb8af245004179936f8"
+    },
+    {
+      "path": "coverage-html/z_e3fb515eb243242f_base_py.html",
+      "bytes": 19018,
+      "sha256": "a8bd8d59bd7a556f7feb0c75850104f0ae82740fc6d7f036fdb9fabb287ff882"
+    },
+    {
+      "path": "coverage-html/z_e3fb515eb243242f_cuda_py.html",
+      "bytes": 61857,
+      "sha256": "a00cabd8c209e66a40abf682c8c8d212649892d080318ebbe8559b19ab581b6d"
+    },
+    {
+      "path": "coverage-html/z_e3fb515eb243242f_tilelang_py.html",
+      "bytes": 46328,
+      "sha256": "b61bdd1c0213d628492fe3cf1bfdaa81fcb9db96c017376bea876e440fb9a971"
+    },
+    {
+      "path": "coverage-html/z_e3fb515eb243242f_triton_py.html",
+      "bytes": 424147,
+      "sha256": "2275b292008878d53aaeab43763994bc558371dbf7ad95bad84ba1bba903e222"
+    },
+    {
+      "path": "coverage-html/z_f4de2b9ae40c3ecf___init___py.html",
+      "bytes": 14891,
+      "sha256": "8d94ca68c35f18fc2e0b647c133fafd18ec6642fb1e19e7c466279442047e474"
+    },
+    {
+      "path": "coverage-html/z_f4de2b9ae40c3ecf_aot_py.html",
+      "bytes": 12484,
+      "sha256": "b0ce3d84da8c2e14644d0edda5f5a728992eb54ee2ce75fef3ab5a55eb33dbb8"
+    },
+    {
+      "path": "coverage-html/z_f4de2b9ae40c3ecf_auto_tuner_py.html",
+      "bytes": 74632,
+      "sha256": "58e0c6b24bb9b90fec094769171da41f408982120dc72754680248dda35ed843"
+    },
+    {
+      "path": "coverage-html/z_f4de2b9ae40c3ecf_build_py.html",
+      "bytes": 72738,
+      "sha256": "3d6b635f9844464b71839d8cd906c641fcdaef67d960f27b8438e667fa4cf796"
+    },
+    {
+      "path": "coverage-html/z_f4de2b9ae40c3ecf_cudaifier_py.html",
+      "bytes": 16109,
+      "sha256": "277e86c725b4253d90a8969a8bd56bdb8b5b5f3bc3d82d9530b0a37e4863548a"
+    },
+    {
+      "path": "coverage-html/z_f4de2b9ae40c3ecf_debugging_py.html",
+      "bytes": 56141,
+      "sha256": "6aa0c1c7eeaf64614da7f79c3c42affe4aa662cda85bb8ab03f95e4e323f4857"
+    },
+    {
+      "path": "coverage-html/z_f4de2b9ae40c3ecf_dtype_py.html",
+      "bytes": 7560,
+      "sha256": "47212e8f7e3147c6a3f02395b849742abee16e4704969ef6f18d41cdacf7104a"
+    },
+    {
+      "path": "coverage-html/z_f4de2b9ae40c3ecf_eval_py.html",
+      "bytes": 49791,
+      "sha256": "344c15386ba411fea5d0929add2e17e5749b4b5d6627ada7b160700ea82a260c"
+    },
+    {
+      "path": "coverage-html/z_f4de2b9ae40c3ecf_language_py.html",
+      "bytes": 13896,
+      "sha256": "476de1b6ab204e764c905255c1420cc6bcc26494c82cdbbf29a1210764df97e3"
+    },
+    {
+      "path": "coverage-html/z_f4de2b9ae40c3ecf_make_py.html",
+      "bytes": 13728,
+      "sha256": "6ff9a3f5a8efeef253b5bfd3b0907d8269d50b5ca9e89452ff7d58111edfc069"
+    },
+    {
+      "path": "coverage-html/z_f4de2b9ae40c3ecf_naming_py.html",
+      "bytes": 16939,
+      "sha256": "e085458d8f95461d9b9e80c7d3d591a028cbf6d99a5f631410979223fd9e4b20"
+    },
+    {
+      "path": "coverage-html/z_f4de2b9ae40c3ecf_symbol_py.html",
+      "bytes": 87729,
+      "sha256": "b008a08d4341747d7f87250308b211edf74daca1cc30721b24f9601e3d5cf17e"
+    },
+    {
+      "path": "coverage-html/z_f4de2b9ae40c3ecf_tensor_py.html",
+      "bytes": 218764,
+      "sha256": "60c784263e927f852928352f8ae9adb540825a89da77cb77aeefe7a3ab7326d9"
+    },
+    {
+      "path": "coverage-html/z_f4de2b9ae40c3ecf_torchifier_py.html",
+      "bytes": 21062,
+      "sha256": "2375196bccf2156783eebfc8fdb991d4bd57cdb970fea7e1ea83dfa6f47bd3a1"
+    },
+    {
+      "path": "coverage-html/z_f4de2b9ae40c3ecf_utils_py.html",
+      "bytes": 7905,
+      "sha256": "2c8f233525db81631e934d9d767a42a2af60fe7f3651291cdac189050a7533eb"
+    },
+    {
+      "path": "coverage-html/z_f4de2b9ae40c3ecf_visualization_py.html",
+      "bytes": 125863,
+      "sha256": "e61483d9a4b7726e5770ec1bf24a66b023f894b23fb7eab626aef8a2ac0ef282"
+    },
+    {
+      "path": "coverage.xml",
+      "bytes": 433015,
+      "sha256": "fbd75a211a5256e5c798e07a1dd4408de6302abb0ed764e9790a096034b0d49f"
+    },
+    {
+      "path": "environment.stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "environment.stdout.log",
+      "bytes": 1004,
+      "sha256": "682ea1862b39ec6f98beb8c0f2074ef972ed8a495c7e33096c04097a93b3d764"
+    },
+    {
+      "path": "junit.xml",
+      "bytes": 119114,
+      "sha256": "cb6824b5c68ae1ae91525e9182d82d815eaff8c940e53c006a6d3753b729d275"
+    },
+    {
+      "path": "nvidia-smi.stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "nvidia-smi.stdout.log",
+      "bytes": 54,
+      "sha256": "771ef0404d0da497e135edd0d1fa56773141b94fd22133ea98ec8c1d5ba8d0a8"
+    },
+    {
+      "path": "validation.stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "validation.stdout.log",
+      "bytes": 98880,
+      "sha256": "c7b23294f32bbff272d883984883ae7504cb767df7f898a8de73b58cc651e21b"
+    }
+  ]
+}

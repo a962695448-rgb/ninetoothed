@@ -1,0 +1,4 @@
+!*.log
+!coverage.xml
+cpu/*/mapped-cases/
+cpu/*/checkpoint-memory-cases/

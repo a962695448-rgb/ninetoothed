@@ -1,0 +1,81 @@
+"""Run one frozen GPU validation and package results before the paid lease ends."""
+from datetime import datetime, timezone
+from pathlib import Path
+import hashlib
+import json
+import os
+import signal
+import subprocess
+import sys
+import zipfile
+
+root = Path('/root/infinitensor-2026')
+repo = root/'ninetoothed-a100-20260913'
+tools = root/'tools/nine-memory-final-20260914'
+run = root/'runs/nine-memory-final-20260914'
+expected = 'ed332733db28dbf16de06f166b16766760148958'
+deadline = datetime.fromisoformat('2026-09-13T18:03:00+00:00')
+run.mkdir(parents=True, exist_ok=False)
+state = {'status':'STARTING','source_commit':expected,'pid':os.getpid(),'steps':[],
+         'started_at_utc':datetime.now(timezone.utc).isoformat(),'deadline_utc':deadline.isoformat()}
+
+def save():
+    temporary=run/'sequence.json.tmp'
+    temporary.write_text(json.dumps(state,indent=2)+'\n')
+    temporary.replace(run/'sequence.json')
+
+def package():
+    files=[run/'sequence.json']
+    for step in state['steps']:
+        if 'exit_code' in step:
+            files.extend(p for p in (run/step['name']).rglob('*') if p.is_file())
+            files.append(run/(step['name']+'.controller.log'))
+    target=root/'runs/nine-memory-final-20260914-completed.zip'
+    temporary=target.with_suffix('.zip.tmp')
+    manifest={}
+    with zipfile.ZipFile(temporary,'w',zipfile.ZIP_DEFLATED) as archive:
+        for path in sorted(set(files)):
+            name=path.relative_to(run).as_posix();data=path.read_bytes()
+            archive.writestr(name,data)
+            manifest[name]={'bytes':len(data),'sha256':hashlib.sha256(data).hexdigest()}
+        archive.writestr('download-manifest.json',json.dumps(manifest,indent=2)+'\n')
+    temporary.replace(target)
+    download={'path':str(target),'bytes':target.stat().st_size,'sha256':hashlib.sha256(target.read_bytes()).hexdigest(),'files':len(manifest)}
+    # Keep the ZIP hash outside the ZIP so the receipt cannot refer to an earlier package.
+    (run/'download.json').write_text(json.dumps(download,indent=2)+'\n')
+
+save()
+try:
+    assert subprocess.check_output(['git','rev-parse','HEAD'],cwd=repo,text=True).strip()==expected
+    python=Path(sys.executable)
+    stages=[
+        ('gpu-differential',[python,tools/'a100_final_runner.py','--mode','gpu-report','--repo',repo,'--out',run/'gpu-differential','--expected-sha',expected]),
+        ('cuda-dot',[python,tools/'cuda_dot_probe.py','--repo',repo,'--out',run/'cuda-dot']),
+        ('full',[python,tools/'a100_final_runner.py','--mode','full','--repo',repo,'--out',run/'full','--expected-sha',expected]),
+    ]
+    for name,argv in stages:
+        step={'name':name,'argv':list(map(str,argv)),'started_at_utc':datetime.now(timezone.utc).isoformat()}
+        state.update(status='RUNNING',active_stage=name)
+        state['steps'].append(step);save()
+        with (run/(name+'.controller.log')).open('xb') as log:
+            child=subprocess.Popen(step['argv'],cwd=repo,stdout=log,stderr=subprocess.STDOUT,stdin=subprocess.DEVNULL,start_new_session=True)
+            step['pid']=child.pid;save()
+            try:
+                step['exit_code']=child.wait(timeout=max(1,(deadline-datetime.now(timezone.utc)).total_seconds()))
+            except subprocess.TimeoutExpired:
+                step['lease_deadline_interrupt']=True
+                os.killpg(child.pid,signal.SIGINT)
+                try: child.wait(timeout=30)
+                except subprocess.TimeoutExpired:
+                    os.killpg(child.pid,signal.SIGKILL);child.wait()
+                step['exit_code']=child.returncode
+        step['finished_at_utc']=datetime.now(timezone.utc).isoformat();save();package()
+        if step['exit_code'] != 0:
+            raise RuntimeError('Stage '+name+' did not pass; preserve its original evidence.')
+    state['status']='PASS'
+except Exception as error:
+    state.update(status='FAIL',error=str(error))
+finally:
+    state['finished_at_utc']=datetime.now(timezone.utc).isoformat();save();package()
+print(json.dumps(state),flush=True)
+raise SystemExit(0 if state['status']=='PASS' else 1)

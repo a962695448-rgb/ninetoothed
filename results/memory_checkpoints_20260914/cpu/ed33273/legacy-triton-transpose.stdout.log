@@ -1,0 +1,4 @@
+First bad pass (saved boundary): diagnostic.inject_transpose_fault
+Operation localization: {'operation': {'program_id': [0, 0, 0], 'location': 'entry:3:mem.store', 'opcode': 'mem.store', 'result_name': '%3', 'iteration': [], 'lane': [0, 1], 'component': 'input'}, 'reference': 'previous', 'traces_aligned': False, 'basis': 'retained_boundary', 'reference_location': 'entry:3:mem.store'}
+Different outputs: ('out',)
+First different operation: None

@@ -1,0 +1,289 @@
+{
+  "source_commit": "3312a796957f8884f5071a0ccf526743377a7c0d",
+  "baseline_commit": "3757a1d83df78693a679020e2610d504f83ef43d",
+  "baseline_sha256": "cfc4c0da94b1cc35f8d4f9fea61001e8e29445fd1b65f4bc6a614cf36b5b61c7",
+  "candidate_sha256": "b59513f3549d72648b62364095903f9cf2078439476a7e525bf4664a49d5717e",
+  "python": "3.12.3 (main, Jun 19 2026, 12:46:00) [GCC 13.3.0]",
+  "platform": "Linux x86_64",
+  "started_at_utc": "2026-09-13T17:07:28.853467+00:00",
+  "records": [
+    {
+      "name": "result-mapping",
+      "milliseconds": {
+        "before": [
+          10.320397,
+          9.944622,
+          9.911791,
+          9.734664,
+          10.016047,
+          9.942327,
+          10.034623
+        ],
+        "after": [
+          3.561935,
+          3.076347,
+          3.156013,
+          3.096099,
+          3.164369,
+          3.050893,
+          3.092813
+        ]
+      },
+      "median_ms": {
+        "before": 9.944622,
+        "after": 3.096099
+      },
+      "before_over_after": 3.211984500495624,
+      "diagnostics_equal": true,
+      "operations_and_mappings": 256
+    },
+    {
+      "name": "early-observation",
+      "milliseconds": {
+        "before": [
+          0.47998,
+          0.53282,
+          0.499908,
+          0.531507,
+          0.561524,
+          0.44308,
+          0.414886
+        ],
+        "after": [
+          0.169311,
+          0.15832,
+          0.16357,
+          0.158831,
+          0.165163,
+          0.157108,
+          0.158009
+        ]
+      },
+      "median_ms": {
+        "before": 0.499908,
+        "after": 0.158831
+      },
+      "before_over_after": 3.1474208435381,
+      "diagnostics_equal": true,
+      "operations": 256,
+      "observation_index": 8
+    },
+    {
+      "name": "last-observation",
+      "milliseconds": {
+        "before": [
+          0.595008,
+          0.434894,
+          0.467115,
+          0.461405,
+          0.473418,
+          0.420417,
+          0.440806
+        ],
+        "after": [
+          0.50078,
+          0.49594,
+          0.54817,
+          0.44287,
+          0.549842,
+          0.625225,
+          0.545454
+        ]
+      },
+      "median_ms": {
+        "before": 0.461405,
+        "after": 0.545454
+      },
+      "before_over_after": 0.8459100125766793,
+      "diagnostics_equal": true,
+      "operations": 256,
+      "observation_index": 255
+    },
+    {
+      "name": "result-mapping",
+      "milliseconds": {
+        "before": [
+          138.439721,
+          140.692452,
+          139.095594,
+          139.355448,
+          138.924971,
+          138.441274,
+          137.545846
+        ],
+        "after": [
+          14.001763,
+          13.555467,
+          14.188187,
+          13.489532,
+          14.344533,
+          13.862089,
+          14.966041
+        ]
+      },
+      "median_ms": {
+        "before": 138.924971,
+        "after": 14.001763
+      },
+      "before_over_after": 9.921962755690123,
+      "diagnostics_equal": true,
+      "operations_and_mappings": 1024
+    },
+    {
+      "name": "early-observation",
+      "milliseconds": {
+        "before": [
+          1.969544,
+          1.902757,
+          1.852722,
+          1.947031,
+          26.041166,
+          2.034437,
+          1.867059
+        ],
+        "after": [
+          0.5909,
+          0.611219,
+          0.589848,
+          0.567656,
+          0.669489,
+          0.645633,
+          0.594366
+        ]
+      },
+      "median_ms": {
+        "before": 1.947031,
+        "after": 0.594366
+      },
+      "before_over_after": 3.2758115369990883,
+      "diagnostics_equal": true,
+      "operations": 1024,
+      "observation_index": 8
+    },
+    {
+      "name": "last-observation",
+      "milliseconds": {
+        "before": [
+          1.875285,
+          1.83051,
+          1.853183,
+          1.850237,
+          1.818618,
+          1.83592,
+          1.91481
+        ],
+        "after": [
+          1.980484,
+          2.005692,
+          2.033445,
+          2.04629,
+          2.20501,
+          1.913908,
+          2.356938
+        ]
+      },
+      "median_ms": {
+        "before": 1.850237,
+        "after": 2.033445
+      },
+      "before_over_after": 0.9099026528870955,
+      "diagnostics_equal": true,
+      "operations": 1024,
+      "observation_index": 1023
+    },
+    {
+      "name": "result-mapping",
+      "milliseconds": {
+        "before": [
+          2111.283547,
+          2152.542871,
+          2159.629245,
+          2102.887046,
+          2135.730347,
+          2136.827777,
+          2144.409801
+        ],
+        "after": [
+          101.779364,
+          60.355026,
+          60.486895,
+          101.048569,
+          60.807682,
+          102.003968,
+          61.182583
+        ]
+      },
+      "median_ms": {
+        "before": 2136.827777,
+        "after": 61.182583
+      },
+      "before_over_after": 34.92542603178424,
+      "diagnostics_equal": true,
+      "operations_and_mappings": 4096
+    },
+    {
+      "name": "early-observation",
+      "milliseconds": {
+        "before": [
+          9.99132,
+          47.886397,
+          10.56618,
+          10.006359,
+          9.741567,
+          10.02269,
+          10.341454
+        ],
+        "after": [
+          2.618744,
+          2.467597,
+          2.720607,
+          2.507464,
+          2.647629,
+          2.647038,
+          2.640275
+        ]
+      },
+      "median_ms": {
+        "before": 10.02269,
+        "after": 2.640275
+      },
+      "before_over_after": 3.7960780600505633,
+      "diagnostics_equal": true,
+      "operations": 4096,
+      "observation_index": 8
+    },
+    {
+      "name": "last-observation",
+      "milliseconds": {
+        "before": [
+          10.005277,
+          9.809114,
+          9.762026,
+          9.723172,
+          10.246975,
+          10.353287,
+          48.818254
+        ],
+        "after": [
+          10.782681,
+          10.778192,
+          48.485753,
+          11.824636,
+          10.555589,
+          10.2597,
+          10.792439
+        ]
+      },
+      "median_ms": {
+        "before": 10.005277,
+        "after": 10.782681
+      },
+      "before_over_after": 0.9279025318471352,
+      "diagnostics_equal": true,
+      "operations": 4096,
+      "observation_index": 4095
+    }
+  ],
+  "scope": "CPU diagnostic analysis microbenchmarks only; trace construction, code generation and GPU kernels are excluded. Seven alternating pairs after one warm-up per implementation. No universal speedup claim.",
+  "finished_at_utc": "2026-09-13T17:07:49.929772+00:00"
+}

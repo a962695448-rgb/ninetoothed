@@ -1,0 +1,64 @@
+{
+  "status": "PASS",
+  "source_commit": "ed332733db28dbf16de06f166b16766760148958",
+  "pid": 3995,
+  "steps": [
+    {
+      "name": "gpu-differential",
+      "argv": [
+        "/root/infinitensor-2026/.venv/bin/python",
+        "/root/infinitensor-2026/tools/nine-memory-final-20260914/a100_final_runner.py",
+        "--mode",
+        "gpu-report",
+        "--repo",
+        "/root/infinitensor-2026/ninetoothed-a100-20260913",
+        "--out",
+        "/root/infinitensor-2026/runs/nine-memory-final-20260914/gpu-differential",
+        "--expected-sha",
+        "ed332733db28dbf16de06f166b16766760148958"
+      ],
+      "started_at_utc": "2026-09-13T17:35:43.596511+00:00",
+      "pid": 3997,
+      "exit_code": 0,
+      "finished_at_utc": "2026-09-13T17:35:48.667864+00:00"
+    },
+    {
+      "name": "cuda-dot",
+      "argv": [
+        "/root/infinitensor-2026/.venv/bin/python",
+        "/root/infinitensor-2026/tools/nine-memory-final-20260914/cuda_dot_probe.py",
+        "--repo",
+        "/root/infinitensor-2026/ninetoothed-a100-20260913",
+        "--out",
+        "/root/infinitensor-2026/runs/nine-memory-final-20260914/cuda-dot"
+      ],
+      "started_at_utc": "2026-09-13T17:35:48.671539+00:00",
+      "pid": 4018,
+      "exit_code": 0,
+      "finished_at_utc": "2026-09-13T17:35:52.190464+00:00"
+    },
+    {
+      "name": "full",
+      "argv": [
+        "/root/infinitensor-2026/.venv/bin/python",
+        "/root/infinitensor-2026/tools/nine-memory-final-20260914/a100_final_runner.py",
+        "--mode",
+        "full",
+        "--repo",
+        "/root/infinitensor-2026/ninetoothed-a100-20260913",
+        "--out",
+        "/root/infinitensor-2026/runs/nine-memory-final-20260914/full",
+        "--expected-sha",
+        "ed332733db28dbf16de06f166b16766760148958"
+      ],
+      "started_at_utc": "2026-09-13T17:35:52.274516+00:00",
+      "pid": 4067,
+      "exit_code": 0,
+      "finished_at_utc": "2026-09-13T17:45:27.168948+00:00"
+    }
+  ],
+  "started_at_utc": "2026-09-13T17:35:43.594986+00:00",
+  "deadline_utc": "2026-09-13T18:03:00+00:00",
+  "active_stage": "full",
+  "finished_at_utc": "2026-09-13T17:45:27.371477+00:00"
+}
