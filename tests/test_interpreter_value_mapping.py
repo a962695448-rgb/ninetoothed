@@ -259,7 +259,7 @@ def test_actual_lowered_dot_and_transpose_find_the_changed_instruction(
 
 @pytest.mark.parametrize("backend", ("triton", "cuda"))
 @pytest.mark.parametrize("wrong", (True, False), ids=("fault", "repair"))
-def test_actual_decomposition_checks_completed_tile_results(
+def test_actual_decomposition_checks_tile_and_internal_results(
     backend, wrong, real_linalg_case, monkeypatch
 ):
     kind, kernel, pipeline, context, inputs, _expected, options = _real_pipeline_case(
@@ -308,7 +308,7 @@ def test_actual_decomposition_checks_completed_tile_results(
     if wrong:
         assert comparison.localization.basis == "mapped_result"
         assert comparison.localization.operation.opcode == (
-            "scf.for" if kind == "dot" else "tensor.extract"
+            "arith.add" if kind == "dot" else "tensor.extract"
         )
         assert comparison.localization.operation.lane is not None
         assert comparison.dependency_slice.events

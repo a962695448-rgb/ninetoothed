@@ -258,21 +258,23 @@ def test_comparison_preserves_write_then_read_through_exact_aliases():
 
 
 @pytest.mark.parametrize("partial", (False, True))
-def test_comparison_and_export_reject_distinct_overlapping_views(tmp_path, partial):
+def test_comparison_and_export_preserve_distinct_overlapping_views(tmp_path, partial):
     kernel = _kernel()
     storage = np.arange(8, dtype=np.float32)
     inputs = {"x": storage[:7], "out": storage[1:] if partial else storage[:7]}
     assert inputs["x"] is not inputs["out"]
 
-    with pytest.raises(ValueError, match="overlapping views.*x.*out"):
-        compare_programs(kernel.program, kernel.program, inputs, tensors=kernel.tensors)
-
-    with pytest.raises(ValueError, match="overlapping views.*x.*out"):
-        export_reproducer(
-            tmp_path / "overlap", kernel.program, inputs, tensors=kernel.tensors
-        )
-
-    assert not (tmp_path / "overlap").exists()
+    report = compare_programs(
+        kernel.program, kernel.program, inputs, tensors=kernel.tensors
+    )
+    assert report.equal
+    directory = export_reproducer(
+        tmp_path / "overlap", kernel.program, inputs, tensors=kernel.tensors
+    )
+    program, restored, options = load_reproducer(directory)
+    assert restored["x"] is not restored["out"]
+    assert np.shares_memory(restored["x"], restored["out"])
+    assert compare_programs(program, kernel.program, restored, **options).equal
     np.testing.assert_array_equal(storage, np.arange(8, dtype=np.float32))
 
 

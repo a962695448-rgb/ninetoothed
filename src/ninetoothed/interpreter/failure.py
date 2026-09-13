@@ -10,7 +10,7 @@ import numpy as np
 
 from ninetoothed.ir import ir_to_dict, ssa
 
-from .debugger import compare_programs, export_reproducer, load_reproducer
+from .debugger import _compare_programs, export_reproducer, load_reproducer
 from .runtime import InterpretationError
 
 
@@ -62,7 +62,8 @@ def export_failure(
         package_version = None
 
     metadata = {
-        "schema": 1,
+        "schema": 2,
+        "diagnostics_version": 2,
         "kind": "passes" if previous is not None else "comparison",
         "phase": phase,
         "replayable": replayable,
@@ -98,7 +99,21 @@ def export_failure(
     return directory
 
 
-def _verify_comparison(actual, expected):
+def _diagnostic_dict(value, expected, diagnostics_version):
+    observed = None if value is None else json.loads(json.dumps(asdict(value)))
+
+    if (
+        diagnostics_version == 1
+        and isinstance(observed, dict)
+        and isinstance(expected, dict)
+    ):
+        for key in ("memory_dependencies", "projection"):
+            if key not in expected:
+                observed.pop(key, None)
+    return observed
+
+
+def _verify_comparison(actual, expected, diagnostics_version):
     if (
         actual.equal != expected["equal"]
         or list(actual.output_differences) != expected["output_differences"]
@@ -117,11 +132,15 @@ def _verify_comparison(actual, expected):
     ):
         # Older bundles predate result mappings and dependency slices.
         if name not in expected:
+            if diagnostics_version >= 2:
+                raise RuntimeError(
+                    "The saved comparison is missing required diagnostic fields."
+                )
+
             continue
 
-        observed = getattr(actual, name)
-        observed = (
-            None if observed is None else json.loads(json.dumps(asdict(observed)))
+        observed = _diagnostic_dict(
+            getattr(actual, name), expected[name], diagnostics_version
         )
 
         if observed != expected[name]:
@@ -157,8 +176,18 @@ def replay_failure(directory):
 
     metadata = json.loads((directory / "failure.json").read_text(encoding="utf-8"))
 
-    if metadata.get("schema") != 1:
+    schema = metadata.get("schema")
+
+    if type(schema) is not int or schema not in {1, 2}:
         raise ValueError("Unsupported differential failure schema.")
+
+    diagnostics_version = metadata.get("diagnostics_version", 1)
+
+    if type(diagnostics_version) is not int or diagnostics_version not in {1, 2}:
+        raise ValueError("Unsupported differential diagnostic version.")
+
+    if schema == 2 and metadata.get("diagnostics_version") != 2:
+        raise ValueError("A version-two failure requires its diagnostic version.")
 
     if not metadata["replayable"]:
         raise ValueError(
@@ -167,11 +196,15 @@ def replay_failure(directory):
 
     reference, inputs, options = load_reproducer(directory / "reference")
     candidate, _, _ = load_reproducer(directory / "candidate")
-    options.update(rtol=metadata["rtol"], atol=metadata["atol"])
+    options.update(
+        rtol=metadata["rtol"],
+        atol=metadata["atol"],
+        diagnostics_version=diagnostics_version,
+    )
     expected_error = metadata["error"]
 
     try:
-        comparison = compare_programs(reference, candidate, inputs, **options)
+        comparison = _compare_programs(reference, candidate, inputs, **options)
     except (InterpretationError, ValueError, TypeError) as exc:
         actual_error = {"type": type(exc).__name__, "message": str(exc)}
 
@@ -193,9 +226,9 @@ def replay_failure(directory):
 
     if metadata["kind"] == "passes":
         previous, _, _ = load_reproducer(directory / "previous")
-        adjacent = compare_programs(previous, candidate, inputs, **options)
-        _verify_comparison(adjacent, report["adjacent_difference"])
-        _verify_comparison(comparison, report["difference"])
+        adjacent = _compare_programs(previous, candidate, inputs, **options)
+        _verify_comparison(adjacent, report["adjacent_difference"], diagnostics_version)
+        _verify_comparison(comparison, report["difference"], diagnostics_version)
         selected = next(
             (
                 (name, item)
@@ -215,10 +248,13 @@ def replay_failure(directory):
             ("localization", location),
             ("dependency_slice", dependencies),
         ):
-            if key in report:
-                actual = (
-                    None if value is None else json.loads(json.dumps(asdict(value)))
+            if diagnostics_version >= 2 and key not in report:
+                raise RuntimeError(
+                    "The saved pass is missing required diagnostic fields."
                 )
+
+            if key in report:
+                actual = _diagnostic_dict(value, report[key], diagnostics_version)
 
                 if actual != report[key]:
                     raise RuntimeError(
@@ -229,7 +265,7 @@ def replay_failure(directory):
         print(f"Operation localization: {report['localization']}")
         displayed = comparison if not comparison.equal else adjacent
     else:
-        _verify_comparison(comparison, report)
+        _verify_comparison(comparison, report, diagnostics_version)
         displayed = comparison
 
     if displayed.equal:

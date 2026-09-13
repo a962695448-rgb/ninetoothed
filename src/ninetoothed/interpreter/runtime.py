@@ -13,6 +13,7 @@ from ninetoothed.ir import ssa
 from ninetoothed.ir.provenance import operation_locations
 from ninetoothed.naming import is_next_power_of_2, remove_prefixes
 
+from .access import MemoryAccess, MemoryRecorder
 from .expressions import BINARY, UNARY, evaluate, numpy_dtype, shape_value
 from .memory import Pointer, TensorRef, materialize
 
@@ -86,6 +87,8 @@ class TraceEvent:
     inputs: dict | None = None
     mask: dict | None = None
     lane: tuple | None = None
+    memory: tuple[MemoryAccess, ...] | None = None
+    sequence: int | None = None
 
 
 @dataclass(frozen=True)
@@ -303,6 +306,12 @@ class _Execution:
         self.callback = callback
         self.handlers = dict(handlers or {})
         self.events = []
+        self.sequence = 0
+        self.memory = (
+            MemoryRecorder({value.name: inputs[value.name] for value in program.inputs})
+            if trace or callback is not None
+            else None
+        )
         self.program_id = (0, 0, 0)
         self.iteration = ()
         self.location = "entry"
@@ -538,7 +547,7 @@ class _Execution:
                 actual = self.inputs[value.name]
 
                 if isinstance(actual, np.ndarray) and value.type.kind == "pointer":
-                    env[value.name] = Pointer(actual)
+                    env[value.name] = Pointer(actual, observer=self.memory)
                 elif isinstance(actual, np.ndarray) and (
                     value.type.kind == "tensor"
                     or value.name in {output.name for output in self.program.outputs}
@@ -547,7 +556,11 @@ class _Execution:
                     shape = self.shapes.get(value.name, ())
                     local = _local_program_index(shape, self.master_shape, flat_index)
                     env[value.name] = TensorRef(
-                        actual, spec, self.symbols, outer_index=local
+                        actual,
+                        spec,
+                        self.symbols,
+                        outer_index=local,
+                        observer=self.memory,
                     )
                 else:
                     env[value.name] = np.asarray(
@@ -597,15 +610,31 @@ class _Execution:
             self.location = location
 
             try:
-                input_snapshots, mask_snapshot = self.trace_inputs(op, env)
+                if self.memory is None:
+                    input_snapshots, mask_snapshot = None, None
+                else:
+                    with self.memory.paused():
+                        input_snapshots, mask_snapshot = self.trace_inputs(op, env)
 
                 if op.opcode == "scf.yield":
                     values = tuple(env[name] for name in op.operands)
-                    self.record(op, env, location, input_snapshots, mask_snapshot)
+                    self.record(op, env, location, input_snapshots, mask_snapshot, ())
 
                     return values
 
-                values = self.operation(op, env, location)
+                if self.memory is None:
+                    accesses = None
+                    values = self.operation(op, env, location)
+                elif self.event_enabled(op):
+                    with self.memory.capture() as captured:
+                        values = self.operation(op, env, location)
+
+                    accesses = tuple(captured)
+                else:
+                    with self.memory.paused():
+                        values = self.operation(op, env, location)
+
+                    accesses = None
 
                 if len(op.results) == 1:
                     values = (values,)
@@ -625,7 +654,7 @@ class _Execution:
 
                     env[result.name] = value
 
-                self.record(op, env, location, input_snapshots, mask_snapshot)
+                self.record(op, env, location, input_snapshots, mask_snapshot, accesses)
             except InterpretationError:
                 raise
             except Exception as exc:
@@ -713,10 +742,25 @@ class _Execution:
             mask = _snapshot(np.asarray(valid, dtype=bool))
         return snapshots, mask
 
-    def record(self, op, env, location, input_snapshots, mask_snapshot):
+    def record(self, op, env, location, input_snapshots, mask_snapshot, accesses):
+        if self.memory is None:
+            return
+
+        sequence = self.sequence
+        self.sequence += 1
+
         if not self.event_enabled(op):
             return
 
+        # Region execution can leave a parent capture active while we snapshot.
+        with self.memory.paused():
+            self._record(
+                op, env, location, input_snapshots, mask_snapshot, accesses, sequence
+            )
+
+    def _record(
+        self, op, env, location, input_snapshots, mask_snapshot, accesses, sequence
+    ):
         values = {
             result.name: _snapshot(
                 env[result.name], reference_only=isinstance(env[result.name], TensorRef)
@@ -761,6 +805,8 @@ class _Execution:
             input_snapshots,
             mask_snapshot,
             self.lane,
+            accesses,
+            sequence,
         )
 
         if self.tracing:
@@ -777,6 +823,8 @@ class _Execution:
         args = tuple(env[name] for name in op.operands)
 
         if code in self.handlers:
+            if self.memory is not None:
+                self.memory.unknown()
             return self.handlers[code](op, tuple(materialize(value) for value in args))
 
         if code == "arith.constant":
@@ -834,7 +882,7 @@ class _Execution:
 
             if not isinstance(target, TensorRef):
                 raise ValueError("Operation `data_ptr` requires a source tensor.")
-            return Pointer(target.array)
+            return Pointer(target.array, observer=target.observer)
 
         if code == "mem.load":
             pointer = args[0]
@@ -894,6 +942,9 @@ class _Execution:
             if isinstance(args[0], TensorRef):
                 if op.attrs.get("source"):
                     self._check_source_indices(args[0].array, indices)
+
+                    if self.memory is not None:
+                        self.memory.source("read", args[0].array, indices)
 
                     return args[0].array[indices]
                 return args[0].extract(indices)
@@ -1133,6 +1184,9 @@ class _Execution:
         if bool(mask):
             self._check_source_indices(target.array, indices)
             target.array[indices] = value
+
+            if self.memory is not None:
+                self.memory.source("write", target.array, indices)
 
     @staticmethod
     def _subscript(text, env):

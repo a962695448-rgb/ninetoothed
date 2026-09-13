@@ -1102,13 +1102,20 @@ def _decompose_linalg_block(
                     recursive=True,
                 )
             )
-            # Compare the completed K-loop result, not each partial accumulator.
+            # Complete outputs use lane equality. Inner checkpoints instead use
+            # independent formulas over the original matmul's captured inputs.
 
             if (
                 matmul.results[0].type.kind == "tensor"
                 and matmul.results[0].type.dtype == operations[-2].results[0].type.dtype
             ):
                 provenance.map_result(matmul, operations[-2], projection="lane")
+
+                for target, projection in zip(
+                    operations[-2].regions[0].operations[:4],
+                    ("matmul_lhs", "matmul_rhs", "matmul_term", "matmul_prefix"),
+                ):
+                    provenance.map_result(matmul, target, projection=projection)
 
             temp_index = _next_temp_index(existing_names)
             continue

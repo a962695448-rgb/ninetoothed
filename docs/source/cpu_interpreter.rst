@@ -434,6 +434,15 @@ SSA types. ``projection="lane"`` compares a reference numeric tile with the
 candidate's executed scalar lane. The actual linalg decomposition declares
 this mapping for the completed matmul K-loop result and transpose extract;
 partial accumulators are not compared with the final matrix result.
+The same pass additionally declares ``matmul_lhs``, ``matmul_rhs``,
+``matmul_term`` and ``matmul_prefix`` checkpoints inside its scalar K loop.
+Their references come from the original matmul's captured input tiles:
+``A[row, k]``, ``B[k, column]``, their product, and the prefix accumulated from
+zero with the declared scalar casts. They never use a candidate intermediate
+as the reference. Every active lane must cover the original K domain exactly
+once in order; changed loop coverage yields a diagnostic and retains the
+completed-result comparison. These formulas do not assert equivalence for
+arbitrary reassociation, split-K or fused floating-point arithmetic.
 Mixed-dtype lowering remains available: where the original result and generated
 accumulator have different dtypes, this optional equality is not declared.
 Omitting an unrepresentable debug contract does not change the generated SSA.
@@ -450,7 +459,8 @@ Unknown, stale and unaligned mappings do not acquire guessed correspondences.
 ``localization`` selects the earliest candidate execution event among valid
 full-trace, prefix, retained-consumer and mapped-result observations.
 Its ``basis="mapped_result"`` names a producer where a declared equality
-fails. It does not prove that this producer uniquely caused the error; for a
+fails; ``projection`` identifies the equality or input-derived checkpoint.
+It does not prove that this producer uniquely caused the error; for a
 split operation the mapping can name the group's completed result, while an
 unmapped internal instruction remains unresolved. Output equality remains
 the pass success condition, so dead or cancelled internal changes do not by
@@ -461,13 +471,35 @@ executed SSA producers, loop-carried values, selected yields and control
 operands. Each event retains its trace index, program ID, iteration and lane.
 The slice is a value-dependency explanation, not a minimal reproducer or a set
 of independently faulty operations. Its ``boundaries`` explicitly identifies
-memory/alias history that was not reconstructed and any unresolved values.
+unresolved values, incomplete traces, unknown handler effects and memory
+ordering that cannot be established. ``memory_dependencies`` links each read
+to the last observed same-program write of the intersecting byte ranges.
 ``mapping_issues`` explains unavailable correspondences.
+
+``TraceEvent.memory`` records actual checked reads and writes with stable
+storage names and relative half-open byte intervals. It never contains process
+addresses. Snapshot/watch evaluation is excluded from this recording; scalar
+tensor extraction reads only its selected logical coordinates. Masks exclude
+inactive addresses before coordinate conversion, including large unsigned
+offsets. Positive, negative and zero strides are represented by actual bytes.
+``TraceEvent.sequence`` detects missing or filtered events. Cross-program
+dependencies and overlapping write lanes remain explicit boundaries: serial
+CPU execution is not a GPU happens-before or race-freedom proof. No memory
+recorder is allocated when tracing and callbacks are both disabled.
+
+Mapping analysis indexes each trace once by producer location. Dependency
+analysis stops at the selected observation because later events cannot supply
+its inputs. Numeric contents, ordering, alignment checks and tolerances remain
+part of the diagnosis; an index never substitutes for these checks.
 
 Automatic failure bundles include these observations and dependencies. Replay
 checks them, including the pass-level selected location; legacy bundles without
-the additional fields remain readable. See the CPU tests in
-``tests/test_interpreter_value_mapping.py`` and the dated acceptance reports for
+the additional fields replay with their original diagnostic semantics. New
+failure schema-2 bundles require ``diagnostics_version=2`` and their recorded
+memory/projection fields; removing those fields is an error. See the CPU tests in
+``tests/test_interpreter_value_mapping.py``,
+``tests/test_interpreter_memory_dependencies.py``,
+``tests/test_interpreter_matmul_checkpoints.py`` and the dated acceptance reports for
 verified scope. These checks do not extend the existing GPU race/alias model.
 
 Replay bundles
@@ -512,13 +544,19 @@ storage. ``load_reproducer`` loads JSON and NumPy data with
 ``allow_pickle=False``. Existing bundle files are never overwritten.
 The supplied case is preserved; automatic shape/operation minimization is not
 implemented. Multiple input names bound to the same array object retain that
-alias relationship in differential copies and loaded bundles. Overlapping
-distinct NumPy views are rejected for differential
-copying/export because their shared-storage relationship is not serialized.
+alias relationship in differential copies and loaded bundles. Distinct
+overlapping numeric views also preserve their shared storage, individual
+strides, dtypes and write permissions. Such cases use program-bundle schema 2:
+numeric byte buffers plus checked view offsets. Only bytes represented by
+the supplied views are copied; allocation gaps are zero-filled. Loading checks
+every accessible byte range before creating a view and rejects object dtypes.
+This preserves CPU view semantics without relaxing the scalar decomposition's
+independent-output restriction or asserting GPU race freedom.
 
 Replay JSON preserves operation origins and the provenance catalog/history.
 Legacy schema-1 bundles without origins or provenance metadata remain readable;
 missing origins default to empty rather than inventing a transformation history.
+Ordinary independent-input bundles continue to use program-bundle schema 1.
 
 Current boundaries
 ------------------

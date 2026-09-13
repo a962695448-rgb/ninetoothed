@@ -1,6 +1,6 @@
 """Checked NumPy storage and arranged tensor views for the SSA interpreter."""
 
-from dataclasses import dataclass, replace
+from dataclasses import dataclass, field, replace
 
 import numpy as np
 
@@ -13,6 +13,7 @@ class Pointer:
 
     array: np.ndarray
     offset: object = 0
+    observer: object | None = field(default=None, compare=False, repr=False)
 
     def shift(self, offset):
         return replace(self, offset=np.asarray(self.offset) + offset)
@@ -40,12 +41,18 @@ class Pointer:
         # Do not evaluate even a NumPy index for a masked-out lane.
         result[mask] = self.array.reshape(-1)[offsets[mask]]
 
+        if self.observer is not None:
+            self.observer.access("read", self.array, (offsets,), mask, linear=True)
+
         return result
 
     def write(self, value, mask=True):
         offsets, mask = self._indices(mask)
         value = np.broadcast_to(np.asarray(value), offsets.shape)
         self.array.reshape(-1)[offsets[mask]] = value[mask]
+
+        if self.observer is not None:
+            self.observer.access("write", self.array, (offsets,), mask, linear=True)
 
 
 @dataclass(frozen=True)
@@ -58,6 +65,7 @@ class TensorRef:
     outer_index: int = 0
     level: int = 0
     extracted: tuple = ()
+    observer: object | None = field(default=None, compare=False, repr=False)
 
     @property
     def layout(self):
@@ -95,7 +103,14 @@ class TensorRef:
             return replace(
                 self, level=self.level + 1, extracted=(*self.extracted, coordinates)
             )
-        return self.read()[tuple(indices)]
+
+        coordinates, valid = self._access()
+        selected = tuple(indices)
+        value = self._read_access(
+            tuple(coordinate[selected] for coordinate in coordinates), valid[selected]
+        )
+
+        return value[()] if value.ndim == 0 else value
 
     def _access(self, extra_mask=True):
         shape = self.shape
@@ -171,6 +186,9 @@ class TensorRef:
     def read(self, mask=True, other=None):
         coordinates, valid = self._access(mask)
 
+        return self._read_access(coordinates, valid, other)
+
+    def _read_access(self, coordinates, valid, other=None):
         if other is None:
             other = self.spec.attrs.get("other") if self.spec is not None else None
 
@@ -181,6 +199,9 @@ class TensorRef:
             tuple(coordinate[valid] for coordinate in coordinates)
         ]
 
+        if self.observer is not None:
+            self.observer.access("read", self.array, coordinates, valid)
+
         return result
 
     def write(self, value, mask=True):
@@ -189,6 +210,9 @@ class TensorRef:
         self.array[tuple(coordinate[valid] for coordinate in coordinates)] = value[
             valid
         ]
+
+        if self.observer is not None:
+            self.observer.access("write", self.array, coordinates, valid)
 
 
 def materialize(value):

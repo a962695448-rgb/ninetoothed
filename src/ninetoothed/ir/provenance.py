@@ -233,15 +233,55 @@ class ProvenancePass:
 
         if projection == "identity":
             compatible = left.type == right.type
-        elif projection == "lane":
+        elif projection in {
+            "lane",
+            "matmul_lhs",
+            "matmul_rhs",
+            "matmul_term",
+            "matmul_prefix",
+        }:
+            dtype = left.type.dtype
+
+            if projection.startswith("matmul_"):
+                if (
+                    source.opcode not in {"linalg.matmul", "linalg.dot"}
+                    or len(source.operands) != 2
+                ):
+                    raise ValueError(
+                        "Matmul checkpoints require a two-operand dot/matmul source."
+                    )
+
+                if projection in {"matmul_lhs", "matmul_rhs"}:
+                    values = {value.name: value.type for value in self.before.inputs}
+                    values.update(
+                        (value.name, value.type)
+                        for _, operation in self.inputs
+                        for value in operation.results
+                    )
+                    values.update(
+                        (value.name, value.type)
+                        for block in self.before.blocks
+                        for value in block.args
+                    )
+                    values.update(
+                        (value.name, value.type)
+                        for _, operation in self.inputs
+                        for region in operation.regions
+                        for value in region.args
+                    )
+                    operand = 0 if projection == "matmul_lhs" else 1
+                    dtype = values[source.operands[operand]].dtype
+
             compatible = (
                 left.type.kind == "tensor"
                 and right.type.kind == "scalar"
-                and left.type.dtype == right.type.dtype
+                and dtype == right.type.dtype
                 and not right.type.shape
             )
         else:
-            raise ValueError("Result projection must be identity or lane.")
+            raise ValueError(
+                "Result projection must be identity, lane, or a supported matmul checkpoint."
+            )
 
         if not compatible or left.type.kind in {"pointer", "tuple"}:
             raise ValueError("Result mapping types are incompatible.")

@@ -25,6 +25,7 @@ from ninetoothed.ir.provenance import (
 
 from .localization import DependencySlice, backward_slice, compare_mapped_results
 from .runtime import InterpretationError, _adapt_inputs, interpret_program
+from .storage import copy_storage, restore_view
 
 
 class DebuggerQuit(InterpretationError):
@@ -220,6 +221,7 @@ class OperationLocalization:
     traces_aligned: bool
     basis: str = "full_trace"
     reference_location: str | None = None
+    projection: str | None = None
 
 
 @dataclass(frozen=True)
@@ -272,29 +274,8 @@ def _copy_array_layout(value, *, strides=None, writeable=None):
 
 def _copy_inputs(inputs):
     inputs, _originals = _adapt_inputs(inputs)
-    arrays = [
-        (name, value) for name, value in inputs.items() if isinstance(value, np.ndarray)
-    ]
 
-    for index, (name, first) in enumerate(arrays):
-        for other_name, second in arrays[index + 1 :]:
-            if first is not second and np.shares_memory(first, second):
-                raise ValueError(
-                    f"Differential replay does not support overlapping views `{name}` and `{other_name}`."
-                )
-
-    memo = {}
-    result = {}
-
-    for name, value in inputs.items():
-        if isinstance(value, np.ndarray):
-            if id(value) not in memo:
-                memo[id(value)] = _copy_array_layout(value)
-
-            value = memo[id(value)]
-
-        result[name] = value
-    return result
+    return copy_storage(inputs).values
 
 
 def _same(first, second, rtol, atol):
@@ -454,6 +435,7 @@ def _compare_programs(
     symbols=None,
     rtol=1e-3,
     atol=1e-3,
+    diagnostics_version=2,
 ):
     """Compare independent executions without changing the caller's buffers.
 
@@ -534,6 +516,7 @@ def _compare_programs(
             False,
             "mapped_result",
             left.location,
+            projection=mismatch.projection,
         )
 
     observations = [item for item in (retained, mapped) if item is not None]
@@ -567,7 +550,12 @@ def _compare_programs(
     dependencies = (
         None
         if localization is None
-        else backward_slice(candidate, second.trace, localization.operation)
+        else backward_slice(
+            candidate,
+            second.trace,
+            localization.operation,
+            memory=diagnostics_version >= 2,
+        )
     )
 
     return ProgramComparison(
@@ -627,8 +615,8 @@ def compare_programs(
     at a pass-declared unchanged operation, when its filtered traces align.
     ``mapped_operation`` checks an explicit result equality, including declared
     tile-to-lane projections. ``localization`` selects the earliest available
-    observation; ``dependency_slice`` follows its executed value dependencies
-    and states where memory/alias reconstruction is unavailable.
+    observation; ``dependency_slice`` follows executed value and checked
+    same-program memory dependencies, with explicit uncertainty boundaries.
     """
     options = dict(
         tensors=tuple(tensors), grid=grid, symbols=symbols, rtol=rtol, atol=atol
@@ -805,6 +793,8 @@ def export_reproducer(
     This exports exactly the provided case; it does not claim to minimize its
     shapes or operations. Object arrays, pickles and executable SSA are excluded.
     Existing bundle files are never overwritten.
+    Distinct overlapping views use checked byte storage; ordinary inputs keep
+    the original schema. Allocation gaps are zero-filled, never copied.
     """
     inputs, _originals = _adapt_inputs(inputs)
     directory = Path(directory)
@@ -814,10 +804,20 @@ def export_reproducer(
         raise FileExistsError("Refusing to overwrite an existing replay bundle.")
 
     ssa.verify_program(program)
-    _copy_inputs(inputs)  # Validate the aliasing restriction before writing files.
+    copied = copy_storage(inputs)
     arrays, bindings, aliases, names_by_id = {}, {}, {}, {}
 
+    if copied.shared:
+        arrays, bindings, aliases = (
+            dict(copied.buffers),
+            dict(copied.bindings),
+            dict(copied.aliases),
+        )
+
     for index, (name, value) in enumerate(inputs.items()):
+        if copied.shared and isinstance(value, np.ndarray):
+            continue
+
         if isinstance(value, np.ndarray) and id(value) in names_by_id:
             aliases[name] = names_by_id[id(value)]
             continue
@@ -842,7 +842,7 @@ def export_reproducer(
             names_by_id[id(value)] = name
 
     metadata = {
-        "schema": 1,
+        "schema": 2 if copied.shared else 1,
         "seed": seed,
         "inputs": bindings,
         "aliases": aliases,
@@ -955,7 +955,7 @@ def load_reproducer(directory):
     directory = Path(directory)
     metadata = json.loads((directory / "manifest.json").read_text(encoding="utf-8"))
 
-    if metadata.get("schema") != 1:
+    if type(metadata.get("schema")) is not int or metadata["schema"] not in {1, 2}:
         raise ValueError("Unsupported replay bundle schema.")
 
     program = _program(
@@ -964,7 +964,18 @@ def load_reproducer(directory):
     inputs = {}
 
     with np.load(directory / "inputs.npz", allow_pickle=False) as arrays:
+        buffers = {}
+
         for name, binding in metadata["inputs"].items():
+            if metadata["schema"] == 2 and "storage" in binding:
+                key = binding["storage"]
+
+                if key not in buffers:
+                    buffers[key] = arrays[key].copy()
+
+                inputs[name] = restore_view(buffers[key], binding)
+                continue
+
             array = arrays[binding["key"]].copy()
 
             if (
