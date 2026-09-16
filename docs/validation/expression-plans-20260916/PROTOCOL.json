@@ -1,0 +1,20 @@
+{
+  "phase": "Measured bottlenecks then candidate comparison",
+  "bases": {
+    "nine": "d7e779642eab70164be849b2dcf52a5d02a7858a",
+    "cuda": "c591085756fec139c55f3de59c2a4ba0742dc5cc"
+  },
+  "nine_gate": {
+    "target_cases": [
+      "matmul_12x16x12",
+      "softmax_32x128"
+    ],
+    "minimum_median_speedup_each": 1.1,
+    "max_control_regression_percent": 5,
+    "max_trace_peak_regression_percent": 5,
+    "fresh_process_pairs": 3,
+    "unprofiled_samples_per_case": 5,
+    "correctness": "same outputs and full trace digests; complete CPU regression; real GPU differential"
+  },
+  "cuda_gate": "Discovery profiling first; freeze a candidate-specific protocol and holdout cases before comparison. No routing changes based solely on a single timing sweep."
+}

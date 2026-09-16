@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites><testsuite name="pytest" errors="1" failures="0" skipped="0" tests="1" time="0.084" timestamp="2026-09-16T14:57:53.709997" hostname="1571ba1a5c09"><testcase classname="" name="tests.test_interpreter_expression_plans" time="0.000"><error message="collection failure">ImportError while importing test module '/data/profiling-followup-20260916/nine/tests/test_interpreter_expression_plans.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+/usr/lib/python3.12/importlib/__init__.py:90: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+tests/test_interpreter_expression_plans.py:9: in &lt;module&gt;
+    from ninetoothed.interpreter.expressions import evaluate
+E   ModuleNotFoundError: No module named 'ninetoothed'</error></testcase></testsuite></testsuites>

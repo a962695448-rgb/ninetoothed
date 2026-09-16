@@ -1,0 +1,14 @@
+[
+  {
+    "input_type": "bool",
+    "result_type": "bool"
+  },
+  {
+    "input_type": "int",
+    "result_type": "bool"
+  },
+  {
+    "input_type": "float",
+    "result_type": "bool"
+  }
+]

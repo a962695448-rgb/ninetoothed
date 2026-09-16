@@ -1,0 +1,169 @@
+{
+  "status": "ACCEPT",
+  "protocol_sha256": "d2ddce603513c7db45074dc997cc272cdcadacb3a710434ba429797af86f8913",
+  "profiler_sha256": "3cb7c1a585235b27de87ad3eaee28f00ccac05712ba58511eb01651d0f227f73",
+  "records": [
+    {
+      "round": 0,
+      "name": "elementwise_loop_16384",
+      "trace": false,
+      "speedup": 1.1128257494924316,
+      "peak_memory_ratio": 1.068111133320008,
+      "trace_equal": true,
+      "gate_passed": true
+    },
+    {
+      "round": 0,
+      "name": "elementwise_loop_16384",
+      "trace": true,
+      "speedup": 1.0812265747612184,
+      "peak_memory_ratio": 0.9999772851545976,
+      "trace_equal": true,
+      "gate_passed": true
+    },
+    {
+      "round": 0,
+      "name": "softmax_32x128",
+      "trace": false,
+      "speedup": 1.512850467152939,
+      "peak_memory_ratio": 0.6578226764515069,
+      "trace_equal": true,
+      "gate_passed": true
+    },
+    {
+      "round": 0,
+      "name": "softmax_32x128",
+      "trace": true,
+      "speedup": 1.4265700406126556,
+      "peak_memory_ratio": 0.9583789062295576,
+      "trace_equal": true,
+      "gate_passed": true
+    },
+    {
+      "round": 0,
+      "name": "matmul_12x16x12",
+      "trace": false,
+      "speedup": 1.6592607700374593,
+      "peak_memory_ratio": 0.9485034185869841,
+      "trace_equal": true,
+      "gate_passed": true
+    },
+    {
+      "round": 0,
+      "name": "matmul_12x16x12",
+      "trace": true,
+      "speedup": 1.486662779683537,
+      "peak_memory_ratio": 0.9991204818704508,
+      "trace_equal": true,
+      "gate_passed": true
+    },
+    {
+      "round": 1,
+      "name": "elementwise_loop_16384",
+      "trace": false,
+      "speedup": 1.0656445401160985,
+      "peak_memory_ratio": 0.984115407733921,
+      "trace_equal": true,
+      "gate_passed": true
+    },
+    {
+      "round": 1,
+      "name": "elementwise_loop_16384",
+      "trace": true,
+      "speedup": 1.01207580138981,
+      "peak_memory_ratio": 1.0001357831725797,
+      "trace_equal": true,
+      "gate_passed": true
+    },
+    {
+      "round": 1,
+      "name": "softmax_32x128",
+      "trace": false,
+      "speedup": 1.5256326018671662,
+      "peak_memory_ratio": 0.6369345014030525,
+      "trace_equal": true,
+      "gate_passed": true
+    },
+    {
+      "round": 1,
+      "name": "softmax_32x128",
+      "trace": true,
+      "speedup": 1.4392063640521968,
+      "peak_memory_ratio": 0.954214031012363,
+      "trace_equal": true,
+      "gate_passed": true
+    },
+    {
+      "round": 1,
+      "name": "matmul_12x16x12",
+      "trace": false,
+      "speedup": 1.6243347095415495,
+      "peak_memory_ratio": 1.0110266356348592,
+      "trace_equal": true,
+      "gate_passed": true
+    },
+    {
+      "round": 1,
+      "name": "matmul_12x16x12",
+      "trace": true,
+      "speedup": 1.4567238200802852,
+      "peak_memory_ratio": 0.9991377420177672,
+      "trace_equal": true,
+      "gate_passed": true
+    },
+    {
+      "round": 2,
+      "name": "elementwise_loop_16384",
+      "trace": false,
+      "speedup": 1.0957543715295357,
+      "peak_memory_ratio": 0.9636612550408477,
+      "trace_equal": true,
+      "gate_passed": true
+    },
+    {
+      "round": 2,
+      "name": "elementwise_loop_16384",
+      "trace": true,
+      "speedup": 1.0614314798043856,
+      "peak_memory_ratio": 0.9999684629797849,
+      "trace_equal": true,
+      "gate_passed": true
+    },
+    {
+      "round": 2,
+      "name": "softmax_32x128",
+      "trace": false,
+      "speedup": 1.5504842082180845,
+      "peak_memory_ratio": 0.667667847546679,
+      "trace_equal": true,
+      "gate_passed": true
+    },
+    {
+      "round": 2,
+      "name": "softmax_32x128",
+      "trace": true,
+      "speedup": 1.4477403621688487,
+      "peak_memory_ratio": 0.956453634085213,
+      "trace_equal": true,
+      "gate_passed": true
+    },
+    {
+      "round": 2,
+      "name": "matmul_12x16x12",
+      "trace": false,
+      "speedup": 1.6605515716998376,
+      "peak_memory_ratio": 0.9645206608571236,
+      "trace_equal": true,
+      "gate_passed": true
+    },
+    {
+      "round": 2,
+      "name": "matmul_12x16x12",
+      "trace": true,
+      "speedup": 1.48339210839153,
+      "peak_memory_ratio": 0.999121177421719,
+      "trace_equal": true,
+      "gate_passed": true
+    }
+  ]
+}

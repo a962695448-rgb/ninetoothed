@@ -1,0 +1,1867 @@
+{
+  "status": "PASS",
+  "python": "3.12.14 (main, Aug 25 2026, 13:50:33) [Clang 22.1.3 ]",
+  "platform": "macOS-26.5.1-arm64-arm-64bit",
+  "numpy": "2.3.5",
+  "source": "candidate/nine",
+  "cases": [
+    {
+      "name": "elementwise_loop_16384",
+      "trace": false,
+      "preparation_seconds": 0.022633624961599708,
+      "runtime_seconds": [
+        0.027101875049993396,
+        0.02718008402734995,
+        0.026442750124260783
+      ],
+      "trace_events": 0,
+      "trace_pickle_bytes": 4,
+      "trace_digest": "559bededcb346584f1200f573f2076d34a011e43064063b0f635e49190772830",
+      "tracemalloc_retained_bytes": 238740,
+      "tracemalloc_peak_bytes": 250952,
+      "hot_functions": [
+        {
+          "file": "/Users/apple/Projects/infinitensor-2026/profiling-20260916/tools/profile_interpreter.py",
+          "line": 91,
+          "function": "run",
+          "calls": 1,
+          "self_seconds": 7.415e-06,
+          "cumulative_seconds": 0.070426958
+        },
+        {
+          "file": "/Users/apple/Projects/infinitensor-2026/profiling-20260916/candidate/nine/src/ninetoothed/interpreter/runtime.py",
+          "line": 1264,
+          "function": "interpret_program",
+          "calls": 1,
+          "self_seconds": 3.2334e-05,
+          "cumulative_seconds": 0.070416959
+        },
+        {
+          "file": "/Users/apple/Projects/infinitensor-2026/profiling-20260916/candidate/nine/src/ninetoothed/interpreter/runtime.py",
+          "line": 537,
+          "function": "run",
+          "calls": 1,
+          "self_seconds": 0.0006459860000000001,
+          "cumulative_seconds": 0.069959042
+        },
+        {
+          "file": "/Users/apple/Projects/infinitensor-2026/profiling-20260916/candidate/nine/src/ninetoothed/interpreter/runtime.py",
+          "line": 607,
+          "function": "block",
+          "calls": 1152,
+          "self_seconds": 0.009659405000000001,
+          "cumulative_seconds": 0.06849020800000001
+        },
+        {
+          "file": "/Users/apple/Projects/infinitensor-2026/profiling-20260916/candidate/nine/src/ninetoothed/interpreter/runtime.py",
+          "line": 821,
+          "function": "operation",
+          "calls": 4736,
+          "self_seconds": 0.011519604000000001,
+          "cumulative_seconds": 0.06454317100000001
+        },
+        {
+          "file": "/Users/apple/Projects/infinitensor-2026/profiling-20260916/candidate/nine/src/ninetoothed/interpreter/expressions.py",
+          "line": 186,
+          "function": "numpy_dtype",
+          "calls": 4612,
+          "self_seconds": 0.005986104000000001,
+          "cumulative_seconds": 0.018304585
+        },
+        {
+          "file": "/Users/apple/Projects/infinitensor-2026/profiling-20260916/candidate/nine/src/ninetoothed/interpreter/memory.py",
+          "line": 115,
+          "function": "_access",
+          "calls": 256,
+          "self_seconds": 0.002641259,
+          "cumulative_seconds": 0.016700134000000002
+        },
+        {
+          "file": "/Users/apple/Projects/infinitensor-2026/ci-repro-20260916/venv/lib/python3.12/site-packages/numpy/_core/_dtype.py",
+          "line": 342,
+          "function": "_name_get",
+          "calls": 4614,
+          "self_seconds": 0.0034531550000000003,
+          "cumulative_seconds": 0.011292034000000001
+        },
+        {
+          "file": "/Users/apple/Projects/infinitensor-2026/profiling-20260916/candidate/nine/src/ninetoothed/interpreter/runtime.py",
+          "line": 1101,
+          "function": "<genexpr>",
+          "calls": 6144,
+          "self_seconds": 0.0010387290000000002,
+          "cumulative_seconds": 0.011074288
+        },
+        {
+          "file": "/Users/apple/Projects/infinitensor-2026/profiling-20260916/candidate/nine/src/ninetoothed/interpreter/memory.py",
+          "line": 218,
+          "function": "materialize",
+          "calls": 4608,
+          "self_seconds": 0.000755005,
+          "cumulative_seconds": 0.010158388
+        },
+        {
+          "file": "/Users/apple/Projects/infinitensor-2026/profiling-20260916/candidate/nine/src/ninetoothed/interpreter/memory.py",
+          "line": 207,
+          "function": "write",
+          "calls": 128,
+          "self_seconds": 0.00037429000000000005,
+          "cumulative_seconds": 0.009479128
+        },
+        {
+          "file": "/Users/apple/Projects/infinitensor-2026/profiling-20260916/candidate/nine/src/ninetoothed/interpreter/memory.py",
+          "line": 186,
+          "function": "read",
+          "calls": 128,
+          "self_seconds": 0.000118288,
+          "cumulative_seconds": 0.009067548
+        },
+        {
+          "file": "/Users/apple/Projects/infinitensor-2026/profiling-20260916/candidate/nine/src/ninetoothed/interpreter/expressions.py",
+          "line": 40,
+          "function": "evaluate",
+          "calls": 770,
+          "self_seconds": 0.000855514,
+          "cumulative_seconds": 0.007546642
+        },
+        {
+          "file": "/Users/apple/Projects/infinitensor-2026/ci-repro-20260916/venv/lib/python3.12/site-packages/numpy/_core/_dtype.py",
+          "line": 326,
+          "function": "_name_includes_bit_suffix",
+          "calls": 4614,
+          "self_seconds": 0.0016537750000000001,
+          "cumulative_seconds": 0.007065341
+        },
+        {
+          "file": "/Users/apple/Projects/infinitensor-2026/profiling-20260916/candidate/nine/src/ninetoothed/interpreter/expressions.py",
+          "line": 79,
+          "function": "_binary",
+          "calls": 5900,
+          "self_seconds": 0.004040522,
+          "cumulative_seconds": 0.006146873000000001
+        },
+        {
+          "file": "/Users/apple/Projects/infinitensor-2026/ci-repro-20260916/venv/lib/python3.12/site-packages/numpy/_core/numerictypes.py",
+          "line": 475,
+          "function": "issubdtype",
+          "calls": 4614,
+          "self_seconds": 0.00238544,
+          "cumulative_seconds": 0.0054115660000000005
+        },
+        {
+          "file": "/Users/apple/Projects/infinitensor-2026/ci-repro-20260916/venv/lib/python3.12/site-packages/numpy/lib/_stride_tricks_impl.py",
+          "line": 367,
+          "function": "broadcast_to",
+          "calls": 896,
+          "self_seconds": 0.000267293,
+          "cumulative_seconds": 0.003541208
+        },
+        {
+          "file": "/Users/apple/Projects/infinitensor-2026/ci-repro-20260916/venv/lib/python3.12/site-packages/numpy/lib/_stride_tricks_impl.py",
+          "line": 340,
+          "function": "_broadcast_to",
+          "calls": 896,
+          "self_seconds": 0.002152026,
+          "cumulative_seconds": 0.003273915
+        },
+        {
+          "file": "/Users/apple/Projects/infinitensor-2026/ci-repro-20260916/venv/lib/python3.12/site-packages/numpy/_core/numerictypes.py",
+          "line": 293,
+          "function": "issubclass_",
+          "calls": 9228,
+          "self_seconds": 0.001729286,
+          "cumulative_seconds": 0.0027279350000000003
+        },
+        {
+          "file": "/Users/apple/Projects/infinitensor-2026/profiling-20260916/candidate/nine/src/ninetoothed/interpreter/memory.py",
+          "line": 170,
+          "function": "<genexpr>",
+          "calls": 512,
+          "self_seconds": 0.00022776300000000002,
+          "cumulative_seconds": 0.002350411
+        },
+        {
+          "file": "~",
+          "line": 0,
+          "function": "<built-in method builtins.isinstance>",
+          "calls": 17831,
+          "self_seconds": 0.0016008950000000002,
+          "cumulative_seconds": 0.0016008950000000002
+        },
+        {
+          "file": "~",
+          "line": 0,
+          "function": "<built-in method builtins.issubclass>",
+          "calls": 18458,
+          "self_seconds": 0.001600641,
+          "cumulative_seconds": 0.001600641
+        },
+        {
+          "file": "~",
+          "line": 0,
+          "function": "<built-in method builtins.len>",
+          "calls": 19466,
+          "self_seconds": 0.0013442320000000001,
+          "cumulative_seconds": 0.0013442320000000001
+        },
+        {
+          "file": "/Users/apple/Projects/infinitensor-2026/profiling-20260916/candidate/nine/src/ninetoothed/interpreter/memory.py",
+          "line": 78,
+          "function": "shape",
+          "calls": 256,
+          "self_seconds": 0.00016477900000000002,
+          "cumulative_seconds": 0.001301672
+        },
+        {
+          "file": "/Users/apple/Projects/infinitensor-2026/ci-repro-20260916/venv/lib/python3.12/site-packages/numpy/_core/fromnumeric.py",
+          "line": 2477,
+          "function": "any",
+          "calls": 512,
+          "self_seconds": 0.00022337800000000002,
+          "cumulative_seconds": 0.0011878370000000002
+        },
+        {
+          "file": "~",
+          "line": 0,
+          "function": "<built-in method numpy.asarray>",
+          "calls": 6147,
+          "self_seconds": 0.001178446,
+          "cumulative_seconds": 0.001178446
+        },
+        {
+          "file": "~",
+          "line": 0,
+          "function": "<built-in method _operator.add>",
+          "calls": 2308,
+          "self_seconds": 0.0011319160000000002,
+          "cumulative_seconds": 0.0011319160000000002
+        },
+        {
+          "file": "<frozen _collections_abc>",
+          "line": 804,
+          "function": "get",
+          "calls": 2825,
+          "self_seconds": 0.00062345,
+          "cumulative_seconds": 0.0010643200000000001
+        },
+        {
+          "file": "/Users/apple/Projects/infinitensor-2026/ci-repro-20260916/venv/lib/python3.12/site-packages/numpy/_core/fromnumeric.py",
+          "line": 89,
+          "function": "_wrapreduction_any_all",
+          "calls": 512,
+          "self_seconds": 0.00040669,
+          "cumulative_seconds": 0.0009644590000000001
+        },
+        {
+          "file": "/Users/apple/Projects/infinitensor-2026/profiling-20260916/candidate/nine/src/ninetoothed/interpreter/expressions.py",
+          "line": 172,
+          "function": "shape_value",
+          "calls": 258,
+          "self_seconds": 0.00034812600000000003,
+          "cumulative_seconds": 0.000885715
+        },
+        {
+          "file": "/Users/apple/Projects/infinitensor-2026/profiling-20260916/candidate/nine/src/ninetoothed/interpreter/memory.py",
+          "line": 191,
+          "function": "_read_access",
+          "calls": 128,
+          "self_seconds": 0.000323965,
+          "cumulative_seconds": 0.000790876
+        },
+        {
+          "file": "/Users/apple/Projects/infinitensor-2026/profiling-20260916/candidate/nine/src/ninetoothed/interpreter/runtime.py",
+          "line": 823,
+          "function": "<genexpr>",
+          "calls": 9600,
+          "self_seconds": 0.0007738630000000001,
+          "cumulative_seconds": 0.0007738630000000001
+        },
+        {
+          "file": "~",
+          "line": 0,
+          "function": "<method 'get' of 'dict' objects>",
+          "calls": 7177,
+          "self_seconds": 0.0007443010000000001,
+          "cumulative_seconds": 0.0007443010000000001
+        },
+        {
+          "file": "~",
+          "line": 0,
+          "function": "<method 'startswith' of 'str' objects>",
+          "calls": 4096,
+          "self_seconds": 0.0006432450000000001,
+          "cumulative_seconds": 0.0006432450000000001
+        },
+        {
+          "file": "~",
+          "line": 0,
+          "function": "<built-in method builtins.any>",
+          "calls": 1026,
+          "self_seconds": 0.000378591,
+          "cumulative_seconds": 0.0006192140000000001
+        }
+      ],
+      "correctness": "PASS"
+    },
+    {
+      "name": "elementwise_loop_16384",
+      "trace": true,
+      "preparation_seconds": 0.022633624961599708,
+      "runtime_seconds": [
+        0.1123896250501275,
+        0.1123082498088479,
+        0.1104909589048475
+      ],
+      "trace_events": 5760,
+      "trace_pickle_bytes": 7260377,
+      "trace_digest": "c61f164ddb9624b422b0bd02a12529177d3205841e15d533ca3c72ca25edc5bb",
+      "tracemalloc_retained_bytes": 30326914,
+      "tracemalloc_peak_bytes": 30376378,
+      "hot_functions": [
+        {
+          "file": "/Users/apple/Projects/infinitensor-2026/profiling-20260916/tools/profile_interpreter.py",
+          "line": 91,
+          "function": "run",
+          "calls": 1,
+          "self_seconds": 1.6250000000000002e-05,
+          "cumulative_seconds": 0.28125900000000004
+        },
+        {
+          "file": "/Users/apple/Projects/infinitensor-2026/profiling-20260916/candidate/nine/src/ninetoothed/interpreter/runtime.py",
+          "line": 1264,
+          "function": "interpret_program",
+          "calls": 1,
+          "self_seconds": 3.0836e-05,
+          "cumulative_seconds": 0.28123575
+        },
+        {
+          "file": "/Users/apple/Projects/infinitensor-2026/profiling-20260916/candidate/nine/src/ninetoothed/interpreter/runtime.py",
+          "line": 537,
+          "function": "run",
+          "calls": 1,
+          "self_seconds": 0.0008508420000000001,
+          "cumulative_seconds": 0.280775375
+        },
+        {
+          "file": "/Users/apple/Projects/infinitensor-2026/profiling-20260916/candidate/nine/src/ninetoothed/interpreter/runtime.py",
+          "line": 607,
+          "function": "block",
+          "calls": 1152,
+          "self_seconds": 0.02146156,
+          "cumulative_seconds": 0.27901454600000003
+        },
+        {
+          "file": "/Users/apple/Projects/infinitensor-2026/profiling-20260916/candidate/nine/src/ninetoothed/interpreter/runtime.py",
+          "line": 821,
+          "function": "operation",
+          "calls": 4736,
+          "self_seconds": 0.013713247000000001,
+          "cumulative_seconds": 0.23404759800000002
+        },
+        {
+          "file": "/Users/apple/Projects/infinitensor-2026/profiling-20260916/candidate/nine/src/ninetoothed/interpreter/runtime.py",
+          "line": 103,
+          "function": "_snapshot",
+          "calls": 10752,
+          "self_seconds": 0.018074180000000002,
+          "cumulative_seconds": 0.088204484
+        },
+        {
+          "file": "/Users/apple/Projects/infinitensor-2026/profiling-20260916/candidate/nine/src/ninetoothed/interpreter/runtime.py",
+          "line": 745,
+          "function": "record",
+          "calls": 5760,
+          "self_seconds": 0.007695624000000001,
+          "cumulative_seconds": 0.08438564000000001
+        },
+        {
+          "file": "/Users/apple/Projects/infinitensor-2026/profiling-20260916/candidate/nine/src/ninetoothed/interpreter/runtime.py",
+          "line": 677,
+          "function": "trace_inputs",
+          "calls": 5760,
+          "self_seconds": 0.006556221,
+          "cumulative_seconds": 0.075703404
+        },
+        {
+          "file": "/Users/apple/Projects/infinitensor-2026/profiling-20260916/candidate/nine/src/ninetoothed/interpreter/runtime.py",
+          "line": 761,
+          "function": "_record",
+          "calls": 5760,
+          "self_seconds": 0.026627828000000003,
+          "cumulative_seconds": 0.065964671
+        },
+        {
+          "file": "/Users/apple/Projects/infinitensor-2026/profiling-20260916/candidate/nine/src/ninetoothed/interpreter/memory.py",
+          "line": 115,
+          "function": "_access",
+          "calls": 640,
+          "self_seconds": 0.00678165,
+          "cumulative_seconds": 0.043087606
+        },
+        {
+          "file": "/Users/apple/Projects/infinitensor-2026/ci-repro-20260916/venv/lib/python3.12/site-packages/numpy/_core/_dtype.py",
+          "line": 342,
+          "function": "_name_get",
+          "calls": 15366,
+          "self_seconds": 0.011839458,
+          "cumulative_seconds": 0.038457401
+        },
+        {
+          "file": "/Users/apple/Projects/infinitensor-2026/profiling-20260916/candidate/nine/src/ninetoothed/interpreter/memory.py",
+          "line": 218,
+          "function": "materialize",
+          "calls": 15104,
+          "self_seconds": 0.002469366,
+          "cumulative_seconds": 0.036724652
+        },
+        {
+          "file": "/Users/apple/Projects/infinitensor-2026/ci-repro-20260916/venv/lib/python3.12/site-packages/numpy/_core/_dtype.py",
+          "line": 32,
+          "function": "__str__",
+          "calls": 10754,
+          "self_seconds": 0.008870416,
+          "cumulative_seconds": 0.036148233
+        },
+        {
+          "file": "/Users/apple/Projects/infinitensor-2026/profiling-20260916/candidate/nine/src/ninetoothed/interpreter/memory.py",
+          "line": 186,
+          "function": "read",
+          "calls": 384,
+          "self_seconds": 0.000360688,
+          "cumulative_seconds": 0.033205761
+        },
+        {
+          "file": "/Users/apple/Projects/infinitensor-2026/ci-repro-20260916/venv/lib/python3.12/site-packages/numpy/_core/_dtype.py",
+          "line": 326,
+          "function": "_name_includes_bit_suffix",
+          "calls": 15366,
+          "self_seconds": 0.005297793,
+          "cumulative_seconds": 0.024088340000000003
+        },
+        {
+          "file": "/Users/apple/Projects/infinitensor-2026/profiling-20260916/candidate/nine/src/ninetoothed/interpreter/expressions.py",
+          "line": 186,
+          "function": "numpy_dtype",
+          "calls": 4612,
+          "self_seconds": 0.007538962000000001,
+          "cumulative_seconds": 0.020577823000000002
+        },
+        {
+          "file": "/Users/apple/Projects/infinitensor-2026/profiling-20260916/candidate/nine/src/ninetoothed/interpreter/expressions.py",
+          "line": 40,
+          "function": "evaluate",
+          "calls": 2178,
+          "self_seconds": 0.002277304,
+          "cumulative_seconds": 0.018811728
+        },
+        {
+          "file": "/Users/apple/Projects/infinitensor-2026/ci-repro-20260916/venv/lib/python3.12/site-packages/numpy/_core/numerictypes.py",
+          "line": 475,
+          "function": "issubdtype",
+          "calls": 15238,
+          "self_seconds": 0.008809222,
+          "cumulative_seconds": 0.018790547
+        },
+        {
+          "file": "/Users/apple/Projects/infinitensor-2026/profiling-20260916/candidate/nine/src/ninetoothed/interpreter/runtime.py",
+          "line": 1101,
+          "function": "<genexpr>",
+          "calls": 6144,
+          "self_seconds": 0.001210104,
+          "cumulative_seconds": 0.016639511000000003
+        },
+        {
+          "file": "/Users/apple/Projects/infinitensor-2026/profiling-20260916/candidate/nine/src/ninetoothed/interpreter/memory.py",
+          "line": 207,
+          "function": "write",
+          "calls": 128,
+          "self_seconds": 0.0005707990000000001,
+          "cumulative_seconds": 0.015241165000000001
+        },
+        {
+          "file": "/Users/apple/Projects/infinitensor-2026/profiling-20260916/candidate/nine/src/ninetoothed/interpreter/expressions.py",
+          "line": 79,
+          "function": "_binary",
+          "calls": 14732,
+          "self_seconds": 0.009981597,
+          "cumulative_seconds": 0.015143643000000002
+        },
+        {
+          "file": "/Users/apple/.cache/codex-runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/contextlib.py",
+          "line": 299,
+          "function": "helper",
+          "calls": 16256,
+          "self_seconds": 0.004824008,
+          "cumulative_seconds": 0.011773889000000001
+        },
+        {
+          "file": "/Users/apple/Projects/infinitensor-2026/profiling-20260916/candidate/nine/src/ninetoothed/interpreter/access.py",
+          "line": 134,
+          "function": "access",
+          "calls": 512,
+          "self_seconds": 0.004438345000000001,
+          "cumulative_seconds": 0.011129504
+        },
+        {
+          "file": "/Users/apple/Projects/infinitensor-2026/ci-repro-20260916/venv/lib/python3.12/site-packages/numpy/lib/_stride_tricks_impl.py",
+          "line": 367,
+          "function": "broadcast_to",
+          "calls": 2304,
+          "self_seconds": 0.000664829,
+          "cumulative_seconds": 0.009575817
+        },
+        {
+          "file": "~",
+          "line": 0,
+          "function": "<built-in method builtins.next>",
+          "calls": 32512,
+          "self_seconds": 0.006691619,
+          "cumulative_seconds": 0.009560334
+        },
+        {
+          "file": "/Users/apple/.cache/codex-runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/contextlib.py",
+          "line": 132,
+          "function": "__enter__",
+          "calls": 16256,
+          "self_seconds": 0.0048814340000000005,
+          "cumulative_seconds": 0.009217061
+        },
+        {
+          "file": "/Users/apple/.cache/codex-runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/contextlib.py",
+          "line": 141,
+          "function": "__exit__",
+          "calls": 16256,
+          "self_seconds": 0.003968635,
+          "cumulative_seconds": 0.009193342
+        },
+        {
+          "file": "/Users/apple/Projects/infinitensor-2026/ci-repro-20260916/venv/lib/python3.12/site-packages/numpy/_core/numerictypes.py",
+          "line": 293,
+          "function": "issubclass_",
+          "calls": 30476,
+          "self_seconds": 0.0057708970000000005,
+          "cumulative_seconds": 0.009079185
+        },
+        {
+          "file": "/Users/apple/Projects/infinitensor-2026/ci-repro-20260916/venv/lib/python3.12/site-packages/numpy/lib/_stride_tricks_impl.py",
+          "line": 340,
+          "function": "_broadcast_to",
+          "calls": 2304,
+          "self_seconds": 0.0058440770000000005,
+          "cumulative_seconds": 0.008910988
+        },
+        {
+          "file": "~",
+          "line": 0,
+          "function": "<method 'tolist' of 'numpy.ndarray' objects>",
+          "calls": 10496,
+          "self_seconds": 0.008189666,
+          "cumulative_seconds": 0.008189666
+        },
+        {
+          "file": "<string>",
+          "line": 2,
+          "function": "__init__",
+          "calls": 5760,
+          "self_seconds": 0.007469881,
+          "cumulative_seconds": 0.007469881
+        },
+        {
+          "file": "/Users/apple/Projects/infinitensor-2026/profiling-20260916/candidate/nine/src/ninetoothed/interpreter/memory.py",
+          "line": 191,
+          "function": "_read_access",
+          "calls": 384,
+          "self_seconds": 0.0011056570000000001,
+          "cumulative_seconds": 0.007208793000000001
+        },
+        {
+          "file": "/Users/apple/.cache/codex-runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/contextlib.py",
+          "line": 104,
+          "function": "__init__",
+          "calls": 16256,
+          "self_seconds": 0.005672335000000001,
+          "cumulative_seconds": 0.006949881000000001
+        },
+        {
+          "file": "/Users/apple/Projects/infinitensor-2026/profiling-20260916/candidate/nine/src/ninetoothed/interpreter/memory.py",
+          "line": 170,
+          "function": "<genexpr>",
+          "calls": 1280,
+          "self_seconds": 0.0005998370000000001,
+          "cumulative_seconds": 0.005899448000000001
+        },
+        {
+          "file": "~",
+          "line": 0,
+          "function": "<built-in method builtins.issubclass>",
+          "calls": 71834,
+          "self_seconds": 0.0058548540000000005,
+          "cumulative_seconds": 0.0058548540000000005
+        }
+      ],
+      "correctness": "PASS"
+    },
+    {
+      "name": "softmax_32x128",
+      "trace": false,
+      "preparation_seconds": 0.03273237496614456,
+      "runtime_seconds": [
+        0.009894750081002712,
+        0.009608499938622117,
+        0.009574666852131486
+      ],
+      "trace_events": 0,
+      "trace_pickle_bytes": 4,
+      "trace_digest": "559bededcb346584f1200f573f2076d34a011e43064063b0f635e49190772830",
+      "tracemalloc_retained_bytes": 122582,
+      "tracemalloc_peak_bytes": 148900,
+      "hot_functions": [
+        {
+          "file": "/Users/apple/Projects/infinitensor-2026/profiling-20260916/tools/profile_interpreter.py",
+          "line": 91,
+          "function": "run",
+          "calls": 1,
+          "self_seconds": 5.8750000000000005e-06,
+          "cumulative_seconds": 0.020247458000000003
+        },
+        {
+          "file": "/Users/apple/Projects/infinitensor-2026/profiling-20260916/candidate/nine/src/ninetoothed/interpreter/runtime.py",
+          "line": 1264,
+          "function": "interpret_program",
+          "calls": 1,
+          "self_seconds": 2.4459e-05,
+          "cumulative_seconds": 0.020240625
+        },
+        {
+          "file": "/Users/apple/Projects/infinitensor-2026/profiling-20260916/candidate/nine/src/ninetoothed/interpreter/runtime.py",
+          "line": 537,
+          "function": "run",
+          "calls": 1,
+          "self_seconds": 0.00015319900000000002,
+          "cumulative_seconds": 0.019824667
+        },
+        {
+          "file": "/Users/apple/Projects/infinitensor-2026/profiling-20260916/candidate/nine/src/ninetoothed/interpreter/runtime.py",
+          "line": 607,
+          "function": "block",
+          "calls": 32,
+          "self_seconds": 0.0006741980000000001,
+          "cumulative_seconds": 0.019466997
+        },
+        {
+          "file": "/Users/apple/Projects/infinitensor-2026/profiling-20260916/candidate/nine/src/ninetoothed/interpreter/runtime.py",
+          "line": 821,
+          "function": "operation",
+          "calls": 320,
+          "self_seconds": 0.0009665450000000001,
+          "cumulative_seconds": 0.017274829000000002
+        },
+        {
+          "file": "/Users/apple/Projects/infinitensor-2026/profiling-20260916/candidate/nine/src/ninetoothed/interpreter/memory.py",
+          "line": 115,
+          "function": "_access",
+          "calls": 96,
+          "self_seconds": 0.0013388290000000001,
+          "cumulative_seconds": 0.013853087
+        },
+        {
+          "file": "/Users/apple/Projects/infinitensor-2026/profiling-20260916/candidate/nine/src/ninetoothed/interpreter/memory.py",
+          "line": 218,
+          "function": "materialize",
+          "calls": 320,
+          "self_seconds": 8.2428e-05,
+          "cumulative_seconds": 0.009776839
+        },
+        {
+          "file": "/Users/apple/Projects/infinitensor-2026/profiling-20260916/candidate/nine/src/ninetoothed/interpreter/memory.py",
+          "line": 186,
+          "function": "read",
+          "calls": 64,
+          "self_seconds": 5.7299e-05,
+          "cumulative_seconds": 0.009666338
+        },
+        {
+          "file": "/Users/apple/Projects/infinitensor-2026/profiling-20260916/candidate/nine/src/ninetoothed/interpreter/expressions.py",
+          "line": 40,
+          "function": "evaluate",
+          "calls": 484,
+          "self_seconds": 0.00043046500000000005,
+          "cumulative_seconds": 0.009164531
+        },
+        {
+          "file": "/Users/apple/Projects/infinitensor-2026/profiling-20260916/candidate/nine/src/ninetoothed/interpreter/expressions.py",
+          "line": 79,
+          "function": "_binary",
+          "calls": 10772,
+          "self_seconds": 0.0065667830000000005,
+          "cumulative_seconds": 0.008439593
+        },
+        {
+          "file": "/Users/apple/Projects/infinitensor-2026/profiling-20260916/candidate/nine/src/ninetoothed/interpreter/memory.py",
+          "line": 207,
+          "function": "write",
+          "calls": 32,
+          "self_seconds": 0.00013263200000000001,
+          "cumulative_seconds": 0.005022836
+        },
+        {
+          "file": "/Users/apple/Projects/infinitensor-2026/profiling-20260916/candidate/nine/src/ninetoothed/interpreter/runtime.py",
+          "line": 1101,
+          "function": "<genexpr>",
+          "calls": 192,
+          "self_seconds": 3.9164e-05,
+          "cumulative_seconds": 0.0049429190000000005
+        },
+        {
+          "file": "/Users/apple/Projects/infinitensor-2026/profiling-20260916/candidate/nine/src/ninetoothed/interpreter/memory.py",
+          "line": 170,
+          "function": "<genexpr>",
+          "calls": 288,
+          "self_seconds": 0.000170278,
+          "cumulative_seconds": 0.002586171
+        },
+        {
+          "file": "/Users/apple/Projects/infinitensor-2026/ci-repro-20260916/venv/lib/python3.12/site-packages/numpy/lib/_stride_tricks_impl.py",
+          "line": 367,
+          "function": "broadcast_to",
+          "calls": 416,
+          "self_seconds": 0.00012071500000000001,
+          "cumulative_seconds": 0.001620326
+        },
+        {
+          "file": "/Users/apple/Projects/infinitensor-2026/ci-repro-20260916/venv/lib/python3.12/site-packages/numpy/lib/_stride_tricks_impl.py",
+          "line": 340,
+          "function": "_broadcast_to",
+          "calls": 416,
+          "self_seconds": 0.000934585,
+          "cumulative_seconds": 0.001499611
+        },
+        {
+          "file": "/Users/apple/Projects/infinitensor-2026/profiling-20260916/candidate/nine/src/ninetoothed/interpreter/expressions.py",
+          "line": 186,
+          "function": "numpy_dtype",
+          "calls": 324,
+          "self_seconds": 0.0004952250000000001,
+          "cumulative_seconds": 0.001485191
+        },
+        {
+          "file": "/Users/apple/Projects/infinitensor-2026/ci-repro-20260916/venv/lib/python3.12/site-packages/numpy/_core/_dtype.py",
+          "line": 342,
+          "function": "_name_get",
+          "calls": 326,
+          "self_seconds": 0.000287789,
+          "cumulative_seconds": 0.0009019220000000001
+        },
+        {
+          "file": "/Users/apple/Projects/infinitensor-2026/profiling-20260916/candidate/nine/src/ninetoothed/interpreter/runtime.py",
+          "line": 1191,
+          "function": "_subscript",
+          "calls": 64,
+          "self_seconds": 9.5634e-05,
+          "cumulative_seconds": 0.0007897510000000001
+        },
+        {
+          "file": "/Users/apple/Projects/infinitensor-2026/ci-repro-20260916/venv/lib/python3.12/site-packages/numpy/_core/fromnumeric.py",
+          "line": 2477,
+          "function": "any",
+          "calls": 384,
+          "self_seconds": 0.00014000900000000002,
+          "cumulative_seconds": 0.000730539
+        },
+        {
+          "file": "/Users/apple/Projects/infinitensor-2026/profiling-20260916/candidate/nine/src/ninetoothed/interpreter/memory.py",
+          "line": 78,
+          "function": "shape",
+          "calls": 96,
+          "self_seconds": 5.928e-05,
+          "cumulative_seconds": 0.000665041
+        },
+        {
+          "file": "/Users/apple/Projects/infinitensor-2026/ci-repro-20260916/venv/lib/python3.12/site-packages/numpy/_core/fromnumeric.py",
+          "line": 89,
+          "function": "_wrapreduction_any_all",
+          "calls": 384,
+          "self_seconds": 0.00023868,
+          "cumulative_seconds": 0.00059053
+        },
+        {
+          "file": "/Users/apple/Projects/infinitensor-2026/ci-repro-20260916/venv/lib/python3.12/site-packages/numpy/_core/_dtype.py",
+          "line": 326,
+          "function": "_name_includes_bit_suffix",
+          "calls": 326,
+          "self_seconds": 0.000124294,
+          "cumulative_seconds": 0.000553661
+        },
+        {
+          "file": "/Users/apple/Projects/infinitensor-2026/profiling-20260916/candidate/nine/src/ninetoothed/interpreter/expressions.py",
+          "line": 172,
+          "function": "shape_value",
+          "calls": 98,
+          "self_seconds": 0.00020887700000000003,
+          "cumulative_seconds": 0.000550962
+        },
+        {
+          "file": "~",
+          "line": 0,
+          "function": "<built-in method _operator.add>",
+          "calls": 2888,
+          "self_seconds": 0.000503587,
+          "cumulative_seconds": 0.000503587
+        },
+        {
+          "file": "/Users/apple/Projects/infinitensor-2026/profiling-20260916/candidate/nine/src/ninetoothed/interpreter/memory.py",
+          "line": 191,
+          "function": "_read_access",
+          "calls": 64,
+          "self_seconds": 0.00021685700000000001,
+          "cumulative_seconds": 0.000488578
+        },
+        {
+          "file": "/Users/apple/Projects/infinitensor-2026/ci-repro-20260916/venv/lib/python3.12/site-packages/numpy/_core/numerictypes.py",
+          "line": 475,
+          "function": "issubdtype",
+          "calls": 326,
+          "self_seconds": 0.000184858,
+          "cumulative_seconds": 0.00042936700000000005
+        },
+        {
+          "file": "~",
+          "line": 0,
+          "function": "<method 'reduce' of 'numpy.ufunc' objects>",
+          "calls": 448,
+          "self_seconds": 0.00038331000000000004,
+          "cumulative_seconds": 0.00038331000000000004
+        },
+        {
+          "file": "/Users/apple/Projects/infinitensor-2026/profiling-20260916/candidate/nine/src/ninetoothed/interpreter/expressions.py",
+          "line": 68,
+          "function": "_constant",
+          "calls": 7796,
+          "self_seconds": 0.00037676100000000003,
+          "cumulative_seconds": 0.00037676100000000003
+        },
+        {
+          "file": "/Users/apple/Projects/infinitensor-2026/profiling-20260916/candidate/nine/src/ninetoothed/interpreter/runtime.py",
+          "line": 1200,
+          "function": "item",
+          "calls": 192,
+          "self_seconds": 0.000174982,
+          "cumulative_seconds": 0.000362127
+        },
+        {
+          "file": "/Users/apple/.cache/codex-runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/ast.py",
+          "line": 34,
+          "function": "parse",
+          "calls": 72,
+          "self_seconds": 1.9209000000000002e-05,
+          "cumulative_seconds": 0.000345328
+        },
+        {
+          "file": "~",
+          "line": 0,
+          "function": "<built-in method builtins.compile>",
+          "calls": 72,
+          "self_seconds": 0.00032611900000000004,
+          "cumulative_seconds": 0.00032611900000000004
+        },
+        {
+          "file": "/Users/apple/Projects/infinitensor-2026/profiling-20260916/candidate/nine/src/ninetoothed/interpreter/runtime.py",
+          "line": 1202,
+          "function": "<genexpr>",
+          "calls": 192,
+          "self_seconds": 0.00012930100000000001,
+          "cumulative_seconds": 0.000297135
+        },
+        {
+          "file": "~",
+          "line": 0,
+          "function": "<built-in method builtins.any>",
+          "calls": 418,
+          "self_seconds": 0.00017139,
+          "cumulative_seconds": 0.00027287700000000004
+        },
+        {
+          "file": "~",
+          "line": 0,
+          "function": "<built-in method _operator.lt>",
+          "calls": 576,
+          "self_seconds": 0.00025962,
+          "cumulative_seconds": 0.00025962
+        },
+        {
+          "file": "~",
+          "line": 0,
+          "function": "<built-in method _operator.ge>",
+          "calls": 576,
+          "self_seconds": 0.000256012,
+          "cumulative_seconds": 0.000256012
+        }
+      ],
+      "correctness": "PASS"
+    },
+    {
+      "name": "softmax_32x128",
+      "trace": true,
+      "preparation_seconds": 0.03273237496614456,
+      "runtime_seconds": [
+        0.023689041147008538,
+        0.023559499997645617,
+        0.02437049988657236
+      ],
+      "trace_events": 320,
+      "trace_pickle_bytes": 390135,
+      "trace_digest": "f0c4a847b2b97a60f55b00b00ba5382fe9d028d36d05e8b98e3a66f5997fe459",
+      "tracemalloc_retained_bytes": 1818478,
+      "tracemalloc_peak_bytes": 1828062,
+      "hot_functions": [
+        {
+          "file": "/Users/apple/Projects/infinitensor-2026/profiling-20260916/tools/profile_interpreter.py",
+          "line": 91,
+          "function": "run",
+          "calls": 1,
+          "self_seconds": 7.876e-06,
+          "cumulative_seconds": 0.052914417000000005
+        },
+        {
+          "file": "/Users/apple/Projects/infinitensor-2026/profiling-20260916/candidate/nine/src/ninetoothed/interpreter/runtime.py",
+          "line": 1264,
+          "function": "interpret_program",
+          "calls": 1,
+          "self_seconds": 3.6168e-05,
+          "cumulative_seconds": 0.052900416000000006
+        },
+        {
+          "file": "/Users/apple/Projects/infinitensor-2026/profiling-20260916/candidate/nine/src/ninetoothed/interpreter/runtime.py",
+          "line": 537,
+          "function": "run",
+          "calls": 1,
+          "self_seconds": 0.00019649400000000002,
+          "cumulative_seconds": 0.052271792000000004
+        },
+        {
+          "file": "/Users/apple/Projects/infinitensor-2026/profiling-20260916/candidate/nine/src/ninetoothed/interpreter/runtime.py",
+          "line": 607,
+          "function": "block",
+          "calls": 32,
+          "self_seconds": 0.001648588,
+          "cumulative_seconds": 0.051835043000000004
+        },
+        {
+          "file": "/Users/apple/Projects/infinitensor-2026/profiling-20260916/candidate/nine/src/ninetoothed/interpreter/memory.py",
+          "line": 115,
+          "function": "_access",
+          "calls": 192,
+          "self_seconds": 0.0028798870000000002,
+          "cumulative_seconds": 0.029157875000000003
+        },
+        {
+          "file": "/Users/apple/Projects/infinitensor-2026/profiling-20260916/candidate/nine/src/ninetoothed/interpreter/memory.py",
+          "line": 218,
+          "function": "materialize",
+          "calls": 960,
+          "self_seconds": 0.000217321,
+          "cumulative_seconds": 0.023424643000000002
+        },
+        {
+          "file": "/Users/apple/Projects/infinitensor-2026/profiling-20260916/candidate/nine/src/ninetoothed/interpreter/memory.py",
+          "line": 186,
+          "function": "read",
+          "calls": 128,
+          "self_seconds": 0.00013620800000000002,
+          "cumulative_seconds": 0.023135916000000003
+        },
+        {
+          "file": "/Users/apple/Projects/infinitensor-2026/profiling-20260916/candidate/nine/src/ninetoothed/interpreter/runtime.py",
+          "line": 821,
+          "function": "operation",
+          "calls": 320,
+          "self_seconds": 0.001316343,
+          "cumulative_seconds": 0.022573157
+        },
+        {
+          "file": "/Users/apple/Projects/infinitensor-2026/profiling-20260916/candidate/nine/src/ninetoothed/interpreter/runtime.py",
+          "line": 677,
+          "function": "trace_inputs",
+          "calls": 320,
+          "self_seconds": 0.0005731380000000001,
+          "cumulative_seconds": 0.019646666
+        },
+        {
+          "file": "/Users/apple/Projects/infinitensor-2026/profiling-20260916/candidate/nine/src/ninetoothed/interpreter/expressions.py",
+          "line": 40,
+          "function": "evaluate",
+          "calls": 1092,
+          "self_seconds": 0.000977924,
+          "cumulative_seconds": 0.019202454
+        },
+        {
+          "file": "/Users/apple/Projects/infinitensor-2026/profiling-20260916/candidate/nine/src/ninetoothed/interpreter/expressions.py",
+          "line": 79,
+          "function": "_binary",
+          "calls": 21524,
+          "self_seconds": 0.013642039000000002,
+          "cumulative_seconds": 0.01757187
+        },
+        {
+          "file": "/Users/apple/Projects/infinitensor-2026/profiling-20260916/candidate/nine/src/ninetoothed/interpreter/runtime.py",
+          "line": 103,
+          "function": "_snapshot",
+          "calls": 704,
+          "self_seconds": 0.001529406,
+          "cumulative_seconds": 0.016065509000000002
+        },
+        {
+          "file": "/Users/apple/Projects/infinitensor-2026/profiling-20260916/candidate/nine/src/ninetoothed/interpreter/memory.py",
+          "line": 207,
+          "function": "write",
+          "calls": 32,
+          "self_seconds": 0.00019016400000000002,
+          "cumulative_seconds": 0.00662233
+        },
+        {
+          "file": "/Users/apple/Projects/infinitensor-2026/profiling-20260916/candidate/nine/src/ninetoothed/interpreter/runtime.py",
+          "line": 1101,
+          "function": "<genexpr>",
+          "calls": 192,
+          "self_seconds": 4.4121e-05,
+          "cumulative_seconds": 0.0064112990000000005
+        },
+        {
+          "file": "/Users/apple/Projects/infinitensor-2026/profiling-20260916/candidate/nine/src/ninetoothed/interpreter/memory.py",
+          "line": 170,
+          "function": "<genexpr>",
+          "calls": 576,
+          "self_seconds": 0.000323259,
+          "cumulative_seconds": 0.0054807860000000005
+        },
+        {
+          "file": "/Users/apple/Projects/infinitensor-2026/profiling-20260916/candidate/nine/src/ninetoothed/interpreter/runtime.py",
+          "line": 745,
+          "function": "record",
+          "calls": 320,
+          "self_seconds": 0.00044300000000000003,
+          "cumulative_seconds": 0.004888136
+        },
+        {
+          "file": "/Users/apple/Projects/infinitensor-2026/profiling-20260916/candidate/nine/src/ninetoothed/interpreter/access.py",
+          "line": 134,
+          "function": "access",
+          "calls": 160,
+          "self_seconds": 0.0017786940000000002,
+          "cumulative_seconds": 0.004446748
+        },
+        {
+          "file": "/Users/apple/Projects/infinitensor-2026/ci-repro-20260916/venv/lib/python3.12/site-packages/numpy/lib/_stride_tricks_impl.py",
+          "line": 367,
+          "function": "broadcast_to",
+          "calls": 992,
+          "self_seconds": 0.00026478200000000003,
+          "cumulative_seconds": 0.0042107870000000006
+        },
+        {
+          "file": "/Users/apple/Projects/infinitensor-2026/ci-repro-20260916/venv/lib/python3.12/site-packages/numpy/lib/_stride_tricks_impl.py",
+          "line": 340,
+          "function": "_broadcast_to",
+          "calls": 992,
+          "self_seconds": 0.0023027530000000003,
+          "cumulative_seconds": 0.003946005
+        },
+        {
+          "file": "/Users/apple/Projects/infinitensor-2026/profiling-20260916/candidate/nine/src/ninetoothed/interpreter/memory.py",
+          "line": 191,
+          "function": "_read_access",
+          "calls": 128,
+          "self_seconds": 0.000524961,
+          "cumulative_seconds": 0.003771126
+        },
+        {
+          "file": "/Users/apple/Projects/infinitensor-2026/profiling-20260916/candidate/nine/src/ninetoothed/interpreter/runtime.py",
+          "line": 761,
+          "function": "_record",
+          "calls": 320,
+          "self_seconds": 0.0007171380000000001,
+          "cumulative_seconds": 0.003722875
+        },
+        {
+          "file": "/Users/apple/Projects/infinitensor-2026/ci-repro-20260916/venv/lib/python3.12/site-packages/numpy/_core/_dtype.py",
+          "line": 342,
+          "function": "_name_get",
+          "calls": 1030,
+          "self_seconds": 0.00092555,
+          "cumulative_seconds": 0.0028110450000000003
+        },
+        {
+          "file": "/Users/apple/Projects/infinitensor-2026/ci-repro-20260916/venv/lib/python3.12/site-packages/numpy/_core/_dtype.py",
+          "line": 32,
+          "function": "__str__",
+          "calls": 706,
+          "self_seconds": 0.0006372260000000001,
+          "cumulative_seconds": 0.002551073
+        },
+        {
+          "file": "/Users/apple/Projects/infinitensor-2026/profiling-20260916/candidate/nine/src/ninetoothed/interpreter/memory.py",
+          "line": 78,
+          "function": "shape",
+          "calls": 256,
+          "self_seconds": 0.000175229,
+          "cumulative_seconds": 0.001842419
+        },
+        {
+          "file": "/Users/apple/Projects/infinitensor-2026/ci-repro-20260916/venv/lib/python3.12/site-packages/numpy/_core/fromnumeric.py",
+          "line": 2477,
+          "function": "any",
+          "calls": 896,
+          "self_seconds": 0.00034375400000000004,
+          "cumulative_seconds": 0.0017558080000000002
+        },
+        {
+          "file": "/Users/apple/Projects/infinitensor-2026/profiling-20260916/candidate/nine/src/ninetoothed/interpreter/expressions.py",
+          "line": 186,
+          "function": "numpy_dtype",
+          "calls": 324,
+          "self_seconds": 0.000654319,
+          "cumulative_seconds": 0.0017173310000000001
+        },
+        {
+          "file": "/Users/apple/Projects/infinitensor-2026/ci-repro-20260916/venv/lib/python3.12/site-packages/numpy/_core/_dtype.py",
+          "line": 326,
+          "function": "_name_includes_bit_suffix",
+          "calls": 1030,
+          "self_seconds": 0.000392432,
+          "cumulative_seconds": 0.001683009
+        },
+        {
+          "file": "/Users/apple/Projects/infinitensor-2026/profiling-20260916/candidate/nine/src/ninetoothed/interpreter/expressions.py",
+          "line": 172,
+          "function": "shape_value",
+          "calls": 258,
+          "self_seconds": 0.000556071,
+          "cumulative_seconds": 0.001475329
+        },
+        {
+          "file": "/Users/apple/Projects/infinitensor-2026/ci-repro-20260916/venv/lib/python3.12/site-packages/numpy/_core/fromnumeric.py",
+          "line": 89,
+          "function": "_wrapreduction_any_all",
+          "calls": 896,
+          "self_seconds": 0.0005891000000000001,
+          "cumulative_seconds": 0.001412054
+        },
+        {
+          "file": "/Users/apple/Projects/infinitensor-2026/ci-repro-20260916/venv/lib/python3.12/site-packages/numpy/_core/numerictypes.py",
+          "line": 475,
+          "function": "issubdtype",
+          "calls": 998,
+          "self_seconds": 0.000583761,
+          "cumulative_seconds": 0.001290577
+        },
+        {
+          "file": "~",
+          "line": 0,
+          "function": "<built-in method _operator.add>",
+          "calls": 5768,
+          "self_seconds": 0.001045586,
+          "cumulative_seconds": 0.001045586
+        },
+        {
+          "file": "/Users/apple/Projects/infinitensor-2026/profiling-20260916/candidate/nine/src/ninetoothed/interpreter/runtime.py",
+          "line": 1191,
+          "function": "_subscript",
+          "calls": 64,
+          "self_seconds": 0.00012620600000000002,
+          "cumulative_seconds": 0.001033917
+        },
+        {
+          "file": "~",
+          "line": 0,
+          "function": "<built-in method builtins.any>",
+          "calls": 994,
+          "self_seconds": 0.000409133,
+          "cumulative_seconds": 0.00091615
+        },
+        {
+          "file": "/Users/apple/.cache/codex-runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/contextlib.py",
+          "line": 299,
+          "function": "helper",
+          "calls": 960,
+          "self_seconds": 0.00033788400000000005,
+          "cumulative_seconds": 0.000833898
+        },
+        {
+          "file": "~",
+          "line": 0,
+          "function": "<method 'reduce' of 'numpy.ufunc' objects>",
+          "calls": 960,
+          "self_seconds": 0.000829513,
+          "cumulative_seconds": 0.000829513
+        }
+      ],
+      "correctness": "PASS"
+    },
+    {
+      "name": "matmul_12x16x12",
+      "trace": false,
+      "preparation_seconds": 0.008713125018402934,
+      "runtime_seconds": [
+        0.4054256670642644,
+        0.40784758306108415,
+        0.40523195802234113
+      ],
+      "trace_events": 0,
+      "trace_pickle_bytes": 4,
+      "trace_digest": "559bededcb346584f1200f573f2076d34a011e43064063b0f635e49190772830",
+      "tracemalloc_retained_bytes": 360894,
+      "tracemalloc_peak_bytes": 374914,
+      "hot_functions": [
+        {
+          "file": "/Users/apple/Projects/infinitensor-2026/profiling-20260916/tools/profile_interpreter.py",
+          "line": 91,
+          "function": "run",
+          "calls": 1,
+          "self_seconds": 7.916e-06,
+          "cumulative_seconds": 0.9317477500000001
+        },
+        {
+          "file": "/Users/apple/Projects/infinitensor-2026/profiling-20260916/candidate/nine/src/ninetoothed/interpreter/runtime.py",
+          "line": 1264,
+          "function": "interpret_program",
+          "calls": 1,
+          "self_seconds": 3.3663e-05,
+          "cumulative_seconds": 0.931738292
+        },
+        {
+          "file": "/Users/apple/Projects/infinitensor-2026/profiling-20260916/candidate/nine/src/ninetoothed/interpreter/runtime.py",
+          "line": 537,
+          "function": "run",
+          "calls": 1,
+          "self_seconds": 0.000597114,
+          "cumulative_seconds": 0.925485875
+        },
+        {
+          "file": "/Users/apple/Projects/infinitensor-2026/profiling-20260916/candidate/nine/src/ninetoothed/interpreter/runtime.py",
+          "line": 607,
+          "function": "block",
+          "calls": 2448,
+          "self_seconds": 0.025957059,
+          "cumulative_seconds": 0.922730421
+        },
+        {
+          "file": "/Users/apple/Projects/infinitensor-2026/profiling-20260916/candidate/nine/src/ninetoothed/interpreter/runtime.py",
+          "line": 821,
+          "function": "operation",
+          "calls": 10368,
+          "self_seconds": 0.037998795,
+          "cumulative_seconds": 0.915673783
+        },
+        {
+          "file": "/Users/apple/Projects/infinitensor-2026/profiling-20260916/candidate/nine/src/ninetoothed/interpreter/memory.py",
+          "line": 87,
+          "function": "extract",
+          "calls": 4608,
+          "self_seconds": 0.010100885,
+          "cumulative_seconds": 0.740258822
+        },
+        {
+          "file": "/Users/apple/Projects/infinitensor-2026/profiling-20260916/candidate/nine/src/ninetoothed/interpreter/memory.py",
+          "line": 115,
+          "function": "_access",
+          "calls": 4788,
+          "self_seconds": 0.066626225,
+          "cumulative_seconds": 0.7256820180000001
+        },
+        {
+          "file": "/Users/apple/Projects/infinitensor-2026/profiling-20260916/candidate/nine/src/ninetoothed/interpreter/expressions.py",
+          "line": 40,
+          "function": "evaluate",
+          "calls": 24774,
+          "self_seconds": 0.022486114,
+          "cumulative_seconds": 0.494048203
+        },
+        {
+          "file": "/Users/apple/Projects/infinitensor-2026/profiling-20260916/candidate/nine/src/ninetoothed/interpreter/expressions.py",
+          "line": 79,
+          "function": "_binary",
+          "calls": 560232,
+          "self_seconds": 0.358032736,
+          "cumulative_seconds": 0.456475758
+        },
+        {
+          "file": "/Users/apple/Projects/infinitensor-2026/profiling-20260916/candidate/nine/src/ninetoothed/interpreter/memory.py",
+          "line": 170,
+          "function": "<genexpr>",
+          "calls": 14364,
+          "self_seconds": 0.007856486000000001,
+          "cumulative_seconds": 0.133965432
+        },
+        {
+          "file": "/Users/apple/Projects/infinitensor-2026/ci-repro-20260916/venv/lib/python3.12/site-packages/numpy/lib/_stride_tricks_impl.py",
+          "line": 367,
+          "function": "broadcast_to",
+          "calls": 19296,
+          "self_seconds": 0.005097766,
+          "cumulative_seconds": 0.075562618
+        },
+        {
+          "file": "/Users/apple/Projects/infinitensor-2026/ci-repro-20260916/venv/lib/python3.12/site-packages/numpy/lib/_stride_tricks_impl.py",
+          "line": 340,
+          "function": "_broadcast_to",
+          "calls": 19296,
+          "self_seconds": 0.043675744,
+          "cumulative_seconds": 0.07046485200000001
+        },
+        {
+          "file": "/Users/apple/Projects/infinitensor-2026/profiling-20260916/candidate/nine/src/ninetoothed/interpreter/expressions.py",
+          "line": 186,
+          "function": "numpy_dtype",
+          "calls": 10230,
+          "self_seconds": 0.015894172,
+          "cumulative_seconds": 0.047680182
+        },
+        {
+          "file": "/Users/apple/Projects/infinitensor-2026/ci-repro-20260916/venv/lib/python3.12/site-packages/numpy/_core/fromnumeric.py",
+          "line": 2477,
+          "function": "any",
+          "calls": 19152,
+          "self_seconds": 0.006936046,
+          "cumulative_seconds": 0.03629137
+        },
+        {
+          "file": "/Users/apple/Projects/infinitensor-2026/profiling-20260916/candidate/nine/src/ninetoothed/interpreter/memory.py",
+          "line": 78,
+          "function": "shape",
+          "calls": 5202,
+          "self_seconds": 0.003066549,
+          "cumulative_seconds": 0.033950923
+        },
+        {
+          "file": "/Users/apple/Projects/infinitensor-2026/ci-repro-20260916/venv/lib/python3.12/site-packages/numpy/_core/fromnumeric.py",
+          "line": 89,
+          "function": "_wrapreduction_any_all",
+          "calls": 19206,
+          "self_seconds": 0.012011022000000001,
+          "cumulative_seconds": 0.029431405
+        },
+        {
+          "file": "/Users/apple/Projects/infinitensor-2026/ci-repro-20260916/venv/lib/python3.12/site-packages/numpy/_core/_dtype.py",
+          "line": 342,
+          "function": "_name_get",
+          "calls": 9945,
+          "self_seconds": 0.009172370000000001,
+          "cumulative_seconds": 0.029047951000000002
+        },
+        {
+          "file": "/Users/apple/Projects/infinitensor-2026/profiling-20260916/candidate/nine/src/ninetoothed/interpreter/memory.py",
+          "line": 191,
+          "function": "_read_access",
+          "calls": 4608,
+          "self_seconds": 0.011949474000000002,
+          "cumulative_seconds": 0.027021598
+        },
+        {
+          "file": "~",
+          "line": 0,
+          "function": "<built-in method _operator.add>",
+          "calls": 145956,
+          "self_seconds": 0.026998706,
+          "cumulative_seconds": 0.026998706
+        },
+        {
+          "file": "/Users/apple/Projects/infinitensor-2026/profiling-20260916/candidate/nine/src/ninetoothed/interpreter/expressions.py",
+          "line": 172,
+          "function": "shape_value",
+          "calls": 5205,
+          "self_seconds": 0.010637708000000001,
+          "cumulative_seconds": 0.026695163
+        },
+        {
+          "file": "/Users/apple/Projects/infinitensor-2026/profiling-20260916/candidate/nine/src/ninetoothed/interpreter/memory.py",
+          "line": 207,
+          "function": "write",
+          "calls": 144,
+          "self_seconds": 0.000788782,
+          "cumulative_seconds": 0.025320747
+        },
+        {
+          "file": "/Users/apple/Projects/infinitensor-2026/profiling-20260916/candidate/nine/src/ninetoothed/interpreter/expressions.py",
+          "line": 68,
+          "function": "_constant",
+          "calls": 411804,
+          "self_seconds": 0.02005066,
+          "cumulative_seconds": 0.02005066
+        },
+        {
+          "file": "/Users/apple/Projects/infinitensor-2026/ci-repro-20260916/venv/lib/python3.12/site-packages/numpy/_core/_dtype.py",
+          "line": 326,
+          "function": "_name_includes_bit_suffix",
+          "calls": 9945,
+          "self_seconds": 0.004063884,
+          "cumulative_seconds": 0.017886597
+        },
+        {
+          "file": "~",
+          "line": 0,
+          "function": "<method 'reduce' of 'numpy.ufunc' objects>",
+          "calls": 19233,
+          "self_seconds": 0.015321116000000001,
+          "cumulative_seconds": 0.015321116000000001
+        },
+        {
+          "file": "/Users/apple/Projects/infinitensor-2026/profiling-20260916/candidate/nine/src/ninetoothed/interpreter/memory.py",
+          "line": 74,
+          "function": "levels",
+          "calls": 34011,
+          "self_seconds": 0.009249063,
+          "cumulative_seconds": 0.014425757
+        },
+        {
+          "file": "/Users/apple/Projects/infinitensor-2026/ci-repro-20260916/venv/lib/python3.12/site-packages/numpy/_core/numerictypes.py",
+          "line": 475,
+          "function": "issubdtype",
+          "calls": 9945,
+          "self_seconds": 0.0060466090000000005,
+          "cumulative_seconds": 0.013822713
+        },
+        {
+          "file": "/Users/apple/Projects/infinitensor-2026/profiling-20260916/candidate/nine/src/ninetoothed/interpreter/runtime.py",
+          "line": 938,
+          "function": "<genexpr>",
+          "calls": 13824,
+          "self_seconds": 0.00455675,
+          "cumulative_seconds": 0.013518893
+        },
+        {
+          "file": "~",
+          "line": 0,
+          "function": "<built-in method builtins.any>",
+          "calls": 19479,
+          "self_seconds": 0.008376498000000001,
+          "cumulative_seconds": 0.013311247
+        },
+        {
+          "file": "~",
+          "line": 0,
+          "function": "<built-in method _operator.lt>",
+          "calls": 28728,
+          "self_seconds": 0.013055548,
+          "cumulative_seconds": 0.013055548
+        },
+        {
+          "file": "~",
+          "line": 0,
+          "function": "<built-in method _operator.ge>",
+          "calls": 28728,
+          "self_seconds": 0.012921541000000002,
+          "cumulative_seconds": 0.012921541000000002
+        },
+        {
+          "file": "/Users/apple/Projects/infinitensor-2026/profiling-20260916/candidate/nine/src/ninetoothed/interpreter/expressions.py",
+          "line": 72,
+          "function": "_symbol",
+          "calls": 162798,
+          "self_seconds": 0.012679998000000001,
+          "cumulative_seconds": 0.012679998000000001
+        },
+        {
+          "file": "~",
+          "line": 0,
+          "function": "<built-in method _operator.sub>",
+          "calls": 172386,
+          "self_seconds": 0.011224268,
+          "cumulative_seconds": 0.011224268
+        },
+        {
+          "file": "~",
+          "line": 0,
+          "function": "<built-in method numpy.asarray>",
+          "calls": 49783,
+          "self_seconds": 0.009879915000000001,
+          "cumulative_seconds": 0.009879915000000001
+        },
+        {
+          "file": "/Users/apple/Projects/infinitensor-2026/ci-repro-20260916/venv/lib/python3.12/site-packages/numpy/_core/fromnumeric.py",
+          "line": 3523,
+          "function": "ndim",
+          "calls": 10414,
+          "self_seconds": 0.005942308,
+          "cumulative_seconds": 0.007980253
+        },
+        {
+          "file": "~",
+          "line": 0,
+          "function": "<built-in method builtins.isinstance>",
+          "calls": 83764,
+          "self_seconds": 0.007173976,
+          "cumulative_seconds": 0.007173976
+        }
+      ],
+      "correctness": "PASS"
+    },
+    {
+      "name": "matmul_12x16x12",
+      "trace": true,
+      "preparation_seconds": 0.008713125018402934,
+      "runtime_seconds": [
+        1.1406368750613183,
+        1.1525172910187393,
+        1.1453042919747531
+      ],
+      "trace_events": 12672,
+      "trace_pickle_bytes": 5414908,
+      "trace_digest": "4e988f402a2e653b599e5d4858c5ce8cd01e4040d017d7c86d3bb4e10a4e40b9",
+      "tracemalloc_retained_bytes": 34364816,
+      "tracemalloc_peak_bytes": 34477488,
+      "hot_functions": [
+        {
+          "file": "/Users/apple/Projects/infinitensor-2026/profiling-20260916/tools/profile_interpreter.py",
+          "line": 91,
+          "function": "run",
+          "calls": 1,
+          "self_seconds": 2.6583000000000003e-05,
+          "cumulative_seconds": 2.491590083
+        },
+        {
+          "file": "/Users/apple/Projects/infinitensor-2026/profiling-20260916/candidate/nine/src/ninetoothed/interpreter/runtime.py",
+          "line": 1264,
+          "function": "interpret_program",
+          "calls": 1,
+          "self_seconds": 3.8084e-05,
+          "cumulative_seconds": 2.491555875
+        },
+        {
+          "file": "/Users/apple/Projects/infinitensor-2026/profiling-20260916/candidate/nine/src/ninetoothed/interpreter/runtime.py",
+          "line": 537,
+          "function": "run",
+          "calls": 1,
+          "self_seconds": 0.0008577480000000001,
+          "cumulative_seconds": 2.484460583
+        },
+        {
+          "file": "/Users/apple/Projects/infinitensor-2026/profiling-20260916/candidate/nine/src/ninetoothed/interpreter/runtime.py",
+          "line": 607,
+          "function": "block",
+          "calls": 2448,
+          "self_seconds": 0.060653452000000004,
+          "cumulative_seconds": 2.4814298320000003
+        },
+        {
+          "file": "/Users/apple/Projects/infinitensor-2026/profiling-20260916/candidate/nine/src/ninetoothed/interpreter/runtime.py",
+          "line": 821,
+          "function": "operation",
+          "calls": 10368,
+          "self_seconds": 0.047653641000000004,
+          "cumulative_seconds": 2.387354088
+        },
+        {
+          "file": "/Users/apple/Projects/infinitensor-2026/profiling-20260916/candidate/nine/src/ninetoothed/interpreter/memory.py",
+          "line": 115,
+          "function": "_access",
+          "calls": 9684,
+          "self_seconds": 0.143064563,
+          "cumulative_seconds": 1.536735363
+        },
+        {
+          "file": "/Users/apple/Projects/infinitensor-2026/profiling-20260916/candidate/nine/src/ninetoothed/interpreter/runtime.py",
+          "line": 103,
+          "function": "_snapshot",
+          "calls": 37152,
+          "self_seconds": 0.072135788,
+          "cumulative_seconds": 1.0468045860000001
+        },
+        {
+          "file": "/Users/apple/Projects/infinitensor-2026/profiling-20260916/candidate/nine/src/ninetoothed/interpreter/expressions.py",
+          "line": 40,
+          "function": "evaluate",
+          "calls": 50406,
+          "self_seconds": 0.047516806,
+          "cumulative_seconds": 1.040060903
+        },
+        {
+          "file": "/Users/apple/Projects/infinitensor-2026/profiling-20260916/candidate/nine/src/ninetoothed/interpreter/runtime.py",
+          "line": 677,
+          "function": "trace_inputs",
+          "calls": 12672,
+          "self_seconds": 0.019513474000000003,
+          "cumulative_seconds": 1.029300045
+        },
+        {
+          "file": "/Users/apple/Projects/infinitensor-2026/profiling-20260916/candidate/nine/src/ninetoothed/interpreter/memory.py",
+          "line": 87,
+          "function": "extract",
+          "calls": 4608,
+          "self_seconds": 0.011372056,
+          "cumulative_seconds": 0.975519847
+        },
+        {
+          "file": "/Users/apple/Projects/infinitensor-2026/profiling-20260916/candidate/nine/src/ninetoothed/interpreter/expressions.py",
+          "line": 79,
+          "function": "_binary",
+          "calls": 1133064,
+          "self_seconds": 0.737592059,
+          "cumulative_seconds": 0.9401936230000001
+        },
+        {
+          "file": "/Users/apple/Projects/infinitensor-2026/profiling-20260916/candidate/nine/src/ninetoothed/interpreter/memory.py",
+          "line": 218,
+          "function": "materialize",
+          "calls": 55584,
+          "self_seconds": 0.011273401,
+          "cumulative_seconds": 0.7849972310000001
+        },
+        {
+          "file": "/Users/apple/Projects/infinitensor-2026/profiling-20260916/candidate/nine/src/ninetoothed/interpreter/memory.py",
+          "line": 186,
+          "function": "read",
+          "calls": 4608,
+          "self_seconds": 0.004361414,
+          "cumulative_seconds": 0.769458855
+        },
+        {
+          "file": "/Users/apple/Projects/infinitensor-2026/profiling-20260916/candidate/nine/src/ninetoothed/interpreter/memory.py",
+          "line": 170,
+          "function": "<genexpr>",
+          "calls": 29052,
+          "self_seconds": 0.016665591,
+          "cumulative_seconds": 0.29809362
+        },
+        {
+          "file": "/Users/apple/Projects/infinitensor-2026/profiling-20260916/candidate/nine/src/ninetoothed/interpreter/memory.py",
+          "line": 191,
+          "function": "_read_access",
+          "calls": 9216,
+          "self_seconds": 0.03331404,
+          "cumulative_seconds": 0.260038264
+        },
+        {
+          "file": "/Users/apple/Projects/infinitensor-2026/profiling-20260916/candidate/nine/src/ninetoothed/interpreter/access.py",
+          "line": 134,
+          "function": "access",
+          "calls": 9360,
+          "self_seconds": 0.082831017,
+          "cumulative_seconds": 0.202258728
+        },
+        {
+          "file": "/Users/apple/Projects/infinitensor-2026/ci-repro-20260916/venv/lib/python3.12/site-packages/numpy/lib/_stride_tricks_impl.py",
+          "line": 367,
+          "function": "broadcast_to",
+          "calls": 48384,
+          "self_seconds": 0.013511562000000001,
+          "cumulative_seconds": 0.19722803900000002
+        },
+        {
+          "file": "/Users/apple/Projects/infinitensor-2026/ci-repro-20260916/venv/lib/python3.12/site-packages/numpy/lib/_stride_tricks_impl.py",
+          "line": 340,
+          "function": "_broadcast_to",
+          "calls": 48384,
+          "self_seconds": 0.11297072200000001,
+          "cumulative_seconds": 0.18371647700000002
+        },
+        {
+          "file": "/Users/apple/Projects/infinitensor-2026/profiling-20260916/candidate/nine/src/ninetoothed/interpreter/runtime.py",
+          "line": 745,
+          "function": "record",
+          "calls": 12672,
+          "self_seconds": 0.017301434,
+          "cumulative_seconds": 0.17970464500000002
+        },
+        {
+          "file": "/Users/apple/Projects/infinitensor-2026/ci-repro-20260916/venv/lib/python3.12/site-packages/numpy/_core/_dtype.py",
+          "line": 32,
+          "function": "__str__",
+          "calls": 37155,
+          "self_seconds": 0.033757727,
+          "cumulative_seconds": 0.162245143
+        },
+        {
+          "file": "/Users/apple/Projects/infinitensor-2026/ci-repro-20260916/venv/lib/python3.12/site-packages/numpy/_core/_dtype.py",
+          "line": 342,
+          "function": "_name_get",
+          "calls": 47097,
+          "self_seconds": 0.040232296,
+          "cumulative_seconds": 0.155298435
+        },
+        {
+          "file": "/Users/apple/Projects/infinitensor-2026/profiling-20260916/candidate/nine/src/ninetoothed/interpreter/runtime.py",
+          "line": 761,
+          "function": "_record",
+          "calls": 12672,
+          "self_seconds": 0.025828607,
+          "cumulative_seconds": 0.134559208
+        },
+        {
+          "file": "/Users/apple/Projects/infinitensor-2026/ci-repro-20260916/venv/lib/python3.12/site-packages/numpy/_core/_dtype.py",
+          "line": 326,
+          "function": "_name_includes_bit_suffix",
+          "calls": 47097,
+          "self_seconds": 0.018013241000000003,
+          "cumulative_seconds": 0.10643466300000001
+        },
+        {
+          "file": "/Users/apple/Projects/infinitensor-2026/ci-repro-20260916/venv/lib/python3.12/site-packages/numpy/_core/numerictypes.py",
+          "line": 475,
+          "function": "issubdtype",
+          "calls": 46953,
+          "self_seconds": 0.054821890000000005,
+          "cumulative_seconds": 0.088421422
+        },
+        {
+          "file": "/Users/apple/Projects/infinitensor-2026/ci-repro-20260916/venv/lib/python3.12/site-packages/numpy/_core/fromnumeric.py",
+          "line": 2477,
+          "function": "any",
+          "calls": 43632,
+          "self_seconds": 0.016522216000000003,
+          "cumulative_seconds": 0.086671045
+        },
+        {
+          "file": "/Users/apple/Projects/infinitensor-2026/profiling-20260916/candidate/nine/src/ninetoothed/interpreter/memory.py",
+          "line": 78,
+          "function": "shape",
+          "calls": 10674,
+          "self_seconds": 0.006538339000000001,
+          "cumulative_seconds": 0.07751374700000001
+        },
+        {
+          "file": "/Users/apple/Projects/infinitensor-2026/ci-repro-20260916/venv/lib/python3.12/site-packages/numpy/_core/fromnumeric.py",
+          "line": 89,
+          "function": "_wrapreduction_any_all",
+          "calls": 43686,
+          "self_seconds": 0.02921065,
+          "cumulative_seconds": 0.070230663
+        },
+        {
+          "file": "/Users/apple/Projects/infinitensor-2026/profiling-20260916/candidate/nine/src/ninetoothed/interpreter/expressions.py",
+          "line": 172,
+          "function": "shape_value",
+          "calls": 10677,
+          "self_seconds": 0.023592936000000002,
+          "cumulative_seconds": 0.061887558
+        },
+        {
+          "file": "~",
+          "line": 0,
+          "function": "<built-in method _operator.add>",
+          "calls": 292836,
+          "self_seconds": 0.054582896000000006,
+          "cumulative_seconds": 0.054582896000000006
+        },
+        {
+          "file": "/Users/apple/Projects/infinitensor-2026/profiling-20260916/candidate/nine/src/ninetoothed/interpreter/expressions.py",
+          "line": 186,
+          "function": "numpy_dtype",
+          "calls": 10230,
+          "self_seconds": 0.020393783000000002,
+          "cumulative_seconds": 0.052989387000000006
+        },
+        {
+          "file": "/Users/apple/Projects/infinitensor-2026/profiling-20260916/candidate/nine/src/ninetoothed/interpreter/expressions.py",
+          "line": 68,
+          "function": "_constant",
+          "calls": 832860,
+          "self_seconds": 0.041348416000000006,
+          "cumulative_seconds": 0.041348416000000006
+        },
+        {
+          "file": "~",
+          "line": 0,
+          "function": "<method 'reduce' of 'numpy.ufunc' objects>",
+          "calls": 43713,
+          "self_seconds": 0.035831905000000004,
+          "cumulative_seconds": 0.035831905000000004
+        },
+        {
+          "file": "~",
+          "line": 0,
+          "function": "<built-in method builtins.any>",
+          "calls": 48567,
+          "self_seconds": 0.019478562,
+          "cumulative_seconds": 0.033966286000000005
+        },
+        {
+          "file": "/Users/apple/Projects/infinitensor-2026/profiling-20260916/candidate/nine/src/ninetoothed/ir/kernel.py",
+          "line": 25,
+          "function": "parse",
+          "calls": 50406,
+          "self_seconds": 0.029426218,
+          "cumulative_seconds": 0.033094107000000005
+        },
+        {
+          "file": "/Users/apple/Projects/infinitensor-2026/ci-repro-20260916/venv/lib/python3.12/site-packages/numpy/_core/numerictypes.py",
+          "line": 293,
+          "function": "issubclass_",
+          "calls": 93906,
+          "self_seconds": 0.019298391,
+          "cumulative_seconds": 0.030711304000000002
+        }
+      ],
+      "correctness": "PASS"
+    }
+  ],
+  "source_sha256": {
+    "src/ninetoothed/__init__.py": "f3e0b21cfda64055226b0a38ec461dc9bdd87d0871b78898f129e63d434134d6",
+    "src/ninetoothed/aot.py": "c164c85cffe18946de7c38ff489b78d61820bcedb2dd5b16dc6fc52ae632ebd2",
+    "src/ninetoothed/auto_tuner.py": "2eaa1adecbae6eed32d5372a8d4e8ad5a827c1b050c0430b7d026207e6f729da",
+    "src/ninetoothed/backends/__init__.py": "7842ab6bdb8ba68e04ed95fde8bfc5ec3f3952282a33aa3108ad7e3db6bc7b29",
+    "src/ninetoothed/backends/core.py": "cd90aef2b85d6b7eb928d1c15862f05f48aa340d851ee695d32595df0b180c01",
+    "src/ninetoothed/backends/cuda.py": "e5fef15ad3ef35dd18d9e5d5d15a2e0cfe92b1aad073d3f4c98d572f0ab37638",
+    "src/ninetoothed/backends/emitters/__init__.py": "12ba7cc758a60cc4940dad7578a7bfe1edc0e29dcb78776194c2b82881b39531",
+    "src/ninetoothed/backends/emitters/analysis.py": "54219cd51b407d6f17ce44ddc9cb491bd38015a5f49c4b0b1e2d588fa537e841",
+    "src/ninetoothed/backends/emitters/base.py": "4c102e491b762bf04df6b63591571e0f9770a1daa3af222cd1642d080500a6c4",
+    "src/ninetoothed/backends/emitters/context.py": "d4b3c3ecac778ac75b832f445c3a6f1d1607fcad904e121e34918cec3185736d",
+    "src/ninetoothed/backends/emitters/cuda.py": "89b17fa2994b7bdfd88e0ed591503e9469d9cd8ac935d47d0d8ce503b4b7b62e",
+    "src/ninetoothed/backends/emitters/expressions.py": "51200e5b494ed37c96c790c45f2ce0ee386cd7043a4a50f604be0fc18095ff35",
+    "src/ninetoothed/backends/emitters/ssa.py": "d99807a22ade60501ebe4e8615461239168a0534ba094c8eb8a1f3419f445aaa",
+    "src/ninetoothed/backends/emitters/tilelang.py": "60e07c4e7c07c8c3814e748ccbeae41e2cf7e2ae84cce0bcb8b53d1faf2f4451",
+    "src/ninetoothed/backends/emitters/triton.py": "bbbeaf048eed37c971e991ab91bed2cc7ad8155e01771bc970ca4a19500e2c66",
+    "src/ninetoothed/backends/materializers/__init__.py": "be074239a6e83602ce271956dbd3a43c7c6e0cd6b4709e9ef243d32f9dc0a344",
+    "src/ninetoothed/backends/materializers/base.py": "9b86e3e8667828b59e7895016c86f1f37e54591fb2cfbd369766e5241eec7c60",
+    "src/ninetoothed/backends/materializers/cuda.py": "a5c5da8ba560478c374523d52c03f63c008f472d46102306f772add01f059767",
+    "src/ninetoothed/backends/materializers/tilelang.py": "648c935b82980dbd6743e9445bbb0c64637b3a02ce7d37568952b70557ef757f",
+    "src/ninetoothed/backends/materializers/triton.py": "1655f01842204427ad47bf5d7e7d17a4d41e32bf8b1347f217378b0dd43b42f8",
+    "src/ninetoothed/backends/registry.py": "b3772ef8a35a0fecdc10d7db5093cc705bb84e0f8a2292ed08b05bbba21a2aec",
+    "src/ninetoothed/backends/tilelang.py": "6e85b73a9692884649ea946fb5d89d8e9ed0357fc8b145279ae94c30b0282b5a",
+    "src/ninetoothed/backends/toolchain.py": "e4d96a075367d7d70fdff168a88a3c9f2f2303601630ec60b62ccaef4136ecd8",
+    "src/ninetoothed/backends/triton.py": "178697f6ddd19dda1168c3ff40700873d45cd5549aaea5721571c45fde078b5f",
+    "src/ninetoothed/build.py": "9463a3cb74e81cd05c1f53a28880f9cd37311a788ebcdb50aa8ed947faf73c17",
+    "src/ninetoothed/compiler/__init__.py": "467a93323e48bd4c729e7a6d71cd8218eb873edde66d4707fcc6696e217a59b5",
+    "src/ninetoothed/compiler/cache.py": "51b31e143588d5b9985e9b5711c22663ef08f9648692a0bf61c92f143fd356de",
+    "src/ninetoothed/compiler/driver.py": "4260b4bdaed987846142b7d1b87ca52518811338b88cee477605c421402ff111",
+    "src/ninetoothed/compiler/jit.py": "4a00b058c5b5109451b7d67af69413beb616db4acf7497fdf8922236ada28ee1",
+    "src/ninetoothed/compiler/layout.py": "ec131626d28a7a983260a38c90f76c90aef4059cd57a0af423176744896e8743",
+    "src/ninetoothed/compiler/layout_runtime.py": "e7b9342f6099f706c593e64abf4e98d121fe35f8a0599b51a0fbd812d37fff76",
+    "src/ninetoothed/compiler/passes.py": "92d319a5a276091f55b1bb298f1ccc4f025c3fd185862f3431ed2b5f1efebbfb",
+    "src/ninetoothed/compiler/reductions.py": "7e05d3d78f48d20419090240048cb68ce84e602f875e9656273aec0768d2591c",
+    "src/ninetoothed/compiler/runtime.py": "05de16328ffafb231effac011f37efebe9c03a071c8d16184348e5733fd9ced0",
+    "src/ninetoothed/compiler/specialization.py": "b5edb2824593b8d03ce1a16a514c23817b2a1ee5361ee53c719a56c343ded78d",
+    "src/ninetoothed/cudaifier.py": "223aade73e7cf5e2c1be53b597f6c10bc5a73ad2ba5c8dc316d45c6bc1d215d3",
+    "src/ninetoothed/debugging.py": "7c9b4fd83c4ddc23c4bc347579ea7b9dadb92fbe7000dcfb939c9aad755f35ee",
+    "src/ninetoothed/dtype.py": "727c8d92bedaf0f0c112456c170d47144e135cc864c1d9bdde6b31b4b0c519ec",
+    "src/ninetoothed/eval.py": "dfdfff38f134c4d40a3740861c4cd2ec3e4cff5a237b43c2a43b98d467ef74d9",
+    "src/ninetoothed/frontend/__init__.py": "802336da2fc225aa1c26e4f9f52f7fefa77742323b50157679a026ea5f6f44d7",
+    "src/ninetoothed/frontend/errors.py": "72bbfd47d7440e5b4cdabe669a20562fbae199dea65c1029854b3dfd295d9e2f",
+    "src/ninetoothed/frontend/layout.py": "b4a84560b2a7024b1f23f319b2c8cdedf6673aec376be2c60db8747d8bc32e7a",
+    "src/ninetoothed/frontend/preparation.py": "fc3802724d66671e2e26c385ff666f7f83a01c019819ea7f0c2c3faad17ef129",
+    "src/ninetoothed/frontend/python.py": "50c0e327672de05f3711bbfab34a8de6c12da354c9aa9c52e8d3f8d357baf9f1",
+    "src/ninetoothed/frontend/types.py": "a92650d6013160dcb7c3929cc602a484f5ffa97a8a755c2699f96691ee67da61",
+    "src/ninetoothed/interpreter/__init__.py": "a13fe1e8cf02cc44b18ed60cadecb66459553f010c4ec6e060e6fc984dfc8818",
+    "src/ninetoothed/interpreter/access.py": "ad34275f301c9c1975dedfde8e3c3465bb2263f19b15e1eab79ce58c6ec45711",
+    "src/ninetoothed/interpreter/debugger.py": "1c8c98a089dabdbbfb4a3bca5d268d81255ef3f2498a3176cb4ac83640876093",
+    "src/ninetoothed/interpreter/expressions.py": "579514e1a743857bdc2b1442fa8ed904ff9c1c85833e0825706bb049a98d90bc",
+    "src/ninetoothed/interpreter/failure.py": "8b9f7cce386d77a8e600e790890a2dee2ada81ea8fcc05b2ff25768ce6853174",
+    "src/ninetoothed/interpreter/localization.py": "c33afc2ff679bed9e2385043cda2ae58bc838101350647f32c17f1ab594556a4",
+    "src/ninetoothed/interpreter/memory.py": "04ba123b1fac673be035e7cc3d686dec38897f81eb4dd611fedcb7b8e003e78b",
+    "src/ninetoothed/interpreter/runtime.py": "712a13c0d35ade1fd60dbff23467ce55728579916e7f1527b236691f04a9bac8",
+    "src/ninetoothed/interpreter/storage.py": "559385c016acf17ab734d3e7912202290d393a90542679cdb47656d135792a9d",
+    "src/ninetoothed/ir/__init__.py": "54ec8b1f37f2c73bf30a0d6598ea66183c102c50400a2d8f63766cd6473ea186",
+    "src/ninetoothed/ir/frozen.py": "eec5ca66d01db1ddb5e8def281ccd29b3085f3388705de30fb8cef7d24d4ac27",
+    "src/ninetoothed/ir/kernel.py": "7fbc0ef4ade6e46d430c13dfc2e34e4297cc3d1499f90d22e8c08907eb02ebb7",
+    "src/ninetoothed/ir/provenance.py": "de987d4cb8f08fa264d66ab91003c862485131e6925172c8c63d0eac10013725",
+    "src/ninetoothed/ir/ssa.py": "9f42d641b79edb10807733df553c40dbe2a392a61fc5a436bd4f0f7ba5247f45",
+    "src/ninetoothed/language.py": "d8fe2a3db8a42d07593853847418fcb762abd802dafc6f7258170b303423c27e",
+    "src/ninetoothed/make.py": "589c7158cf1d303489ec9ed88e26c0369740e5fb408aae998330473e35088617",
+    "src/ninetoothed/naming.py": "165d31e1e0d14ad4e99178c983ad7bf44ac49d8edb479422d004fa457f42ddf5",
+    "src/ninetoothed/symbol.py": "d2af70f4317eb1db46a9599e08bfac9d7a218b29e9cf6f90c4f42b0c51c7dbc4",
+    "src/ninetoothed/targets.py": "f0c6cb61a99c9d8957613db6f867f661feb1fe32c45e3d6e3d720be3db3cef1a",
+    "src/ninetoothed/tensor.py": "0048b18325b4b58b44a29e20330c5f57fd3ed94cce2d0fe1eefd3ceae5762ff6",
+    "src/ninetoothed/torchifier.py": "e1c37afa36c9590b1cbaeaa69023987b4184b25f051c3ceb493beba027f2d9cd",
+    "src/ninetoothed/utils.py": "9ad4570010553e79607769f544487da01decff96d4b0a85dde2c2ede82790d24",
+    "src/ninetoothed/visualization.py": "535761a95197b4ce8413483008d61b49c1c071c39b5ad71fa8546008757107a0"
+  }
+}

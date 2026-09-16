@@ -1,0 +1,9 @@
+{
+  "cpu_acceptance": "512 passed, 15 deselected in 35.10s",
+  "row_policy": "270 checks passed; CPU reference test passed",
+  "new_expression_tests": "10 passed in 0.43s",
+  "ruff": "passed",
+  "format": "passed",
+  "contributing_style": "passed",
+  "note": "Performance comparison uses three independent process pairs, not the CPU pytest runtime."
+}
