@@ -1,0 +1,111 @@
+"""Complete exact missing test IDs without changing the frozen source or test assertions."""
+
+import importlib.metadata
+import json
+import os
+import sys
+import xml.etree.ElementTree as ET
+
+from _pytest.junitxml import mangle_test_address
+
+from validation_common import ROOT, Runner, digest, gpu_environment, verify_sources
+
+
+def main():
+    runner = Runner(ROOT / "results/nine-remainder-serial", 7200)
+    source = ROOT / "sources/nine"
+    previous = ROOT / "results/nine-parallel"
+    runner.env["PYTHONPATH"] = str(source / "src") + os.pathsep + str(ROOT)
+    runner.env["NINE_STACK_DIR"] = str(runner.output)
+    runner.env["NINETOOTHED_CACHE_DIR"] = str(previous / "cache/ninetoothed")
+    runner.env["TRITON_CACHE_DIR"] = str(previous / "cache/triton")
+    code = 1
+    try:
+        old = json.loads((previous / "run-summary.json").read_text())
+        selection = json.loads(
+            (ROOT / "results/nine-completion/remaining.json").read_text()
+        )
+        hashes = verify_sources("nine", source)
+        if hashes != old["source_sha256"]:
+            raise RuntimeError("Source differs from the preceding partial run.")
+        hardware = gpu_environment(allow_non_a100=True)
+        versions = {name: importlib.metadata.version(name) for name in old["versions"]}
+        if hardware != old["hardware"] or versions != old["versions"]:
+            raise RuntimeError("The environment differs from the partial run.")
+        if selection["completed"] != {"passed": 898, "skipped": 2}:
+            raise RuntimeError(
+                "The completed test set does not match the preserved report."
+            )
+        if selection["collected"] != 902 or len(selection["remaining"]) != 2:
+            raise RuntimeError("Unexpected remaining test set.")
+        runner.record.update(
+            status="RUNNING",
+            source_commit=old["source_commit"],
+            source_sha256=hashes,
+            hardware=hardware,
+            versions=versions,
+            previous_junit_sha256=digest(previous / "full-pytest.xml"),
+            remaining=selection["remaining"],
+            note="Reuse completed checks and compiler caches; do not count repeats twice.",
+        )
+        runner.write()
+        runner.run(
+            "remaining-pytest",
+            [
+                sys.executable,
+                "-m",
+                "pytest",
+                *selection["remaining"],
+                "--doctest-modules",
+                "-vv",
+                "-p",
+                "pytest_cov.plugin",
+                "-p",
+                "nine_stack_probe",
+                "-o",
+                "faulthandler_timeout=0",
+                "--junitxml=" + str(runner.output / "remaining-pytest.xml"),
+                "--cov=ninetoothed",
+                "--cov-report=xml:" + str(runner.output / "coverage.xml"),
+            ],
+            source,
+        )
+        expected = set()
+        for nodeid in selection["remaining"]:
+            parts = mangle_test_address(nodeid)
+            expected.add((".".join(parts[:-1]), parts[-1]))
+        cases = list(
+            ET.parse(runner.output / "remaining-pytest.xml").getroot().iter("testcase")
+        )
+        actual = {(case.get("classname"), case.get("name")) for case in cases}
+        if actual != expected or len(cases) != len(expected):
+            raise RuntimeError(
+                "The completion report does not cover the exact remaining IDs."
+            )
+        if any(list(case) for case in cases):
+            raise RuntimeError(
+                "A remaining test was skipped, failed, or has unexpected results."
+            )
+        if verify_sources("nine", source) != hashes:
+            raise RuntimeError("Tracked source files changed during completion.")
+        runner.record.update(
+            status="PASS_REMAINDER",
+            remaining_passed=len(cases),
+            combined_collected=902,
+            combined_passed=900,
+            combined_skipped=2,
+            scope="Complete test-ID coverage across partial and completion runs, not one uninterrupted run.",
+        )
+        code = 0
+    except Exception as error:  # noqa: BLE001 - Preserve the real terminal status.
+        runner.record["status"] = "FAIL"
+        runner.record["error"] = f"{type(error).__name__}: {error}"
+        print(runner.record["error"], flush=True)
+    finally:
+        runner.finish()
+    print(json.dumps({"status": runner.record["status"], "output": str(runner.output)}))
+    return code
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())

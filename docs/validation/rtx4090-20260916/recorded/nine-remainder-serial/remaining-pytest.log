@@ -1,0 +1,16 @@
+================================================================================ test session starts =================================================================================
+platform linux -- Python 3.12.3, pytest-8.1.1, pluggy-1.5.0 -- /data/validation-venv/bin/python
+cachedir: .pytest_cache
+rootdir: /data/gpu-validation/sources/nine
+configfile: pyproject.toml
+collecting ... collected 2 items
+
+tests/test_conv2d.py::test[4-64-16-16-512-3-3-padding2-dtype0-0.001-0.001-cuda] PASSED                                                                                         [ 50%]
+tests/test_conv2d.py::test[4-64-16-16-512-3-3-padding3-dtype0-0.001-0.001-cuda] PASSED                                                                                         [100%]
+
+-------------------------------------------- generated xml file: /data/gpu-validation/results/nine-remainder-serial/remaining-pytest.xml ---------------------------------------------
+=================================================================================== tests coverage ===================================================================================
+__________________________________________________________________ coverage: platform linux, python 3.12.3-final-0 ___________________________________________________________________
+
+Coverage XML written to file /data/gpu-validation/results/nine-remainder-serial/coverage.xml
+=========================================================================== 2 passed in 1222.67s (0:20:22) ===========================================================================

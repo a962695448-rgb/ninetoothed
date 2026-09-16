@@ -1,0 +1,6 @@
+{
+  "signal": "SIGINT",
+  "scope": "pytest controller for this run only",
+  "requested_at_utc": "2026-09-16T08:10:41.494858+00:00",
+  "reason": "End the bounded validation window gracefully and preserve partial reports before artifact collection."
+}

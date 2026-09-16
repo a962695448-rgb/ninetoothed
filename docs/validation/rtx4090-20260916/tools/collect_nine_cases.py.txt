@@ -1,0 +1,71 @@
+"""Match a fresh complete pytest collection against the preserved partial JUnit report."""
+
+import argparse
+import collections
+import json
+import xml.etree.ElementTree as ET
+from pathlib import Path
+
+import pytest
+from _pytest.junitxml import mangle_test_address
+
+
+class Collection:
+    def __init__(self):
+        self.items = []
+
+    def pytest_collection_finish(self, session):
+        for item in session.items:
+            names = mangle_test_address(item.nodeid)
+            self.items.append(
+                {
+                    "nodeid": item.nodeid,
+                    "classname": ".".join(names[:-1]),
+                    "name": names[-1],
+                }
+            )
+
+
+def main():
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("--previous", type=Path, required=True)
+    parser.add_argument("--output", type=Path, required=True)
+    args = parser.parse_args()
+    if args.output.exists():
+        raise FileExistsError(args.output)
+    collector = Collection()
+    code = pytest.main(["--doctest-modules", "--collect-only", "-q"], plugins=[collector])
+    if code:
+        return code
+    index = {
+        (item["classname"], item["name"]): item for item in collector.items
+    }
+    if len(index) != len(collector.items):
+        raise RuntimeError("Collected test addresses are not unique.")
+    completed, incomplete = {}, []
+    for case in ET.parse(args.previous).getroot().iter("testcase"):
+        key = (case.get("classname"), case.get("name"))
+        if None in key:
+            incomplete.append(dict(case.attrib))
+            continue
+        if key not in index or key in completed:
+            raise RuntimeError("Unmatched or duplicate JUnit case: " + str(key))
+        if case.find("failure") is not None or case.find("error") is not None:
+            raise RuntimeError("The partial report contains a failing case: " + str(key))
+        completed[key] = "skipped" if case.find("skipped") is not None else "passed"
+    missing = [item["nodeid"] for key, item in index.items() if key not in completed]
+    result = {
+        "collected": len(collector.items),
+        "completed": dict(collections.Counter(completed.values())),
+        "incomplete_junit_entries": incomplete,
+        "remaining": missing,
+        "collection": collector.items,
+    }
+    args.output.parent.mkdir(parents=True, exist_ok=True)
+    args.output.write_text(json.dumps(result, ensure_ascii=False, indent=2) + "\n")
+    print(json.dumps({k: v for k, v in result.items() if k != "collection"}, indent=2))
+    return 0
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())

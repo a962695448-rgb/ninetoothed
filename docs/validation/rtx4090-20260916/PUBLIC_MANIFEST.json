@@ -1,0 +1,146 @@
+{
+  "README.zh-CN.md": {
+    "bytes": 4800,
+    "sha256": "850660cdc05d11acbc0ab663bf15a5965975c41adff9b4b74559355bf86796d9"
+  },
+  "SOURCE_ARCHIVES.json": {
+    "bytes": 513,
+    "sha256": "a788b9da996804f15085a149c4212bc8db7951fdc6889fce7c65244241fd4219"
+  },
+  "SOURCE_TREES.json": {
+    "bytes": 83790,
+    "sha256": "774f271bd8a18da37c06fa5aa69bb6947da9e8b330a3d8227a94b7bc9a8cf4d5"
+  },
+  "environment.json": {
+    "bytes": 22094,
+    "sha256": "fe5941fc0bab5412f14699eb53fa1d3d283a285f3cb5f1463fd4ad75ecad5d0a"
+  },
+  "recorded/nine-completion/combined-results.json": {
+    "bytes": 200447,
+    "sha256": "d3ea9d24462978fa6ee77b3126e76ea81f7d43b09712d6b12e57bc847ad7b77c"
+  },
+  "recorded/nine-completion/remaining.json": {
+    "bytes": 243991,
+    "sha256": "0edcaf2d0f95b1410308b87ae3f819a7bc9d448d1b94e8de5f0db2a34d1f78c1"
+  },
+  "recorded/nine-full/full-pytest.log": {
+    "bytes": 1090,
+    "sha256": "ad6b2c28e4dddb1306e24fd4513b702b4647862fde668c063433a229d01b3f54"
+  },
+  "recorded/nine-full/run-summary.json": {
+    "bytes": 22467,
+    "sha256": "00db55a58df01e7af11612e65788853ff4a1caa587a3597452c19348e105cca1"
+  },
+  "recorded/nine-full/triton-differential.json": {
+    "bytes": 10877,
+    "sha256": "259b1850de89571fc384b3911c5313d9eea8885608a7dca382f59daef46170bd"
+  },
+  "recorded/nine-full/triton-differential.log": {
+    "bytes": 536,
+    "sha256": "3e5739fcbe47e5a07c11f8367fe005ffefd694cf3fdbab73e8290e61beb5ed27"
+  },
+  "recorded/nine-parallel/full-pytest.log": {
+    "bytes": 1968,
+    "sha256": "45e17ccbb0a8c720930ff8ac09197e31ac05c6982c1e566394715b7db027d64f"
+  },
+  "recorded/nine-parallel/full-pytest.xml": {
+    "bytes": 128588,
+    "sha256": "bd0df0617750f32e0520ffb9bbaeadd08da55828fa8639d3cc672caae1e347ab"
+  },
+  "recorded/nine-parallel/operator-interruption.json": {
+    "bytes": 250,
+    "sha256": "4ade5b25f5eb7269ff2229d322fe436fc7a54fe7f4ea48a0efecc03131acce5a"
+  },
+  "recorded/nine-parallel/run-summary.json": {
+    "bytes": 23346,
+    "sha256": "c3d8c36085fa6913f6e35f5afd3d8f2c82b5b035d2e20587f058f1d4ed368637"
+  },
+  "recorded/nine-parallel/triton-differential.json": {
+    "bytes": 10877,
+    "sha256": "d561b87b7a128d1274b01fb08346bae4a485f35185021737fbb99600e61c6a99"
+  },
+  "recorded/nine-parallel/triton-differential.log": {
+    "bytes": 540,
+    "sha256": "d3865c44b939291c53c3c13ee0209f65b4ecf2c6d2dbdf79973ab5413f4b254b"
+  },
+  "recorded/nine-remainder/remaining-pytest.log": {
+    "bytes": 4566,
+    "sha256": "4f43eb324ee1940546bb8ca066729209267f98d8102754f0d0431e17c05768c7"
+  },
+  "recorded/nine-remainder/remaining-pytest.xml": {
+    "bytes": 1064,
+    "sha256": "8e1a95223a17ce116e9a30154d250e2b295efdaccac286199e33e7687844133b"
+  },
+  "recorded/nine-remainder/run-summary.json": {
+    "bytes": 21667,
+    "sha256": "858784863effbeaae51c4ca82d722ed7791c9f014e479bc487d21b12b3170331"
+  },
+  "recorded/nine-remainder-serial/remaining-pytest.log": {
+    "bytes": 1598,
+    "sha256": "cb12ffdfdf248efa73a7c38c5ff113af1e0a6e8f4f0641b400083b757ade586a"
+  },
+  "recorded/nine-remainder-serial/remaining-pytest.xml": {
+    "bytes": 469,
+    "sha256": "23ed24e92078d0950d718b07d076bb9d6dcbff35cda954e104101fd91e283b45"
+  },
+  "recorded/nine-remainder-serial/run-summary.json": {
+    "bytes": 22117,
+    "sha256": "807fb0c2a8c9bebb7561f0370e707a267b89cff3bf0ba42b35b1e7b75229f38d"
+  },
+  "recorded/nine-remainder-serial/stack-42d37b617ab4.jsonl": {
+    "bytes": 129938,
+    "sha256": "3aecf085fbdf3f52b60c7b207ce47fdb57ef02ac23e7e3d8bf1666d50d2b7113"
+  },
+  "recorded/nine-remainder-serial/stack-c39399878327.jsonl": {
+    "bytes": 89000,
+    "sha256": "9574f86c9a99d4916caf4e5293fbcf6b4e362d34709d28db09e4e93ff724bd85"
+  },
+  "recorded/nine-targeted/run-summary.json": {
+    "bytes": 21537,
+    "sha256": "91413f977a831a876df63d913116e3fe737740fb898117a67b4ba2b69ebc0f25"
+  },
+  "recorded/nine-targeted/triton-differential.json": {
+    "bytes": 10877,
+    "sha256": "8e3b74b5c6ecb332263a53bcb937288647eca08671af1c82c01c5ea34601fb06"
+  },
+  "recorded/nine-targeted/triton-differential.log": {
+    "bytes": 540,
+    "sha256": "9eb18ff5fffd984e12ca6eb45114ee9a2e449128fa6bc12b9a79b1211bc2c2da"
+  },
+  "tools/collect_nine_cases.py.txt": {
+    "bytes": 2624,
+    "sha256": "46d5e27071cce60a6ee8461997d4d4c361ac7e649b0a2c631bfb2fa190752ed0"
+  },
+  "tools/combine_nine_reports.py.txt": {
+    "bytes": 3863,
+    "sha256": "81d85cac5a27c0044b4935c04f1dc951267aa3c82ff3429817995a88dd3ca519"
+  },
+  "tools/nine_stack_probe.py.txt": {
+    "bytes": 1142,
+    "sha256": "f9ef8fe6a0cd1e138cc557fc367317671627f979feb06d0380aeb40dc07bb59f"
+  },
+  "tools/run_nine_gpu.py.txt": {
+    "bytes": 6225,
+    "sha256": "b2001627d6a4720eb8b9b5b20d7cab6473ebb4d90d15e392352a2d0d164b1cb4"
+  },
+  "tools/run_nine_parallel.py.txt": {
+    "bytes": 1349,
+    "sha256": "664d5bc89f65407907c29af823550b7123d9d86944eeb01e7121de64a575b879"
+  },
+  "tools/run_nine_remainder.py.txt": {
+    "bytes": 4419,
+    "sha256": "c3143789c6799b6bfaa0c70a35ef0cd6e3213ecab4c9317e1498c3d4078b125b"
+  },
+  "tools/run_nine_remainder_serial.py.txt": {
+    "bytes": 4544,
+    "sha256": "6e0d77ad8e181fcf519c1e6f79b425a823af06115f380149051b8fbc4f52534b"
+  },
+  "tools/validation_common.py.txt": {
+    "bytes": 6065,
+    "sha256": "626acf1f6515e28152c40e463c2ca6b1f64bd128917da22302ae30fa6da23ea5"
+  },
+  "verify_reports.py": {
+    "bytes": 3969,
+    "sha256": "165b79ff6a4d836cf41f1c932e8fc954c0b0202c64abe41ed9989ff8f96e62c5"
+  }
+}

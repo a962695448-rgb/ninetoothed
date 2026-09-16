@@ -1,0 +1,163 @@
+"""Validate the frozen PR source on one NVIDIA GPU without installing dependencies."""
+
+import argparse
+import importlib.metadata
+import json
+import shutil
+import sys
+import xml.etree.ElementTree as ET
+from pathlib import Path
+
+from validation_common import (
+    ROOT,
+    Runner,
+    compiler_info,
+    gpu_environment,
+    verify_sources,
+)
+
+ALLOWED_SKIP_REASONS = (
+    "multi-device testing requires at least 2 devices",
+    "Triton multi-context testing requires at least 2 CUDA devices",
+)
+
+
+def main():
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument(
+        "--output", type=Path, required=True, help="New result directory."
+    )
+    parser.add_argument("--full-suite", action="store_true")
+    parser.add_argument("--allow-non-a100", action="store_true")
+    parser.add_argument("--stage-timeout", type=int, default=1800)
+    args = parser.parse_args()
+    if args.stage_timeout < 1:
+        parser.error("--stage-timeout must be positive.")
+    runner = Runner(args.output, args.stage_timeout)
+    source = ROOT / "sources/nine"
+    runner.env["PYTHONPATH"] = str(source / "src")
+    tests_started = False
+    code = 2
+    try:
+        source_hashes = verify_sources("nine", source)
+        runner.record["source_commit"] = "1b68040f73553de9b5929cd61067c4d4369f7f22"
+        runner.record["source_sha256"] = source_hashes
+        runner.record["hardware"] = gpu_environment(args.allow_non_a100)
+        runner.record["cuda_compiler"] = compiler_info()
+        dependencies = ["numpy", "sympy", "torch", "triton", "pytest"]
+        if args.full_suite:
+            dependencies += [
+                "pytest-cov",
+                "jupytext",
+                "matplotlib",
+                "pandas",
+                "tilelang",
+            ]
+        runner.record["versions"] = {}
+        for name in dependencies:
+            try:
+                version = importlib.metadata.version(name)
+            except importlib.metadata.PackageNotFoundError:
+                if name != "triton":
+                    raise
+                # NGC distributes its Triton build under this package name.
+                name = "pytorch-triton"
+                version = importlib.metadata.version(name)
+            runner.record["versions"][name] = version
+        if args.full_suite and shutil.which("nvcc", path=runner.env["PATH"]) is None:
+            raise RuntimeError("The full GPU suite requires nvcc on PATH.")
+        runner.record["status"] = "RUNNING"
+        runner.write()
+        tests_started = True
+        runner.run(
+            "triton-differential",
+            [
+                sys.executable,
+                source / "scripts/verify_interpreter_gpu.py",
+                "--device",
+                "0",
+                "--report",
+                runner.output / "triton-differential.json",
+            ],
+            source,
+        )
+        differential = json.loads(
+            (runner.output / "triton-differential.json").read_text()
+        )
+        if (
+            differential["status"] != "PASS"
+            or differential["total_cases"] != 15
+            or differential["passed_cases"] != 15
+        ):
+            raise RuntimeError(
+                "The required 15 real-GPU differential cases did not pass."
+            )
+        runner.record["differential"] = {
+            key: differential[key]
+            for key in (
+                "passed_cases",
+                "total_cases",
+                "passed_programs",
+                "passed_categories",
+            )
+        }
+        if args.full_suite:
+            runner.run(
+                "full-pytest",
+                [
+                    sys.executable,
+                    "-m",
+                    "pytest",
+                    "--doctest-modules",
+                    "-p",
+                    "pytest_cov.plugin",
+                    "--junitxml=" + str(runner.output / "full-pytest.xml"),
+                    "--cov=ninetoothed",
+                    "--cov-report=xml:" + str(runner.output / "coverage.xml"),
+                    "--cov-report=html:" + str(runner.output / "coverage-html"),
+                ],
+                source,
+            )
+            junit = ET.parse(runner.output / "full-pytest.xml").getroot()
+            cases = list(junit.iter("testcase"))
+            skips = []
+            for case in cases:
+                skip = case.find("skipped")
+                if skip is not None:
+                    message = skip.get("message", "") + " " + (skip.text or "")
+                    skips.append({"name": case.get("name"), "reason": message})
+                    if not any(reason in message for reason in ALLOWED_SKIP_REASONS):
+                        raise RuntimeError("Unexpected full-suite skip: " + message)
+            if not cases or any(
+                c.find("failure") is not None or c.find("error") is not None
+                for c in cases
+            ):
+                raise RuntimeError("Invalid or failing full-suite JUnit report.")
+            runner.record["full_suite"] = {
+                "test_cases": len(cases),
+                "passed": len(cases) - len(skips),
+                "skips": skips,
+            }
+        if verify_sources("nine", source) != source_hashes:
+            raise RuntimeError("Tracked source files changed during validation.")
+        runner.record["status"] = "PASS_FULL" if args.full_suite else "PASS_TARGETED"
+        runner.record["official_a100_evidence"] = runner.record["hardware"][
+            "a100_validation"
+        ]
+        runner.record["note"] = (
+            "Single-GPU evidence; hardware and exact source version are recorded."
+        )
+        code = 0
+    except Exception as error:  # noqa: BLE001 - Record a terminal failure for any GPU exception.
+        runner.record["status"] = "FAIL" if tests_started else "UNVERIFIED"
+        runner.record["error"] = f"{type(error).__name__}: {error}"
+        print(runner.record["error"], file=sys.stderr)
+        code = 1 if tests_started else 2
+    finally:
+        runner.finish()
+    print(json.dumps({"status": runner.record["status"], "output": str(runner.output)}))
+    return code
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())

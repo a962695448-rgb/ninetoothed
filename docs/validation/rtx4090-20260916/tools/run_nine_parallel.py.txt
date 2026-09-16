@@ -1,0 +1,42 @@
+"""Use two pytest workers for correctness only, retaining the original validation gates."""
+
+import importlib.metadata
+
+import run_nine_gpu
+from validation_common import ROOT, Runner, digest
+
+
+class ParallelRunner(Runner):
+    def __init__(self, output, timeout):
+        super().__init__(output, timeout)
+        self.record["execution_mode"] = (
+            "Two pytest workers, fresh per-worker compiler caches; correctness only."
+        )
+        self.record["pytest_xdist_version"] = importlib.metadata.version("pytest-xdist")
+        self.record["validation_harness_sha256"] = {
+            name: digest(ROOT / name)
+            for name in (
+                "run_nine_parallel.py",
+                "run_nine_gpu.py",
+                "validation_common.py",
+            )
+        }
+
+    def run(self, name, arguments, cwd):
+        if name == "full-pytest":
+            arguments = [
+                *arguments,
+                "-p",
+                "xdist.plugin",
+                "-n",
+                "2",
+                "--dist=worksteal",
+                "--max-worker-restart=0",
+            ]
+        return super().run(name, arguments, cwd)
+
+
+if __name__ == "__main__":
+    # Reuse source verification, real-GPU checks, JUnit checks and skip policy.
+    run_nine_gpu.Runner = ParallelRunner
+    raise SystemExit(run_nine_gpu.main())

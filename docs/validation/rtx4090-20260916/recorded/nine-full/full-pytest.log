@@ -1,0 +1,11 @@
+================================================================================ test session starts =================================================================================
+platform linux -- Python 3.12.3, pytest-8.1.1, pluggy-1.5.0
+rootdir: /data/gpu-validation/sources/nine
+configfile: pyproject.toml
+collected 902 items
+
+tests/test_add.py .                                                                                                                                                            [  0%]
+tests/test_addmm.py ..                                                                                                                                                         [  0%]
+tests/test_aot.py .s..........                                                                                                                                                 [  1%]
+tests/test_aot_auto_tuning.py ....                                                                                                                                             [  2%]
+tests/test_attention.py ....

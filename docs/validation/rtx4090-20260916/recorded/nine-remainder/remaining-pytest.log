@@ -1,0 +1,60 @@
+================================================================================ test session starts =================================================================================
+platform linux -- Python 3.12.3, pytest-8.1.1, pluggy-1.5.0 -- /data/validation-venv/bin/python
+cachedir: .pytest_cache
+rootdir: /data/gpu-validation/sources/nine
+configfile: pyproject.toml
+created: 2/2 workers
+2 workers [2 items]
+
+scheduling tests via LoadScheduling
+
+tests/test_conv2d.py::test[4-64-16-16-512-3-3-padding3-dtype0-0.001-0.001-cuda] 
+tests/test_conv2d.py::test[4-64-16-16-512-3-3-padding2-dtype0-0.001-0.001-cuda] Timeout (0:02:00)!
+Thread 0x00007f7c9231e6c0Timeout (0:02:00)!
+ (most recent call first):
+Thread 0x  File 00007f3b8da226c0 (most recent call first):
+"/usr/local/lib/python3.12/dist-packages/execnet/gateway_base.py  File "", line /usr/local/lib/python3.12/dist-packages/execnet/gateway_base.py534" in read, line 
+534  File  in "read/usr/local/lib/python3.12/dist-packages/execnet/gateway_base.py
+"  File , line "567/usr/local/lib/python3.12/dist-packages/execnet/gateway_base.py in "from_io, line 
+567  File  in "from_io/usr/local/lib/python3.12/dist-packages/execnet/gateway_base.py
+"  File , line "1160/usr/local/lib/python3.12/dist-packages/execnet/gateway_base.py in "_thread_receiver, line 
+1160  File  in "_thread_receiver/usr/local/lib/python3.12/dist-packages/execnet/gateway_base.py
+"  File , line "341/usr/local/lib/python3.12/dist-packages/execnet/gateway_base.py in "run, line 
+341  File  in "run/usr/local/lib/python3.12/dist-packages/execnet/gateway_base.py
+"  File , line "411/usr/local/lib/python3.12/dist-packages/execnet/gateway_base.py in "_perform_spawn, line 
+411
+ in Thread 0x_perform_spawn00007f7c92eab300
+ (most recent call first):
+
+  File Thread 0x"00007f3b8e5af300/usr/local/lib/python3.12/dist-packages/triton/compiler/code_generator.py (most recent call first):
+"  File , line "1204/usr/local/lib/python3.12/dist-packages/triton/language/semantic.py in "visit
+  File "/usr/local/lib/python3.12/dist-packages/triton/compiler/code_generator.py", line 1131 in visit_BinOp
+
+[gw1] node down: Not properly terminated
+[gw1] [ 50%] FAILED tests/test_conv2d.py::test[4-64-16-16-512-3-3-padding3-dtype0-0.001-0.001-cuda] 
+
+worker gw1 crashed and worker restarting disabled
+[gw0] node down: Not properly terminated
+[gw0] [100%] FAILED tests/test_conv2d.py::test[4-64-16-16-512-3-3-padding2-dtype0-0.001-0.001-cuda] /data/validation-venv/lib/python3.12/site-packages/pytest_cov/plugin.py:366: CovReportWarning: Failed to generate report: No data to report.
+
+  warnings.warn(CovReportWarning(message), stacklevel=1)
+
+
+worker gw0 crashed and worker restarting disabled
+
+WARNING: Failed to generate report: No data to report.
+
+
+====================================================================================== FAILURES ======================================================================================
+________________________________________________________________________________ tests/test_conv2d.py ________________________________________________________________________________
+[gw1] linux -- Python 3.12.3 /data/validation-venv/bin/python
+worker 'gw1' crashed while running 'tests/test_conv2d.py::test[4-64-16-16-512-3-3-padding3-dtype0-0.001-0.001-cuda]'
+________________________________________________________________________________ tests/test_conv2d.py ________________________________________________________________________________
+[gw0] linux -- Python 3.12.3 /data/validation-venv/bin/python
+worker 'gw0' crashed while running 'tests/test_conv2d.py::test[4-64-16-16-512-3-3-padding2-dtype0-0.001-0.001-cuda]'
+============================================================== xdist: worker gw0 crashed and worker restarting disabled ==============================================================
+------------------------------------------------ generated xml file: /data/gpu-validation/results/nine-remainder/remaining-pytest.xml ------------------------------------------------
+============================================================================== short test summary info ===============================================================================
+FAILED tests/test_conv2d.py::test[4-64-16-16-512-3-3-padding3-dtype0-0.001-0.001-cuda]
+FAILED tests/test_conv2d.py::test[4-64-16-16-512-3-3-padding2-dtype0-0.001-0.001-cuda]
+=========================================================================== 2 failed in 123.39s (0:02:03) ============================================================================
