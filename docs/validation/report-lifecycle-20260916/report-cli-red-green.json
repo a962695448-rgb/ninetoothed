@@ -1,0 +1,8 @@
+{
+  "old_source": "788208c91f3a7d2aa72dde315201a61380f49c00",
+  "old_run": "5 failed, 3 passed, 1 deselected",
+  "old_interrupt_case_deselected_to_avoid_aborting_old_pytest": true,
+  "new_run": "9 passed",
+  "test_doubles": "Report lifecycle only; does not validate GPU arithmetic.",
+  "confirmed_original_symptom": "Existing PASS report overwritten with UNVERIFIED on unavailable GPU."
+}

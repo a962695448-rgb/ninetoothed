@@ -1,0 +1,46 @@
+{
+  "status": "PASS",
+  "jobs": [
+    {
+      "name": "cuda-context",
+      "command": [
+        "/usr/bin/python3",
+        "scripts/verify_execution_context.py",
+        "--build-directory",
+        "/data/testing-20260916/build",
+        "--json",
+        "/data/testing-20260916/results/cuda-context.json"
+      ],
+      "cwd": "/data/testing-20260916/sources/cuda/03_hadamard_tc/a962695448-rgb",
+      "returncode": 0,
+      "seconds": 128.539643317461
+    },
+    {
+      "name": "nine-gpu",
+      "command": [
+        "/usr/bin/python3",
+        "scripts/verify_interpreter_gpu.py",
+        "--report",
+        "/data/testing-20260916/results/nine-gpu.json"
+      ],
+      "cwd": "/data/testing-20260916/sources/nine",
+      "returncode": 0,
+      "seconds": 12.290890760719776
+    },
+    {
+      "name": "nine-report-tests",
+      "command": [
+        "/usr/bin/python3",
+        "-m",
+        "pytest",
+        "-q",
+        "tests/test_interpreter_gpu_report.py",
+        "--junitxml=/data/testing-20260916/results/nine-report-tests.xml"
+      ],
+      "cwd": "/data/testing-20260916/sources/nine",
+      "returncode": 0,
+      "seconds": 2.3189590498805046
+    }
+  ],
+  "sources_unchanged_during_run": true
+}
