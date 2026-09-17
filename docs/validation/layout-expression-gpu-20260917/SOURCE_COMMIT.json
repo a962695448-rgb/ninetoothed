@@ -1,0 +1,12 @@
+{
+  "commit": "07062137e599cfead66d510cede3c0a3c1bbdf6b",
+  "tree": "1340884d605d88f49fb2f41c8968617f46cf5aae",
+  "all_submitted_files_verified": 196,
+  "source_files_verified": 70,
+  "gpu_cases_passed": 15,
+  "layout_expression_tests_passed": 108,
+  "semantic_tests_elapsed_seconds": 0.77,
+  "shared_export_sha256": "fef9810d2cd18d53454e9f5e1dae6a6cdf51ac7609e20641ecea6b3a7bd49d97",
+  "instance_shutdown_confirmed": true,
+  "scope": "Correctness for this source, dependencies, device and recorded inputs; not a GPU speed benchmark or full repository suite"
+}
