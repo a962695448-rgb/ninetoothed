@@ -1,0 +1,527 @@
+{
+  "status": "PASS",
+  "source": "/Users/apple/Projects/infinitensor-2026/copy-quantize-20260917/control/nine",
+  "python": "3.12.14 (main, Aug 25 2026, 13:50:33) [Clang 22.1.3 ]",
+  "numpy": "2.3.5",
+  "platform": "macOS-26.5.1-arm64-arm-64bit",
+  "source_sha256": {
+    "src/ninetoothed/__init__.py": "f3e0b21cfda64055226b0a38ec461dc9bdd87d0871b78898f129e63d434134d6",
+    "src/ninetoothed/aot.py": "c164c85cffe18946de7c38ff489b78d61820bcedb2dd5b16dc6fc52ae632ebd2",
+    "src/ninetoothed/auto_tuner.py": "2eaa1adecbae6eed32d5372a8d4e8ad5a827c1b050c0430b7d026207e6f729da",
+    "src/ninetoothed/backends/__init__.py": "7842ab6bdb8ba68e04ed95fde8bfc5ec3f3952282a33aa3108ad7e3db6bc7b29",
+    "src/ninetoothed/backends/core.py": "cd90aef2b85d6b7eb928d1c15862f05f48aa340d851ee695d32595df0b180c01",
+    "src/ninetoothed/backends/cuda.py": "e5fef15ad3ef35dd18d9e5d5d15a2e0cfe92b1aad073d3f4c98d572f0ab37638",
+    "src/ninetoothed/backends/emitters/__init__.py": "12ba7cc758a60cc4940dad7578a7bfe1edc0e29dcb78776194c2b82881b39531",
+    "src/ninetoothed/backends/emitters/analysis.py": "54219cd51b407d6f17ce44ddc9cb491bd38015a5f49c4b0b1e2d588fa537e841",
+    "src/ninetoothed/backends/emitters/base.py": "4c102e491b762bf04df6b63591571e0f9770a1daa3af222cd1642d080500a6c4",
+    "src/ninetoothed/backends/emitters/context.py": "d4b3c3ecac778ac75b832f445c3a6f1d1607fcad904e121e34918cec3185736d",
+    "src/ninetoothed/backends/emitters/cuda.py": "89b17fa2994b7bdfd88e0ed591503e9469d9cd8ac935d47d0d8ce503b4b7b62e",
+    "src/ninetoothed/backends/emitters/expressions.py": "51200e5b494ed37c96c790c45f2ce0ee386cd7043a4a50f604be0fc18095ff35",
+    "src/ninetoothed/backends/emitters/ssa.py": "d99807a22ade60501ebe4e8615461239168a0534ba094c8eb8a1f3419f445aaa",
+    "src/ninetoothed/backends/emitters/tilelang.py": "60e07c4e7c07c8c3814e748ccbeae41e2cf7e2ae84cce0bcb8b53d1faf2f4451",
+    "src/ninetoothed/backends/emitters/triton.py": "bbbeaf048eed37c971e991ab91bed2cc7ad8155e01771bc970ca4a19500e2c66",
+    "src/ninetoothed/backends/materializers/__init__.py": "be074239a6e83602ce271956dbd3a43c7c6e0cd6b4709e9ef243d32f9dc0a344",
+    "src/ninetoothed/backends/materializers/base.py": "9b86e3e8667828b59e7895016c86f1f37e54591fb2cfbd369766e5241eec7c60",
+    "src/ninetoothed/backends/materializers/cuda.py": "a5c5da8ba560478c374523d52c03f63c008f472d46102306f772add01f059767",
+    "src/ninetoothed/backends/materializers/tilelang.py": "648c935b82980dbd6743e9445bbb0c64637b3a02ce7d37568952b70557ef757f",
+    "src/ninetoothed/backends/materializers/triton.py": "1655f01842204427ad47bf5d7e7d17a4d41e32bf8b1347f217378b0dd43b42f8",
+    "src/ninetoothed/backends/registry.py": "b3772ef8a35a0fecdc10d7db5093cc705bb84e0f8a2292ed08b05bbba21a2aec",
+    "src/ninetoothed/backends/tilelang.py": "6e85b73a9692884649ea946fb5d89d8e9ed0357fc8b145279ae94c30b0282b5a",
+    "src/ninetoothed/backends/toolchain.py": "e4d96a075367d7d70fdff168a88a3c9f2f2303601630ec60b62ccaef4136ecd8",
+    "src/ninetoothed/backends/triton.py": "178697f6ddd19dda1168c3ff40700873d45cd5549aaea5721571c45fde078b5f",
+    "src/ninetoothed/build.py": "9463a3cb74e81cd05c1f53a28880f9cd37311a788ebcdb50aa8ed947faf73c17",
+    "src/ninetoothed/compiler/__init__.py": "467a93323e48bd4c729e7a6d71cd8218eb873edde66d4707fcc6696e217a59b5",
+    "src/ninetoothed/compiler/cache.py": "51b31e143588d5b9985e9b5711c22663ef08f9648692a0bf61c92f143fd356de",
+    "src/ninetoothed/compiler/driver.py": "4260b4bdaed987846142b7d1b87ca52518811338b88cee477605c421402ff111",
+    "src/ninetoothed/compiler/jit.py": "4a00b058c5b5109451b7d67af69413beb616db4acf7497fdf8922236ada28ee1",
+    "src/ninetoothed/compiler/layout.py": "ec131626d28a7a983260a38c90f76c90aef4059cd57a0af423176744896e8743",
+    "src/ninetoothed/compiler/layout_runtime.py": "e7b9342f6099f706c593e64abf4e98d121fe35f8a0599b51a0fbd812d37fff76",
+    "src/ninetoothed/compiler/passes.py": "92d319a5a276091f55b1bb298f1ccc4f025c3fd185862f3431ed2b5f1efebbfb",
+    "src/ninetoothed/compiler/reductions.py": "7e05d3d78f48d20419090240048cb68ce84e602f875e9656273aec0768d2591c",
+    "src/ninetoothed/compiler/runtime.py": "05de16328ffafb231effac011f37efebe9c03a071c8d16184348e5733fd9ced0",
+    "src/ninetoothed/compiler/specialization.py": "b5edb2824593b8d03ce1a16a514c23817b2a1ee5361ee53c719a56c343ded78d",
+    "src/ninetoothed/cudaifier.py": "223aade73e7cf5e2c1be53b597f6c10bc5a73ad2ba5c8dc316d45c6bc1d215d3",
+    "src/ninetoothed/debugging.py": "7c9b4fd83c4ddc23c4bc347579ea7b9dadb92fbe7000dcfb939c9aad755f35ee",
+    "src/ninetoothed/dtype.py": "727c8d92bedaf0f0c112456c170d47144e135cc864c1d9bdde6b31b4b0c519ec",
+    "src/ninetoothed/eval.py": "dfdfff38f134c4d40a3740861c4cd2ec3e4cff5a237b43c2a43b98d467ef74d9",
+    "src/ninetoothed/frontend/__init__.py": "802336da2fc225aa1c26e4f9f52f7fefa77742323b50157679a026ea5f6f44d7",
+    "src/ninetoothed/frontend/errors.py": "72bbfd47d7440e5b4cdabe669a20562fbae199dea65c1029854b3dfd295d9e2f",
+    "src/ninetoothed/frontend/layout.py": "b4a84560b2a7024b1f23f319b2c8cdedf6673aec376be2c60db8747d8bc32e7a",
+    "src/ninetoothed/frontend/preparation.py": "fc3802724d66671e2e26c385ff666f7f83a01c019819ea7f0c2c3faad17ef129",
+    "src/ninetoothed/frontend/python.py": "50c0e327672de05f3711bbfab34a8de6c12da354c9aa9c52e8d3f8d357baf9f1",
+    "src/ninetoothed/frontend/types.py": "a92650d6013160dcb7c3929cc602a484f5ffa97a8a755c2699f96691ee67da61",
+    "src/ninetoothed/interpreter/__init__.py": "a13fe1e8cf02cc44b18ed60cadecb66459553f010c4ec6e060e6fc984dfc8818",
+    "src/ninetoothed/interpreter/access.py": "ad34275f301c9c1975dedfde8e3c3465bb2263f19b15e1eab79ce58c6ec45711",
+    "src/ninetoothed/interpreter/debugger.py": "1c8c98a089dabdbbfb4a3bca5d268d81255ef3f2498a3176cb4ac83640876093",
+    "src/ninetoothed/interpreter/expressions.py": "05defa068afd715cc6f40323d650bfc9009f5904fb06770ab0496c9b6026e060",
+    "src/ninetoothed/interpreter/failure.py": "8b9f7cce386d77a8e600e790890a2dee2ada81ea8fcc05b2ff25768ce6853174",
+    "src/ninetoothed/interpreter/localization.py": "c33afc2ff679bed9e2385043cda2ae58bc838101350647f32c17f1ab594556a4",
+    "src/ninetoothed/interpreter/memory.py": "f96650790809b3e385e766157d97fa7bfef4ea2a5a0d1106fedbf3f89eb65ad5",
+    "src/ninetoothed/interpreter/runtime.py": "712a13c0d35ade1fd60dbff23467ce55728579916e7f1527b236691f04a9bac8",
+    "src/ninetoothed/interpreter/storage.py": "559385c016acf17ab734d3e7912202290d393a90542679cdb47656d135792a9d",
+    "src/ninetoothed/ir/__init__.py": "54ec8b1f37f2c73bf30a0d6598ea66183c102c50400a2d8f63766cd6473ea186",
+    "src/ninetoothed/ir/frozen.py": "eec5ca66d01db1ddb5e8def281ccd29b3085f3388705de30fb8cef7d24d4ac27",
+    "src/ninetoothed/ir/kernel.py": "7fbc0ef4ade6e46d430c13dfc2e34e4297cc3d1499f90d22e8c08907eb02ebb7",
+    "src/ninetoothed/ir/provenance.py": "de987d4cb8f08fa264d66ab91003c862485131e6925172c8c63d0eac10013725",
+    "src/ninetoothed/ir/ssa.py": "9f42d641b79edb10807733df553c40dbe2a392a61fc5a436bd4f0f7ba5247f45",
+    "src/ninetoothed/language.py": "d8fe2a3db8a42d07593853847418fcb762abd802dafc6f7258170b303423c27e",
+    "src/ninetoothed/make.py": "589c7158cf1d303489ec9ed88e26c0369740e5fb408aae998330473e35088617",
+    "src/ninetoothed/naming.py": "165d31e1e0d14ad4e99178c983ad7bf44ac49d8edb479422d004fa457f42ddf5",
+    "src/ninetoothed/symbol.py": "d2af70f4317eb1db46a9599e08bfac9d7a218b29e9cf6f90c4f42b0c51c7dbc4",
+    "src/ninetoothed/targets.py": "f0c6cb61a99c9d8957613db6f867f661feb1fe32c45e3d6e3d720be3db3cef1a",
+    "src/ninetoothed/tensor.py": "0048b18325b4b58b44a29e20330c5f57fd3ed94cce2d0fe1eefd3ceae5762ff6",
+    "src/ninetoothed/torchifier.py": "e1c37afa36c9590b1cbaeaa69023987b4184b25f051c3ceb493beba027f2d9cd",
+    "src/ninetoothed/utils.py": "9ad4570010553e79607769f544487da01decff96d4b0a85dde2c2ede82790d24",
+    "src/ninetoothed/visualization.py": "535761a95197b4ce8413483008d61b49c1c071c39b5ad71fa8546008757107a0"
+  },
+  "cases": [
+    {
+      "name": "store_1024x257_contiguous",
+      "target": false,
+      "trace": false,
+      "times": [
+        0.005372433178126812,
+        0.005361958406865597,
+        0.005186333414167165,
+        0.005195741588249802,
+        0.005295900022611022,
+        0.005154808377847075,
+        0.005093675013631583,
+        0.005185949988663197,
+        0.005093633383512497
+      ],
+      "memory": {
+        "warm": {
+          "peak": 7388337,
+          "retained": 3202
+        },
+        "cold": {
+          "peak": 7388659,
+          "retained": 3524
+        }
+      },
+      "trace_sha256": "559bededcb346584f1200f573f2076d34a011e43064063b0f635e49190772830",
+      "events": 0
+    },
+    {
+      "name": "store_1024x257_contiguous",
+      "target": false,
+      "trace": true,
+      "times": [
+        0.05862940838560462,
+        0.05776978339999914,
+        0.05760540836490691,
+        0.05715197501704097,
+        0.05712422500364482,
+        0.05701575842685998,
+        0.056570616597309706,
+        0.05622207499109209,
+        0.05655259997583926
+      ],
+      "memory": {
+        "warm": {
+          "peak": 37390084,
+          "retained": 27640630
+        },
+        "cold": {
+          "peak": 37390650,
+          "retained": 27641196
+        }
+      },
+      "trace_sha256": "5a13d62424eb3ec686a318d5ecc93a8cb1cbe97a95980cbbaf05458343efb9dd",
+      "events": 2
+    },
+    {
+      "name": "read_1024x257_contiguous",
+      "target": true,
+      "trace": false,
+      "times": [
+        0.004846308380365372,
+        0.003697016602382064,
+        0.0034885833971202373,
+        0.0035773667972534896,
+        0.003907399997115135,
+        0.003772491775453091,
+        0.003664791630581021,
+        0.0037592581938952208,
+        0.003613116592168808
+      ],
+      "memory": {
+        "warm": {
+          "peak": 7388209,
+          "retained": 1055754
+        },
+        "cold": {
+          "peak": 7388483,
+          "retained": 1056028
+        }
+      },
+      "trace_sha256": "559bededcb346584f1200f573f2076d34a011e43064063b0f635e49190772830",
+      "events": 0
+    },
+    {
+      "name": "read_1024x257_contiguous",
+      "target": false,
+      "trace": true,
+      "times": [
+        0.03863231679424643,
+        0.039020966785028574,
+        0.03921038340777159,
+        0.038866200018674135,
+        0.03872460001148283,
+        0.0391030500177294,
+        0.03860597498714924,
+        0.038439125008881095,
+        0.038516241824254394
+      ],
+      "memory": {
+        "warm": {
+          "peak": 19302870,
+          "retained": 18032428
+        },
+        "cold": {
+          "peak": 19303096,
+          "retained": 18032654
+        }
+      },
+      "trace_sha256": "401a99c084fc1ebe2e7c5f9db065ca8665e6c69af321a087dcaea534bc9710bb",
+      "events": 1
+    },
+    {
+      "name": "store_16x8x16x32_fortran",
+      "target": false,
+      "trace": false,
+      "times": [
+        0.0022739334031939506,
+        0.0022082083858549597,
+        0.002199525013566017,
+        0.002260808367282152,
+        0.0022604250349104404,
+        0.002263416815549135,
+        0.0021207999903708695,
+        0.002244491595774889,
+        0.002285183407366276
+      ],
+      "memory": {
+        "warm": {
+          "peak": 2895289,
+          "retained": 4026
+        },
+        "cold": {
+          "peak": 2895709,
+          "retained": 4446
+        }
+      },
+      "trace_sha256": "559bededcb346584f1200f573f2076d34a011e43064063b0f635e49190772830",
+      "events": 0
+    },
+    {
+      "name": "store_16x8x16x32_fortran",
+      "target": false,
+      "trace": true,
+      "times": [
+        0.016741283377632497,
+        0.016769341798499225,
+        0.016979783400893213,
+        0.017268024990335105,
+        0.01715859998948872,
+        0.016875550011172892,
+        0.016729716584086417,
+        0.016940691601485015,
+        0.01703349999152124
+      ],
+      "memory": {
+        "warm": {
+          "peak": 10014203,
+          "retained": 7386644
+        },
+        "cold": {
+          "peak": 10014379,
+          "retained": 7386820
+        }
+      },
+      "trace_sha256": "1ca2bc34f62b529c16bbe8dfd22044ffdd4abd63af62b30ecba2dca2c17197c5",
+      "events": 2
+    },
+    {
+      "name": "read_16x8x16x32_fortran",
+      "target": true,
+      "trace": false,
+      "times": [
+        0.0015411000233143568,
+        0.0015103833749890328,
+        0.001513983402401209,
+        0.001492966804653406,
+        0.001481766626238823,
+        0.0015132331755012274,
+        0.0015209083911031484,
+        0.0014471999835222959,
+        0.0015266249887645245
+      ],
+      "memory": {
+        "warm": {
+          "peak": 2894937,
+          "retained": 265714
+        },
+        "cold": {
+          "peak": 2895259,
+          "retained": 266036
+        }
+      },
+      "trace_sha256": "559bededcb346584f1200f573f2076d34a011e43064063b0f635e49190772830",
+      "events": 0
+    },
+    {
+      "name": "read_16x8x16x32_fortran",
+      "target": false,
+      "trace": true,
+      "times": [
+        0.0116541916038841,
+        0.0116158084012568,
+        0.011542975017800928,
+        0.01152781662531197,
+        0.011445408407598733,
+        0.01162835001014173,
+        0.011598516581580042,
+        0.011696833372116088,
+        0.011419574962928891
+      ],
+      "memory": {
+        "warm": {
+          "peak": 5141535,
+          "retained": 4743436
+        },
+        "cold": {
+          "peak": 5141809,
+          "retained": 4743614
+        }
+      },
+      "trace_sha256": "1b795701e01e5d0b5e99ee70e0e2a2f4efd92e9bdc459c64a77a73dfb20b53db",
+      "events": 1
+    },
+    {
+      "name": "store_513x255_reversed",
+      "target": false,
+      "trace": false,
+      "times": [
+        0.002587066777050495,
+        0.0026829833630472423,
+        0.0026878584176301956,
+        0.002579308208078146,
+        0.0026674166321754454,
+        0.002647908218204975,
+        0.002590916818007827,
+        0.0026747918222099543,
+        0.0026314499787986278
+      ],
+      "memory": {
+        "warm": {
+          "peak": 3678399,
+          "retained": 3252
+        },
+        "cold": {
+          "peak": 3678623,
+          "retained": 3476
+        }
+      },
+      "trace_sha256": "559bededcb346584f1200f573f2076d34a011e43064063b0f635e49190772830",
+      "events": 0
+    },
+    {
+      "name": "store_513x255_reversed",
+      "target": false,
+      "trace": true,
+      "times": [
+        0.027487925020977855,
+        0.02760214158333838,
+        0.027471983386203647,
+        0.029670549975708126,
+        0.027591574983671308,
+        0.027687166631221772,
+        0.027112549962475897,
+        0.027367941569536924,
+        0.02733945003710687
+      ],
+      "memory": {
+        "warm": {
+          "peak": 18593505,
+          "retained": 13745156
+        },
+        "cold": {
+          "peak": 18593679,
+          "retained": 13745330
+        }
+      },
+      "trace_sha256": "f41413e7c56da232a729b94afe4dcbcf4c9181620243c98bcbdd8c6796277aed",
+      "events": 2
+    },
+    {
+      "name": "read_513x255_reversed",
+      "target": true,
+      "trace": false,
+      "times": [
+        0.0017816499806940556,
+        0.0017768333666026593,
+        0.001745824981480837,
+        0.0017804999835789204,
+        0.0017941500060260295,
+        0.0017931166104972363,
+        0.0018565582111477851,
+        0.0017736250068992377,
+        0.0017425250262022018
+      ],
+      "memory": {
+        "warm": {
+          "peak": 3678269,
+          "retained": 526390
+        },
+        "cold": {
+          "peak": 3678543,
+          "retained": 526664
+        }
+      },
+      "trace_sha256": "559bededcb346584f1200f573f2076d34a011e43064063b0f635e49190772830",
+      "events": 0
+    },
+    {
+      "name": "read_513x255_reversed",
+      "target": false,
+      "trace": true,
+      "times": [
+        0.019024999998509883,
+        0.019008699990808963,
+        0.01916259997524321,
+        0.019291016599163414,
+        0.018993916781619193,
+        0.019203808391466737,
+        0.019095891620963812,
+        0.018866424961015583,
+        0.0189771416131407
+      ],
+      "memory": {
+        "warm": {
+          "peak": 9604237,
+          "retained": 8966852
+        },
+        "cold": {
+          "peak": 9604467,
+          "retained": 8967130
+        }
+      },
+      "trace_sha256": "ffd20be7cf2468e79755b6f9ebb2ff008ed5577c107991805cdc2227aaa28590",
+      "events": 1
+    },
+    {
+      "name": "vector",
+      "target": false,
+      "trace": false,
+      "times": [
+        0.003218299988657236,
+        0.003177241608500481,
+        0.0030299833975732326,
+        0.0030555916018784046,
+        0.0030790084041655064,
+        0.003085525007918477,
+        0.0030742000322788953,
+        0.0030493581667542457,
+        0.0030961000360548497
+      ],
+      "memory": {
+        "warm": {
+          "peak": 47192,
+          "retained": 37186
+        },
+        "cold": {
+          "peak": 72828,
+          "retained": 62822
+        }
+      },
+      "trace_sha256": "559bededcb346584f1200f573f2076d34a011e43064063b0f635e49190772830",
+      "events": 0
+    },
+    {
+      "name": "vector",
+      "target": false,
+      "trace": true,
+      "times": [
+        0.009607216762378811,
+        0.009627016587182879,
+        0.009481674991548061,
+        0.009369733184576035,
+        0.009400816634297371,
+        0.00949057498946786,
+        0.009487775014713406,
+        0.00944500002078712,
+        0.009623424988240004
+      ],
+      "memory": {
+        "warm": {
+          "peak": 619506,
+          "retained": 607866
+        },
+        "cold": {
+          "peak": 642714,
+          "retained": 631026
+        }
+      },
+      "trace_sha256": "c4c0b1a637dc7effad8bcebbfd1bb96463d017f979ec33576cb0c9a8c73bab51",
+      "events": 64
+    },
+    {
+      "name": "softmax",
+      "target": false,
+      "trace": false,
+      "times": [
+        0.004858466610312462,
+        0.004937950009480119,
+        0.004883216600865126,
+        0.004827241785824299,
+        0.004864466609433293,
+        0.004805158404633403,
+        0.004896141588687897,
+        0.004830116592347622,
+        0.0048992250114679335
+      ],
+      "memory": {
+        "warm": {
+          "peak": 198950,
+          "retained": 43796
+        },
+        "cold": {
+          "peak": 265550,
+          "retained": 161552
+        }
+      },
+      "trace_sha256": "559bededcb346584f1200f573f2076d34a011e43064063b0f635e49190772830",
+      "events": 0
+    },
+    {
+      "name": "softmax",
+      "target": false,
+      "trace": true,
+      "times": [
+        0.014376233378425241,
+        0.014492216613143682,
+        0.014522166782990098,
+        0.01420660843141377,
+        0.01433050837367773,
+        0.014582766592502594,
+        0.014442316582426428,
+        0.014137558406218886,
+        0.014394291583448649
+      ],
+      "memory": {
+        "warm": {
+          "peak": 2943439,
+          "retained": 2906907
+        },
+        "cold": {
+          "peak": 3043667,
+          "retained": 3017083
+        }
+      },
+      "trace_sha256": "a89b55a4cc8d6e7bb1f75d282e0b7aededc0ed16a3bec7075b0738a5fc3682b5",
+      "events": 170
+    }
+  ]
+}

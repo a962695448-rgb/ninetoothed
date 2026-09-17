@@ -1,0 +1,16 @@
+store_1024x257_contiguous False PASS
+store_1024x257_contiguous True PASS
+read_1024x257_contiguous False PASS
+read_1024x257_contiguous True PASS
+store_16x8x16x32_fortran False PASS
+store_16x8x16x32_fortran True PASS
+read_16x8x16x32_fortran False PASS
+read_16x8x16x32_fortran True PASS
+store_513x255_reversed False PASS
+store_513x255_reversed True PASS
+read_513x255_reversed False PASS
+read_513x255_reversed True PASS
+vector False PASS
+vector True PASS
+softmax False PASS
+softmax True PASS

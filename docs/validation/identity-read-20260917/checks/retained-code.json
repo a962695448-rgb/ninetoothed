@@ -1,0 +1,11 @@
+{
+  "nine": "Accepted CPU candidate, identical to GPU-tested bytes",
+  "cuda": "Keep control kernel; new verification tool tested against both control and experiment",
+  "intentional_rollback": [
+    {
+      "path": "candidate/cuda/03_hadamard_tc/a962695448-rgb/include/packed_rows.cuh",
+      "tested_sha256": "26de887c452e9e6af0287f85b65aa78499c8b2855b56535bcc0d79e857d23df2",
+      "retained_sha256": "6a0dfe4c020cd8c3fba5da4c35f1ceabdb2b2b948e1ab90553bc0cd1b9c93b30"
+    }
+  ]
+}
