@@ -1,0 +1,603 @@
+........................FFFFFFFF...................                      [100%]
+=================================== FAILURES ===================================
+______ test_random_integer_expression_trees_match_recursive_evaluation[0] ______
+
+seed = 0
+
+    @pytest.mark.parametrize("seed", range(8))
+    def test_random_integer_expression_trees_match_recursive_evaluation(seed):
+        rng = random.Random(seed)
+    
+        def tree(depth):
+            if not depth or rng.random() < 0.3:
+                return (
+                    _symbol("x")
+                    if rng.random() < 0.3
+                    else _constant(rng.choice([False, True, -7, -1, 0, 2, 11]))
+                )
+    
+            return IndexExpr(
+                op=rng.choice(["add", "sub", "mul", "lt", "ge"]),
+                operands=(tree(depth - 1), tree(depth - 1)),
+            )
+    
+        for _ in range(60):
+            expression = tree(4)
+    
+            for value in (-3, 0, 5, np.arange(5, dtype=np.int32)):
+>               expected = expressions._evaluate(expression, {"x": value})
+                           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_interpreter_constant_plans.py:67: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+src/ninetoothed/interpreter/expressions.py:203: in _evaluate
+    values = tuple(_evaluate(value, symbols) for value in expression.operands)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src/ninetoothed/interpreter/expressions.py:203: in <genexpr>
+    values = tuple(_evaluate(value, symbols) for value in expression.operands)
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+expression = IndexExpr(op='sub', operands=(IndexExpr(op='lt', operands=(IndexExpr(op='sub', operands=(IndexExpr(op='constant', oper...bol', operands=(), value='x'), IndexExpr(op='constant', operands=(), value=2)), value=None)), value=None)), value=None)
+symbols = {'x': array([0, 1, 2, 3, 4], dtype=int32)}
+
+    def _evaluate(expression, symbols):
+        expression = IndexExpr.parse(expression)
+        op = expression.op
+    
+        if op == "constant":
+            return expression.value
+    
+        if op == "symbol":
+            try:
+                return symbols[expression.value]
+            except KeyError as exc:
+                raise ValueError(f"Unbound layout symbol `{expression.value}`.") from exc
+    
+        if op == "attribute":
+            # Dotted function names are stored in call.value, not evaluated as objects.
+            name = expression.render()
+    
+            if name in symbols:
+                return symbols[name]
+    
+            raise ValueError(f"Unsupported layout attribute `{name}`.")
+    
+        values = tuple(_evaluate(value, symbols) for value in expression.operands)
+    
+        if op in BINARY:
+>           return BINARY[op](*values)
+                   ^^^^^^^^^^^^^^^^^^^
+E           TypeError: numpy boolean subtract, the `-` operator, is not supported, use the bitwise_xor, the `^` operator, or the logical_xor function instead.
+
+src/ninetoothed/interpreter/expressions.py:206: TypeError
+______ test_random_integer_expression_trees_match_recursive_evaluation[1] ______
+
+seed = 1
+
+    @pytest.mark.parametrize("seed", range(8))
+    def test_random_integer_expression_trees_match_recursive_evaluation(seed):
+        rng = random.Random(seed)
+    
+        def tree(depth):
+            if not depth or rng.random() < 0.3:
+                return (
+                    _symbol("x")
+                    if rng.random() < 0.3
+                    else _constant(rng.choice([False, True, -7, -1, 0, 2, 11]))
+                )
+    
+            return IndexExpr(
+                op=rng.choice(["add", "sub", "mul", "lt", "ge"]),
+                operands=(tree(depth - 1), tree(depth - 1)),
+            )
+    
+        for _ in range(60):
+            expression = tree(4)
+    
+            for value in (-3, 0, 5, np.arange(5, dtype=np.int32)):
+>               expected = expressions._evaluate(expression, {"x": value})
+                           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_interpreter_constant_plans.py:67: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+src/ninetoothed/interpreter/expressions.py:203: in _evaluate
+    values = tuple(_evaluate(value, symbols) for value in expression.operands)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src/ninetoothed/interpreter/expressions.py:203: in <genexpr>
+    values = tuple(_evaluate(value, symbols) for value in expression.operands)
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^
+src/ninetoothed/interpreter/expressions.py:203: in _evaluate
+    values = tuple(_evaluate(value, symbols) for value in expression.operands)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src/ninetoothed/interpreter/expressions.py:203: in <genexpr>
+    values = tuple(_evaluate(value, symbols) for value in expression.operands)
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+expression = IndexExpr(op='sub', operands=(IndexExpr(op='ge', operands=(IndexExpr(op='constant', operands=(), value=11), IndexExpr(...exExpr(op='symbol', operands=(), value='x'), IndexExpr(op='symbol', operands=(), value='x')), value=None)), value=None)
+symbols = {'x': array([0, 1, 2, 3, 4], dtype=int32)}
+
+    def _evaluate(expression, symbols):
+        expression = IndexExpr.parse(expression)
+        op = expression.op
+    
+        if op == "constant":
+            return expression.value
+    
+        if op == "symbol":
+            try:
+                return symbols[expression.value]
+            except KeyError as exc:
+                raise ValueError(f"Unbound layout symbol `{expression.value}`.") from exc
+    
+        if op == "attribute":
+            # Dotted function names are stored in call.value, not evaluated as objects.
+            name = expression.render()
+    
+            if name in symbols:
+                return symbols[name]
+    
+            raise ValueError(f"Unsupported layout attribute `{name}`.")
+    
+        values = tuple(_evaluate(value, symbols) for value in expression.operands)
+    
+        if op in BINARY:
+>           return BINARY[op](*values)
+                   ^^^^^^^^^^^^^^^^^^^
+E           TypeError: numpy boolean subtract, the `-` operator, is not supported, use the bitwise_xor, the `^` operator, or the logical_xor function instead.
+
+src/ninetoothed/interpreter/expressions.py:206: TypeError
+______ test_random_integer_expression_trees_match_recursive_evaluation[2] ______
+
+seed = 2
+
+    @pytest.mark.parametrize("seed", range(8))
+    def test_random_integer_expression_trees_match_recursive_evaluation(seed):
+        rng = random.Random(seed)
+    
+        def tree(depth):
+            if not depth or rng.random() < 0.3:
+                return (
+                    _symbol("x")
+                    if rng.random() < 0.3
+                    else _constant(rng.choice([False, True, -7, -1, 0, 2, 11]))
+                )
+    
+            return IndexExpr(
+                op=rng.choice(["add", "sub", "mul", "lt", "ge"]),
+                operands=(tree(depth - 1), tree(depth - 1)),
+            )
+    
+        for _ in range(60):
+            expression = tree(4)
+    
+            for value in (-3, 0, 5, np.arange(5, dtype=np.int32)):
+>               expected = expressions._evaluate(expression, {"x": value})
+                           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_interpreter_constant_plans.py:67: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+src/ninetoothed/interpreter/expressions.py:203: in _evaluate
+    values = tuple(_evaluate(value, symbols) for value in expression.operands)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src/ninetoothed/interpreter/expressions.py:203: in <genexpr>
+    values = tuple(_evaluate(value, symbols) for value in expression.operands)
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^
+src/ninetoothed/interpreter/expressions.py:203: in _evaluate
+    values = tuple(_evaluate(value, symbols) for value in expression.operands)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src/ninetoothed/interpreter/expressions.py:203: in <genexpr>
+    values = tuple(_evaluate(value, symbols) for value in expression.operands)
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+expression = IndexExpr(op='sub', operands=(IndexExpr(op='ge', operands=(IndexExpr(op='constant', operands=(), value=11), IndexExpr(...xpr(op='constant', operands=(), value=True), IndexExpr(op='symbol', operands=(), value='x')), value=None)), value=None)
+symbols = {'x': array([0, 1, 2, 3, 4], dtype=int32)}
+
+    def _evaluate(expression, symbols):
+        expression = IndexExpr.parse(expression)
+        op = expression.op
+    
+        if op == "constant":
+            return expression.value
+    
+        if op == "symbol":
+            try:
+                return symbols[expression.value]
+            except KeyError as exc:
+                raise ValueError(f"Unbound layout symbol `{expression.value}`.") from exc
+    
+        if op == "attribute":
+            # Dotted function names are stored in call.value, not evaluated as objects.
+            name = expression.render()
+    
+            if name in symbols:
+                return symbols[name]
+    
+            raise ValueError(f"Unsupported layout attribute `{name}`.")
+    
+        values = tuple(_evaluate(value, symbols) for value in expression.operands)
+    
+        if op in BINARY:
+>           return BINARY[op](*values)
+                   ^^^^^^^^^^^^^^^^^^^
+E           TypeError: numpy boolean subtract, the `-` operator, is not supported, use the bitwise_xor, the `^` operator, or the logical_xor function instead.
+
+src/ninetoothed/interpreter/expressions.py:206: TypeError
+______ test_random_integer_expression_trees_match_recursive_evaluation[3] ______
+
+seed = 3
+
+    @pytest.mark.parametrize("seed", range(8))
+    def test_random_integer_expression_trees_match_recursive_evaluation(seed):
+        rng = random.Random(seed)
+    
+        def tree(depth):
+            if not depth or rng.random() < 0.3:
+                return (
+                    _symbol("x")
+                    if rng.random() < 0.3
+                    else _constant(rng.choice([False, True, -7, -1, 0, 2, 11]))
+                )
+    
+            return IndexExpr(
+                op=rng.choice(["add", "sub", "mul", "lt", "ge"]),
+                operands=(tree(depth - 1), tree(depth - 1)),
+            )
+    
+        for _ in range(60):
+            expression = tree(4)
+    
+            for value in (-3, 0, 5, np.arange(5, dtype=np.int32)):
+>               expected = expressions._evaluate(expression, {"x": value})
+                           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_interpreter_constant_plans.py:67: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+src/ninetoothed/interpreter/expressions.py:203: in _evaluate
+    values = tuple(_evaluate(value, symbols) for value in expression.operands)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src/ninetoothed/interpreter/expressions.py:203: in <genexpr>
+    values = tuple(_evaluate(value, symbols) for value in expression.operands)
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^
+src/ninetoothed/interpreter/expressions.py:203: in _evaluate
+    values = tuple(_evaluate(value, symbols) for value in expression.operands)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src/ninetoothed/interpreter/expressions.py:203: in <genexpr>
+    values = tuple(_evaluate(value, symbols) for value in expression.operands)
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+expression = IndexExpr(op='sub', operands=(IndexExpr(op='ge', operands=(IndexExpr(op='symbol', operands=(), value='x'), IndexExpr(o...pr(op='constant', operands=(), value=11), IndexExpr(op='constant', operands=(), value=True)), value=None)), value=None)
+symbols = {'x': array([0, 1, 2, 3, 4], dtype=int32)}
+
+    def _evaluate(expression, symbols):
+        expression = IndexExpr.parse(expression)
+        op = expression.op
+    
+        if op == "constant":
+            return expression.value
+    
+        if op == "symbol":
+            try:
+                return symbols[expression.value]
+            except KeyError as exc:
+                raise ValueError(f"Unbound layout symbol `{expression.value}`.") from exc
+    
+        if op == "attribute":
+            # Dotted function names are stored in call.value, not evaluated as objects.
+            name = expression.render()
+    
+            if name in symbols:
+                return symbols[name]
+    
+            raise ValueError(f"Unsupported layout attribute `{name}`.")
+    
+        values = tuple(_evaluate(value, symbols) for value in expression.operands)
+    
+        if op in BINARY:
+>           return BINARY[op](*values)
+                   ^^^^^^^^^^^^^^^^^^^
+E           TypeError: numpy boolean subtract, the `-` operator, is not supported, use the bitwise_xor, the `^` operator, or the logical_xor function instead.
+
+src/ninetoothed/interpreter/expressions.py:206: TypeError
+______ test_random_integer_expression_trees_match_recursive_evaluation[4] ______
+
+seed = 4
+
+    @pytest.mark.parametrize("seed", range(8))
+    def test_random_integer_expression_trees_match_recursive_evaluation(seed):
+        rng = random.Random(seed)
+    
+        def tree(depth):
+            if not depth or rng.random() < 0.3:
+                return (
+                    _symbol("x")
+                    if rng.random() < 0.3
+                    else _constant(rng.choice([False, True, -7, -1, 0, 2, 11]))
+                )
+    
+            return IndexExpr(
+                op=rng.choice(["add", "sub", "mul", "lt", "ge"]),
+                operands=(tree(depth - 1), tree(depth - 1)),
+            )
+    
+        for _ in range(60):
+            expression = tree(4)
+    
+            for value in (-3, 0, 5, np.arange(5, dtype=np.int32)):
+>               expected = expressions._evaluate(expression, {"x": value})
+                           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_interpreter_constant_plans.py:67: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+expression = IndexExpr(op='sub', operands=(IndexExpr(op='constant', operands=(), value=False), IndexExpr(op='ge', operands=(IndexEx...(), value='x'), IndexExpr(op='constant', operands=(), value=-7)), value=None)), value=None)), value=None)), value=None)
+symbols = {'x': array([0, 1, 2, 3, 4], dtype=int32)}
+
+    def _evaluate(expression, symbols):
+        expression = IndexExpr.parse(expression)
+        op = expression.op
+    
+        if op == "constant":
+            return expression.value
+    
+        if op == "symbol":
+            try:
+                return symbols[expression.value]
+            except KeyError as exc:
+                raise ValueError(f"Unbound layout symbol `{expression.value}`.") from exc
+    
+        if op == "attribute":
+            # Dotted function names are stored in call.value, not evaluated as objects.
+            name = expression.render()
+    
+            if name in symbols:
+                return symbols[name]
+    
+            raise ValueError(f"Unsupported layout attribute `{name}`.")
+    
+        values = tuple(_evaluate(value, symbols) for value in expression.operands)
+    
+        if op in BINARY:
+>           return BINARY[op](*values)
+                   ^^^^^^^^^^^^^^^^^^^
+E           TypeError: numpy boolean subtract, the `-` operator, is not supported, use the bitwise_xor, the `^` operator, or the logical_xor function instead.
+
+src/ninetoothed/interpreter/expressions.py:206: TypeError
+______ test_random_integer_expression_trees_match_recursive_evaluation[5] ______
+
+seed = 5
+
+    @pytest.mark.parametrize("seed", range(8))
+    def test_random_integer_expression_trees_match_recursive_evaluation(seed):
+        rng = random.Random(seed)
+    
+        def tree(depth):
+            if not depth or rng.random() < 0.3:
+                return (
+                    _symbol("x")
+                    if rng.random() < 0.3
+                    else _constant(rng.choice([False, True, -7, -1, 0, 2, 11]))
+                )
+    
+            return IndexExpr(
+                op=rng.choice(["add", "sub", "mul", "lt", "ge"]),
+                operands=(tree(depth - 1), tree(depth - 1)),
+            )
+    
+        for _ in range(60):
+            expression = tree(4)
+    
+            for value in (-3, 0, 5, np.arange(5, dtype=np.int32)):
+>               expected = expressions._evaluate(expression, {"x": value})
+                           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_interpreter_constant_plans.py:67: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+src/ninetoothed/interpreter/expressions.py:203: in _evaluate
+    values = tuple(_evaluate(value, symbols) for value in expression.operands)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src/ninetoothed/interpreter/expressions.py:203: in <genexpr>
+    values = tuple(_evaluate(value, symbols) for value in expression.operands)
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+expression = IndexExpr(op='sub', operands=(IndexExpr(op='constant', operands=(), value=True), IndexExpr(op='lt', operands=(IndexExp...bol', operands=(), value='x'), IndexExpr(op='constant', operands=(), value=0)), value=None)), value=None)), value=None)
+symbols = {'x': array([0, 1, 2, 3, 4], dtype=int32)}
+
+    def _evaluate(expression, symbols):
+        expression = IndexExpr.parse(expression)
+        op = expression.op
+    
+        if op == "constant":
+            return expression.value
+    
+        if op == "symbol":
+            try:
+                return symbols[expression.value]
+            except KeyError as exc:
+                raise ValueError(f"Unbound layout symbol `{expression.value}`.") from exc
+    
+        if op == "attribute":
+            # Dotted function names are stored in call.value, not evaluated as objects.
+            name = expression.render()
+    
+            if name in symbols:
+                return symbols[name]
+    
+            raise ValueError(f"Unsupported layout attribute `{name}`.")
+    
+        values = tuple(_evaluate(value, symbols) for value in expression.operands)
+    
+        if op in BINARY:
+>           return BINARY[op](*values)
+                   ^^^^^^^^^^^^^^^^^^^
+E           TypeError: numpy boolean subtract, the `-` operator, is not supported, use the bitwise_xor, the `^` operator, or the logical_xor function instead.
+
+src/ninetoothed/interpreter/expressions.py:206: TypeError
+______ test_random_integer_expression_trees_match_recursive_evaluation[6] ______
+
+seed = 6
+
+    @pytest.mark.parametrize("seed", range(8))
+    def test_random_integer_expression_trees_match_recursive_evaluation(seed):
+        rng = random.Random(seed)
+    
+        def tree(depth):
+            if not depth or rng.random() < 0.3:
+                return (
+                    _symbol("x")
+                    if rng.random() < 0.3
+                    else _constant(rng.choice([False, True, -7, -1, 0, 2, 11]))
+                )
+    
+            return IndexExpr(
+                op=rng.choice(["add", "sub", "mul", "lt", "ge"]),
+                operands=(tree(depth - 1), tree(depth - 1)),
+            )
+    
+        for _ in range(60):
+            expression = tree(4)
+    
+            for value in (-3, 0, 5, np.arange(5, dtype=np.int32)):
+>               expected = expressions._evaluate(expression, {"x": value})
+                           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_interpreter_constant_plans.py:67: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+src/ninetoothed/interpreter/expressions.py:203: in _evaluate
+    values = tuple(_evaluate(value, symbols) for value in expression.operands)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src/ninetoothed/interpreter/expressions.py:203: in <genexpr>
+    values = tuple(_evaluate(value, symbols) for value in expression.operands)
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^
+src/ninetoothed/interpreter/expressions.py:203: in _evaluate
+    values = tuple(_evaluate(value, symbols) for value in expression.operands)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src/ninetoothed/interpreter/expressions.py:203: in <genexpr>
+    values = tuple(_evaluate(value, symbols) for value in expression.operands)
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+expression = IndexExpr(op='sub', operands=(IndexExpr(op='ge', operands=(IndexExpr(op='symbol', operands=(), value='x'), IndexExpr(o...exExpr(op='symbol', operands=(), value='x'), IndexExpr(op='symbol', operands=(), value='x')), value=None)), value=None)
+symbols = {'x': array([0, 1, 2, 3, 4], dtype=int32)}
+
+    def _evaluate(expression, symbols):
+        expression = IndexExpr.parse(expression)
+        op = expression.op
+    
+        if op == "constant":
+            return expression.value
+    
+        if op == "symbol":
+            try:
+                return symbols[expression.value]
+            except KeyError as exc:
+                raise ValueError(f"Unbound layout symbol `{expression.value}`.") from exc
+    
+        if op == "attribute":
+            # Dotted function names are stored in call.value, not evaluated as objects.
+            name = expression.render()
+    
+            if name in symbols:
+                return symbols[name]
+    
+            raise ValueError(f"Unsupported layout attribute `{name}`.")
+    
+        values = tuple(_evaluate(value, symbols) for value in expression.operands)
+    
+        if op in BINARY:
+>           return BINARY[op](*values)
+                   ^^^^^^^^^^^^^^^^^^^
+E           TypeError: numpy boolean subtract, the `-` operator, is not supported, use the bitwise_xor, the `^` operator, or the logical_xor function instead.
+
+src/ninetoothed/interpreter/expressions.py:206: TypeError
+______ test_random_integer_expression_trees_match_recursive_evaluation[7] ______
+
+seed = 7
+
+    @pytest.mark.parametrize("seed", range(8))
+    def test_random_integer_expression_trees_match_recursive_evaluation(seed):
+        rng = random.Random(seed)
+    
+        def tree(depth):
+            if not depth or rng.random() < 0.3:
+                return (
+                    _symbol("x")
+                    if rng.random() < 0.3
+                    else _constant(rng.choice([False, True, -7, -1, 0, 2, 11]))
+                )
+    
+            return IndexExpr(
+                op=rng.choice(["add", "sub", "mul", "lt", "ge"]),
+                operands=(tree(depth - 1), tree(depth - 1)),
+            )
+    
+        for _ in range(60):
+            expression = tree(4)
+    
+            for value in (-3, 0, 5, np.arange(5, dtype=np.int32)):
+>               expected = expressions._evaluate(expression, {"x": value})
+                           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_interpreter_constant_plans.py:67: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+src/ninetoothed/interpreter/expressions.py:203: in _evaluate
+    values = tuple(_evaluate(value, symbols) for value in expression.operands)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src/ninetoothed/interpreter/expressions.py:203: in <genexpr>
+    values = tuple(_evaluate(value, symbols) for value in expression.operands)
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^
+src/ninetoothed/interpreter/expressions.py:203: in _evaluate
+    values = tuple(_evaluate(value, symbols) for value in expression.operands)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src/ninetoothed/interpreter/expressions.py:203: in <genexpr>
+    values = tuple(_evaluate(value, symbols) for value in expression.operands)
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+expression = IndexExpr(op='sub', operands=(IndexExpr(op='ge', operands=(IndexExpr(op='symbol', operands=(), value='x'), IndexExpr(o...pr(op='constant', operands=(), value=-1), IndexExpr(op='constant', operands=(), value=True)), value=None)), value=None)
+symbols = {'x': array([0, 1, 2, 3, 4], dtype=int32)}
+
+    def _evaluate(expression, symbols):
+        expression = IndexExpr.parse(expression)
+        op = expression.op
+    
+        if op == "constant":
+            return expression.value
+    
+        if op == "symbol":
+            try:
+                return symbols[expression.value]
+            except KeyError as exc:
+                raise ValueError(f"Unbound layout symbol `{expression.value}`.") from exc
+    
+        if op == "attribute":
+            # Dotted function names are stored in call.value, not evaluated as objects.
+            name = expression.render()
+    
+            if name in symbols:
+                return symbols[name]
+    
+            raise ValueError(f"Unsupported layout attribute `{name}`.")
+    
+        values = tuple(_evaluate(value, symbols) for value in expression.operands)
+    
+        if op in BINARY:
+>           return BINARY[op](*values)
+                   ^^^^^^^^^^^^^^^^^^^
+E           TypeError: numpy boolean subtract, the `-` operator, is not supported, use the bitwise_xor, the `^` operator, or the logical_xor function instead.
+
+src/ninetoothed/interpreter/expressions.py:206: TypeError
+=========================== short test summary info ============================
+FAILED tests/test_interpreter_constant_plans.py::test_random_integer_expression_trees_match_recursive_evaluation[0]
+FAILED tests/test_interpreter_constant_plans.py::test_random_integer_expression_trees_match_recursive_evaluation[1]
+FAILED tests/test_interpreter_constant_plans.py::test_random_integer_expression_trees_match_recursive_evaluation[2]
+FAILED tests/test_interpreter_constant_plans.py::test_random_integer_expression_trees_match_recursive_evaluation[3]
+FAILED tests/test_interpreter_constant_plans.py::test_random_integer_expression_trees_match_recursive_evaluation[4]
+FAILED tests/test_interpreter_constant_plans.py::test_random_integer_expression_trees_match_recursive_evaluation[5]
+FAILED tests/test_interpreter_constant_plans.py::test_random_integer_expression_trees_match_recursive_evaluation[6]
+FAILED tests/test_interpreter_constant_plans.py::test_random_integer_expression_trees_match_recursive_evaluation[7]
+8 failed, 43 passed in 0.65s

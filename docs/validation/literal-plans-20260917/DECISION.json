@@ -1,0 +1,25 @@
+{
+  "status": "REJECT",
+  "base_implementation_unchanged": "4d50b0424d963ac7ea3fd67fb06ff2c828fb3d92",
+  "target_geomeans": [
+    1.039770947076911,
+    1.090192848244077,
+    1.0390565652608135
+  ],
+  "worst": {
+    "round": 1,
+    "name": "vector_4099",
+    "trace": false,
+    "target": false,
+    "speedup": 0.9463650731713898,
+    "cold_speedup": 0.8361739042644772,
+    "peak_reduction": {
+      "warm": 4.047681690311222e-05,
+      "cold": 0.09636022713672088
+    },
+    "full_trace_equal": true,
+    "gate_passed": false
+  },
+  "new_gpu_run": false,
+  "production_delta": "41 expression semantic tests and negative experiment documentation only"
+}

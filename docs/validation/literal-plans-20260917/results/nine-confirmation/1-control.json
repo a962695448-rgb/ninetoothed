@@ -1,0 +1,446 @@
+{
+  "status": "PASS",
+  "source": "/Users/apple/Projects/infinitensor-2026/literal-plans-20260917/control/nine",
+  "python": "3.12.14 (main, Aug 25 2026, 13:50:33) [Clang 22.1.3 ]",
+  "numpy": "2.3.5",
+  "platform": "macOS-26.5.1-arm64-arm-64bit",
+  "source_sha256": {
+    "src/ninetoothed/__init__.py": "f3e0b21cfda64055226b0a38ec461dc9bdd87d0871b78898f129e63d434134d6",
+    "src/ninetoothed/aot.py": "c164c85cffe18946de7c38ff489b78d61820bcedb2dd5b16dc6fc52ae632ebd2",
+    "src/ninetoothed/auto_tuner.py": "2eaa1adecbae6eed32d5372a8d4e8ad5a827c1b050c0430b7d026207e6f729da",
+    "src/ninetoothed/backends/__init__.py": "7842ab6bdb8ba68e04ed95fde8bfc5ec3f3952282a33aa3108ad7e3db6bc7b29",
+    "src/ninetoothed/backends/core.py": "cd90aef2b85d6b7eb928d1c15862f05f48aa340d851ee695d32595df0b180c01",
+    "src/ninetoothed/backends/cuda.py": "e5fef15ad3ef35dd18d9e5d5d15a2e0cfe92b1aad073d3f4c98d572f0ab37638",
+    "src/ninetoothed/backends/emitters/__init__.py": "12ba7cc758a60cc4940dad7578a7bfe1edc0e29dcb78776194c2b82881b39531",
+    "src/ninetoothed/backends/emitters/analysis.py": "54219cd51b407d6f17ce44ddc9cb491bd38015a5f49c4b0b1e2d588fa537e841",
+    "src/ninetoothed/backends/emitters/base.py": "4c102e491b762bf04df6b63591571e0f9770a1daa3af222cd1642d080500a6c4",
+    "src/ninetoothed/backends/emitters/context.py": "d4b3c3ecac778ac75b832f445c3a6f1d1607fcad904e121e34918cec3185736d",
+    "src/ninetoothed/backends/emitters/cuda.py": "89b17fa2994b7bdfd88e0ed591503e9469d9cd8ac935d47d0d8ce503b4b7b62e",
+    "src/ninetoothed/backends/emitters/expressions.py": "51200e5b494ed37c96c790c45f2ce0ee386cd7043a4a50f604be0fc18095ff35",
+    "src/ninetoothed/backends/emitters/ssa.py": "d99807a22ade60501ebe4e8615461239168a0534ba094c8eb8a1f3419f445aaa",
+    "src/ninetoothed/backends/emitters/tilelang.py": "60e07c4e7c07c8c3814e748ccbeae41e2cf7e2ae84cce0bcb8b53d1faf2f4451",
+    "src/ninetoothed/backends/emitters/triton.py": "bbbeaf048eed37c971e991ab91bed2cc7ad8155e01771bc970ca4a19500e2c66",
+    "src/ninetoothed/backends/materializers/__init__.py": "be074239a6e83602ce271956dbd3a43c7c6e0cd6b4709e9ef243d32f9dc0a344",
+    "src/ninetoothed/backends/materializers/base.py": "9b86e3e8667828b59e7895016c86f1f37e54591fb2cfbd369766e5241eec7c60",
+    "src/ninetoothed/backends/materializers/cuda.py": "a5c5da8ba560478c374523d52c03f63c008f472d46102306f772add01f059767",
+    "src/ninetoothed/backends/materializers/tilelang.py": "648c935b82980dbd6743e9445bbb0c64637b3a02ce7d37568952b70557ef757f",
+    "src/ninetoothed/backends/materializers/triton.py": "1655f01842204427ad47bf5d7e7d17a4d41e32bf8b1347f217378b0dd43b42f8",
+    "src/ninetoothed/backends/registry.py": "b3772ef8a35a0fecdc10d7db5093cc705bb84e0f8a2292ed08b05bbba21a2aec",
+    "src/ninetoothed/backends/tilelang.py": "6e85b73a9692884649ea946fb5d89d8e9ed0357fc8b145279ae94c30b0282b5a",
+    "src/ninetoothed/backends/toolchain.py": "e4d96a075367d7d70fdff168a88a3c9f2f2303601630ec60b62ccaef4136ecd8",
+    "src/ninetoothed/backends/triton.py": "178697f6ddd19dda1168c3ff40700873d45cd5549aaea5721571c45fde078b5f",
+    "src/ninetoothed/build.py": "9463a3cb74e81cd05c1f53a28880f9cd37311a788ebcdb50aa8ed947faf73c17",
+    "src/ninetoothed/compiler/__init__.py": "467a93323e48bd4c729e7a6d71cd8218eb873edde66d4707fcc6696e217a59b5",
+    "src/ninetoothed/compiler/cache.py": "51b31e143588d5b9985e9b5711c22663ef08f9648692a0bf61c92f143fd356de",
+    "src/ninetoothed/compiler/driver.py": "4260b4bdaed987846142b7d1b87ca52518811338b88cee477605c421402ff111",
+    "src/ninetoothed/compiler/jit.py": "4a00b058c5b5109451b7d67af69413beb616db4acf7497fdf8922236ada28ee1",
+    "src/ninetoothed/compiler/layout.py": "ec131626d28a7a983260a38c90f76c90aef4059cd57a0af423176744896e8743",
+    "src/ninetoothed/compiler/layout_runtime.py": "e7b9342f6099f706c593e64abf4e98d121fe35f8a0599b51a0fbd812d37fff76",
+    "src/ninetoothed/compiler/passes.py": "92d319a5a276091f55b1bb298f1ccc4f025c3fd185862f3431ed2b5f1efebbfb",
+    "src/ninetoothed/compiler/reductions.py": "7e05d3d78f48d20419090240048cb68ce84e602f875e9656273aec0768d2591c",
+    "src/ninetoothed/compiler/runtime.py": "05de16328ffafb231effac011f37efebe9c03a071c8d16184348e5733fd9ced0",
+    "src/ninetoothed/compiler/specialization.py": "b5edb2824593b8d03ce1a16a514c23817b2a1ee5361ee53c719a56c343ded78d",
+    "src/ninetoothed/cudaifier.py": "223aade73e7cf5e2c1be53b597f6c10bc5a73ad2ba5c8dc316d45c6bc1d215d3",
+    "src/ninetoothed/debugging.py": "7c9b4fd83c4ddc23c4bc347579ea7b9dadb92fbe7000dcfb939c9aad755f35ee",
+    "src/ninetoothed/dtype.py": "727c8d92bedaf0f0c112456c170d47144e135cc864c1d9bdde6b31b4b0c519ec",
+    "src/ninetoothed/eval.py": "dfdfff38f134c4d40a3740861c4cd2ec3e4cff5a237b43c2a43b98d467ef74d9",
+    "src/ninetoothed/frontend/__init__.py": "802336da2fc225aa1c26e4f9f52f7fefa77742323b50157679a026ea5f6f44d7",
+    "src/ninetoothed/frontend/errors.py": "72bbfd47d7440e5b4cdabe669a20562fbae199dea65c1029854b3dfd295d9e2f",
+    "src/ninetoothed/frontend/layout.py": "b4a84560b2a7024b1f23f319b2c8cdedf6673aec376be2c60db8747d8bc32e7a",
+    "src/ninetoothed/frontend/preparation.py": "fc3802724d66671e2e26c385ff666f7f83a01c019819ea7f0c2c3faad17ef129",
+    "src/ninetoothed/frontend/python.py": "50c0e327672de05f3711bbfab34a8de6c12da354c9aa9c52e8d3f8d357baf9f1",
+    "src/ninetoothed/frontend/types.py": "a92650d6013160dcb7c3929cc602a484f5ffa97a8a755c2699f96691ee67da61",
+    "src/ninetoothed/interpreter/__init__.py": "a13fe1e8cf02cc44b18ed60cadecb66459553f010c4ec6e060e6fc984dfc8818",
+    "src/ninetoothed/interpreter/access.py": "30979afa160479ece70cb3125aa18478a5479afec5b30084a9f734032b353129",
+    "src/ninetoothed/interpreter/debugger.py": "1c8c98a089dabdbbfb4a3bca5d268d81255ef3f2498a3176cb4ac83640876093",
+    "src/ninetoothed/interpreter/expressions.py": "fb870184ac0722109669168f5fc0e3c9d003df509167567c6b7df0810eedccbf",
+    "src/ninetoothed/interpreter/failure.py": "8b9f7cce386d77a8e600e790890a2dee2ada81ea8fcc05b2ff25768ce6853174",
+    "src/ninetoothed/interpreter/localization.py": "c33afc2ff679bed9e2385043cda2ae58bc838101350647f32c17f1ab594556a4",
+    "src/ninetoothed/interpreter/memory.py": "a9980ca5dbebbee0d22d4279c865b33bc5829602cca61f4e0d8dcecfb4a03f72",
+    "src/ninetoothed/interpreter/runtime.py": "c332a1cbdcb203d99d4cfd8edc176829b43b8e677ea99cb0fea20dd6fc953a01",
+    "src/ninetoothed/interpreter/storage.py": "559385c016acf17ab734d3e7912202290d393a90542679cdb47656d135792a9d",
+    "src/ninetoothed/ir/__init__.py": "54ec8b1f37f2c73bf30a0d6598ea66183c102c50400a2d8f63766cd6473ea186",
+    "src/ninetoothed/ir/frozen.py": "eec5ca66d01db1ddb5e8def281ccd29b3085f3388705de30fb8cef7d24d4ac27",
+    "src/ninetoothed/ir/kernel.py": "53e900209b9f6f809fc6807c0e6dfe715a52fb878f9bb5ba67ac5268379ffcd0",
+    "src/ninetoothed/ir/provenance.py": "de987d4cb8f08fa264d66ab91003c862485131e6925172c8c63d0eac10013725",
+    "src/ninetoothed/ir/ssa.py": "9f42d641b79edb10807733df553c40dbe2a392a61fc5a436bd4f0f7ba5247f45",
+    "src/ninetoothed/language.py": "d8fe2a3db8a42d07593853847418fcb762abd802dafc6f7258170b303423c27e",
+    "src/ninetoothed/make.py": "589c7158cf1d303489ec9ed88e26c0369740e5fb408aae998330473e35088617",
+    "src/ninetoothed/naming.py": "165d31e1e0d14ad4e99178c983ad7bf44ac49d8edb479422d004fa457f42ddf5",
+    "src/ninetoothed/symbol.py": "d2af70f4317eb1db46a9599e08bfac9d7a218b29e9cf6f90c4f42b0c51c7dbc4",
+    "src/ninetoothed/targets.py": "f0c6cb61a99c9d8957613db6f867f661feb1fe32c45e3d6e3d720be3db3cef1a",
+    "src/ninetoothed/tensor.py": "0048b18325b4b58b44a29e20330c5f57fd3ed94cce2d0fe1eefd3ceae5762ff6",
+    "src/ninetoothed/torchifier.py": "e1c37afa36c9590b1cbaeaa69023987b4184b25f051c3ceb493beba027f2d9cd",
+    "src/ninetoothed/utils.py": "9ad4570010553e79607769f544487da01decff96d4b0a85dde2c2ede82790d24",
+    "src/ninetoothed/visualization.py": "535761a95197b4ce8413483008d61b49c1c071c39b5ad71fa8546008757107a0"
+  },
+  "cases": [
+    {
+      "name": "matmul_7x16x7",
+      "target": true,
+      "trace": false,
+      "times": [
+        0.13981055569214126,
+        0.13553997199051082,
+        0.15840561098108688,
+        0.1322341530273358,
+        0.15097793059734008,
+        0.15951491667268178,
+        0.1711478333454579
+      ],
+      "cold_times": [
+        0.13420283398590982,
+        0.13762029097415507,
+        0.13481454201973975
+      ],
+      "memory": {
+        "warm": {
+          "retained": 269164,
+          "peak": 282770
+        },
+        "cold": {
+          "retained": 429954,
+          "peak": 443560
+        }
+      },
+      "trace_sha256": "559bededcb346584f1200f573f2076d34a011e43064063b0f635e49190772830"
+    },
+    {
+      "name": "matmul_9x32x11",
+      "target": true,
+      "trace": false,
+      "times": [
+        0.5272709303535521,
+        0.5308591527088234,
+        0.5246894446512064,
+        0.5215149859432131,
+        0.5168398056800166,
+        0.5325302223209292,
+        0.5249733886060616
+      ],
+      "cold_times": [
+        0.5329872500151396,
+        0.5270285839214921,
+        0.5259111251216382
+      ],
+      "memory": {
+        "warm": {
+          "retained": 350454,
+          "peak": 364956
+        },
+        "cold": {
+          "retained": 511242,
+          "peak": 525744
+        }
+      },
+      "trace_sha256": "559bededcb346584f1200f573f2076d34a011e43064063b0f635e49190772830"
+    },
+    {
+      "name": "matmul_5x17x9",
+      "target": true,
+      "trace": false,
+      "times": [
+        0.23771651399632296,
+        0.2387121666688472,
+        0.23913087501811484,
+        0.23781219435234865,
+        0.2436148610431701,
+        0.24736965269160768,
+        0.24421405567166707
+      ],
+      "cold_times": [
+        0.23940612515434623,
+        0.2377069580834359,
+        0.25164462509565055
+      ],
+      "memory": {
+        "warm": {
+          "retained": 327590,
+          "peak": 341883
+        },
+        "cold": {
+          "retained": 488234,
+          "peak": 502527
+        }
+      },
+      "trace_sha256": "559bededcb346584f1200f573f2076d34a011e43064063b0f635e49190772830"
+    },
+    {
+      "name": "matmul_3x8x5",
+      "target": false,
+      "trace": false,
+      "times": [
+        0.022802458377555013,
+        0.021698694365719955,
+        0.021820986332992714,
+        0.021919083315879107,
+        0.021887152610967558,
+        0.021968305266151827,
+        0.02195436127173404
+      ],
+      "cold_times": [
+        0.0229757078923285,
+        0.022961082868278027,
+        0.022091083927080035
+      ],
+      "memory": {
+        "warm": {
+          "retained": 117710,
+          "peak": 129932
+        },
+        "cold": {
+          "retained": 278208,
+          "peak": 290430
+        }
+      },
+      "trace_sha256": "559bededcb346584f1200f573f2076d34a011e43064063b0f635e49190772830"
+    },
+    {
+      "name": "matmul_3x8x5",
+      "target": false,
+      "trace": true,
+      "times": [
+        0.05885348600956301,
+        0.058696472396453224,
+        0.05879966666301092,
+        0.05782752763479948,
+        0.05860175006091595,
+        0.05941940269743403,
+        0.05895490269176662
+      ],
+      "cold_times": [
+        0.05922054196707904,
+        0.06003770884126425,
+        0.05973879084922373
+      ],
+      "memory": {
+        "warm": {
+          "retained": 1701377,
+          "peak": 1712638
+        },
+        "cold": {
+          "retained": 1863447,
+          "peak": 1874758
+        }
+      },
+      "trace_sha256": "d6d42ae63a0ead4dad93b00d850bbde9936993f5c53cf2fb5f94283ebc46e5e2"
+    },
+    {
+      "name": "vector_4099",
+      "target": false,
+      "trace": false,
+      "times": [
+        0.0025336109877874455,
+        0.002635430311784148,
+        0.0026473193429410458,
+        0.00265955567980806,
+        0.00254493059280018,
+        0.002605430626620849,
+        0.002612625015899539
+      ],
+      "cold_times": [
+        0.002719457959756255,
+        0.0026241668965667486,
+        0.0026534581556916237
+      ],
+      "memory": {
+        "warm": {
+          "retained": 38460,
+          "peak": 49411
+        },
+        "cold": {
+          "retained": 64198,
+          "peak": 75197
+        }
+      },
+      "trace_sha256": "559bededcb346584f1200f573f2076d34a011e43064063b0f635e49190772830"
+    },
+    {
+      "name": "vector_4099",
+      "target": false,
+      "trace": true,
+      "times": [
+        0.008655277934546271,
+        0.008535250012452403,
+        0.009023458308850726,
+        0.008753583300858736,
+        0.00869588895390431,
+        0.008881041624893745,
+        0.008848958338300386
+      ],
+      "cold_times": [
+        0.009324999991804361,
+        0.00875645806081593,
+        0.0089117088355124
+      ],
+      "memory": {
+        "warm": {
+          "retained": 1007670,
+          "peak": 1017998
+        },
+        "cold": {
+          "retained": 1033066,
+          "peak": 1043344
+        }
+      },
+      "trace_sha256": "ff69d37541c854f88f1893dae2950c4bfea336dd7572287947377ce2d19572bf"
+    },
+    {
+      "name": "padded_4099",
+      "target": false,
+      "trace": false,
+      "times": [
+        0.0028820416579643884,
+        0.002823388669639826,
+        0.0027353056551267705,
+        0.0029781946601967015,
+        0.002847097348421812,
+        0.0028381526935845613,
+        0.0027652219869196415
+      ],
+      "cold_times": [
+        0.003023957833647728,
+        0.0030272919684648514,
+        0.0032295421697199345
+      ],
+      "memory": {
+        "warm": {
+          "retained": 38458,
+          "peak": 49418
+        },
+        "cold": {
+          "retained": 69896,
+          "peak": 80856
+        }
+      },
+      "trace_sha256": "559bededcb346584f1200f573f2076d34a011e43064063b0f635e49190772830"
+    },
+    {
+      "name": "padded_4099",
+      "target": false,
+      "trace": true,
+      "times": [
+        0.009041125032429894,
+        0.009377041676392158,
+        0.00916541670449078,
+        0.00932874996215105,
+        0.00908369431272149,
+        0.009178278036415577,
+        0.00930184731259942
+      ],
+      "cold_times": [
+        0.009194291895255446,
+        0.009253541938960552,
+        0.009237208170816302
+      ],
+      "memory": {
+        "warm": {
+          "retained": 1008662,
+          "peak": 1019256
+        },
+        "cold": {
+          "retained": 1039932,
+          "peak": 1050476
+        }
+      },
+      "trace_sha256": "d9669f0153927e01e8db1caeca088b1a39b1fae3dfc7d5d341f2dbfcf20aca35"
+    },
+    {
+      "name": "softmax_13x129",
+      "target": false,
+      "trace": false,
+      "times": [
+        0.0037081389843175807,
+        0.003960014010469119,
+        0.004114999979113539,
+        0.0038902223265419402,
+        0.003834680343667666,
+        0.003948875004425645,
+        0.0035766526125371456
+      ],
+      "cold_times": [
+        0.004135666880756617,
+        0.004088583169505,
+        0.004132249858230352
+      ],
+      "memory": {
+        "warm": {
+          "retained": 98916,
+          "peak": 124186
+        },
+        "cold": {
+          "retained": 193912,
+          "peak": 219230
+        }
+      },
+      "trace_sha256": "559bededcb346584f1200f573f2076d34a011e43064063b0f635e49190772830"
+    },
+    {
+      "name": "softmax_13x129",
+      "target": false,
+      "trace": true,
+      "times": [
+        0.010328764018292228,
+        0.010539180676763257,
+        0.010019166705509027,
+        0.009980736300349236,
+        0.010207041709994277,
+        0.010044805705547333,
+        0.010300527714813748
+      ],
+      "cold_times": [
+        0.00967291695997119,
+        0.010675083845853806,
+        0.010286375181749463
+      ],
+      "memory": {
+        "warm": {
+          "retained": 1243241,
+          "peak": 1257209
+        },
+        "cold": {
+          "retained": 1344695,
+          "peak": 1358663
+        }
+      },
+      "trace_sha256": "e443b8c467f5ad38f94f9e47084231eb0a73b7db8f1add8ee96178dae2bdbfaf"
+    }
+  ],
+  "trace_checks": [
+    {
+      "name": "matmul_7x16x7",
+      "sha256": "5508d1de230761cf9f8e55d861bbe689c8e777e3197cca89fcb7698d3aba7e16",
+      "events": 4312
+    },
+    {
+      "name": "matmul_9x32x11",
+      "sha256": "ab055b121fa691f7630668a31aa5b3f425e23f23319588fe9f9b9e2bbfb2aa89",
+      "events": 16632
+    },
+    {
+      "name": "matmul_5x17x9",
+      "sha256": "c58b3e60bc03d94c452fc2989d3209eeddd887218057aa79d6f13923b5c4634c",
+      "events": 7560
+    },
+    {
+      "name": "matmul_3x8x5",
+      "sha256": "d6d42ae63a0ead4dad93b00d850bbde9936993f5c53cf2fb5f94283ebc46e5e2",
+      "events": 720
+    },
+    {
+      "name": "vector_4099",
+      "sha256": "ff69d37541c854f88f1893dae2950c4bfea336dd7572287947377ce2d19572bf",
+      "events": 165
+    },
+    {
+      "name": "padded_4099",
+      "sha256": "d9669f0153927e01e8db1caeca088b1a39b1fae3dfc7d5d341f2dbfcf20aca35",
+      "events": 165
+    },
+    {
+      "name": "softmax_13x129",
+      "sha256": "e443b8c467f5ad38f94f9e47084231eb0a73b7db8f1add8ee96178dae2bdbfaf",
+      "events": 130
+    }
+  ]
+}

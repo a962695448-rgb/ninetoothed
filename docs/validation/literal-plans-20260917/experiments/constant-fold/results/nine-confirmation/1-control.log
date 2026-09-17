@@ -1,0 +1,11 @@
+matmul_7x16x7 False PASS
+matmul_9x32x11 False PASS
+matmul_5x17x9 False PASS
+matmul_3x8x5 False PASS
+matmul_3x8x5 True PASS
+vector_4099 False PASS
+vector_4099 True PASS
+padded_4099 False PASS
+padded_4099 True PASS
+softmax_13x129 False PASS
+softmax_13x129 True PASS

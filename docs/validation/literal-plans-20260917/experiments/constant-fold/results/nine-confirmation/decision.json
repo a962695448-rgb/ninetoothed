@@ -1,0 +1,485 @@
+{
+  "status": "REJECT",
+  "records": [
+    {
+      "round": 0,
+      "name": "matmul_7x16x7",
+      "trace": false,
+      "target": true,
+      "speedup": 1.0083290251802792,
+      "cold_speedup": 1.0070543897778241,
+      "peak_reduction": {
+        "warm": -7.0728860912527836e-06,
+        "cold": 4.5094608488449595e-06
+      },
+      "full_trace_equal": true,
+      "gate_passed": true
+    },
+    {
+      "round": 0,
+      "name": "matmul_9x32x11",
+      "trace": false,
+      "target": true,
+      "speedup": 1.017833690805068,
+      "cold_speedup": 1.0156279407160644,
+      "peak_reduction": {
+        "warm": 0.00013700281677786474,
+        "cold": 0.0
+      },
+      "full_trace_equal": true,
+      "gate_passed": true
+    },
+    {
+      "round": 0,
+      "name": "matmul_5x17x9",
+      "trace": false,
+      "target": true,
+      "speedup": 1.0160469290057694,
+      "cold_speedup": 1.0134846228436523,
+      "peak_reduction": {
+        "warm": -5.851631873943219e-06,
+        "cold": 9.551725578926806e-05
+      },
+      "full_trace_equal": true,
+      "gate_passed": true
+    },
+    {
+      "round": 0,
+      "name": "matmul_3x8x5",
+      "trace": false,
+      "target": false,
+      "speedup": 1.0108507871706192,
+      "cold_speedup": 0.9925407377428592,
+      "peak_reduction": {
+        "warm": -0.0007548099881387049,
+        "cold": 0.0005163902257657726
+      },
+      "full_trace_equal": true,
+      "gate_passed": true
+    },
+    {
+      "round": 0,
+      "name": "matmul_3x8x5",
+      "trace": true,
+      "target": false,
+      "speedup": 1.0232287800614168,
+      "cold_speedup": 1.0213529616252297,
+      "peak_reduction": {
+        "warm": -0.0031448822805135723,
+        "cold": -0.0005005421650743358
+      },
+      "full_trace_equal": true,
+      "gate_passed": true
+    },
+    {
+      "round": 0,
+      "name": "vector_4099",
+      "trace": false,
+      "target": false,
+      "speedup": 1.0423895707407473,
+      "cold_speedup": 1.0554834567613312,
+      "peak_reduction": {
+        "warm": 0.0009705008188600761,
+        "cold": 0.0
+      },
+      "full_trace_equal": true,
+      "gate_passed": true
+    },
+    {
+      "round": 0,
+      "name": "vector_4099",
+      "trace": true,
+      "target": false,
+      "speedup": 1.0545940637090037,
+      "cold_speedup": 1.0244885246105935,
+      "peak_reduction": {
+        "warm": -0.001522972150805657,
+        "cold": -0.00354938212325262
+      },
+      "full_trace_equal": true,
+      "gate_passed": true
+    },
+    {
+      "round": 0,
+      "name": "padded_4099",
+      "trace": false,
+      "target": false,
+      "speedup": 1.038956022008174,
+      "cold_speedup": 1.0662975715525178,
+      "peak_reduction": {
+        "warm": -0.0020256036298818003,
+        "cold": -0.0018089456077314825
+      },
+      "full_trace_equal": true,
+      "gate_passed": true
+    },
+    {
+      "round": 0,
+      "name": "padded_4099",
+      "trace": true,
+      "target": false,
+      "speedup": 1.0386476140162115,
+      "cold_speedup": 1.0471774979132413,
+      "peak_reduction": {
+        "warm": -0.000781187129647698,
+        "cold": 0.00037502308200443313
+      },
+      "full_trace_equal": true,
+      "gate_passed": true
+    },
+    {
+      "round": 0,
+      "name": "softmax_13x129",
+      "trace": false,
+      "target": false,
+      "speedup": 1.0082894692573046,
+      "cold_speedup": 0.9681349557347013,
+      "peak_reduction": {
+        "warm": 0.0,
+        "cold": 0.0
+      },
+      "full_trace_equal": true,
+      "gate_passed": true
+    },
+    {
+      "round": 0,
+      "name": "softmax_13x129",
+      "trace": true,
+      "target": false,
+      "speedup": 1.0164079965031159,
+      "cold_speedup": 0.9581973644720522,
+      "peak_reduction": {
+        "warm": -9.717344743509493e-05,
+        "cold": -0.00014877762973664055
+      },
+      "full_trace_equal": true,
+      "gate_passed": true
+    },
+    {
+      "round": 1,
+      "name": "matmul_7x16x7",
+      "trace": false,
+      "target": true,
+      "speedup": 1.0212182225603088,
+      "cold_speedup": 1.025851627740527,
+      "peak_reduction": {
+        "warm": 0.00016972045626517662,
+        "cold": 0.00022098849506835272
+      },
+      "full_trace_equal": true,
+      "gate_passed": true
+    },
+    {
+      "round": 1,
+      "name": "matmul_9x32x11",
+      "trace": false,
+      "target": true,
+      "speedup": 1.0050683996132685,
+      "cold_speedup": 0.9971974147505912,
+      "peak_reduction": {
+        "warm": 0.0,
+        "cold": 0.0
+      },
+      "full_trace_equal": true,
+      "gate_passed": true
+    },
+    {
+      "round": 1,
+      "name": "matmul_5x17x9",
+      "trace": false,
+      "target": true,
+      "speedup": 0.9803800747986354,
+      "cold_speedup": 0.99793234154273,
+      "peak_reduction": {
+        "warm": 0.0,
+        "cold": 9.55081331144303e-05
+      },
+      "full_trace_equal": true,
+      "gate_passed": true
+    },
+    {
+      "round": 1,
+      "name": "matmul_3x8x5",
+      "trace": false,
+      "target": false,
+      "speedup": 1.000033071696728,
+      "cold_speedup": 1.0105969698477908,
+      "peak_reduction": {
+        "warm": 0.0,
+        "cold": 0.0008398502037669786
+      },
+      "full_trace_equal": true,
+      "gate_passed": true
+    },
+    {
+      "round": 1,
+      "name": "matmul_3x8x5",
+      "trace": true,
+      "target": false,
+      "speedup": 1.002050322225872,
+      "cold_speedup": 0.9782881486422149,
+      "peak_reduction": {
+        "warm": -0.0017110359481171677,
+        "cold": -0.0015171539900615816
+      },
+      "full_trace_equal": true,
+      "gate_passed": true
+    },
+    {
+      "round": 1,
+      "name": "vector_4099",
+      "trace": false,
+      "target": false,
+      "speedup": 0.9915020612115485,
+      "cold_speedup": 1.0517324770130942,
+      "peak_reduction": {
+        "warm": 0.0,
+        "cold": -0.0006649201430908303
+      },
+      "full_trace_equal": true,
+      "gate_passed": true
+    },
+    {
+      "round": 1,
+      "name": "vector_4099",
+      "trace": true,
+      "target": false,
+      "speedup": 0.9901892892026034,
+      "cold_speedup": 1.0165418778592263,
+      "peak_reduction": {
+        "warm": 0.0006833632468394857,
+        "cold": 8.040185613422679e-05
+      },
+      "full_trace_equal": true,
+      "gate_passed": true
+    },
+    {
+      "round": 1,
+      "name": "padded_4099",
+      "trace": false,
+      "target": false,
+      "speedup": 0.993993244617437,
+      "cold_speedup": 1.00494189297757,
+      "peak_reduction": {
+        "warm": 4.046944556856946e-05,
+        "cold": -0.0006187659332228534
+      },
+      "full_trace_equal": true,
+      "gate_passed": true
+    },
+    {
+      "round": 1,
+      "name": "padded_4099",
+      "trace": true,
+      "target": false,
+      "speedup": 1.013304196670859,
+      "cold_speedup": 1.0237625013143352,
+      "peak_reduction": {
+        "warm": 0.0009226885180247946,
+        "cold": 0.0008241951724623497
+      },
+      "full_trace_equal": true,
+      "gate_passed": true
+    },
+    {
+      "round": 1,
+      "name": "softmax_13x129",
+      "trace": false,
+      "target": false,
+      "speedup": 0.9897166744259461,
+      "cold_speedup": 0.9681970133728507,
+      "peak_reduction": {
+        "warm": 0.0,
+        "cold": 0.0
+      },
+      "full_trace_equal": true,
+      "gate_passed": true
+    },
+    {
+      "round": 1,
+      "name": "softmax_13x129",
+      "trace": true,
+      "target": false,
+      "speedup": 1.0094425596124834,
+      "cold_speedup": 0.9927570162267844,
+      "peak_reduction": {
+        "warm": 0.0001066166788268319,
+        "cold": 0.00029597278228399304
+      },
+      "full_trace_equal": true,
+      "gate_passed": true
+    },
+    {
+      "round": 2,
+      "name": "matmul_7x16x7",
+      "trace": false,
+      "target": true,
+      "speedup": 1.005169274109624,
+      "cold_speedup": 1.0007934992203182,
+      "peak_reduction": {
+        "warm": 0.0,
+        "cold": -0.00010823877473709054
+      },
+      "full_trace_equal": true,
+      "gate_passed": true
+    },
+    {
+      "round": 2,
+      "name": "matmul_9x32x11",
+      "trace": false,
+      "target": true,
+      "speedup": 1.0053059120128733,
+      "cold_speedup": 1.007574999873289,
+      "peak_reduction": {
+        "warm": 0.00013152270410676792,
+        "cold": 0.0
+      },
+      "full_trace_equal": true,
+      "gate_passed": true
+    },
+    {
+      "round": 2,
+      "name": "matmul_5x17x9",
+      "trace": false,
+      "target": true,
+      "speedup": 1.0044689045687056,
+      "cold_speedup": 1.0079950313204378,
+      "peak_reduction": {
+        "warm": 0.0001403989083984536,
+        "cold": 9.55081331144303e-05
+      },
+      "full_trace_equal": true,
+      "gate_passed": true
+    },
+    {
+      "round": 2,
+      "name": "matmul_3x8x5",
+      "trace": false,
+      "target": false,
+      "speedup": 1.0046303930712013,
+      "cold_speedup": 0.9773549352585447,
+      "peak_reduction": {
+        "warm": 0.00038481667333678526,
+        "cold": 0.000502533318647469
+      },
+      "full_trace_equal": true,
+      "gate_passed": true
+    },
+    {
+      "round": 2,
+      "name": "matmul_3x8x5",
+      "trace": true,
+      "target": false,
+      "speedup": 1.0043123836771075,
+      "cold_speedup": 1.005446146625249,
+      "peak_reduction": {
+        "warm": 0.003256086794772073,
+        "cold": -0.00012904946007208373
+      },
+      "full_trace_equal": true,
+      "gate_passed": true
+    },
+    {
+      "round": 2,
+      "name": "vector_4099",
+      "trace": false,
+      "target": false,
+      "speedup": 0.9841505042919749,
+      "cold_speedup": 1.0439579097365157,
+      "peak_reduction": {
+        "warm": 0.0,
+        "cold": 0.0
+      },
+      "full_trace_equal": true,
+      "gate_passed": true
+    },
+    {
+      "round": 2,
+      "name": "vector_4099",
+      "trace": true,
+      "target": false,
+      "speedup": 0.9950030695312366,
+      "cold_speedup": 1.0024670921884045,
+      "peak_reduction": {
+        "warm": 0.0017958148681694874,
+        "cold": 0.001425965589249123
+      },
+      "full_trace_equal": true,
+      "gate_passed": true
+    },
+    {
+      "round": 2,
+      "name": "padded_4099",
+      "trace": false,
+      "target": false,
+      "speedup": 1.003991069951943,
+      "cold_speedup": 0.966379712435065,
+      "peak_reduction": {
+        "warm": 0.0,
+        "cold": 2.4750024749997657e-05
+      },
+      "full_trace_equal": true,
+      "gate_passed": true
+    },
+    {
+      "round": 2,
+      "name": "padded_4099",
+      "trace": true,
+      "target": false,
+      "speedup": 1.009119232102406,
+      "cold_speedup": 0.9876976179000782,
+      "peak_reduction": {
+        "warm": -0.00033724167679705097,
+        "cold": 0.002193604112484482
+      },
+      "full_trace_equal": true,
+      "gate_passed": true
+    },
+    {
+      "round": 2,
+      "name": "softmax_13x129",
+      "trace": false,
+      "target": false,
+      "speedup": 1.0174481784823723,
+      "cold_speedup": 0.9671823715903342,
+      "peak_reduction": {
+        "warm": 0.0,
+        "cold": 0.00021894813666012425
+      },
+      "full_trace_equal": true,
+      "gate_passed": true
+    },
+    {
+      "round": 2,
+      "name": "softmax_13x129",
+      "trace": true,
+      "target": false,
+      "speedup": 1.0052238773520763,
+      "cold_speedup": 0.9703128947547559,
+      "peak_reduction": {
+        "warm": 0.0010229153724453655,
+        "cold": 0.001367915533792563
+      },
+      "full_trace_equal": true,
+      "gate_passed": true
+    }
+  ],
+  "rounds": [
+    {
+      "round": 0,
+      "target_geomean_speedup": 1.0140614803550034,
+      "gate_passed": false
+    },
+    {
+      "round": 1,
+      "target_geomean_speedup": 1.0020811285221973,
+      "gate_passed": false
+    },
+    {
+      "round": 2,
+      "target_geomean_speedup": 1.0049812966771685,
+      "gate_passed": false
+    }
+  ],
+  "protocol_sha256": "d04ddd0c69e6414576335c36a31c167cddd65d477c579d13d6b1f611e273dafe"
+}

@@ -1,0 +1,16 @@
+{
+  "base_commit": "4d50b0424d963ac7ea3fd67fb06ff2c828fb3d92",
+  "change": "Fold only bounded exact Python int/bool constant subtrees using known pure arithmetic/comparison operators during plan construction",
+  "rounds": 3,
+  "samples": 7,
+  "calls_per_sample": 3,
+  "targets": ["matmul 7x16x7", "matmul 9x32x11", "matmul 5x17x9 with K padding"],
+  "controls": ["vector 4099", "padded vector 4099", "softmax 13x129", "small trace-enabled matmul", "trace-enabled vector/softmax"],
+  "minimum_target_geomean_speedup": 1.10,
+  "max_steady_case_regression_percent": 5,
+  "full_trace_equality": true,
+  "cold_latency_and_peak_memory": "Recorded separately after clearing both existing expression/dtype caches; not inferred from warm speedups",
+  "primary_metric": "Unprofiled prepared public interpret_program execution in three alternating fresh-process pairs",
+  "correctness": "Independent NumPy outputs, unchanged inputs, exact scalar types/signed zero, recursive evaluator comparison, warning/error order, mutable operators/objects, cache release",
+  "publication": "Push accepted implementation and evidence only; retain rejected candidates; no main merge"
+}

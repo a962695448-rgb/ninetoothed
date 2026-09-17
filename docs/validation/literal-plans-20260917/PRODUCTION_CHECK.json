@@ -1,0 +1,7 @@
+{
+  "source_blobs_identical_to_base": 70,
+  "base": "4d50b0424d963ac7ea3fd67fb06ff2c828fb3d92",
+  "production_cpu_result": "770 passed, 15 deselected in 35.40s",
+  "no_gpu_launched": true,
+  "failed_candidates_not_adopted": 2
+}

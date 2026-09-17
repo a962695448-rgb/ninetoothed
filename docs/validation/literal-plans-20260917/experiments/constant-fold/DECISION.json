@@ -1,0 +1,10 @@
+{
+  "status": "REJECT",
+  "production_base_unchanged": "4d50b0424d963ac7ea3fd67fb06ff2c828fb3d92",
+  "reason": "All three target geometric means are below the predeclared 1.10 gate. No threshold changed.",
+  "suite": "770 passed, 15 deselected in 34.84s",
+  "targeted": "51 passed in 0.55s",
+  "implementation_sha256": "26f905cfaa0ee55a25e5217ef040e0d7396835e01ca06cf327cab45e095bbb2a",
+  "new_gpu_run": false,
+  "continuation": "/Users/apple/Projects/infinitensor-2026/literal-plans-20260917"
+}

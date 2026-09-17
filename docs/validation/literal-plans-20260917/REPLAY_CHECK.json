@@ -1,0 +1,8 @@
+{
+  "byte_identical_files": {
+    "replay-literal": 195,
+    "replay-constant": 195,
+    "replay-production": 143
+  },
+  "production_scope": "All src and tests; feature documentation is updated separately from the experiment source overlay"
+}
