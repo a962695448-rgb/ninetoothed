@@ -1,0 +1,1007 @@
+[
+  {
+    "path": ".gitattributes",
+    "mode": "100644",
+    "sha": "24a8e87939aa53cdd833f6be7610cb4972e063ad"
+  },
+  {
+    "path": ".githooks/commit-msg",
+    "mode": "100755",
+    "sha": "91c9a38ab7c81d923c5e2cce48a74870225f88f7"
+  },
+  {
+    "path": ".githooks/pre-push",
+    "mode": "100755",
+    "sha": "ca805b7b18486711aef6b0c02c50408546b4ec77"
+  },
+  {
+    "path": ".github/ISSUE_TEMPLATE/bug-report.yml",
+    "mode": "100644",
+    "sha": "bd4ff3720a3147b339846fcfbc7f7fd7298161a0"
+  },
+  {
+    "path": ".github/ISSUE_TEMPLATE/feature-request.yml",
+    "mode": "100644",
+    "sha": "e9a0ad81e2e8697cc4afac300a29fb6c7a041fab"
+  },
+  {
+    "path": ".github/pull_request_template.md",
+    "mode": "100644",
+    "sha": "123374393392f6d144d9b42c408c38c278a03e2a"
+  },
+  {
+    "path": ".github/workflows/contributing.yml",
+    "mode": "100644",
+    "sha": "9837e1c743f74fa6d56164848ae00951b7a10321"
+  },
+  {
+    "path": ".github/workflows/cpu-interpreter.yml",
+    "mode": "100644",
+    "sha": "76afbc177df908121f00abb4ea0759e67c1727a0"
+  },
+  {
+    "path": ".github/workflows/publish-to-pypi.yml",
+    "mode": "100644",
+    "sha": "1b876cc85579b59b314d8ab029c94943b5763d25"
+  },
+  {
+    "path": ".github/workflows/pytest.yml",
+    "mode": "100644",
+    "sha": "441354a6ca4d6df5dbe66e7966eb688d679945cb"
+  },
+  {
+    "path": ".github/workflows/ruff.yml",
+    "mode": "100644",
+    "sha": "40c86452f1618d738ed445026593d3a6d8c06feb"
+  },
+  {
+    "path": ".github/workflows/sphinx.yml",
+    "mode": "100644",
+    "sha": "3aacf0216ff538d0753fce523daa7926d0181d72"
+  },
+  {
+    "path": ".gitignore",
+    "mode": "100644",
+    "sha": "82f927558a3dff0ea8c20858856e70779fd02c93"
+  },
+  {
+    "path": "CONTRIBUTING.md",
+    "mode": "100644",
+    "sha": "a71455792ebf95a5f4ef2df5293dd979bb7beed6"
+  },
+  {
+    "path": "LICENSE",
+    "mode": "100644",
+    "sha": "261eeb9e9f8b2b4b0d119366dda99c6fd7d35c64"
+  },
+  {
+    "path": "README.md",
+    "mode": "100644",
+    "sha": "12ad52064b3ba766f86d039c2928c4bd49d5e3b7"
+  },
+  {
+    "path": "docs/Makefile",
+    "mode": "100644",
+    "sha": "d0c3cbf1020d5c292abdedf27627c6abe25e2293"
+  },
+  {
+    "path": "docs/cpu_interpreter_acceptance.md",
+    "mode": "100644",
+    "sha": "4641e2c7c76a858e974a77b975ef6609cab12818"
+  },
+  {
+    "path": "docs/cpu_interpreter_active_addresses.md",
+    "mode": "100644",
+    "sha": "1883920d5b2bbcffabe27a5624f366f6df741aff"
+  },
+  {
+    "path": "docs/cpu_interpreter_demo.py",
+    "mode": "100644",
+    "sha": "b65ffcf3ff22ffc551d9234f3a8a86b02a5fee44"
+  },
+  {
+    "path": "docs/cpu_interpreter_dtype_performance.md",
+    "mode": "100644",
+    "sha": "479ce0a4cf70fb7bffecb792c456734f3fb2f3b0"
+  },
+  {
+    "path": "docs/cpu_interpreter_expression_semantics.md",
+    "mode": "100644",
+    "sha": "d93648b40ca837506bc144d01f05abdc2cba67df"
+  },
+  {
+    "path": "docs/cpu_interpreter_geometry_performance.md",
+    "mode": "100644",
+    "sha": "584da53690f56a982324df041c4f7fa4054a9ed0"
+  },
+  {
+    "path": "docs/cpu_interpreter_geometry_symbols.md",
+    "mode": "100644",
+    "sha": "999d84db194eae1850c3062ce152f51d4318f29b"
+  },
+  {
+    "path": "docs/cpu_interpreter_identity_memory.md",
+    "mode": "100644",
+    "sha": "aeec6c42cd4189e3b8e6835c1363921ccf9ace62"
+  },
+  {
+    "path": "docs/cpu_interpreter_identity_read.md",
+    "mode": "100644",
+    "sha": "4a4d8a588aa9d139d45dfc48455d4715072f5db4"
+  },
+  {
+    "path": "docs/cpu_interpreter_layout_calls.md",
+    "mode": "100644",
+    "sha": "c4bec0abe80a918c54b599a30bf3a4718b67ba64"
+  },
+  {
+    "path": "docs/cpu_interpreter_layout_gpu.md",
+    "mode": "100644",
+    "sha": "9f6fd270fa16e6e51bb831e11f6e3c203ac4e6dc"
+  },
+  {
+    "path": "docs/cpu_interpreter_performance.md",
+    "mode": "100644",
+    "sha": "4dbfc8dcc2ce9b9b5faeaafa1d730da906afcc86"
+  },
+  {
+    "path": "docs/cpu_interpreter_report_validation.md",
+    "mode": "100644",
+    "sha": "fa59c32a20a4a64816670b18b5e796f155db41d6"
+  },
+  {
+    "path": "docs/cpu_interpreter_rtx4090_validation.md",
+    "mode": "100644",
+    "sha": "30e96834fc6c0d84fa79822774657ba258f18568"
+  },
+  {
+    "path": "docs/cpu_interpreter_validation.txt",
+    "mode": "100644",
+    "sha": "65e8de5ad53f34413800136be4f50024595c1a87"
+  },
+  {
+    "path": "docs/make.bat",
+    "mode": "100644",
+    "sha": "747ffb7b3033659bdd2d1e6eae41ecb00358a45e"
+  },
+  {
+    "path": "docs/requirements.txt",
+    "mode": "100644",
+    "sha": "dfab548d09d3cbba83edd7eb5aff23b6960614c5"
+  },
+  {
+    "path": "docs/source/_static/ninetoothed-logo.png",
+    "mode": "100755",
+    "sha": "a799b7a769622647d127612e6e838914f48b61e6"
+  },
+  {
+    "path": "docs/source/basics.rst",
+    "mode": "100644",
+    "sha": "d43a0d9752e80f9815e61c75421134ca13aebfb5"
+  },
+  {
+    "path": "docs/source/build.rst",
+    "mode": "100644",
+    "sha": "3511a87bfaea53babda19f9395dfada1a19c768d"
+  },
+  {
+    "path": "docs/source/conf.py",
+    "mode": "100644",
+    "sha": "bbbf71124f2dd6f502e03c741c0daec140b0086f"
+  },
+  {
+    "path": "docs/source/cpu_interpreter.rst",
+    "mode": "100644",
+    "sha": "d4968ea360e6096b6d98362b2f6ceb13f36dc562"
+  },
+  {
+    "path": "docs/source/index.rst",
+    "mode": "100644",
+    "sha": "b7b2bd43b1febb4b186d76c23bf1860120f7f8cc"
+  },
+  {
+    "path": "docs/source/installation.rst",
+    "mode": "100644",
+    "sha": "0ea16569c21deba06bb76aafea86bf6f20d1aab3"
+  },
+  {
+    "path": "docs/source/python_api.rst",
+    "mode": "100644",
+    "sha": "4563edb718f89a504d59e83a9f99a57ed2fb8e79"
+  },
+  {
+    "path": "docs/source/python_api/code_generation.rst",
+    "mode": "100644",
+    "sha": "1e5758d190ffab080adc382098f3da652a009c54"
+  },
+  {
+    "path": "docs/source/python_api/debugging.rst",
+    "mode": "100644",
+    "sha": "cf8017e77f5e980e9fdfd0174a1dfc577ebca896"
+  },
+  {
+    "path": "docs/source/python_api/symbol.rst",
+    "mode": "100644",
+    "sha": "9d7df860bb708c317ab0d446800f05ca847f7f92"
+  },
+  {
+    "path": "docs/source/python_api/tensor.rst",
+    "mode": "100644",
+    "sha": "88eef12f0115bc90a769b3279219c2d1e689c301"
+  },
+  {
+    "path": "docs/source/python_api/visualization.rst",
+    "mode": "100644",
+    "sha": "029d28fe9846843a14f9a88782a60f3110599e97"
+  },
+  {
+    "path": "docs/source/visualize.py",
+    "mode": "100644",
+    "sha": "8af88015bd7d929b7b66a5d650f47a4e2d807fb8"
+  },
+  {
+    "path": "docs/upstream_compatibility_20260916.md",
+    "mode": "100644",
+    "sha": "8acddff567f58ade1eafb4d3d34925839619a933"
+  },
+  {
+    "path": "pyproject.toml",
+    "mode": "100644",
+    "sha": "a9dc6293d25a20df1f2454a81fd733453dacde63"
+  },
+  {
+    "path": "requirements-cpu.txt",
+    "mode": "100644",
+    "sha": "eceefac2f8f264665a5e5d2add794a9b714529ce"
+  },
+  {
+    "path": "requirements.txt",
+    "mode": "100644",
+    "sha": "c74334469975b65aabeeed35177766b45f776504"
+  },
+  {
+    "path": "scripts/check_contributing_metadata.py",
+    "mode": "100644",
+    "sha": "14c935d6edb83d8eba16331cd36da4107d76b477"
+  },
+  {
+    "path": "scripts/check_contributing_style.py",
+    "mode": "100644",
+    "sha": "68f678f99a0d3a65a44dc3f8810770e6e5c2fac7"
+  },
+  {
+    "path": "scripts/run_cpu_tests.py",
+    "mode": "100644",
+    "sha": "73d568dc31bcd2e4179bf2a65c7f1c8afe4546b6"
+  },
+  {
+    "path": "scripts/verify_interpreter_gpu.py",
+    "mode": "100644",
+    "sha": "7ef8d7175e30c09b1e9b6387bbf143286b8ea511"
+  },
+  {
+    "path": "src/ninetoothed/__init__.py",
+    "mode": "100644",
+    "sha": "9597c84b64061635322e631649932c474609195b"
+  },
+  {
+    "path": "src/ninetoothed/aot.py",
+    "mode": "100644",
+    "sha": "38d41a17a594a7b354edcc25c8f0470d7d48c1ea"
+  },
+  {
+    "path": "src/ninetoothed/auto_tuner.py",
+    "mode": "100644",
+    "sha": "4579371a3c5cf8244357f089d2c26538be7c1616"
+  },
+  {
+    "path": "src/ninetoothed/backends/__init__.py",
+    "mode": "100644",
+    "sha": "ddffc2d0a32ab451fbfeb63a66f91bb326d0fc01"
+  },
+  {
+    "path": "src/ninetoothed/backends/core.py",
+    "mode": "100644",
+    "sha": "bb56816dd85d9ca755df833963ea20ccb0692164"
+  },
+  {
+    "path": "src/ninetoothed/backends/cuda.py",
+    "mode": "100644",
+    "sha": "d0b498fc49b569c3623131820e95da1d5856fb6c"
+  },
+  {
+    "path": "src/ninetoothed/backends/emitters/__init__.py",
+    "mode": "100644",
+    "sha": "13f65087caf341019aabb1a1de0cfd0226d88537"
+  },
+  {
+    "path": "src/ninetoothed/backends/emitters/analysis.py",
+    "mode": "100644",
+    "sha": "7a8cc8522d31325007e3dafebcf8616bf28ffbd3"
+  },
+  {
+    "path": "src/ninetoothed/backends/emitters/base.py",
+    "mode": "100644",
+    "sha": "d4d2dd16bfbcde92727d0839f1a84860e1f58438"
+  },
+  {
+    "path": "src/ninetoothed/backends/emitters/context.py",
+    "mode": "100644",
+    "sha": "349c945f22886b46f2765addbf78b1166708f636"
+  },
+  {
+    "path": "src/ninetoothed/backends/emitters/cuda.py",
+    "mode": "100644",
+    "sha": "fdc64e1f4497b12c32667adafce22ed927512cc0"
+  },
+  {
+    "path": "src/ninetoothed/backends/emitters/expressions.py",
+    "mode": "100644",
+    "sha": "2ea550417f1a0f0b3c5575d033eec213a5352c4a"
+  },
+  {
+    "path": "src/ninetoothed/backends/emitters/ssa.py",
+    "mode": "100644",
+    "sha": "2dd135bddc06a26848d9b548e478ba564ddf0b52"
+  },
+  {
+    "path": "src/ninetoothed/backends/emitters/tilelang.py",
+    "mode": "100644",
+    "sha": "820d6f36d5174edfd87adcc5113d3d9d922cfa43"
+  },
+  {
+    "path": "src/ninetoothed/backends/emitters/triton.py",
+    "mode": "100644",
+    "sha": "8e3c8b408d163f7076ed6f1eda3372945963bd4c"
+  },
+  {
+    "path": "src/ninetoothed/backends/materializers/__init__.py",
+    "mode": "100644",
+    "sha": "0ea354f50a098309fa43541c03069e31375cacbc"
+  },
+  {
+    "path": "src/ninetoothed/backends/materializers/base.py",
+    "mode": "100644",
+    "sha": "3bf3c677c433ff8f4e1e6cbdf6bcf6fd10991d01"
+  },
+  {
+    "path": "src/ninetoothed/backends/materializers/cuda.py",
+    "mode": "100644",
+    "sha": "5f4c09cbef108fc80f9b52afa1da7dcb9fc6e357"
+  },
+  {
+    "path": "src/ninetoothed/backends/materializers/tilelang.py",
+    "mode": "100644",
+    "sha": "df6b9396340fa26421c93a618b4ccf8d1aee4ba9"
+  },
+  {
+    "path": "src/ninetoothed/backends/materializers/triton.py",
+    "mode": "100644",
+    "sha": "3e06c65b1f4cafd44c868fe335399f55a89af6bc"
+  },
+  {
+    "path": "src/ninetoothed/backends/registry.py",
+    "mode": "100644",
+    "sha": "b1e3a0ea44a170067581be3f724802670009917a"
+  },
+  {
+    "path": "src/ninetoothed/backends/tilelang.py",
+    "mode": "100644",
+    "sha": "69479b1b783bc383b5f2dfbf94316a976fb3e56c"
+  },
+  {
+    "path": "src/ninetoothed/backends/toolchain.py",
+    "mode": "100644",
+    "sha": "91fc08366aa28cf9a46dff6d2158414ad06722b5"
+  },
+  {
+    "path": "src/ninetoothed/backends/triton.py",
+    "mode": "100644",
+    "sha": "3168a644e32384deabffaa80818ea8ed12b0a1ad"
+  },
+  {
+    "path": "src/ninetoothed/build.py",
+    "mode": "100644",
+    "sha": "da6c38ca93f5ddf8af462ed9802017ffa54ea7bc"
+  },
+  {
+    "path": "src/ninetoothed/compiler/__init__.py",
+    "mode": "100644",
+    "sha": "f052d44e4c622d1d8d5b4cd30c59e82e109ce368"
+  },
+  {
+    "path": "src/ninetoothed/compiler/cache.py",
+    "mode": "100644",
+    "sha": "0374b9b6ba68f4d1264cc77f65c68ca8551d3c76"
+  },
+  {
+    "path": "src/ninetoothed/compiler/driver.py",
+    "mode": "100644",
+    "sha": "5afc65c6013a268d4b71ca635a893f1f5ff9f7e6"
+  },
+  {
+    "path": "src/ninetoothed/compiler/jit.py",
+    "mode": "100644",
+    "sha": "2ea4856c53cef8d85c0dba2ecb4c80c65d32bb54"
+  },
+  {
+    "path": "src/ninetoothed/compiler/layout.py",
+    "mode": "100644",
+    "sha": "5acfd8adea07da1542ada231697a12538e15aaad"
+  },
+  {
+    "path": "src/ninetoothed/compiler/layout_runtime.py",
+    "mode": "100644",
+    "sha": "d1cd25393f831b1a391dd0706fcdc280a8037fb1"
+  },
+  {
+    "path": "src/ninetoothed/compiler/passes.py",
+    "mode": "100644",
+    "sha": "de772cfb3f7fd97fd2aadad0c045a859e3506eff"
+  },
+  {
+    "path": "src/ninetoothed/compiler/reductions.py",
+    "mode": "100644",
+    "sha": "18dd95d924086fbbb30be5f2a751fb806cf1d789"
+  },
+  {
+    "path": "src/ninetoothed/compiler/runtime.py",
+    "mode": "100644",
+    "sha": "28cef0a7dea6fc83fa985f52b97e949f98f4a01f"
+  },
+  {
+    "path": "src/ninetoothed/compiler/specialization.py",
+    "mode": "100644",
+    "sha": "d4869b713bc8ce00b2ac150ea2c10d0bbb6733f9"
+  },
+  {
+    "path": "src/ninetoothed/cudaifier.py",
+    "mode": "100644",
+    "sha": "f074f7389fcaca975163afd89a09bfb30160f863"
+  },
+  {
+    "path": "src/ninetoothed/debugging.py",
+    "mode": "100644",
+    "sha": "5ad1d778de00a5ca8e7890762c02fc9cf30569f6"
+  },
+  {
+    "path": "src/ninetoothed/dtype.py",
+    "mode": "100644",
+    "sha": "9b653754fcba374507e5506eb1c6c57b0892a577"
+  },
+  {
+    "path": "src/ninetoothed/eval.py",
+    "mode": "100644",
+    "sha": "a2b4c5f56f51f4122a83673241e94a27bcc66495"
+  },
+  {
+    "path": "src/ninetoothed/frontend/__init__.py",
+    "mode": "100644",
+    "sha": "45d221a13a6810351f5087f79539a24bfcfa9db9"
+  },
+  {
+    "path": "src/ninetoothed/frontend/errors.py",
+    "mode": "100644",
+    "sha": "c1812d74af45e7de7b6f51be0c84b026f527fd7f"
+  },
+  {
+    "path": "src/ninetoothed/frontend/layout.py",
+    "mode": "100644",
+    "sha": "757145631ad85e1d2ad88900f4f249ca851b6d9e"
+  },
+  {
+    "path": "src/ninetoothed/frontend/preparation.py",
+    "mode": "100644",
+    "sha": "fd513b3fe4e774efb65e5c9399f9c5ba42907d23"
+  },
+  {
+    "path": "src/ninetoothed/frontend/python.py",
+    "mode": "100644",
+    "sha": "b65a10f17633b6be61dcaa141cc8bd0f9a174d8a"
+  },
+  {
+    "path": "src/ninetoothed/frontend/types.py",
+    "mode": "100644",
+    "sha": "49d607461ebf36ff991b5f7799f4e492433c9c23"
+  },
+  {
+    "path": "src/ninetoothed/interpreter/__init__.py",
+    "mode": "100644",
+    "sha": "72eb8d34c2dc17df40a81081353caf2d44932940"
+  },
+  {
+    "path": "src/ninetoothed/interpreter/access.py",
+    "mode": "100644",
+    "sha": "085feca76782214975854b9fce3ce9fd92163ee0"
+  },
+  {
+    "path": "src/ninetoothed/interpreter/debugger.py",
+    "mode": "100644",
+    "sha": "489b13a29bcbae42113cc9ba09ab66a181b797c1"
+  },
+  {
+    "path": "src/ninetoothed/interpreter/expressions.py",
+    "mode": "100644",
+    "sha": "b7d75c5b9ce1db619d909cebc2f4f34b68a99dba"
+  },
+  {
+    "path": "src/ninetoothed/interpreter/failure.py",
+    "mode": "100644",
+    "sha": "43b009c371b52f94f6889427283e735b9fd3f81f"
+  },
+  {
+    "path": "src/ninetoothed/interpreter/geometry.py",
+    "mode": "100644",
+    "sha": "74b58fa11b8cbb34499a914d4509660730b9eb0f"
+  },
+  {
+    "path": "src/ninetoothed/interpreter/localization.py",
+    "mode": "100644",
+    "sha": "737630be1ca319ad7c3c13e13b420e504e395312"
+  },
+  {
+    "path": "src/ninetoothed/interpreter/memory.py",
+    "mode": "100644",
+    "sha": "a8e53eee2aec229968b74976e7609821eee615a9"
+  },
+  {
+    "path": "src/ninetoothed/interpreter/runtime.py",
+    "mode": "100644",
+    "sha": "7d7fb82383bdfb9f4e6ab9b26b2437c123058e20"
+  },
+  {
+    "path": "src/ninetoothed/interpreter/storage.py",
+    "mode": "100644",
+    "sha": "38fcbf095fb2eea8f1710625d925ba973a9969b1"
+  },
+  {
+    "path": "src/ninetoothed/ir/__init__.py",
+    "mode": "100644",
+    "sha": "6b2952475d6e2633a4666d9551704c41f34ff99d"
+  },
+  {
+    "path": "src/ninetoothed/ir/frozen.py",
+    "mode": "100644",
+    "sha": "8ef2f9475f7c628047f67d4f025578984b92c53d"
+  },
+  {
+    "path": "src/ninetoothed/ir/kernel.py",
+    "mode": "100644",
+    "sha": "b4b72869a6d02bb88cbc7cdcfd451d60dc863f46"
+  },
+  {
+    "path": "src/ninetoothed/ir/provenance.py",
+    "mode": "100644",
+    "sha": "bfa75d89ad053b318117dfbd6df309f92c7818fe"
+  },
+  {
+    "path": "src/ninetoothed/ir/ssa.py",
+    "mode": "100644",
+    "sha": "323069c5e2c4e7d6c62c568c4cfe201c8a1bd47e"
+  },
+  {
+    "path": "src/ninetoothed/language.py",
+    "mode": "100644",
+    "sha": "59e23a948d3e02a3180a1b8ec5a21bc76da6857b"
+  },
+  {
+    "path": "src/ninetoothed/make.py",
+    "mode": "100644",
+    "sha": "ae8c42b8a558c2c1d651f449834f89f7d90c085f"
+  },
+  {
+    "path": "src/ninetoothed/naming.py",
+    "mode": "100644",
+    "sha": "4a66cfc91a498f175b30dfadade3d0ebbba213b3"
+  },
+  {
+    "path": "src/ninetoothed/symbol.py",
+    "mode": "100644",
+    "sha": "05cb9f3e68a9b1cfc1826ae3d7c2184988230efb"
+  },
+  {
+    "path": "src/ninetoothed/targets.py",
+    "mode": "100644",
+    "sha": "6535f7ceec0a2b81ad62db9a6df481edd62fb3e3"
+  },
+  {
+    "path": "src/ninetoothed/templates/auto_tuning_cache.h",
+    "mode": "100644",
+    "sha": "da78e5f52756d1c8650f7c38ce139603edd671d7"
+  },
+  {
+    "path": "src/ninetoothed/templates/thread_safe_unordered_map.h",
+    "mode": "100644",
+    "sha": "c7910e892876606c01e0a17a7cea1ad4897990b4"
+  },
+  {
+    "path": "src/ninetoothed/tensor.py",
+    "mode": "100644",
+    "sha": "30cde263ab94a073f5d0e409ac2d508fbc863b76"
+  },
+  {
+    "path": "src/ninetoothed/torchifier.py",
+    "mode": "100644",
+    "sha": "63b7d36bf852238814b48eb3771f401a466d1739"
+  },
+  {
+    "path": "src/ninetoothed/utils.py",
+    "mode": "100644",
+    "sha": "6e3e790046542257693980594e4a5bf21f3856cc"
+  },
+  {
+    "path": "src/ninetoothed/visualization.py",
+    "mode": "100644",
+    "sha": "6fe3e61fb316d01352aa38ae1453711b0396318e"
+  },
+  {
+    "path": "tests/__init__.py",
+    "mode": "100644",
+    "sha": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391"
+  },
+  {
+    "path": "tests/conftest.py",
+    "mode": "100644",
+    "sha": "275c969c62c339ab681f40f1c28c763870750d0d"
+  },
+  {
+    "path": "tests/test_add.py",
+    "mode": "100644",
+    "sha": "e49f8b986839aa2d8696d4a29ff90599eb729782"
+  },
+  {
+    "path": "tests/test_addmm.py",
+    "mode": "100644",
+    "sha": "703a4ed0cafc7839730d59464387688539b24e12"
+  },
+  {
+    "path": "tests/test_aot.py",
+    "mode": "100644",
+    "sha": "a2c7ecb5587631ff9082bd4b1314e1082182a714"
+  },
+  {
+    "path": "tests/test_aot_auto_tuning.py",
+    "mode": "100644",
+    "sha": "00d97293c063d0fdfd07a8c6376a9111e7c28c6b"
+  },
+  {
+    "path": "tests/test_attention.py",
+    "mode": "100644",
+    "sha": "e4d17ebcfd5d6e915db76e2d0cb3fc4df6f19535"
+  },
+  {
+    "path": "tests/test_auto_tuner.py",
+    "mode": "100644",
+    "sha": "e85f5d25caba0ca4cc8c28d570a93361168ead31"
+  },
+  {
+    "path": "tests/test_backend_registry.py",
+    "mode": "100644",
+    "sha": "fd276272701eeef1894d06a284598c1c6e75f513"
+  },
+  {
+    "path": "tests/test_built_artifact_reload.py",
+    "mode": "100644",
+    "sha": "906ca7f1019236304d64ba59933fb1440c57f343"
+  },
+  {
+    "path": "tests/test_clone.py",
+    "mode": "100644",
+    "sha": "937da554a4dcb4dff7ba4f231e9738eb66cbb1be"
+  },
+  {
+    "path": "tests/test_compiler_cache_runtime.py",
+    "mode": "100644",
+    "sha": "8e3b049a37fed56a22b349b0cba1503b2fc13866"
+  },
+  {
+    "path": "tests/test_compiler_entrypoints.py",
+    "mode": "100644",
+    "sha": "cf5cf6010a2dd156ac776d8260aa11efbabb366f"
+  },
+  {
+    "path": "tests/test_conv2d.py",
+    "mode": "100644",
+    "sha": "5b9b158853b41d215c9831e0abd3a73ef14a8bb4"
+  },
+  {
+    "path": "tests/test_cuda_reduction_schedule.py",
+    "mode": "100644",
+    "sha": "2737aee9d1d3c899f02e8d776dad258bbfd271a5"
+  },
+  {
+    "path": "tests/test_data_ptr.py",
+    "mode": "100644",
+    "sha": "5821d118b95c8c4242890012bdbaa7a27b39ae3d"
+  },
+  {
+    "path": "tests/test_debugging.py",
+    "mode": "100644",
+    "sha": "12db5e3cefd07731766a12e0336f5c6d33a5e26a"
+  },
+  {
+    "path": "tests/test_dropout.py",
+    "mode": "100644",
+    "sha": "19d75f38eb8143c939fe7660b3fa53f2f6611167"
+  },
+  {
+    "path": "tests/test_emitter_boundaries.py",
+    "mode": "100644",
+    "sha": "5b72c548674511de1aa8614e6d2bba31cefcd346"
+  },
+  {
+    "path": "tests/test_eval.py",
+    "mode": "100644",
+    "sha": "df073d8b969d45b070d9f9d2cfc1808a00db1338"
+  },
+  {
+    "path": "tests/test_expand.py",
+    "mode": "100644",
+    "sha": "e6aa6bd1f6467076596590975f14b2db4a6db71a"
+  },
+  {
+    "path": "tests/test_generation.py",
+    "mode": "100644",
+    "sha": "3e81b639316037d43bb04456e4fe1f4f5d6704c1"
+  },
+  {
+    "path": "tests/test_getitem.py",
+    "mode": "100644",
+    "sha": "640bc12d9c0bc1cef756a8b9249c6789393447be"
+  },
+  {
+    "path": "tests/test_interpreter_active_addresses.py",
+    "mode": "100644",
+    "sha": "3245cbb7566a81611566663d28c7690389f7d5e8"
+  },
+  {
+    "path": "tests/test_interpreter_applications.py",
+    "mode": "100644",
+    "sha": "0cb20733337fc1a1ad009400499cf61d902888a8"
+  },
+  {
+    "path": "tests/test_interpreter_debugger.py",
+    "mode": "100644",
+    "sha": "ab9d6c4c9ec186957497df9c7543f2b287e55287"
+  },
+  {
+    "path": "tests/test_interpreter_default_pipeline.py",
+    "mode": "100644",
+    "sha": "872e244c27f36eda9776638991d2cf6d26c387bc"
+  },
+  {
+    "path": "tests/test_interpreter_demo.py",
+    "mode": "100644",
+    "sha": "76adc6d04f383b1ed209780b70fb90fb85178820"
+  },
+  {
+    "path": "tests/test_interpreter_dtype_cache.py",
+    "mode": "100644",
+    "sha": "39332fc7803b88285ded80d73b9d945da5f112d0"
+  },
+  {
+    "path": "tests/test_interpreter_expression_plans.py",
+    "mode": "100644",
+    "sha": "45e7c952e17f1c6c890841d2c6773e74458e87e4"
+  },
+  {
+    "path": "tests/test_interpreter_expression_semantics.py",
+    "mode": "100644",
+    "sha": "045bb95377fc47387ac9a25522255ff81672ff46"
+  },
+  {
+    "path": "tests/test_interpreter_failure_workflow.py",
+    "mode": "100644",
+    "sha": "e40e347c2d71b2e5bbbb5f5193c2c794f5f99519"
+  },
+  {
+    "path": "tests/test_interpreter_geometry_reuse.py",
+    "mode": "100644",
+    "sha": "3fc66519455f45a20badb1edf35941ee4f828e4f"
+  },
+  {
+    "path": "tests/test_interpreter_gpu.py",
+    "mode": "100644",
+    "sha": "b9e2f4eccee30d22f72e54939a0e0aff62218c6c"
+  },
+  {
+    "path": "tests/test_interpreter_gpu_report.py",
+    "mode": "100644",
+    "sha": "6b0a3504c88fdd6067ca5f8bac7b6a0ce8c0ecfb"
+  },
+  {
+    "path": "tests/test_interpreter_identity_memory.py",
+    "mode": "100644",
+    "sha": "9c1e8c143fea037c6ba1398c6124c06498178999"
+  },
+  {
+    "path": "tests/test_interpreter_identity_read.py",
+    "mode": "100644",
+    "sha": "c733bd053d80109aee06b6d1a823dac44cb4c333"
+  },
+  {
+    "path": "tests/test_interpreter_layout_calls.py",
+    "mode": "100644",
+    "sha": "30a624d18c9dfafaae2bd2bde747e2c6c8591024"
+  },
+  {
+    "path": "tests/test_interpreter_matmul.py",
+    "mode": "100644",
+    "sha": "701dab93954f41ec9b002f678467f30fcb747d0e"
+  },
+  {
+    "path": "tests/test_interpreter_matmul_checkpoints.py",
+    "mode": "100644",
+    "sha": "55a59bd31d0f2306a55136bd8cb6b79d0d4d9db5"
+  },
+  {
+    "path": "tests/test_interpreter_memory_dependencies.py",
+    "mode": "100644",
+    "sha": "a39d2b0e86ed491487c5c3e9976a8b9e20686247"
+  },
+  {
+    "path": "tests/test_interpreter_provenance.py",
+    "mode": "100644",
+    "sha": "57137767b7c658f8a8189a372709180c4b6c33a3"
+  },
+  {
+    "path": "tests/test_interpreter_shared_storage.py",
+    "mode": "100644",
+    "sha": "446cbaf70da9f025a66ccd18f7167febfa873554"
+  },
+  {
+    "path": "tests/test_interpreter_ssa.py",
+    "mode": "100644",
+    "sha": "2411f42169a162b7c9dd14ea62343533f2a9c006"
+  },
+  {
+    "path": "tests/test_interpreter_step_debugger.py",
+    "mode": "100644",
+    "sha": "87150973a6a01af02e5e05e603110dedc40575dd"
+  },
+  {
+    "path": "tests/test_interpreter_torch.py",
+    "mode": "100644",
+    "sha": "ff2fc3dbe5c01212fc44ba63aeb44ceb95025135"
+  },
+  {
+    "path": "tests/test_interpreter_trace_index.py",
+    "mode": "100644",
+    "sha": "bb53d7a72675a2fa1593ecf00878c94fe0dcf932"
+  },
+  {
+    "path": "tests/test_interpreter_value_mapping.py",
+    "mode": "100644",
+    "sha": "9ca8b61957eb75953d3f0f96d4c28ffd89ca62b0"
+  },
+  {
+    "path": "tests/test_ipynb.py",
+    "mode": "100644",
+    "sha": "f408f2324562d9447e04cd2fc5448f11ebd3b853"
+  },
+  {
+    "path": "tests/test_ir_immutability.py",
+    "mode": "100644",
+    "sha": "158f46c5e416e631e350771d88c42bd255bfe5b6"
+  },
+  {
+    "path": "tests/test_jagged.py",
+    "mode": "100644",
+    "sha": "c0666e66010a600ff758ff5d75a23ba91c12011f"
+  },
+  {
+    "path": "tests/test_kernel_ir.py",
+    "mode": "100644",
+    "sha": "0badc6f6055961cccfdd339e1d126f02598c4c7f"
+  },
+  {
+    "path": "tests/test_layout_transfer_analysis.py",
+    "mode": "100644",
+    "sha": "28d4112bf86d24c091efc7f8665560eaf251a0e7"
+  },
+  {
+    "path": "tests/test_lowering_inference.py",
+    "mode": "100644",
+    "sha": "c244c590f686e39cd5fb99174269d9697d75d38e"
+  },
+  {
+    "path": "tests/test_materializer_registry.py",
+    "mode": "100644",
+    "sha": "783cdd1f1683049ae82ce270f0cb62c3d7df9c38"
+  },
+  {
+    "path": "tests/test_matmul.py",
+    "mode": "100644",
+    "sha": "0c5bac448c12ac968d79988659df58f27ad64f58"
+  },
+  {
+    "path": "tests/test_max_pool2d.py",
+    "mode": "100644",
+    "sha": "3b6c372175066bdde5c5d299dc6bf745988322d5"
+  },
+  {
+    "path": "tests/test_naming.py",
+    "mode": "100644",
+    "sha": "2e0137a4e0ac9e082df33aee27ffa9bb1ecf5c32"
+  },
+  {
+    "path": "tests/test_pad.py",
+    "mode": "100644",
+    "sha": "32191843d0cbba65720ca084b95ecdd462c3d998"
+  },
+  {
+    "path": "tests/test_pow.py",
+    "mode": "100644",
+    "sha": "30e88e98a27456bec7995559dab1c1c069ea23d1"
+  },
+  {
+    "path": "tests/test_softmax.py",
+    "mode": "100644",
+    "sha": "05bbb3652c4bc331fe0c6c2bf6d6a68c4a7b8feb"
+  },
+  {
+    "path": "tests/test_ssa_application_lowering.py",
+    "mode": "100644",
+    "sha": "991e0905b410eac3fda782627edd184e91bf08c5"
+  },
+  {
+    "path": "tests/test_ssa_first_backend_lowering.py",
+    "mode": "100644",
+    "sha": "e134fde68ea9937f572cfc382225ee4b2e692635"
+  },
+  {
+    "path": "tests/test_ssa_pass_pipeline.py",
+    "mode": "100644",
+    "sha": "33343029c9c9958297c6c3c1c72047f6fb7462f8"
+  },
+  {
+    "path": "tests/test_ssa_program_domain_regressions.py",
+    "mode": "100644",
+    "sha": "3e6105b29f1a7f5a9520be30df8ce12e6f024fa8"
+  },
+  {
+    "path": "tests/test_ssa_validation.py",
+    "mode": "100644",
+    "sha": "9df138c5f01bee5181f7e928b2fabf535cfd4801"
+  },
+  {
+    "path": "tests/test_target_profiles.py",
+    "mode": "100644",
+    "sha": "98065e1e5dfc3bf1f7e389f844843ee5796ab46c"
+  },
+  {
+    "path": "tests/test_triton_aot_materializer.py",
+    "mode": "100644",
+    "sha": "7f0d716b4ec940a234ab9163f3dde956d2a06ca9"
+  },
+  {
+    "path": "tests/test_triton_layout_transfer.py",
+    "mode": "100644",
+    "sha": "61e7ef975d18baa341fb45d188e01581134a03f5"
+  },
+  {
+    "path": "tests/test_triton_layout_transfer_runtime.py",
+    "mode": "100644",
+    "sha": "59fa3743963721d8859d7be7c277ba233204686e"
+  },
+  {
+    "path": "tests/test_triton_reduction_schedule.py",
+    "mode": "100644",
+    "sha": "e70a89fbefd474971494d9d1ad12dff90fcd9741"
+  },
+  {
+    "path": "tests/test_triton_runtime_auto_tuning.py",
+    "mode": "100644",
+    "sha": "6f4756dd94d93f3e1683e9f77e024524c7c64410"
+  },
+  {
+    "path": "tests/test_unsqueeze.py",
+    "mode": "100644",
+    "sha": "788664af8750133992ee35bd4e92e214df7c0ff1"
+  },
+  {
+    "path": "tests/utils.py",
+    "mode": "100644",
+    "sha": "cd8ee5c401fa5266a73a833651aea5f8202678c0"
+  }
+]

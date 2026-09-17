@@ -1,0 +1,24 @@
+{
+  "status": "ACCEPT",
+  "records": 42,
+  "full_trace_pairs": 21,
+  "rounds": [
+    {
+      "round": 0,
+      "target_geomean_speedup": 2.3800320146543514,
+      "gate_passed": true
+    },
+    {
+      "round": 1,
+      "target_geomean_speedup": 2.386319030409153,
+      "gate_passed": true
+    },
+    {
+      "round": 2,
+      "target_geomean_speedup": 2.387788039125731,
+      "gate_passed": true
+    }
+  ],
+  "source_fingerprints_verified": true,
+  "traced_target_peak_gate_passed": true
+}

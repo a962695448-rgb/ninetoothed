@@ -1,0 +1,25 @@
+{
+  "files": 454,
+  "bytes": 4270847,
+  "sha256": "071d225519e58b00d375e49b356edb48b8c07a1435017bbc3db0edb0df46d690",
+  "gzip_bytes": 892102,
+  "gzip_sha256": "ee802111e279b7b895453113510bbc23b782642b022853cc9e4279c67a8fa861",
+  "base64_characters": 1189472,
+  "parts": [
+    {
+      "name": "traced-geometry-00.txt",
+      "characters": 400000,
+      "sha256": "9252c202c73d58bc0e6e10bbde4b0a1a4669a3b5387486e0ef96ad1eb396c869"
+    },
+    {
+      "name": "traced-geometry-01.txt",
+      "characters": 400000,
+      "sha256": "a67fc5a87cd8783bb5ef76d51be271ceddb107ca9c88e9721f4dc90eeca125e5"
+    },
+    {
+      "name": "traced-geometry-02.txt",
+      "characters": 389472,
+      "sha256": "e7012467d8ff16aa29a8399d1a1e0eaf0f5f3c7efa368de745c006942cc3be79"
+    }
+  ]
+}

@@ -1,0 +1,27 @@
+{
+  "base_commit": "a1ef12328b18042666360907714c0d529f03f6c7",
+  "change": "Allow internal geometry reuse under ordinary trace collection without callbacks/watch/handlers/filters; also reuse for unmasked arranged reads so snapshots keep fresh values while avoiding repeated address construction",
+  "rounds": 3,
+  "samples": 7,
+  "calls_per_sample": 3,
+  "targets": [
+    "trace=True matmul 7x16x7",
+    "trace=True matmul 9x32x11",
+    "trace=True matmul 5x17x9 with K padding"
+  ],
+  "controls": [
+    "untraced versions of all three targets",
+    "small matmul trace off/on",
+    "vector/padded-vector/softmax trace off/on"
+  ],
+  "minimum_target_geomean_speedup": 1.1,
+  "max_steady_case_regression_percent": 5,
+  "full_trace_equality": true,
+  "cold_latency_and_peak_memory": "Recorded separately after clearing both existing expression/dtype caches; not inferred from warm speedups",
+  "primary_metric": "Unprofiled prepared public interpret_program execution in three alternating fresh-process pairs",
+  "correctness": "All prior CPU semantic scope, fresh read data, false/array masks, custom memory observer effects, and exact complete trace fingerprints",
+  "publication": "Push accepted implementation and evidence only; retain rejected candidates; no main merge",
+  "extra_limits": "Reuse is allowed under ordinary trace collection with the built-in MemoryRecorder. Callbacks, handlers, watches, event filters and custom observer types retain ordinary evaluation; logical map <=65536 elements; one geometry entry per internal TensorRef.",
+  "revision": "New traced-execution target; preserve full trace, byte-access and diagnostics semantics; arbitrary memory observers use original evaluation",
+  "maximum_traced_target_peak_increase_percent": 5
+}
