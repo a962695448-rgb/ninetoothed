@@ -1,0 +1,172 @@
+FFFF...FFFFF................FFFFF................F.F.F.FF........FF      [100%]
+=================================== FAILURES ===================================
+_ test_unrepresented_call_keywords_are_rejected_instead_of_dropped[int('10', base=16)] _
+candidate/nine/tests/test_interpreter_layout_calls.py:17: in test_unrepresented_call_keywords_are_rejected_instead_of_dropped
+    with pytest.raises(ValueError, match="keyword"):
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   Failed: DID NOT RAISE ValueError
+_ test_unrepresented_call_keywords_are_rejected_instead_of_dropped[int(**options)] _
+candidate/nine/tests/test_interpreter_layout_calls.py:17: in test_unrepresented_call_keywords_are_rejected_instead_of_dropped
+    with pytest.raises(ValueError, match="keyword"):
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   Failed: DID NOT RAISE ValueError
+_ test_unrepresented_call_keywords_are_rejected_instead_of_dropped[cdiv(N, y=8)] _
+candidate/nine/tests/test_interpreter_layout_calls.py:17: in test_unrepresented_call_keywords_are_rejected_instead_of_dropped
+    with pytest.raises(ValueError, match="keyword"):
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   Failed: DID NOT RAISE ValueError
+_ test_unrepresented_call_keywords_are_rejected_instead_of_dropped[maximum(a, b, out=target)] _
+candidate/nine/tests/test_interpreter_layout_calls.py:17: in test_unrepresented_call_keywords_are_rejected_instead_of_dropped
+    with pytest.raises(ValueError, match="keyword"):
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   Failed: DID NOT RAISE ValueError
+_ test_power_of_two_calls_match_backend_integer_boundaries[--9223372036854775808] _
+candidate/nine/tests/test_interpreter_layout_calls.py:50: in test_power_of_two_calls_match_backend_integer_boundaries
+    assert actual == _backend_integer_reference(value)
+E   assert 18446744073709551616 == 0
+E    +  where 0 = _backend_integer_reference(-9223372036854775808)
+________ test_power_of_two_calls_match_backend_integer_boundaries[--17] ________
+candidate/nine/tests/test_interpreter_layout_calls.py:50: in test_power_of_two_calls_match_backend_integer_boundaries
+    assert actual == _backend_integer_reference(value)
+E   assert 32 == 0
+E    +  where 0 = _backend_integer_reference(-17)
+________ test_power_of_two_calls_match_backend_integer_boundaries[--2] _________
+candidate/nine/tests/test_interpreter_layout_calls.py:50: in test_power_of_two_calls_match_backend_integer_boundaries
+    assert actual == _backend_integer_reference(value)
+E   assert 4 == 0
+E    +  where 0 = _backend_integer_reference(-2)
+________ test_power_of_two_calls_match_backend_integer_boundaries[--1] _________
+candidate/nine/tests/test_interpreter_layout_calls.py:50: in test_power_of_two_calls_match_backend_integer_boundaries
+    assert actual == _backend_integer_reference(value)
+E   assert 4 == 0
+E    +  where 0 = _backend_integer_reference(-1)
+_________ test_power_of_two_calls_match_backend_integer_boundaries[-0] _________
+candidate/nine/tests/test_interpreter_layout_calls.py:50: in test_power_of_two_calls_match_backend_integer_boundaries
+    assert actual == _backend_integer_reference(value)
+E   assert 2 == 0
+E    +  where 0 = _backend_integer_reference(0)
+_ test_power_of_two_calls_match_backend_integer_boundaries[triton.--9223372036854775808] _
+candidate/nine/tests/test_interpreter_layout_calls.py:50: in test_power_of_two_calls_match_backend_integer_boundaries
+    assert actual == _backend_integer_reference(value)
+E   assert 18446744073709551616 == 0
+E    +  where 0 = _backend_integer_reference(-9223372036854775808)
+____ test_power_of_two_calls_match_backend_integer_boundaries[triton.--17] _____
+candidate/nine/tests/test_interpreter_layout_calls.py:50: in test_power_of_two_calls_match_backend_integer_boundaries
+    assert actual == _backend_integer_reference(value)
+E   assert 32 == 0
+E    +  where 0 = _backend_integer_reference(-17)
+_____ test_power_of_two_calls_match_backend_integer_boundaries[triton.--2] _____
+candidate/nine/tests/test_interpreter_layout_calls.py:50: in test_power_of_two_calls_match_backend_integer_boundaries
+    assert actual == _backend_integer_reference(value)
+E   assert 4 == 0
+E    +  where 0 = _backend_integer_reference(-2)
+_____ test_power_of_two_calls_match_backend_integer_boundaries[triton.--1] _____
+candidate/nine/tests/test_interpreter_layout_calls.py:50: in test_power_of_two_calls_match_backend_integer_boundaries
+    assert actual == _backend_integer_reference(value)
+E   assert 4 == 0
+E    +  where 0 = _backend_integer_reference(-1)
+_____ test_power_of_two_calls_match_backend_integer_boundaries[triton.-0] ______
+candidate/nine/tests/test_interpreter_layout_calls.py:50: in test_power_of_two_calls_match_backend_integer_boundaries
+    assert actual == _backend_integer_reference(value)
+E   assert 2 == 0
+E    +  where 0 = _backend_integer_reference(0)
+_______ test_existing_integer_normalization_remains_compatible[False-0] ________
+candidate/nine/tests/test_interpreter_layout_calls.py:56: in test_existing_integer_normalization_remains_compatible
+    assert evaluate(IndexExpr.parse("next_power_of_2(n)"), {"n": value}) == expected
+E   AssertionError: assert 2 == 0
+E    +  where 2 = evaluate(IndexExpr(op='call', operands=(IndexExpr(op='symbol', operands=(), value='n'),), value='next_power_of_2'), {'n': False})
+E    +    where IndexExpr(op='call', operands=(IndexExpr(op='symbol', operands=(), value='n'),), value='next_power_of_2') = parse('next_power_of_2(n)')
+E    +      where parse = IndexExpr.parse
+_______ test_existing_integer_normalization_remains_compatible[value2-0] _______
+candidate/nine/tests/test_interpreter_layout_calls.py:56: in test_existing_integer_normalization_remains_compatible
+    assert evaluate(IndexExpr.parse("next_power_of_2(n)"), {"n": value}) == expected
+E   AssertionError: assert 2 == 0
+E    +  where 2 = evaluate(IndexExpr(op='call', operands=(IndexExpr(op='symbol', operands=(), value='n'),), value='next_power_of_2'), {'n': np.int64(0)})
+E    +    where IndexExpr(op='call', operands=(IndexExpr(op='symbol', operands=(), value='n'),), value='next_power_of_2') = parse('next_power_of_2(n)')
+E    +      where parse = IndexExpr.parse
+________ test_existing_integer_normalization_remains_compatible[0.0-0] _________
+candidate/nine/tests/test_interpreter_layout_calls.py:56: in test_existing_integer_normalization_remains_compatible
+    assert evaluate(IndexExpr.parse("next_power_of_2(n)"), {"n": value}) == expected
+E   AssertionError: assert 2 == 0
+E    +  where 2 = evaluate(IndexExpr(op='call', operands=(IndexExpr(op='symbol', operands=(), value='n'),), value='next_power_of_2'), {'n': 0.0})
+E    +    where IndexExpr(op='call', operands=(IndexExpr(op='symbol', operands=(), value='n'),), value='next_power_of_2') = parse('next_power_of_2(n)')
+E    +      where parse = IndexExpr.parse
+_______ test_public_shape_metadata_uses_the_same_rounding_rule[0-False] ________
+candidate/nine/tests/test_interpreter_layout_calls.py:87: in test_public_shape_metadata_uses_the_same_rounding_rule
+    assert result.outputs["%result"] == _backend_integer_reference(size)
+E   assert array(2) == 0
+E    +  where 0 = _backend_integer_reference(0)
+________ test_public_shape_metadata_uses_the_same_rounding_rule[0-True] ________
+candidate/nine/tests/test_interpreter_layout_calls.py:87: in test_public_shape_metadata_uses_the_same_rounding_rule
+    assert result.outputs["%result"] == _backend_integer_reference(size)
+E   assert array(2) == 0
+E    +  where 0 = _backend_integer_reference(0)
+____ test_empty_padded_view_load_stays_empty_without_a_memory_access[False] ____
+control/nine/src/ninetoothed/interpreter/runtime.py:617: in block
+    input_snapshots, mask_snapshot = self.trace_inputs(op, env)
+                                     ^^^^^^^^^^^^^^^^^^^^^^^^^^
+control/nine/src/ninetoothed/interpreter/runtime.py:725: in trace_inputs
+    _coords, valid = target._access(predicate)
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^
+control/nine/src/ninetoothed/interpreter/memory.py:169: in _access
+    raise ValueError("Tensor view has no access map.")
+E   ValueError: Tensor view has no access map.
+
+The above exception was the direct cause of the following exception:
+candidate/nine/tests/test_interpreter_layout_calls.py:93: in test_empty_padded_view_load_stays_empty_without_a_memory_access
+    result = interpret_program(program, {"x": x}, tensors=(spec,), trace=True)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+control/nine/src/ninetoothed/interpreter/runtime.py:1331: in interpret_program
+    result = execution.run()
+             ^^^^^^^^^^^^^^^
+control/nine/src/ninetoothed/interpreter/runtime.py:571: in run
+    self.block(self.program.blocks[0], env, "entry")
+control/nine/src/ninetoothed/interpreter/runtime.py:661: in block
+    raise InterpretationError(
+E   ninetoothed.interpreter.runtime.InterpretationError: Operation entry:0:mem.load at program (0, 0, 0): Tensor view has no access map..
+____ test_empty_padded_view_load_stays_empty_without_a_memory_access[True] _____
+control/nine/src/ninetoothed/interpreter/runtime.py:617: in block
+    input_snapshots, mask_snapshot = self.trace_inputs(op, env)
+                                     ^^^^^^^^^^^^^^^^^^^^^^^^^^
+control/nine/src/ninetoothed/interpreter/runtime.py:725: in trace_inputs
+    _coords, valid = target._access(predicate)
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^
+control/nine/src/ninetoothed/interpreter/memory.py:169: in _access
+    raise ValueError("Tensor view has no access map.")
+E   ValueError: Tensor view has no access map.
+
+The above exception was the direct cause of the following exception:
+candidate/nine/tests/test_interpreter_layout_calls.py:93: in test_empty_padded_view_load_stays_empty_without_a_memory_access
+    result = interpret_program(program, {"x": x}, tensors=(spec,), trace=True)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+control/nine/src/ninetoothed/interpreter/runtime.py:1331: in interpret_program
+    result = execution.run()
+             ^^^^^^^^^^^^^^^
+control/nine/src/ninetoothed/interpreter/runtime.py:571: in run
+    self.block(self.program.blocks[0], env, "entry")
+control/nine/src/ninetoothed/interpreter/runtime.py:661: in block
+    raise InterpretationError(
+E   ninetoothed.interpreter.runtime.InterpretationError: Operation entry:0:mem.load at program (0, 0, 0): Tensor view has no access map..
+=========================== short test summary info ============================
+FAILED candidate/nine/tests/test_interpreter_layout_calls.py::test_unrepresented_call_keywords_are_rejected_instead_of_dropped[int('10', base=16)]
+FAILED candidate/nine/tests/test_interpreter_layout_calls.py::test_unrepresented_call_keywords_are_rejected_instead_of_dropped[int(**options)]
+FAILED candidate/nine/tests/test_interpreter_layout_calls.py::test_unrepresented_call_keywords_are_rejected_instead_of_dropped[cdiv(N, y=8)]
+FAILED candidate/nine/tests/test_interpreter_layout_calls.py::test_unrepresented_call_keywords_are_rejected_instead_of_dropped[maximum(a, b, out=target)]
+FAILED candidate/nine/tests/test_interpreter_layout_calls.py::test_power_of_two_calls_match_backend_integer_boundaries[--9223372036854775808]
+FAILED candidate/nine/tests/test_interpreter_layout_calls.py::test_power_of_two_calls_match_backend_integer_boundaries[--17]
+FAILED candidate/nine/tests/test_interpreter_layout_calls.py::test_power_of_two_calls_match_backend_integer_boundaries[--2]
+FAILED candidate/nine/tests/test_interpreter_layout_calls.py::test_power_of_two_calls_match_backend_integer_boundaries[--1]
+FAILED candidate/nine/tests/test_interpreter_layout_calls.py::test_power_of_two_calls_match_backend_integer_boundaries[-0]
+FAILED candidate/nine/tests/test_interpreter_layout_calls.py::test_power_of_two_calls_match_backend_integer_boundaries[triton.--9223372036854775808]
+FAILED candidate/nine/tests/test_interpreter_layout_calls.py::test_power_of_two_calls_match_backend_integer_boundaries[triton.--17]
+FAILED candidate/nine/tests/test_interpreter_layout_calls.py::test_power_of_two_calls_match_backend_integer_boundaries[triton.--2]
+FAILED candidate/nine/tests/test_interpreter_layout_calls.py::test_power_of_two_calls_match_backend_integer_boundaries[triton.--1]
+FAILED candidate/nine/tests/test_interpreter_layout_calls.py::test_power_of_two_calls_match_backend_integer_boundaries[triton.-0]
+FAILED candidate/nine/tests/test_interpreter_layout_calls.py::test_existing_integer_normalization_remains_compatible[False-0]
+FAILED candidate/nine/tests/test_interpreter_layout_calls.py::test_existing_integer_normalization_remains_compatible[value2-0]
+FAILED candidate/nine/tests/test_interpreter_layout_calls.py::test_existing_integer_normalization_remains_compatible[0.0-0]
+FAILED candidate/nine/tests/test_interpreter_layout_calls.py::test_public_shape_metadata_uses_the_same_rounding_rule[0-False]
+FAILED candidate/nine/tests/test_interpreter_layout_calls.py::test_public_shape_metadata_uses_the_same_rounding_rule[0-True]
+FAILED candidate/nine/tests/test_interpreter_layout_calls.py::test_empty_padded_view_load_stays_empty_without_a_memory_access[False]
+FAILED candidate/nine/tests/test_interpreter_layout_calls.py::test_empty_padded_view_load_stays_empty_without_a_memory_access[True]
+21 failed, 46 passed in 0.57s

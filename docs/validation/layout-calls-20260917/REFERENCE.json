@@ -1,0 +1,13 @@
+{
+  "reference_repository": "triton-lang/triton",
+  "reference_tag": "v3.1.0",
+  "reference_commit": "cf34004b8a67d290a962da166f5aa2fc66751326",
+  "source_url": "https://github.com/triton-lang/triton/blob/cf34004b8a67d290a962da166f5aa2fc66751326/python/triton/__init__.py",
+  "function": "next_power_of_2",
+  "verified_behavior": "The six-step bit-fill implementation returns zero for zero and negative signed-64-bit inputs; positive signed-64-bit integers round upward to a power of two.",
+  "test_reference": "An independent loop over shifts 1,2,4,8,16,32; no import or execution of the downloaded module",
+  "scope": "Interpreter call evaluation and padded logical-shape symbol binding, not GPU launch-block sizing or schedule defaults",
+  "preserved_behavior": "Existing integer normalization via int(value) remains, including integral/convertible scalar inputs.",
+  "source_review_only": true,
+  "new_gpu_run": false
+}
