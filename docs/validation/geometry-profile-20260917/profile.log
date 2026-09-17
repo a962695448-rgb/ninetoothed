@@ -1,0 +1,3 @@
+{'name': 'vector', 'access_calls': 66, 'ref_objects': 66, 'objects_accessed_more_than_once': 0, 'primitive_binding_accesses': 66, 'distinct_primitive_geometry_signatures': 66, 'maximum_signature_reuse': 1, 'symbol_types': {'builtins.int': 264}}
+{'name': 'softmax', 'access_calls': 39, 'ref_objects': 26, 'objects_accessed_more_than_once': 13, 'primitive_binding_accesses': 39, 'distinct_primitive_geometry_signatures': 26, 'maximum_signature_reuse': 2, 'symbol_types': {'builtins.int': 312}}
+{'name': 'matmul', 'access_calls': 6471, 'ref_objects': 54, 'objects_accessed_more_than_once': 27, 'primitive_binding_accesses': 6372, 'distinct_primitive_geometry_signatures': 15, 'maximum_signature_reuse': 1411, 'symbol_types': {'builtins.int': 77652}}
