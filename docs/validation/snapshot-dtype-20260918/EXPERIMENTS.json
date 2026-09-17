@@ -1,0 +1,26 @@
+[
+  {
+    "directory": "snapshot-dtype-20260918",
+    "cpu_passed": 832,
+    "gpu_deselected": 15,
+    "gpu_run": false,
+    "status": "STOPPED_TRACE_MISMATCH",
+    "decision_file": null
+  },
+  {
+    "directory": "snapshot-dtype-v2-20260918",
+    "cpu_passed": 836,
+    "gpu_deselected": 15,
+    "gpu_run": false,
+    "status": "REJECT",
+    "decision_file": "results/nine-confirmation/decision.json"
+  },
+  {
+    "directory": "snapshot-dtype-v3-20260918",
+    "cpu_passed": 836,
+    "gpu_deselected": 15,
+    "gpu_run": false,
+    "status": "REJECT",
+    "decision_file": "results/nine-confirmation/decision.json"
+  }
+]
