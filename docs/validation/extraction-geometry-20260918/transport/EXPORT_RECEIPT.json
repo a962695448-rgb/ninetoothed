@@ -1,0 +1,40 @@
+{
+  "files": 861,
+  "bytes": 7994772,
+  "sha256": "02ec9fc10f9bdbcb284f4fff2f19770f17e371bacc335d7ef987754b2870988d",
+  "gzip_bytes": 1669965,
+  "gzip_sha256": "21d45915de16d159cf67218398fe3db277057730f7455fb84999c1b60ce2a53f",
+  "base64_characters": 2226620,
+  "parts": [
+    {
+      "name": "geometry-source-results-00.txt",
+      "characters": 400000,
+      "sha256": "69dd840a63dad9d79519898da010ccec6374a6bb56092e6908a75e54e59d0272"
+    },
+    {
+      "name": "geometry-source-results-01.txt",
+      "characters": 400000,
+      "sha256": "583193fffc2abba675aed4d040c001d6f18c50a6f20d83e2a4ff54210e33e605"
+    },
+    {
+      "name": "geometry-source-results-02.txt",
+      "characters": 400000,
+      "sha256": "48595fc8131be7e80b7053938a201664b7fac5993f22fe006487cd4616473b4b"
+    },
+    {
+      "name": "geometry-source-results-03.txt",
+      "characters": 400000,
+      "sha256": "a7acca5c444e0d68c39d1966e8b84ac1d5a0b5890f8aa4600224f52f092c58a3"
+    },
+    {
+      "name": "geometry-source-results-04.txt",
+      "characters": 400000,
+      "sha256": "f41339b63dd96a13eb61a877b6c0127eebcb3cce63603add28eda881c0c602b4"
+    },
+    {
+      "name": "geometry-source-results-05.txt",
+      "characters": 226620,
+      "sha256": "e899fc893240c3559b9cefc413c3c3561614b5566fec0838d85b5fa5c76921ec"
+    }
+  ]
+}

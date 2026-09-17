@@ -1,0 +1,348 @@
+{
+  "status": "ACCEPT",
+  "round_geomeans": [
+    3.8512381078001776,
+    3.8595732140892958,
+    3.847210756134679
+  ],
+  "timed_cases_verified": 33,
+  "full_trace_fingerprints_verified": 21,
+  "all_source_hashes_verified": true,
+  "min_steady_control_speedup": 0.9638512874069718,
+  "target_extra_peak_bytes_range": [
+    141046,
+    183332
+  ],
+  "rows": [
+    {
+      "round": 0,
+      "name": "matmul_7x16x7",
+      "trace": false,
+      "target": true,
+      "speedup": 3.581470055163698,
+      "cold_speedup": 3.5375609670747323,
+      "control_peak": 282868,
+      "candidate_peak": 424012
+    },
+    {
+      "round": 0,
+      "name": "matmul_9x32x11",
+      "trace": false,
+      "target": true,
+      "speedup": 4.046005563460663,
+      "cold_speedup": 4.057136284722162,
+      "control_peak": 364908,
+      "candidate_peak": 548240
+    },
+    {
+      "round": 0,
+      "name": "matmul_5x17x9",
+      "trace": false,
+      "target": true,
+      "speedup": 3.9419699642108936,
+      "cold_speedup": 3.9229283239617123,
+      "control_peak": 341883,
+      "candidate_peak": 524160
+    },
+    {
+      "round": 0,
+      "name": "matmul_3x8x5",
+      "trace": false,
+      "target": false,
+      "speedup": 2.5457888653599996,
+      "cold_speedup": 2.525833821625546,
+      "control_peak": 129882,
+      "candidate_peak": 150827
+    },
+    {
+      "round": 0,
+      "name": "matmul_3x8x5",
+      "trace": true,
+      "target": false,
+      "speedup": 1.0002343667101463,
+      "cold_speedup": 1.0070428102488829,
+      "control_peak": 1714538,
+      "candidate_peak": 1714280
+    },
+    {
+      "round": 0,
+      "name": "vector_4099",
+      "trace": false,
+      "target": false,
+      "speedup": 1.0081871029855243,
+      "cold_speedup": 1.0074796246706657,
+      "control_peak": 49459,
+      "candidate_peak": 49523
+    },
+    {
+      "round": 0,
+      "name": "vector_4099",
+      "trace": true,
+      "target": false,
+      "speedup": 0.9994358091487012,
+      "cold_speedup": 1.050052203286639,
+      "control_peak": 1018668,
+      "candidate_peak": 1019960
+    },
+    {
+      "round": 0,
+      "name": "padded_4099",
+      "trace": false,
+      "target": false,
+      "speedup": 0.9803998541214355,
+      "cold_speedup": 0.9885466312924782,
+      "control_peak": 49368,
+      "candidate_peak": 49480
+    },
+    {
+      "round": 0,
+      "name": "padded_4099",
+      "trace": true,
+      "target": false,
+      "speedup": 0.9939122586882161,
+      "cold_speedup": 1.0038185486738285,
+      "control_peak": 1018088,
+      "candidate_peak": 1020126
+    },
+    {
+      "round": 0,
+      "name": "softmax_13x129",
+      "trace": false,
+      "target": false,
+      "speedup": 1.008648874020718,
+      "cold_speedup": 0.9794762776799558,
+      "control_peak": 124186,
+      "candidate_peak": 124474
+    },
+    {
+      "round": 0,
+      "name": "softmax_13x129",
+      "trace": true,
+      "target": false,
+      "speedup": 0.9834088622395125,
+      "cold_speedup": 0.9981276322139656,
+      "control_peak": 1256231,
+      "candidate_peak": 1255991
+    },
+    {
+      "round": 1,
+      "name": "matmul_7x16x7",
+      "trace": false,
+      "target": true,
+      "speedup": 3.5991725523601374,
+      "cold_speedup": 3.5753218707894208,
+      "control_peak": 282868,
+      "candidate_peak": 424012
+    },
+    {
+      "round": 1,
+      "name": "matmul_9x32x11",
+      "trace": false,
+      "target": true,
+      "speedup": 4.076042082967398,
+      "cold_speedup": 4.056688137669808,
+      "control_peak": 364956,
+      "candidate_peak": 548288
+    },
+    {
+      "round": 1,
+      "name": "matmul_5x17x9",
+      "trace": false,
+      "target": true,
+      "speedup": 3.919011371468851,
+      "cold_speedup": 3.8910705724811274,
+      "control_peak": 341883,
+      "candidate_peak": 524160
+    },
+    {
+      "round": 1,
+      "name": "matmul_3x8x5",
+      "trace": false,
+      "target": false,
+      "speedup": 2.5919467351495333,
+      "cold_speedup": 2.5481761558760643,
+      "control_peak": 129834,
+      "candidate_peak": 150877
+    },
+    {
+      "round": 1,
+      "name": "matmul_3x8x5",
+      "trace": true,
+      "target": false,
+      "speedup": 1.007511988213236,
+      "cold_speedup": 1.0472664353927887,
+      "control_peak": 1714412,
+      "candidate_peak": 1710648
+    },
+    {
+      "round": 1,
+      "name": "vector_4099",
+      "trace": false,
+      "target": false,
+      "speedup": 1.0124150069992368,
+      "cold_speedup": 0.9632335515407103,
+      "control_peak": 49411,
+      "candidate_peak": 49521
+    },
+    {
+      "round": 1,
+      "name": "vector_4099",
+      "trace": true,
+      "target": false,
+      "speedup": 1.0106239135462414,
+      "cold_speedup": 1.0200923105630524,
+      "control_peak": 1016316,
+      "candidate_peak": 1017672
+    },
+    {
+      "round": 1,
+      "name": "padded_4099",
+      "trace": false,
+      "target": false,
+      "speedup": 1.000821312971726,
+      "cold_speedup": 1.0000796232589177,
+      "control_peak": 49418,
+      "candidate_peak": 49532
+    },
+    {
+      "round": 1,
+      "name": "padded_4099",
+      "trace": true,
+      "target": false,
+      "speedup": 1.0048188897245898,
+      "cold_speedup": 1.0088059411942631,
+      "control_peak": 1018892,
+      "candidate_peak": 1019994
+    },
+    {
+      "round": 1,
+      "name": "softmax_13x129",
+      "trace": false,
+      "target": false,
+      "speedup": 0.9638512874069718,
+      "cold_speedup": 0.9834562246498507,
+      "control_peak": 124138,
+      "candidate_peak": 124474
+    },
+    {
+      "round": 1,
+      "name": "softmax_13x129",
+      "trace": true,
+      "target": false,
+      "speedup": 1.0110031809104527,
+      "cold_speedup": 0.9512809194789101,
+      "control_peak": 1254323,
+      "candidate_peak": 1255267
+    },
+    {
+      "round": 2,
+      "name": "matmul_7x16x7",
+      "trace": false,
+      "target": true,
+      "speedup": 3.5698548761453623,
+      "cold_speedup": 3.543847969624339,
+      "control_peak": 282868,
+      "candidate_peak": 423914
+    },
+    {
+      "round": 2,
+      "name": "matmul_9x32x11",
+      "trace": false,
+      "target": true,
+      "speedup": 4.061148029157607,
+      "cold_speedup": 4.062735030301443,
+      "control_peak": 364956,
+      "candidate_peak": 548288
+    },
+    {
+      "round": 2,
+      "name": "matmul_5x17x9",
+      "trace": false,
+      "target": true,
+      "speedup": 3.9277022157531696,
+      "cold_speedup": 3.8503153863778676,
+      "control_peak": 341883,
+      "candidate_peak": 524112
+    },
+    {
+      "round": 2,
+      "name": "matmul_3x8x5",
+      "trace": false,
+      "target": false,
+      "speedup": 2.555460309762157,
+      "cold_speedup": 2.382545054787227,
+      "control_peak": 129884,
+      "candidate_peak": 150973
+    },
+    {
+      "round": 2,
+      "name": "matmul_3x8x5",
+      "trace": true,
+      "target": false,
+      "speedup": 0.9912875043652992,
+      "cold_speedup": 0.9953179387754901,
+      "control_peak": 1709998,
+      "candidate_peak": 1707708
+    },
+    {
+      "round": 2,
+      "name": "vector_4099",
+      "trace": false,
+      "target": false,
+      "speedup": 0.9712290378058784,
+      "cold_speedup": 0.9721874856318923,
+      "control_peak": 49459,
+      "candidate_peak": 49523
+    },
+    {
+      "round": 2,
+      "name": "vector_4099",
+      "trace": true,
+      "target": false,
+      "speedup": 0.9670099436569547,
+      "cold_speedup": 0.9995682970913644,
+      "control_peak": 1018866,
+      "candidate_peak": 1014748
+    },
+    {
+      "round": 2,
+      "name": "padded_4099",
+      "trace": false,
+      "target": false,
+      "speedup": 1.0095958055582697,
+      "cold_speedup": 0.9656537872993282,
+      "control_peak": 49418,
+      "candidate_peak": 49530
+    },
+    {
+      "round": 2,
+      "name": "padded_4099",
+      "trace": true,
+      "target": false,
+      "speedup": 0.9931784734021908,
+      "cold_speedup": 1.0154165855695023,
+      "control_peak": 1017610,
+      "candidate_peak": 1016334
+    },
+    {
+      "round": 2,
+      "name": "softmax_13x129",
+      "trace": false,
+      "target": false,
+      "speedup": 0.9888745851699859,
+      "cold_speedup": 0.8825650031164725,
+      "control_peak": 124186,
+      "candidate_peak": 124424
+    },
+    {
+      "round": 2,
+      "name": "softmax_13x129",
+      "trace": true,
+      "target": false,
+      "speedup": 0.9947932338810578,
+      "cold_speedup": 0.9773949969114653,
+      "control_peak": 1257187,
+      "candidate_peak": 1255367
+    }
+  ]
+}

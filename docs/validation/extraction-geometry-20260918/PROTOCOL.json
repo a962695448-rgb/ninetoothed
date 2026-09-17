@@ -1,0 +1,28 @@
+{
+  "base_commit": "90197b02e91f056bb6a7f6204dbdfbec2270e347",
+  "change": "Execution-local, extraction-only geometry reuse for untraced scalar matmul without callbacks/watch/handlers; actual cached expression plans must prove bounded int64/boolean operations and positive divisors; never cache array data",
+  "rounds": 3,
+  "samples": 7,
+  "calls_per_sample": 3,
+  "targets": [
+    "matmul 7x16x7",
+    "matmul 9x32x11",
+    "matmul 5x17x9 with K padding"
+  ],
+  "controls": [
+    "vector 4099",
+    "padded vector 4099",
+    "softmax 13x129",
+    "small trace-enabled matmul",
+    "trace-enabled vector/softmax"
+  ],
+  "minimum_target_geomean_speedup": 1.1,
+  "max_steady_case_regression_percent": 5,
+  "full_trace_equality": true,
+  "cold_latency_and_peak_memory": "Recorded separately after clearing both existing expression/dtype caches; not inferred from warm speedups",
+  "primary_metric": "Unprofiled prepared public interpret_program execution in three alternating fresh-process pairs",
+  "correctness": "Interval bounds, live values/symbols/shape, unsafe numeric objects, NumPy warning modes, precompiled custom operators, cache lifetime, preserved full traces, and full CPU regression",
+  "publication": "Push accepted implementation and evidence only; retain rejected candidates; no main merge",
+  "extra_limits": "No reuse for debugging callbacks, handlers or tracing; logical map <=65536 elements; one geometry entry per internal TensorRef",
+  "revision": "Use the same original symbol context as TensorRef.shape for extent proofs; apply outer/extracted coordinate overrides only to access-map proofs. Prior timing results remain separate."
+}
