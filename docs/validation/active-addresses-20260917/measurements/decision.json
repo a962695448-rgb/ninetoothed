@@ -1,0 +1,536 @@
+{
+  "status": "ACCEPT",
+  "protocol_sha256": "97fb3d87a3b071ae320b08510bb65e6e88bc4a499b2860db75c50c61ec4300f5",
+  "records": [
+    {
+      "round": 0,
+      "name": "recorder_512x512_step1_read",
+      "target": true,
+      "speedup": 1.090425737941166,
+      "peak_reduction": 1.2943525203756856e-05,
+      "events_equal": true,
+      "gate_passed": true
+    },
+    {
+      "round": 0,
+      "name": "recorder_512x512_step1_write",
+      "target": true,
+      "speedup": 1.0843477643335422,
+      "peak_reduction": -2.773612543638393e-06,
+      "events_equal": true,
+      "gate_passed": true
+    },
+    {
+      "round": 0,
+      "name": "recorder_512x512_step16_read",
+      "target": true,
+      "speedup": 1.1294197942427386,
+      "peak_reduction": 0.40315862707863903,
+      "events_equal": true,
+      "gate_passed": true
+    },
+    {
+      "round": 0,
+      "name": "recorder_512x512_step16_write",
+      "target": true,
+      "speedup": 1.1528693110678796,
+      "peak_reduction": 0.40313074067717614,
+      "events_equal": true,
+      "gate_passed": true
+    },
+    {
+      "round": 0,
+      "name": "recorder_512x512_step64_read",
+      "target": true,
+      "speedup": 1.3592023093293149,
+      "peak_reduction": 0.7383582715704098,
+      "events_equal": true,
+      "gate_passed": true
+    },
+    {
+      "round": 0,
+      "name": "recorder_512x512_step64_write",
+      "target": true,
+      "speedup": 1.3835560173413322,
+      "peak_reduction": 0.7383096313680665,
+      "events_equal": true,
+      "gate_passed": true
+    },
+    {
+      "round": 0,
+      "name": "recorder_8x16x16x32_step1_read",
+      "target": true,
+      "speedup": 1.1398350244877347,
+      "peak_reduction": 1.8476100471231938e-05,
+      "events_equal": true,
+      "gate_passed": true
+    },
+    {
+      "round": 0,
+      "name": "recorder_8x16x16x32_step1_write",
+      "target": true,
+      "speedup": 1.141776949794271,
+      "peak_reduction": -1.108566028262814e-05,
+      "events_equal": true,
+      "gate_passed": true
+    },
+    {
+      "round": 0,
+      "name": "recorder_8x16x16x32_step16_read",
+      "target": true,
+      "speedup": 1.3038029106552196,
+      "peak_reduction": 0.401905753973932,
+      "events_equal": true,
+      "gate_passed": true
+    },
+    {
+      "round": 0,
+      "name": "recorder_8x16x16x32_step16_write",
+      "target": true,
+      "speedup": 1.2471136151815967,
+      "peak_reduction": 0.40185342505067323,
+      "events_equal": true,
+      "gate_passed": true
+    },
+    {
+      "round": 0,
+      "name": "recorder_8x16x16x32_step64_read",
+      "target": true,
+      "speedup": 1.5249175643797668,
+      "peak_reduction": 0.7356737332890511,
+      "events_equal": true,
+      "gate_passed": true
+    },
+    {
+      "round": 0,
+      "name": "recorder_8x16x16x32_step64_write",
+      "target": true,
+      "speedup": 1.5340700060309687,
+      "peak_reduction": 0.7355825081496834,
+      "events_equal": true,
+      "gate_passed": true
+    },
+    {
+      "round": 0,
+      "name": "recorder_tiny",
+      "target": false,
+      "speedup": 1.0776438906100974,
+      "peak_reduction": 0.09174311926605505,
+      "events_equal": true,
+      "gate_passed": true
+    },
+    {
+      "round": 0,
+      "name": "recorder_empty",
+      "target": false,
+      "speedup": 1.2978174761411063,
+      "peak_reduction": 0.4868309260832625,
+      "events_equal": true,
+      "gate_passed": true
+    },
+    {
+      "round": 0,
+      "name": "recorder_unknown",
+      "target": false,
+      "speedup": 1.4568917530187548,
+      "peak_reduction": 0.38147833474936277,
+      "events_equal": true,
+      "gate_passed": true
+    },
+    {
+      "round": 0,
+      "name": "program_vector_traceFalse",
+      "target": false,
+      "speedup": 1.0145872442285202,
+      "peak_reduction": 0.0,
+      "events_equal": true,
+      "gate_passed": true
+    },
+    {
+      "round": 0,
+      "name": "program_vector_traceTrue",
+      "target": false,
+      "speedup": 1.0475381345371864,
+      "peak_reduction": 0.001420445980846341,
+      "events_equal": true,
+      "gate_passed": true
+    },
+    {
+      "round": 0,
+      "name": "program_softmax_traceFalse",
+      "target": false,
+      "speedup": 1.0124730304900666,
+      "peak_reduction": -1.0050453275400884e-05,
+      "events_equal": true,
+      "gate_passed": true
+    },
+    {
+      "round": 0,
+      "name": "program_softmax_traceTrue",
+      "target": false,
+      "speedup": 1.019030308039354,
+      "peak_reduction": 4.272436309338268e-05,
+      "events_equal": true,
+      "gate_passed": true
+    },
+    {
+      "round": 1,
+      "name": "recorder_512x512_step1_read",
+      "target": true,
+      "speedup": 1.0868455745372285,
+      "peak_reduction": 1.2943525203756856e-05,
+      "events_equal": true,
+      "gate_passed": true
+    },
+    {
+      "round": 1,
+      "name": "recorder_512x512_step1_write",
+      "target": true,
+      "speedup": 1.0707536001954543,
+      "peak_reduction": -2.773612543638393e-06,
+      "events_equal": true,
+      "gate_passed": true
+    },
+    {
+      "round": 1,
+      "name": "recorder_512x512_step16_read",
+      "target": true,
+      "speedup": 1.1329926515448678,
+      "peak_reduction": 0.40315862707863903,
+      "events_equal": true,
+      "gate_passed": true
+    },
+    {
+      "round": 1,
+      "name": "recorder_512x512_step16_write",
+      "target": true,
+      "speedup": 1.1389518301886616,
+      "peak_reduction": 0.40313074067717614,
+      "events_equal": true,
+      "gate_passed": true
+    },
+    {
+      "round": 1,
+      "name": "recorder_512x512_step64_read",
+      "target": true,
+      "speedup": 1.3531160642814795,
+      "peak_reduction": 0.7383582715704098,
+      "events_equal": true,
+      "gate_passed": true
+    },
+    {
+      "round": 1,
+      "name": "recorder_512x512_step64_write",
+      "target": true,
+      "speedup": 1.3403602442498777,
+      "peak_reduction": 0.7383096313680665,
+      "events_equal": true,
+      "gate_passed": true
+    },
+    {
+      "round": 1,
+      "name": "recorder_8x16x16x32_step1_read",
+      "target": true,
+      "speedup": 1.1444612256442823,
+      "peak_reduction": 1.8476100471231938e-05,
+      "events_equal": true,
+      "gate_passed": true
+    },
+    {
+      "round": 1,
+      "name": "recorder_8x16x16x32_step1_write",
+      "target": true,
+      "speedup": 1.1598964395138291,
+      "peak_reduction": -1.108566028262814e-05,
+      "events_equal": true,
+      "gate_passed": true
+    },
+    {
+      "round": 1,
+      "name": "recorder_8x16x16x32_step16_read",
+      "target": true,
+      "speedup": 1.2565565273999983,
+      "peak_reduction": 0.401905753973932,
+      "events_equal": true,
+      "gate_passed": true
+    },
+    {
+      "round": 1,
+      "name": "recorder_8x16x16x32_step16_write",
+      "target": true,
+      "speedup": 1.243819485054649,
+      "peak_reduction": 0.40185342505067323,
+      "events_equal": true,
+      "gate_passed": true
+    },
+    {
+      "round": 1,
+      "name": "recorder_8x16x16x32_step64_read",
+      "target": true,
+      "speedup": 1.578970360497099,
+      "peak_reduction": 0.7356737332890511,
+      "events_equal": true,
+      "gate_passed": true
+    },
+    {
+      "round": 1,
+      "name": "recorder_8x16x16x32_step64_write",
+      "target": true,
+      "speedup": 1.5936245490283858,
+      "peak_reduction": 0.7355825081496834,
+      "events_equal": true,
+      "gate_passed": true
+    },
+    {
+      "round": 1,
+      "name": "recorder_tiny",
+      "target": false,
+      "speedup": 1.0677669925060738,
+      "peak_reduction": 0.09174311926605505,
+      "events_equal": true,
+      "gate_passed": true
+    },
+    {
+      "round": 1,
+      "name": "recorder_empty",
+      "target": false,
+      "speedup": 1.5509122448559813,
+      "peak_reduction": 0.4868309260832625,
+      "events_equal": true,
+      "gate_passed": true
+    },
+    {
+      "round": 1,
+      "name": "recorder_unknown",
+      "target": false,
+      "speedup": 1.4011649223771843,
+      "peak_reduction": 0.38147833474936277,
+      "events_equal": true,
+      "gate_passed": true
+    },
+    {
+      "round": 1,
+      "name": "program_vector_traceFalse",
+      "target": false,
+      "speedup": 1.0000944009518449,
+      "peak_reduction": 0.0,
+      "events_equal": true,
+      "gate_passed": true
+    },
+    {
+      "round": 1,
+      "name": "program_vector_traceTrue",
+      "target": false,
+      "speedup": 1.0260669804811484,
+      "peak_reduction": 0.0011865737895240258,
+      "events_equal": true,
+      "gate_passed": true
+    },
+    {
+      "round": 1,
+      "name": "program_softmax_traceFalse",
+      "target": false,
+      "speedup": 0.9887071492775036,
+      "peak_reduction": 0.0,
+      "events_equal": true,
+      "gate_passed": true
+    },
+    {
+      "round": 1,
+      "name": "program_softmax_traceTrue",
+      "target": false,
+      "speedup": 1.0249657753684849,
+      "peak_reduction": 0.000551881437131807,
+      "events_equal": true,
+      "gate_passed": true
+    },
+    {
+      "round": 2,
+      "name": "recorder_512x512_step1_read",
+      "target": true,
+      "speedup": 1.1009726510597442,
+      "peak_reduction": 1.2943525203756856e-05,
+      "events_equal": true,
+      "gate_passed": true
+    },
+    {
+      "round": 2,
+      "name": "recorder_512x512_step1_write",
+      "target": true,
+      "speedup": 1.0831719715734835,
+      "peak_reduction": -2.773612543638393e-06,
+      "events_equal": true,
+      "gate_passed": true
+    },
+    {
+      "round": 2,
+      "name": "recorder_512x512_step16_read",
+      "target": true,
+      "speedup": 1.1338053307074138,
+      "peak_reduction": 0.40315862707863903,
+      "events_equal": true,
+      "gate_passed": true
+    },
+    {
+      "round": 2,
+      "name": "recorder_512x512_step16_write",
+      "target": true,
+      "speedup": 1.1388703883547369,
+      "peak_reduction": 0.40313074067717614,
+      "events_equal": true,
+      "gate_passed": true
+    },
+    {
+      "round": 2,
+      "name": "recorder_512x512_step64_read",
+      "target": true,
+      "speedup": 1.3400997144885678,
+      "peak_reduction": 0.7383582715704098,
+      "events_equal": true,
+      "gate_passed": true
+    },
+    {
+      "round": 2,
+      "name": "recorder_512x512_step64_write",
+      "target": true,
+      "speedup": 1.350951793221229,
+      "peak_reduction": 0.7383096313680665,
+      "events_equal": true,
+      "gate_passed": true
+    },
+    {
+      "round": 2,
+      "name": "recorder_8x16x16x32_step1_read",
+      "target": true,
+      "speedup": 1.1417119656415373,
+      "peak_reduction": 1.8476100471231938e-05,
+      "events_equal": true,
+      "gate_passed": true
+    },
+    {
+      "round": 2,
+      "name": "recorder_8x16x16x32_step1_write",
+      "target": true,
+      "speedup": 1.1556787131680726,
+      "peak_reduction": -1.108566028262814e-05,
+      "events_equal": true,
+      "gate_passed": true
+    },
+    {
+      "round": 2,
+      "name": "recorder_8x16x16x32_step16_read",
+      "target": true,
+      "speedup": 1.2368856248443025,
+      "peak_reduction": 0.401905753973932,
+      "events_equal": true,
+      "gate_passed": true
+    },
+    {
+      "round": 2,
+      "name": "recorder_8x16x16x32_step16_write",
+      "target": true,
+      "speedup": 1.2311763436170855,
+      "peak_reduction": 0.40185342505067323,
+      "events_equal": true,
+      "gate_passed": true
+    },
+    {
+      "round": 2,
+      "name": "recorder_8x16x16x32_step64_read",
+      "target": true,
+      "speedup": 1.545563677129563,
+      "peak_reduction": 0.7356737332890511,
+      "events_equal": true,
+      "gate_passed": true
+    },
+    {
+      "round": 2,
+      "name": "recorder_8x16x16x32_step64_write",
+      "target": true,
+      "speedup": 1.5232786702617982,
+      "peak_reduction": 0.7355825081496834,
+      "events_equal": true,
+      "gate_passed": true
+    },
+    {
+      "round": 2,
+      "name": "recorder_tiny",
+      "target": false,
+      "speedup": 1.05530533127619,
+      "peak_reduction": 0.09174311926605505,
+      "events_equal": true,
+      "gate_passed": true
+    },
+    {
+      "round": 2,
+      "name": "recorder_empty",
+      "target": false,
+      "speedup": 1.6452841261043916,
+      "peak_reduction": 0.4868309260832625,
+      "events_equal": true,
+      "gate_passed": true
+    },
+    {
+      "round": 2,
+      "name": "recorder_unknown",
+      "target": false,
+      "speedup": 1.7713373883448842,
+      "peak_reduction": 0.38147833474936277,
+      "events_equal": true,
+      "gate_passed": true
+    },
+    {
+      "round": 2,
+      "name": "program_vector_traceFalse",
+      "target": false,
+      "speedup": 1.0079031875835018,
+      "peak_reduction": -0.0007055868365719586,
+      "events_equal": true,
+      "gate_passed": true
+    },
+    {
+      "round": 2,
+      "name": "program_vector_traceTrue",
+      "target": false,
+      "speedup": 1.0174523726700455,
+      "peak_reduction": -0.0005559714859584286,
+      "events_equal": true,
+      "gate_passed": true
+    },
+    {
+      "round": 2,
+      "name": "program_softmax_traceFalse",
+      "target": false,
+      "speedup": 0.9935616741404155,
+      "peak_reduction": 0.0004923485023562435,
+      "events_equal": true,
+      "gate_passed": true
+    },
+    {
+      "round": 2,
+      "name": "program_softmax_traceTrue",
+      "target": false,
+      "speedup": 1.012839876956794,
+      "peak_reduction": -0.00010719018897709098,
+      "events_equal": true,
+      "gate_passed": true
+    }
+  ],
+  "rounds": [
+    {
+      "round": 0,
+      "target_geomean_speedup": 1.2484164493126733,
+      "gate_passed": true
+    },
+    {
+      "round": 1,
+      "target_geomean_speedup": 1.2475908321938705,
+      "gate_passed": true
+    },
+    {
+      "round": 2,
+      "target_geomean_speedup": 1.2397890228917237,
+      "gate_passed": true
+    }
+  ]
+}
