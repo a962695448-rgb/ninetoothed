@@ -1,0 +1,5 @@
+python3 scripts/check_contributing_style.py src/ninetoothed/interpreter/memory.py tests/test_interpreter_identity_memory.py
+/Users/apple/Projects/infinitensor-2026/ci-repro-20260916/venv/bin/ruff check src/ninetoothed/interpreter/memory.py tests/test_interpreter_identity_memory.py
+All checks passed!
+/Users/apple/Projects/infinitensor-2026/ci-repro-20260916/venv/bin/ruff format --check src/ninetoothed/interpreter/memory.py tests/test_interpreter_identity_memory.py
+2 files already formatted

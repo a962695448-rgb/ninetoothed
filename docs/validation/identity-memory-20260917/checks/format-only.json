@@ -1,0 +1,16 @@
+[
+  {
+    "path": "src/ninetoothed/interpreter/memory.py",
+    "tested_sha256": "b32b601b24992b36ce0f0fd04148dca185d9c57071c9b496e940b9d9aa8a859a",
+    "formatted_sha256": "f96650790809b3e385e766157d97fa7bfef4ea2a5a0d1106fedbf3f89eb65ad5",
+    "ast_sha256": "1f01b1e50e4217bc867530c2880778ec1ae646c114e9e64bdcf28c74dda05379",
+    "same_ast": true
+  },
+  {
+    "path": "tests/test_interpreter_identity_memory.py",
+    "tested_sha256": "09fbde2d8d7fd6e8a5a43483561a096f7cbbd44c6af2dd563b4e0c0736280797",
+    "formatted_sha256": "1f20f6fb71a02d38346fe0ec664fe1e6c9b20f3b926d42d7942c0eecbc6b2d79",
+    "ast_sha256": "4581ba338a5af243f35ebcb9f3c0a8c82235be0e7b59c5a4432f20010fa2d2a7",
+    "same_ast": true
+  }
+]

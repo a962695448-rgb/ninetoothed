@@ -1,0 +1,117 @@
+.................F.....F..................                               [100%]
+=================================== FAILURES ===================================
+___________ test_identity_read_write_and_observer[none-False-scalar] ___________
+TypeError: only length-1 arrays can be converted to Python scalars
+
+The above exception was the direct cause of the following exception:
+
+case = 'scalar', explicit_layout = False, mask_mode = 'none'
+
+    @pytest.mark.parametrize(
+        "case", ("contiguous", "reversed", "strided", "transpose", "empty", "scalar")
+    )
+    @pytest.mark.parametrize("explicit_layout", (False, True))
+    @pytest.mark.parametrize("mask_mode", ("all", "none", "alternating"))
+    def test_identity_read_write_and_observer(case, explicit_layout, mask_mode):
+        array = _array(case)
+        before = array.copy()
+        mask = np.ones(array.shape, dtype=bool)
+        if mask_mode == "none":
+            mask[...] = False
+        elif mask_mode == "alternating":
+            mask = (np.arange(array.size).reshape(array.shape) % 2) == 0
+        spec = None
+        if explicit_layout:
+            spec = SimpleNamespace(
+                layout=SimpleNamespace(
+                    levels=(), application_shape=array.shape, view_access=None
+                ),
+                attrs={"other": -11},
+            )
+        observer = _Observer()
+        ref = TensorRef(array, spec, {}, observer=observer)
+        np.testing.assert_array_equal(ref.read(mask, other=-19), np.where(mask, before, -19))
+        replacement = np.arange(array.size).reshape(array.shape) + 101
+>       ref.write(replacement, mask)
+
+candidate/nine/tests/test_interpreter_identity_memory.py:60: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = TensorRef(array=array(7., dtype=float32), spec=None, symbols={}, outer_index=0, level=0, extracted=())
+value = array(101), mask = array(False)
+
+    def write(self, value, mask=True):
+        coordinates, valid = self._access(mask)
+        value = np.broadcast_to(np.asarray(value), valid.shape)
+>       self.array[tuple(coordinate[valid] for coordinate in coordinates)] = value[
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+            valid
+        ]
+E       ValueError: setting an array element with a sequence.
+
+control/nine/src/ninetoothed/interpreter/memory.py:210: ValueError
+___________ test_identity_read_write_and_observer[none-True-scalar] ____________
+TypeError: only length-1 arrays can be converted to Python scalars
+
+The above exception was the direct cause of the following exception:
+
+case = 'scalar', explicit_layout = True, mask_mode = 'none'
+
+    @pytest.mark.parametrize(
+        "case", ("contiguous", "reversed", "strided", "transpose", "empty", "scalar")
+    )
+    @pytest.mark.parametrize("explicit_layout", (False, True))
+    @pytest.mark.parametrize("mask_mode", ("all", "none", "alternating"))
+    def test_identity_read_write_and_observer(case, explicit_layout, mask_mode):
+        array = _array(case)
+        before = array.copy()
+        mask = np.ones(array.shape, dtype=bool)
+        if mask_mode == "none":
+            mask[...] = False
+        elif mask_mode == "alternating":
+            mask = (np.arange(array.size).reshape(array.shape) % 2) == 0
+        spec = None
+        if explicit_layout:
+            spec = SimpleNamespace(
+                layout=SimpleNamespace(
+                    levels=(), application_shape=array.shape, view_access=None
+                ),
+                attrs={"other": -11},
+            )
+        observer = _Observer()
+        ref = TensorRef(array, spec, {}, observer=observer)
+        np.testing.assert_array_equal(ref.read(mask, other=-19), np.where(mask, before, -19))
+        replacement = np.arange(array.size).reshape(array.shape) + 101
+>       ref.write(replacement, mask)
+
+candidate/nine/tests/test_interpreter_identity_memory.py:60: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = TensorRef(array=array(7., dtype=float32), spec=namespace(layout=namespace(levels=(), application_shape=(), view_access=None), attrs={'other': -11}), symbols={}, outer_index=0, level=0, extracted=())
+value = array(101), mask = array(False)
+
+    def write(self, value, mask=True):
+        coordinates, valid = self._access(mask)
+        value = np.broadcast_to(np.asarray(value), valid.shape)
+>       self.array[tuple(coordinate[valid] for coordinate in coordinates)] = value[
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+            valid
+        ]
+E       ValueError: setting an array element with a sequence.
+
+control/nine/src/ninetoothed/interpreter/memory.py:210: ValueError
+=============================== warnings summary ===============================
+tests/test_interpreter_identity_memory.py::test_identity_read_write_and_observer[all-False-scalar]
+tests/test_interpreter_identity_memory.py::test_identity_read_write_and_observer[all-True-scalar]
+tests/test_interpreter_identity_memory.py::test_identity_read_write_and_observer[alternating-False-scalar]
+tests/test_interpreter_identity_memory.py::test_identity_read_write_and_observer[alternating-True-scalar]
+tests/test_interpreter_identity_memory.py::test_public_program_without_descriptors_preserves_alias_writes[scalar]
+tests/test_interpreter_identity_memory.py::test_public_program_without_descriptors_preserves_alias_writes[scalar]
+  /Users/apple/Projects/infinitensor-2026/memory-quantization-20260917/control/nine/src/ninetoothed/interpreter/memory.py:210: DeprecationWarning: Conversion of an array with ndim > 0 to a scalar is deprecated, and will error in future. Ensure you extract a single element from your array before performing this operation. (Deprecated NumPy 1.25.)
+    self.array[tuple(coordinate[valid] for coordinate in coordinates)] = value[
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ============================
+FAILED candidate/nine/tests/test_interpreter_identity_memory.py::test_identity_read_write_and_observer[none-False-scalar]
+FAILED candidate/nine/tests/test_interpreter_identity_memory.py::test_identity_read_write_and_observer[none-True-scalar]
+2 failed, 40 passed, 6 warnings in 0.51s

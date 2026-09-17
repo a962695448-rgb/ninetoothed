@@ -1,0 +1,359 @@
+{
+  "status": "PASS",
+  "source": "/Users/apple/Projects/infinitensor-2026/memory-quantization-20260917/candidate/nine",
+  "python": "3.12.14 (main, Aug 25 2026, 13:50:33) [Clang 22.1.3 ]",
+  "numpy": "2.3.5",
+  "platform": "macOS-26.5.1-arm64-arm-64bit",
+  "source_sha256": {
+    "src/ninetoothed/__init__.py": "f3e0b21cfda64055226b0a38ec461dc9bdd87d0871b78898f129e63d434134d6",
+    "src/ninetoothed/aot.py": "c164c85cffe18946de7c38ff489b78d61820bcedb2dd5b16dc6fc52ae632ebd2",
+    "src/ninetoothed/auto_tuner.py": "2eaa1adecbae6eed32d5372a8d4e8ad5a827c1b050c0430b7d026207e6f729da",
+    "src/ninetoothed/backends/__init__.py": "7842ab6bdb8ba68e04ed95fde8bfc5ec3f3952282a33aa3108ad7e3db6bc7b29",
+    "src/ninetoothed/backends/core.py": "cd90aef2b85d6b7eb928d1c15862f05f48aa340d851ee695d32595df0b180c01",
+    "src/ninetoothed/backends/cuda.py": "e5fef15ad3ef35dd18d9e5d5d15a2e0cfe92b1aad073d3f4c98d572f0ab37638",
+    "src/ninetoothed/backends/emitters/__init__.py": "12ba7cc758a60cc4940dad7578a7bfe1edc0e29dcb78776194c2b82881b39531",
+    "src/ninetoothed/backends/emitters/analysis.py": "54219cd51b407d6f17ce44ddc9cb491bd38015a5f49c4b0b1e2d588fa537e841",
+    "src/ninetoothed/backends/emitters/base.py": "4c102e491b762bf04df6b63591571e0f9770a1daa3af222cd1642d080500a6c4",
+    "src/ninetoothed/backends/emitters/context.py": "d4b3c3ecac778ac75b832f445c3a6f1d1607fcad904e121e34918cec3185736d",
+    "src/ninetoothed/backends/emitters/cuda.py": "89b17fa2994b7bdfd88e0ed591503e9469d9cd8ac935d47d0d8ce503b4b7b62e",
+    "src/ninetoothed/backends/emitters/expressions.py": "51200e5b494ed37c96c790c45f2ce0ee386cd7043a4a50f604be0fc18095ff35",
+    "src/ninetoothed/backends/emitters/ssa.py": "d99807a22ade60501ebe4e8615461239168a0534ba094c8eb8a1f3419f445aaa",
+    "src/ninetoothed/backends/emitters/tilelang.py": "60e07c4e7c07c8c3814e748ccbeae41e2cf7e2ae84cce0bcb8b53d1faf2f4451",
+    "src/ninetoothed/backends/emitters/triton.py": "bbbeaf048eed37c971e991ab91bed2cc7ad8155e01771bc970ca4a19500e2c66",
+    "src/ninetoothed/backends/materializers/__init__.py": "be074239a6e83602ce271956dbd3a43c7c6e0cd6b4709e9ef243d32f9dc0a344",
+    "src/ninetoothed/backends/materializers/base.py": "9b86e3e8667828b59e7895016c86f1f37e54591fb2cfbd369766e5241eec7c60",
+    "src/ninetoothed/backends/materializers/cuda.py": "a5c5da8ba560478c374523d52c03f63c008f472d46102306f772add01f059767",
+    "src/ninetoothed/backends/materializers/tilelang.py": "648c935b82980dbd6743e9445bbb0c64637b3a02ce7d37568952b70557ef757f",
+    "src/ninetoothed/backends/materializers/triton.py": "1655f01842204427ad47bf5d7e7d17a4d41e32bf8b1347f217378b0dd43b42f8",
+    "src/ninetoothed/backends/registry.py": "b3772ef8a35a0fecdc10d7db5093cc705bb84e0f8a2292ed08b05bbba21a2aec",
+    "src/ninetoothed/backends/tilelang.py": "6e85b73a9692884649ea946fb5d89d8e9ed0357fc8b145279ae94c30b0282b5a",
+    "src/ninetoothed/backends/toolchain.py": "e4d96a075367d7d70fdff168a88a3c9f2f2303601630ec60b62ccaef4136ecd8",
+    "src/ninetoothed/backends/triton.py": "178697f6ddd19dda1168c3ff40700873d45cd5549aaea5721571c45fde078b5f",
+    "src/ninetoothed/build.py": "9463a3cb74e81cd05c1f53a28880f9cd37311a788ebcdb50aa8ed947faf73c17",
+    "src/ninetoothed/compiler/__init__.py": "467a93323e48bd4c729e7a6d71cd8218eb873edde66d4707fcc6696e217a59b5",
+    "src/ninetoothed/compiler/cache.py": "51b31e143588d5b9985e9b5711c22663ef08f9648692a0bf61c92f143fd356de",
+    "src/ninetoothed/compiler/driver.py": "4260b4bdaed987846142b7d1b87ca52518811338b88cee477605c421402ff111",
+    "src/ninetoothed/compiler/jit.py": "4a00b058c5b5109451b7d67af69413beb616db4acf7497fdf8922236ada28ee1",
+    "src/ninetoothed/compiler/layout.py": "ec131626d28a7a983260a38c90f76c90aef4059cd57a0af423176744896e8743",
+    "src/ninetoothed/compiler/layout_runtime.py": "e7b9342f6099f706c593e64abf4e98d121fe35f8a0599b51a0fbd812d37fff76",
+    "src/ninetoothed/compiler/passes.py": "92d319a5a276091f55b1bb298f1ccc4f025c3fd185862f3431ed2b5f1efebbfb",
+    "src/ninetoothed/compiler/reductions.py": "7e05d3d78f48d20419090240048cb68ce84e602f875e9656273aec0768d2591c",
+    "src/ninetoothed/compiler/runtime.py": "05de16328ffafb231effac011f37efebe9c03a071c8d16184348e5733fd9ced0",
+    "src/ninetoothed/compiler/specialization.py": "b5edb2824593b8d03ce1a16a514c23817b2a1ee5361ee53c719a56c343ded78d",
+    "src/ninetoothed/cudaifier.py": "223aade73e7cf5e2c1be53b597f6c10bc5a73ad2ba5c8dc316d45c6bc1d215d3",
+    "src/ninetoothed/debugging.py": "7c9b4fd83c4ddc23c4bc347579ea7b9dadb92fbe7000dcfb939c9aad755f35ee",
+    "src/ninetoothed/dtype.py": "727c8d92bedaf0f0c112456c170d47144e135cc864c1d9bdde6b31b4b0c519ec",
+    "src/ninetoothed/eval.py": "dfdfff38f134c4d40a3740861c4cd2ec3e4cff5a237b43c2a43b98d467ef74d9",
+    "src/ninetoothed/frontend/__init__.py": "802336da2fc225aa1c26e4f9f52f7fefa77742323b50157679a026ea5f6f44d7",
+    "src/ninetoothed/frontend/errors.py": "72bbfd47d7440e5b4cdabe669a20562fbae199dea65c1029854b3dfd295d9e2f",
+    "src/ninetoothed/frontend/layout.py": "b4a84560b2a7024b1f23f319b2c8cdedf6673aec376be2c60db8747d8bc32e7a",
+    "src/ninetoothed/frontend/preparation.py": "fc3802724d66671e2e26c385ff666f7f83a01c019819ea7f0c2c3faad17ef129",
+    "src/ninetoothed/frontend/python.py": "50c0e327672de05f3711bbfab34a8de6c12da354c9aa9c52e8d3f8d357baf9f1",
+    "src/ninetoothed/frontend/types.py": "a92650d6013160dcb7c3929cc602a484f5ffa97a8a755c2699f96691ee67da61",
+    "src/ninetoothed/interpreter/__init__.py": "a13fe1e8cf02cc44b18ed60cadecb66459553f010c4ec6e060e6fc984dfc8818",
+    "src/ninetoothed/interpreter/access.py": "ad34275f301c9c1975dedfde8e3c3465bb2263f19b15e1eab79ce58c6ec45711",
+    "src/ninetoothed/interpreter/debugger.py": "1c8c98a089dabdbbfb4a3bca5d268d81255ef3f2498a3176cb4ac83640876093",
+    "src/ninetoothed/interpreter/expressions.py": "05defa068afd715cc6f40323d650bfc9009f5904fb06770ab0496c9b6026e060",
+    "src/ninetoothed/interpreter/failure.py": "8b9f7cce386d77a8e600e790890a2dee2ada81ea8fcc05b2ff25768ce6853174",
+    "src/ninetoothed/interpreter/localization.py": "c33afc2ff679bed9e2385043cda2ae58bc838101350647f32c17f1ab594556a4",
+    "src/ninetoothed/interpreter/memory.py": "b32b601b24992b36ce0f0fd04148dca185d9c57071c9b496e940b9d9aa8a859a",
+    "src/ninetoothed/interpreter/runtime.py": "712a13c0d35ade1fd60dbff23467ce55728579916e7f1527b236691f04a9bac8",
+    "src/ninetoothed/interpreter/storage.py": "559385c016acf17ab734d3e7912202290d393a90542679cdb47656d135792a9d",
+    "src/ninetoothed/ir/__init__.py": "54ec8b1f37f2c73bf30a0d6598ea66183c102c50400a2d8f63766cd6473ea186",
+    "src/ninetoothed/ir/frozen.py": "eec5ca66d01db1ddb5e8def281ccd29b3085f3388705de30fb8cef7d24d4ac27",
+    "src/ninetoothed/ir/kernel.py": "7fbc0ef4ade6e46d430c13dfc2e34e4297cc3d1499f90d22e8c08907eb02ebb7",
+    "src/ninetoothed/ir/provenance.py": "de987d4cb8f08fa264d66ab91003c862485131e6925172c8c63d0eac10013725",
+    "src/ninetoothed/ir/ssa.py": "9f42d641b79edb10807733df553c40dbe2a392a61fc5a436bd4f0f7ba5247f45",
+    "src/ninetoothed/language.py": "d8fe2a3db8a42d07593853847418fcb762abd802dafc6f7258170b303423c27e",
+    "src/ninetoothed/make.py": "589c7158cf1d303489ec9ed88e26c0369740e5fb408aae998330473e35088617",
+    "src/ninetoothed/naming.py": "165d31e1e0d14ad4e99178c983ad7bf44ac49d8edb479422d004fa457f42ddf5",
+    "src/ninetoothed/symbol.py": "d2af70f4317eb1db46a9599e08bfac9d7a218b29e9cf6f90c4f42b0c51c7dbc4",
+    "src/ninetoothed/targets.py": "f0c6cb61a99c9d8957613db6f867f661feb1fe32c45e3d6e3d720be3db3cef1a",
+    "src/ninetoothed/tensor.py": "0048b18325b4b58b44a29e20330c5f57fd3ed94cce2d0fe1eefd3ceae5762ff6",
+    "src/ninetoothed/torchifier.py": "e1c37afa36c9590b1cbaeaa69023987b4184b25f051c3ceb493beba027f2d9cd",
+    "src/ninetoothed/utils.py": "9ad4570010553e79607769f544487da01decff96d4b0a85dde2c2ede82790d24",
+    "src/ninetoothed/visualization.py": "535761a95197b4ce8413483008d61b49c1c071c39b5ad71fa8546008757107a0"
+  },
+  "cases": [
+    {
+      "name": "identity_512x512_contiguous",
+      "target": true,
+      "trace": false,
+      "times": [
+        0.005350533220916986,
+        0.005303008202463389,
+        0.005666608177125454,
+        0.005328308418393135,
+        0.005367666576057672,
+        0.0051588334143161775,
+        0.005323808221146464,
+        0.005231750011444092,
+        0.005239408370107413
+      ],
+      "memory": {
+        "warm": {
+          "peak": 7357707,
+          "retained": 3300
+        },
+        "cold": {
+          "peak": 7357981,
+          "retained": 3526
+        }
+      },
+      "trace_sha256": "559bededcb346584f1200f573f2076d34a011e43064063b0f635e49190772830",
+      "events": 0
+    },
+    {
+      "name": "identity_512x512_contiguous",
+      "target": false,
+      "trace": true,
+      "times": [
+        0.06062563317827881,
+        0.06055280840955675,
+        0.05962261683307588,
+        0.05931935841217637,
+        0.060692033171653746,
+        0.058213416626676916,
+        0.058542799996212126,
+        0.05854735840111971,
+        0.05755261657759547
+      ],
+      "memory": {
+        "warm": {
+          "peak": 37112718,
+          "retained": 27403112
+        },
+        "cold": {
+          "peak": 37113140,
+          "retained": 27403534
+        }
+      },
+      "trace_sha256": "7d2b58b792f151916be113b10ae01006230dfe2b870f91c55af6fc78c874ee00",
+      "events": 2
+    },
+    {
+      "name": "identity_8x16x32x32_contiguous",
+      "target": true,
+      "trace": false,
+      "times": [
+        0.004322591563686728,
+        0.004379691788926721,
+        0.004496291605755686,
+        0.004331500036641955,
+        0.004398625018075109,
+        0.004245591768994928,
+        0.004341816622763872,
+        0.004577016783878207,
+        0.004438766604289412
+      ],
+      "memory": {
+        "warm": {
+          "peak": 5779099,
+          "retained": 4124
+        },
+        "cold": {
+          "peak": 5779271,
+          "retained": 7512
+        }
+      },
+      "trace_sha256": "559bededcb346584f1200f573f2076d34a011e43064063b0f635e49190772830",
+      "events": 0
+    },
+    {
+      "name": "identity_8x16x32x32_contiguous",
+      "target": false,
+      "trace": true,
+      "times": [
+        0.07226184159517288,
+        0.036954008415341376,
+        0.03477981658652425,
+        0.03498880839906633,
+        0.03476498341187835,
+        0.034813850000500676,
+        0.03502654996700585,
+        0.03539818339049816,
+        0.03492689998820424
+      ],
+      "memory": {
+        "warm": {
+          "peak": 19973707,
+          "retained": 14724532
+        },
+        "cold": {
+          "peak": 19973929,
+          "retained": 14724802
+        }
+      },
+      "trace_sha256": "934c1649d330c6297ea22210c1659a77a16bbad9bce08c10fad45c62e9452d4d",
+      "events": 2
+    },
+    {
+      "name": "identity_257x509_reversed",
+      "target": true,
+      "trace": false,
+      "times": [
+        0.0027510418090969323,
+        0.002641008421778679,
+        0.0026309665758162738,
+        0.0027914915699511766,
+        0.0028103668242692947,
+        0.00264594997279346,
+        0.002711416641250253,
+        0.0028351166285574434,
+        0.0026731334161013364
+      ],
+      "memory": {
+        "warm": {
+          "peak": 3678423,
+          "retained": 3300
+        },
+        "cold": {
+          "peak": 3678549,
+          "retained": 3426
+        }
+      },
+      "trace_sha256": "559bededcb346584f1200f573f2076d34a011e43064063b0f635e49190772830",
+      "events": 0
+    },
+    {
+      "name": "identity_257x509_reversed",
+      "target": false,
+      "trace": true,
+      "times": [
+        0.028111191792413594,
+        0.027618975006043912,
+        0.028257941594347358,
+        0.028600283386185765,
+        0.027644658368080853,
+        0.02817269996739924,
+        0.028252266766503453,
+        0.028063233382999896,
+        0.02790097501128912
+      ],
+      "memory": {
+        "warm": {
+          "peak": 18527731,
+          "retained": 13679456
+        },
+        "cold": {
+          "peak": 18528103,
+          "retained": 13679730
+        }
+      },
+      "trace_sha256": "c3cc2982d0d26334f734f29156ae47003b7058d0f170b7f395e92ea5808c609c",
+      "events": 2
+    },
+    {
+      "name": "vector",
+      "target": false,
+      "trace": false,
+      "times": [
+        0.0035357999615371226,
+        0.003099524974822998,
+        0.0034122665878385306,
+        0.00349435000680387,
+        0.003263366594910622,
+        0.003213183395564556,
+        0.003071075025945902,
+        0.0030848000198602675,
+        0.0032140499912202357
+      ],
+      "memory": {
+        "warm": {
+          "peak": 47194,
+          "retained": 37188
+        },
+        "cold": {
+          "peak": 72778,
+          "retained": 62772
+        }
+      },
+      "trace_sha256": "559bededcb346584f1200f573f2076d34a011e43064063b0f635e49190772830",
+      "events": 0
+    },
+    {
+      "name": "vector",
+      "target": false,
+      "trace": true,
+      "times": [
+        0.01007629162631929,
+        0.009835416823625565,
+        0.009908308368176222,
+        0.01100363340228796,
+        0.01118369996547699,
+        0.010132599994540215,
+        0.009973408188670874,
+        0.010304583422839641,
+        0.010330591816455126
+      ],
+      "memory": {
+        "warm": {
+          "peak": 619870,
+          "retained": 608232
+        },
+        "cold": {
+          "peak": 643362,
+          "retained": 631676
+        }
+      },
+      "trace_sha256": "0b52cd657a9ca3ac51cc50b33a5aa0a5069b785bd2fce93cce0ce5894e375ed4",
+      "events": 64
+    },
+    {
+      "name": "softmax",
+      "target": false,
+      "trace": false,
+      "times": [
+        0.005012175021693111,
+        0.0050142749678343534,
+        0.005164133431389928,
+        0.005072133429348469,
+        0.0052171334158629176,
+        0.005263599986210466,
+        0.005040341801941395,
+        0.005467875022441148,
+        0.004886675020679831
+      ],
+      "memory": {
+        "warm": {
+          "peak": 199046,
+          "retained": 43892
+        },
+        "cold": {
+          "peak": 265498,
+          "retained": 161500
+        }
+      },
+      "trace_sha256": "559bededcb346584f1200f573f2076d34a011e43064063b0f635e49190772830",
+      "events": 0
+    },
+    {
+      "name": "softmax",
+      "target": false,
+      "trace": true,
+      "times": [
+        0.015013541793450713,
+        0.015415208414196968,
+        0.014818866783753038,
+        0.01509026656858623,
+        0.01489048320800066,
+        0.015423166565597057,
+        0.01554448320530355,
+        0.015452708397060633,
+        0.015545275015756487
+      ],
+      "memory": {
+        "warm": {
+          "peak": 2950189,
+          "retained": 2913661
+        },
+        "cold": {
+          "peak": 3049351,
+          "retained": 3026033
+        }
+      },
+      "trace_sha256": "617091e2aec770f4f6817f8c56c22a0508818a4f017186b7f3fea2e126c24d31",
+      "events": 170
+    }
+  ]
+}

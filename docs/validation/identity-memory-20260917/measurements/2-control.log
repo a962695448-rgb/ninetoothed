@@ -1,0 +1,10 @@
+identity_512x512_contiguous False PASS
+identity_512x512_contiguous True PASS
+identity_8x16x32x32_contiguous False PASS
+identity_8x16x32x32_contiguous True PASS
+identity_257x509_reversed False PASS
+identity_257x509_reversed True PASS
+vector False PASS
+vector True PASS
+softmax False PASS
+softmax True PASS
