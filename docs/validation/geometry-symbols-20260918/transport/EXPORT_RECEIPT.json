@@ -1,0 +1,40 @@
+{
+  "files": 878,
+  "bytes": 8279599,
+  "sha256": "db94a311f28c5a968684a7fe5c32e8cc1122566da0a094ab90a9b3a22f724f86",
+  "gzip_bytes": 1728970,
+  "gzip_sha256": "808c4cfaedcd7ee4ec63351064ef9f06a4370335aed7dd1dd76bde8b96da0907",
+  "base64_characters": 2305296,
+  "parts": [
+    {
+      "name": "geometry-symbols-00.txt",
+      "characters": 400000,
+      "sha256": "c221e480f8f84aa577c50c5965d343738a754e76e41dd5ff2076657542cb2875"
+    },
+    {
+      "name": "geometry-symbols-01.txt",
+      "characters": 400000,
+      "sha256": "9a108757bc2d6b7a3fed138ddbe5ba3716dbc98dca609e57ef7df69d5d2c4f33"
+    },
+    {
+      "name": "geometry-symbols-02.txt",
+      "characters": 400000,
+      "sha256": "1db81dc702e2570863cb678f11d0f73f6f880c5383cf2f1efeebc5026a9a5769"
+    },
+    {
+      "name": "geometry-symbols-03.txt",
+      "characters": 400000,
+      "sha256": "9aea4d2a79e2cb4d881a947ce04afe8977a4dab5f356f0aafd451e0f89229aaf"
+    },
+    {
+      "name": "geometry-symbols-04.txt",
+      "characters": 400000,
+      "sha256": "add5320396936bd51ebbe83e2e700a42d5e5845f250e5c5339448e5a835b3a9c"
+    },
+    {
+      "name": "geometry-symbols-05.txt",
+      "characters": 305296,
+      "sha256": "99db6d65c430551bb79780e581d0c33a75521d480f4842600d8744aacb721dba"
+    }
+  ]
+}

@@ -1,0 +1,28 @@
+{
+  "base_commit": "c2c35ec875ca3cb30f80c23d06d4fb8d127d9dd7",
+  "change": "Retain lazy range construction and stable expression identity keys; key only symbols referenced by the trusted shape/access expressions while validating that every mapping key is an exact string; actual plan proofs still reject unknown/custom operations",
+  "rounds": 3,
+  "samples": 7,
+  "calls_per_sample": 3,
+  "targets": [
+    "matmul 7x16x7",
+    "matmul 9x32x11",
+    "matmul 5x17x9 with K padding"
+  ],
+  "controls": [
+    "vector 4099",
+    "padded vector 4099",
+    "softmax 13x129",
+    "small trace-enabled matmul",
+    "trace-enabled vector/softmax"
+  ],
+  "minimum_target_geomean_speedup": 1.1,
+  "max_steady_case_regression_percent": 5,
+  "full_trace_equality": true,
+  "cold_latency_and_peak_memory": "Recorded separately after clearing both existing expression/dtype caches; not inferred from warm speedups",
+  "primary_metric": "Unprofiled prepared public interpret_program execution in three alternating fresh-process pairs",
+  "correctness": "All prior geometry warning/type/lifetime tests plus custom symbol effects after priming the cache; full CPU scope and real GPU differential if performance accepted",
+  "publication": "Push accepted implementation and evidence only; retain rejected candidates; no main merge",
+  "extra_limits": "No reuse for debugging callbacks, handlers or tracing; logical map <=65536 elements; one geometry entry per internal TensorRef",
+  "revision": "New source revision after hit-path candidate REJECT: symbols unrelated to the expressions cannot affect their checked geometry. All previous cases and limits unchanged."
+}
