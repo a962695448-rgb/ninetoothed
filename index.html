@@ -159,6 +159,13 @@
 
 
 <li class="nav-item ">
+  <a class="nav-link nav-internal" href="cpu_interpreter.html">
+    CPU reference interpreter
+  </a>
+</li>
+
+
+<li class="nav-item ">
   <a class="nav-link nav-internal" href="python_api.html">
     Python API
   </a>
@@ -283,6 +290,13 @@
 
 
 <li class="nav-item ">
+  <a class="nav-link nav-internal" href="cpu_interpreter.html">
+    CPU reference interpreter
+  </a>
+</li>
+
+
+<li class="nav-item ">
   <a class="nav-link nav-internal" href="python_api.html">
     Python API
   </a>
@@ -369,7 +383,11 @@
 </div>
 <div class="toctree-wrapper compound">
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="installation.html#cpu-interpreter-without-gpu-packages">CPU interpreter without GPU packages</a></li>
+<li class="toctree-l2"><a class="reference internal" href="installation.html#cpu-regression-automation">CPU regression automation</a></li>
+</ul>
+</li>
 <li class="toctree-l1"><a class="reference internal" href="basics.html">The Basics</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="basics.html#symbols">Symbols</a></li>
 <li class="toctree-l2"><a class="reference internal" href="basics.html#symbolic-tensors">Symbolic Tensors</a></li>
@@ -386,6 +404,20 @@
 <li class="toctree-l2"><a class="reference internal" href="build.html#combining-configuration-axes">Combining Configuration Axes</a></li>
 <li class="toctree-l2"><a class="reference internal" href="build.html#caching">Caching</a></li>
 <li class="toctree-l2"><a class="reference internal" href="build.html#sizing-the-warm-up-tensors">Sizing the Warm-Up Tensors</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="cpu_interpreter.html">CPU reference interpreter</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="cpu_interpreter.html#quick-start">Quick start</a></li>
+<li class="toctree-l2"><a class="reference internal" href="cpu_interpreter.html#frontend-versus-backend-ssa">Frontend versus backend SSA</a></li>
+<li class="toctree-l2"><a class="reference internal" href="cpu_interpreter.html#memory-and-control-flow">Memory and control flow</a></li>
+<li class="toctree-l2"><a class="reference internal" href="cpu_interpreter.html#scalar-dot-across-output-tiles">Scalar dot across output tiles</a></li>
+<li class="toctree-l2"><a class="reference internal" href="cpu_interpreter.html#tracing-extension-and-pass-debugging">Tracing, extension and pass debugging</a></li>
+<li class="toctree-l2"><a class="reference internal" href="cpu_interpreter.html#explicit-ssa-provenance">Explicit SSA provenance</a></li>
+<li class="toctree-l2"><a class="reference internal" href="cpu_interpreter.html#declared-result-correspondence">Declared result correspondence</a></li>
+<li class="toctree-l2"><a class="reference internal" href="cpu_interpreter.html#replay-bundles">Replay bundles</a></li>
+<li class="toctree-l2"><a class="reference internal" href="cpu_interpreter.html#current-boundaries">Current boundaries</a></li>
+<li class="toctree-l2"><a class="reference internal" href="cpu_interpreter.html#latest-validation-and-cpu-automation">Latest validation and CPU automation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="cpu_interpreter.html#historical-validation-at-6ecce58">Historical validation at 6ecce58</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="python_api.html">Python API</a><ul>

@@ -159,6 +159,13 @@
 
 
 <li class="nav-item ">
+  <a class="nav-link nav-internal" href="cpu_interpreter.html">
+    CPU reference interpreter
+  </a>
+</li>
+
+
+<li class="nav-item ">
   <a class="nav-link nav-internal" href="python_api.html">
     Python API
   </a>
@@ -276,6 +283,13 @@
 <li class="nav-item ">
   <a class="nav-link nav-internal" href="build.html">
     Ahead-of-Time Kernel Building
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="cpu_interpreter.html">
+    CPU reference interpreter
   </a>
 </li>
 
@@ -406,6 +420,81 @@
 </div>
 <p>To fully leverage its capabilities, you will also need to install a compatible deep learning framework. Currently, NineToothed supports <a class="reference external" href="https://pytorch.org/">PyTorch</a>.</p>
 <p>It is generally considered good practice to use a virtual environment when installing packages with pip, though it is optional. You may find this <a class="reference external" href="https://docs.python.org/3/library/venv.html">documentation</a> helpful.</p>
+<section id="cpu-interpreter-without-gpu-packages">
+<span id="cpu-wheel-install"></span><h2>CPU interpreter without GPU packages<a class="headerlink" href="#cpu-interpreter-without-gpu-packages" title="Link to this heading">#</a></h2>
+<p>The NumPy reference interpreter and its step debugger can run without Torch,
+Triton, or a GPU. Use this checkout containing <code class="docutils literal notranslate"><span class="pre">ninetoothed.interpret</span></code>; an
+unrelated PyPI release with the same version number may not contain it.</p>
+<p>The following Bash commands start in the repository root, require Python 3.10+
+with <code class="docutils literal notranslate"><span class="pre">venv</span></code> and pip, and create a fresh environment outside the checkout.
+They build the normal wheel, install its NumPy/SymPy runtime requirements, and
+explicitly skip its GPU dependency. No editable install or <code class="docutils literal notranslate"><span class="pre">PYTHONPATH</span></code> is
+needed. Build and dependency installation require access to a package index
+or a populated local cache.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nv">REPO</span><span class="o">=</span><span class="nv">$PWD</span>
+<span class="nv">CPU_WORK</span><span class="o">=</span><span class="k">$(</span>mktemp<span class="w"> </span>-d<span class="k">)</span>
+python3<span class="w"> </span>-m<span class="w"> </span>venv<span class="w"> </span><span class="s2">"</span><span class="nv">$CPU_WORK</span><span class="s2">/venv"</span>
+<span class="nb">source</span><span class="w"> </span><span class="s2">"</span><span class="nv">$CPU_WORK</span><span class="s2">/venv/bin/activate"</span>
+python<span class="w"> </span>-m<span class="w"> </span>pip<span class="w"> </span>wheel<span class="w"> </span>--no-deps<span class="w"> </span>--wheel-dir<span class="w"> </span><span class="s2">"</span><span class="nv">$CPU_WORK</span><span class="s2">/wheels"</span><span class="w"> </span>.
+python<span class="w"> </span>-m<span class="w"> </span>pip<span class="w"> </span>install<span class="w"> </span><span class="s2">"numpy&gt;=1.26.4"</span><span class="w"> </span><span class="s2">"sympy&gt;=1.13.0"</span>
+python<span class="w"> </span>-m<span class="w"> </span>pip<span class="w"> </span>install<span class="w"> </span>--no-deps<span class="w"> </span><span class="s2">"</span><span class="nv">$CPU_WORK</span><span class="s2">"</span>/wheels/ninetoothed-*.whl
+
+<span class="c1"># Copy the example, then run outside the source checkout.</span>
+cp<span class="w"> </span>docs/cpu_interpreter_demo.py<span class="w"> </span><span class="s2">"</span><span class="nv">$CPU_WORK</span><span class="s2">/demo.py"</span>
+<span class="nb">cd</span><span class="w"> </span><span class="s2">"</span><span class="nv">$CPU_WORK</span><span class="s2">"</span>
+python<span class="w"> </span>-I<span class="w"> </span>-c<span class="w"> </span><span class="s1">'import importlib.util, ninetoothed; print(ninetoothed.__file__); assert all(importlib.util.find_spec(p) is None for p in ("torch", "triton"))'</span>
+python<span class="w"> </span>-I<span class="w"> </span>demo.py<span class="w"> </span>--debug<span class="w"> </span>--export<span class="w"> </span>replay
+python<span class="w"> </span>-I<span class="w"> </span>replay/replay.py
+</pre></div>
+</div>
+<p>If your Python distribution lacks <code class="docutils literal notranslate"><span class="pre">ensurepip</span></code>, install its OS <code class="docutils literal notranslate"><span class="pre">venv</span></code> support,
+or use an existing <code class="docutils literal notranslate"><span class="pre">uv</span></code> installation to replace the environment-creation line
+with <code class="docutils literal notranslate"><span class="pre">uv</span> <span class="pre">venv</span> <span class="pre">--seed</span> <span class="pre">--python</span> <span class="pre">python3</span> <span class="pre">&quot;$CPU_WORK/venv&quot;</span></code>. Then continue with
+activation and the same pip commands. The isolated Linux validation used this
+<code class="docutils literal notranslate"><span class="pre">uv</span></code> alternative because its system Python lacked <code class="docutils literal notranslate"><span class="pre">ensurepip</span></code>.</p>
+<p>The printed package path should be inside <code class="docutils literal notranslate"><span class="pre">venv/lib/python*/site-packages</span></code>.
+<code class="docutils literal notranslate"><span class="pre">-I</span></code> ignores <code class="docutils literal notranslate"><span class="pre">PYTHONPATH</span></code> and excludes the current/script directory from
+the import search path. The demo verifies <code class="docutils literal notranslate"><span class="pre">x</span> <span class="pre">*</span> <span class="pre">2</span> <span class="pre">+</span> <span class="pre">1</span></code> against NumPy, exercises
+stepping and breakpoints, then locates a deliberately injected constant error.
+The saved replay verifies the reference and reproduces that error independently.
+See <a class="reference internal" href="cpu_interpreter.html"><span class="doc">CPU reference interpreter</span></a> for the interpreter’s supported semantics and limits.</p>
+<p>This is an explicit CPU installation override, not a separate CPU distribution:
+the wheel’s metadata still declares <code class="docutils literal notranslate"><span class="pre">triton&gt;=3.0.0</span></code>. Consequently,
+<code class="docutils literal notranslate"><span class="pre">python</span> <span class="pre">-m</span> <span class="pre">pip</span> <span class="pre">check</span></code> reports missing Triton. Do not treat that environment as
+dependency-complete for GPU compilation. A later normal install, upgrade, or
+<code class="docutils literal notranslate"><span class="pre">[all]</span></code>/<code class="docutils literal notranslate"><span class="pre">[debugging]</span></code> extra can install GPU packages again. The step debugger
+used above is part of the NumPy interpreter and does not need the older
+Torch-based <code class="docutils literal notranslate"><span class="pre">[debugging]</span></code> extra.</p>
+<p>To run the interpreter’s CPU regressions against the installed wheel:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python<span class="w"> </span>-m<span class="w"> </span>pip<span class="w"> </span>install<span class="w"> </span>pytest
+cp<span class="w"> </span>-r<span class="w"> </span><span class="s2">"</span><span class="nv">$REPO</span><span class="s2">/tests"</span><span class="w"> </span><span class="s2">"</span><span class="nv">$CPU_WORK</span><span class="s2">/tests"</span>
+env<span class="w"> </span>-u<span class="w"> </span>PYTHONPATH<span class="w"> </span><span class="nv">PYTEST_DISABLE_PLUGIN_AUTOLOAD</span><span class="o">=</span><span class="m">1</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>python<span class="w"> </span>-m<span class="w"> </span>pytest<span class="w"> </span>--import-mode<span class="o">=</span>importlib<span class="w"> </span>-q<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>tests/test_interpreter_applications.py<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>tests/test_interpreter_ssa.py<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>tests/test_interpreter_debugger.py<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>tests/test_interpreter_step_debugger.py<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>tests/test_interpreter_matmul.py<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>tests/test_interpreter_provenance.py<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>tests/test_interpreter_default_pipeline.py
+</pre></div>
+</div>
+<p>This test copy contains no <code class="docutils literal notranslate"><span class="pre">src</span></code> directory. Some tests import their helper
+functions in child processes, so run pytest from <code class="docutils literal notranslate"><span class="pre">CPU_WORK</span></code> as shown, without
+<code class="docutils literal notranslate"><span class="pre">-I</span></code>. The demo and standalone replay above can use <code class="docutils literal notranslate"><span class="pre">-I</span></code>.</p>
+<p>The full repository suite includes GPU/framework tests and is not a CPU-only
+installation check. The commands above do not measure GPU performance.</p>
+</section>
+<section id="cpu-regression-automation">
+<h2>CPU regression automation<a class="headerlink" href="#cpu-regression-automation" title="Link to this heading">#</a></h2>
+<p>The repository’s <code class="docutils literal notranslate"><span class="pre">CPU</span> <span class="pre">interpreter</span></code> workflow uses GitHub-hosted Ubuntu runners
+with Python 3.10 and 3.12. It runs the checkout regression selection through
+<code class="docutils literal notranslate"><span class="pre">python</span> <span class="pre">scripts/run_cpu_tests.py</span></code>, requiring Torch and Triton to be absent.
+It then builds and installs the normal wheel with the explicit CPU override,
+and runs the demo and independent replay outside the checkout as shown above.
+This adds automated coverage of the CPU path without changing the wheel’s
+existing dependency metadata or treating the full GPU suite as a CPU test.</p>
+</section>
 </section>
 
 
@@ -446,6 +535,19 @@
                 <dialog id="pst-secondary-sidebar-modal"></dialog>
                 <div id="pst-secondary-sidebar" class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
 
+
+  <div class="sidebar-secondary-item">
+<div
+    id="pst-page-navigation-heading-2"
+    class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> On this page
+  </div>
+  <nav id="pst-page-toc-nav" class="page-toc" aria-labelledby="pst-page-navigation-heading-2">
+    <ul class="pst-show_toc_level nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#cpu-interpreter-without-gpu-packages">CPU interpreter without GPU packages</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#cpu-regression-automation">CPU regression automation</a></li>
+</ul>
+  </nav></div>
 
   <div class="sidebar-secondary-item">
 

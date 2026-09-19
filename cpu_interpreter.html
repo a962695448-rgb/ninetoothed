@@ -1,0 +1,1191 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="./" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>CPU reference interpreter &#8212; NineToothed</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  <!--
+    this give us a css class that will be invisible only if js is disabled
+  -->
+  <noscript>
+    <style>
+      .pst-js-only { display: none !important; }
+
+    </style>
+  </noscript>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="_static/styles/theme.css?digest=a95f357e85573c9b56d5" rel="stylesheet" />
+<link href="_static/styles/pydata-sphinx-theme.css?digest=a95f357e85573c9b56d5" rel="stylesheet" />
+
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=8f2a1f02" />
+  
+  <!-- So that users can add custom icons -->
+  <script defer src="_static/scripts/fontawesome.js?digest=a95f357e85573c9b56d5"></script>
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="_static/scripts/bootstrap.js?digest=a95f357e85573c9b56d5" />
+<link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=a95f357e85573c9b56d5" />
+
+    <script src="_static/documentation_options.js?v=5929fcd5"></script>
+    <script src="_static/doctools.js?v=9bcbadda"></script>
+    <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'cpu_interpreter';</script>
+    <script>DOCUMENTATION_OPTIONS.search_as_you_type = false;</script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Python API" href="python_api.html" />
+    <link rel="prev" title="Ahead-of-Time Kernel Building" href="build.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  <meta name="docsearch:version" content="" />
+  
+    
+    <script src="_static/searchtools.js"></script>
+    <script src="_static/language_data.js"></script>
+    <script src="searchindex.js"></script>
+  
+  </head>
+  <body data-default-mode="">
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+  
+  
+  
+  
+  <dialog id="pst-search-dialog">
+    
+<form class="bd-search d-flex align-items-center"
+      action="search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         placeholder="Search the docs ..."
+         aria-label="Search the docs ..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form>
+  </dialog>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header id="pst-header" class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+<div class="bd-header__inner bd-page-width">
+  <button class="pst-navbar-icon sidebar-toggle primary-toggle" aria-label="Site navigation">
+    <span class="fa-solid fa-bars"></span>
+  </button>
+  
+  
+  <div class="col-lg-3 navbar-header-items__start">
+    
+      <div class="navbar-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="index.html">
+  
+  
+  
+  
+  
+    
+    
+      
+    
+    
+    <img src="_static/ninetoothed-logo.png" class="logo__image only-light" alt="NineToothed - Home"/>
+    <img src="_static/ninetoothed-logo.png" class="logo__image only-dark pst-js-only" alt="NineToothed - Home"/>
+  
+  
+</a></div>
+    
+  </div>
+  
+  <div class="col-lg-9 navbar-header-items">
+    
+    <div class="me-auto navbar-header-items__center">
+      
+        <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="installation.html">
+    Installation
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="basics.html">
+    The Basics
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="build.html">
+    Ahead-of-Time Kernel Building
+  </a>
+</li>
+
+
+<li class="nav-item current active">
+  <a class="nav-link nav-internal" href="#">
+    CPU reference interpreter
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="python_api.html">
+    Python API
+  </a>
+</li>
+
+  </ul>
+</nav></div>
+      
+    </div>
+    
+    
+    <div class="navbar-header-items__end">
+      
+        <div class="navbar-item navbar-persistent--container">
+          
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+        </div>
+      
+      
+        <div class="navbar-item">
+
+<div class="theme-switch-container dropdown pst-js-only" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Color mode">
+  <button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button dropdown-toggle" aria-label="Color mode" data-bs-toggle="dropdown">
+    <i class="theme-switch fa-solid fa-sun fa-lg fa-fw" data-mode="light" title="Light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg fa-fw" data-mode="dark" title="Dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg fa-fw" data-mode="auto" title="System Settings"></i>
+  </button>
+  <ul class="dropdown-menu dropdown-menu-end">
+    <li><button class="dropdown-item d-flex align-items-center theme-change-button" data-mode="auto"><i class="fa-solid fa-circle-half-stroke fa-lg fa-fw me-1"></i>System Settings</button></li>
+    <li><button class="dropdown-item d-flex align-items-center theme-change-button" data-mode="light"><i class="fa-solid fa-sun fa-lg fa-fw me-1"></i>Light</button></li>
+    <li><button class="dropdown-item d-flex align-items-center theme-change-button" data-mode="dark"><i class="fa-solid fa-moon fa-lg fa-fw me-1"></i>Dark</button></li>
+  </ul>
+</div></div>
+      
+        <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/InfiniTensor/ninetoothed" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-github fa-lg" aria-hidden="true"></i><span class="visually-hidden">GitHub</span></a>
+        </li>
+</ul></div>
+      
+    </div>
+    
+  </div>
+  
+  
+    <div class="navbar-persistent--mobile">
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+    </div>
+  
+
+  
+    <button class="pst-navbar-icon sidebar-toggle secondary-toggle" aria-label="On this page">
+      <span class="fa-solid fa-outdent"></span>
+    </button>
+  
+</div>
+
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+      <dialog id="pst-primary-sidebar-modal"></dialog>
+      <div id="pst-primary-sidebar" class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+      <div class="sidebar-header-items__center">
+        
+          
+          
+            <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="installation.html">
+    Installation
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="basics.html">
+    The Basics
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="build.html">
+    Ahead-of-Time Kernel Building
+  </a>
+</li>
+
+
+<li class="nav-item current active">
+  <a class="nav-link nav-internal" href="#">
+    CPU reference interpreter
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="python_api.html">
+    Python API
+  </a>
+</li>
+
+  </ul>
+</nav></div>
+          
+        
+      </div>
+    
+    
+    
+      <div class="sidebar-header-items__end">
+        
+          <div class="navbar-item">
+
+<div class="theme-switch-container dropdown pst-js-only" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Color mode">
+  <button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button dropdown-toggle" aria-label="Color mode" data-bs-toggle="dropdown">
+    <i class="theme-switch fa-solid fa-sun fa-lg fa-fw" data-mode="light" title="Light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg fa-fw" data-mode="dark" title="Dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg fa-fw" data-mode="auto" title="System Settings"></i>
+  </button>
+  <ul class="dropdown-menu dropdown-menu-end">
+    <li><button class="dropdown-item d-flex align-items-center theme-change-button" data-mode="auto"><i class="fa-solid fa-circle-half-stroke fa-lg fa-fw me-1"></i>System Settings</button></li>
+    <li><button class="dropdown-item d-flex align-items-center theme-change-button" data-mode="light"><i class="fa-solid fa-sun fa-lg fa-fw me-1"></i>Light</button></li>
+    <li><button class="dropdown-item d-flex align-items-center theme-change-button" data-mode="dark"><i class="fa-solid fa-moon fa-lg fa-fw me-1"></i>Dark</button></li>
+  </ul>
+</div></div>
+        
+          <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/InfiniTensor/ninetoothed" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-github fa-lg" aria-hidden="true"></i><span class="visually-hidden">GitHub</span></a>
+        </li>
+</ul></div>
+        
+      </div>
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item pst-sidebar-collapse"><button id="pst-collapse-sidebar-button" aria-expanded="true" aria-controls="pst-primary-sidebar"><svg class="pst-icon svg-inline--fa" role="img" aria-hidden="true" focusable="false" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg">
+    <path fill="currentColor" d="M3 15.5C2.36232 15.5 1.74874 15.2564 1.28478 14.8189C0.820828 14.3815 0.541576 13.7832 0.504167 13.1467L0.5 13L0.5 3C0.499965 2.36232 0.743605 1.74874 1.18107 1.28478C1.61854 0.820828 2.21676 0.541576 2.85333 0.504167L3 0.5L13 0.5C13.6377 0.499965 14.2513 0.743605 14.7152 1.18107C15.1792 1.61854 15.4584 2.21676 15.4958 2.85333L15.5 3L15.5 13C15.5 13.6377 15.2564 14.2513 14.8189 14.7152C14.3815 15.1792 13.7832 15.4584 13.1467 15.4958L13 15.5L3 15.5ZM3 13.8333L10.5 13.8333L10.5 2.16667L3 2.16667C2.79589 2.16669 2.59889 2.24163 2.44636 2.37726C2.29383 2.5129 2.19638 2.69979 2.1725 2.9025L2.16667 3L2.16667 13C2.16669 13.2041 2.24163 13.4011 2.37726 13.5536C2.5129 13.7062 2.69979 13.8036 2.9025 13.8275L3 13.8333ZM6.65583 10.325L6.5775 10.2558L4.91083 8.58917C4.76735 8.44567 4.68116 8.25476 4.66843 8.05223C4.65569 7.84971 4.71729 7.6495 4.84167 7.48917L4.91083 7.41083L6.5775 5.74417C6.72747 5.59471 6.9287 5.50794 7.14032 5.50148C7.35194 5.49502 7.55809 5.56935 7.7169 5.70937C7.8757 5.8494 7.97525 6.04463 7.99533 6.25539C8.01541 6.46616 7.95451 6.67667 7.825 6.84417L7.75583 6.9225L6.67917 8L7.75583 9.0775C7.89931 9.22099 7.98551 9.41191 7.99824 9.61443C8.01097 9.81695 7.94938 10.0172 7.825 10.1775L7.75583 10.2558C7.61234 10.3993 7.42142 10.4855 7.2189 10.4982C7.01638 10.511 6.81617 10.4494 6.65583 10.325Z"/>
+  </svg>
+  <span class="pst-collapse-sidebar-label">Collapse Sidebar</span>
+  <span class="pst-expand-sidebar-label">Expand Sidebar</span>
+</button></div>
+        <div class="sidebar-primary-item">
+
+<nav class="bd-docs-nav bd-links"
+     aria-label="Section Navigation">
+  <p class="bd-links__title" role="heading" aria-level="1">Section Navigation</p>
+  <div class="bd-toc-item navbar-nav"></div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+      <div class="sidebar-primary-item">
+<div id="ethical-ad-placement"
+      class="flat"
+      data-ea-publisher="readthedocs"
+      data-ea-type="readthedocs-sidebar"
+      data-ea-manual="true">
+</div></div>
+  </div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item">
+
+<nav aria-label="Breadcrumb" class="d-print-none">
+  <ul class="bd-breadcrumbs">
+    
+    <li class="breadcrumb-item breadcrumb-home">
+      <a href="index.html" class="nav-link" aria-label="Home">
+        <i class="fa-solid fa-home"></i>
+      </a>
+    </li>
+    <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">CPU reference interpreter</span></li>
+  </ul>
+</nav>
+</div>
+      
+    </div>
+  
+  
+</div>
+</div>
+              
+              
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <section id="cpu-reference-interpreter">
+<h1>CPU reference interpreter<a class="headerlink" href="#cpu-reference-interpreter" title="Link to this heading">#</a></h1>
+<p><code class="docutils literal notranslate"><span class="pre">ninetoothed.interpret</span></code> executes an application on NumPy arrays using the
+same arrangement-to-layout and application-to-SSA frontend as the compiler.
+It does not compile GPU source, initialize a GPU runtime, or run the original
+application as ordinary Python. Its purpose is semantic validation and debugging,
+not measuring GPU performance.</p>
+<section id="quick-start">
+<h2>Quick start<a class="headerlink" href="#quick-start" title="Link to this heading">#</a></h2>
+<p>Save the following in a Python file: the existing frontend inspects function
+source, so a function entered only in an interactive <code class="docutils literal notranslate"><span class="pre">python</span> <span class="pre">-c</span></code> string may
+not have retrievable source.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">ninetoothed</span><span class="w"> </span><span class="kn">import</span> <span class="n">Tensor</span><span class="p">,</span> <span class="n">interpret</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">arrangement</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">out</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">x</span><span class="o">.</span><span class="n">tile</span><span class="p">((</span><span class="mi">4</span><span class="p">,)),</span> <span class="n">out</span><span class="o">.</span><span class="n">tile</span><span class="p">((</span><span class="mi">4</span><span class="p">,))</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">application</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">out</span><span class="p">):</span>
+    <span class="n">out</span> <span class="o">=</span> <span class="n">x</span> <span class="o">*</span> <span class="mi">2</span> <span class="o">+</span> <span class="mi">1</span>
+
+<span class="n">kernel</span> <span class="o">=</span> <span class="n">interpret</span><span class="p">(</span>
+    <span class="n">arrangement</span><span class="p">,</span> <span class="n">application</span><span class="p">,</span>
+    <span class="p">(</span><span class="n">Tensor</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">"x"</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="s2">"float32"</span><span class="p">),</span>
+     <span class="n">Tensor</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">"out"</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="s2">"float32"</span><span class="p">)),</span>
+    <span class="n">trace</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">11</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
+<span class="n">out</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty_like</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+<span class="n">result</span> <span class="o">=</span> <span class="n">kernel</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">out</span><span class="p">)</span>
+<span class="n">np</span><span class="o">.</span><span class="n">testing</span><span class="o">.</span><span class="n">assert_array_equal</span><span class="p">(</span><span class="n">out</span><span class="p">,</span> <span class="n">x</span> <span class="o">*</span> <span class="mi">2</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">outputs</span><span class="p">[</span><span class="s2">"out"</span><span class="p">])</span>
+</pre></div>
+</div>
+<p>Output arrays are modified in place. Inputs are NumPy arrays, CPU Python/NumPy
+scalars, or already-loaded PyTorch CPU tensors. A strided CPU Torch tensor is
+adapted with <code class="docutils literal notranslate"><span class="pre">tensor.numpy()</span></code> without copying, so writes reach the original
+storage and <code class="docutils literal notranslate"><span class="pre">result.outputs[&quot;out&quot;]</span> <span class="pre">is</span> <span class="pre">out</span></code> remains true for a Torch output.
+Non-contiguous CPU tensor views retain their strides. CUDA/non-CPU tensors,
+<code class="docutils literal notranslate"><span class="pre">requires_grad=True</span></code>, sparse layouts, conjugate/negative view bits and dtypes
+that cannot be represented without copying are rejected explicitly. Detaching
+or moving tensors is the caller’s decision; the interpreter never does it
+implicitly. The interpreter itself never imports PyTorch or Triton for NumPy
+execution.
+Array dtypes must match declared SSA types. The acceptance-tested arithmetic
+types are float32, int32, and bool; index values use int64 internally.
+Object, complex, string, structured, and unsupported dtypes are rejected.
+Signed integer <code class="docutils literal notranslate"><span class="pre">floordiv</span></code> rounds toward negative infinity, and <code class="docutils literal notranslate"><span class="pre">mod</span></code> has
+the divisor’s sign, following the SSA/Python contract. The Triton emitter
+corrects its native signed division/remainder when needed. Division by zero
+and the signed overflow case <code class="docutils literal notranslate"><span class="pre">INT_MIN</span> <span class="pre">/</span> <span class="pre">-1</span></code> are outside the validated inputs.</p>
+<p>For a fresh environment without Torch or Triton, follow
+<a class="reference internal" href="installation.html#cpu-wheel-install"><span class="std std-ref">CPU interpreter without GPU packages</span></a>. It installs a real wheel from this checkout and runs
+the demo outside the repository, without <code class="docutils literal notranslate"><span class="pre">PYTHONPATH</span></code> or an editable install.
+The wheel retains the existing GPU dependency metadata; the installation guide
+explains the explicit CPU override and its <code class="docutils literal notranslate"><span class="pre">pip</span> <span class="pre">check</span></code> limitation.</p>
+</section>
+<section id="frontend-versus-backend-ssa">
+<h2>Frontend versus backend SSA<a class="headerlink" href="#frontend-versus-backend-ssa" title="Link to this heading">#</a></h2>
+<p>By default, <code class="docutils literal notranslate"><span class="pre">kernel.program</span></code> is the original frontend SSA. To execute the SSA
+pass pipeline used by a backend, select it explicitly:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">kernel</span> <span class="o">=</span> <span class="n">interpret</span><span class="p">(</span><span class="n">arrangement</span><span class="p">,</span> <span class="n">application</span><span class="p">,</span> <span class="n">descriptors</span><span class="p">,</span> <span class="n">backend</span><span class="o">=</span><span class="s2">"triton"</span><span class="p">)</span>
+<span class="c1"># These are separate, inspectable programs.</span>
+<span class="n">original</span> <span class="o">=</span> <span class="n">kernel</span><span class="o">.</span><span class="n">frontend_program</span>
+<span class="n">transformed</span> <span class="o">=</span> <span class="n">kernel</span><span class="o">.</span><span class="n">program</span>
+</pre></div>
+</div>
+<p><code class="docutils literal notranslate"><span class="pre">backend</span></code> calls the existing <code class="docutils literal notranslate"><span class="pre">lower_for_target</span></code> pass pipeline, without
+source emission or GPU materialization. It is therefore useful on a CPU-only
+machine. <code class="docutils literal notranslate"><span class="pre">pipeline</span></code> and <code class="docutils literal notranslate"><span class="pre">pass_options</span></code> select the same pipeline options as
+the compiler. There is no fallback to the original program if an operation in
+the transformed program is unsupported.</p>
+<p>To evaluate an already available program, use:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">ninetoothed.interpreter</span><span class="w"> </span><span class="kn">import</span> <span class="n">interpret_program</span>
+
+<span class="n">result</span> <span class="o">=</span> <span class="n">interpret_program</span><span class="p">(</span>
+    <span class="n">transformed</span><span class="p">,</span> <span class="p">{</span><span class="s2">"x"</span><span class="p">:</span> <span class="n">x</span><span class="p">,</span> <span class="s2">"out"</span><span class="p">:</span> <span class="n">out</span><span class="p">},</span> <span class="n">tensors</span><span class="o">=</span><span class="n">kernel</span><span class="o">.</span><span class="n">tensors</span><span class="p">,</span>
+    <span class="n">symbols</span><span class="o">=</span><span class="n">kernel</span><span class="o">.</span><span class="n">meta</span><span class="p">,</span> <span class="n">trace</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="c1"># Or retain an existing handle's layouts and binding order:</span>
+<span class="n">result</span> <span class="o">=</span> <span class="n">kernel</span><span class="o">.</span><span class="n">with_program</span><span class="p">(</span><span class="n">transformed</span><span class="p">)(</span><span class="n">x</span><span class="p">,</span> <span class="n">out</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>The lower-level entry point accepts the actual <code class="docutils literal notranslate"><span class="pre">ssa.Program</span></code> object, not a
+string containing generated Triton/CUDA code. <code class="docutils literal notranslate"><span class="pre">TensorSpec.layout</span></code> provides
+the same structured coordinate maps and predicates used by emitters.</p>
+</section>
+<section id="memory-and-control-flow">
+<h2>Memory and control flow<a class="headerlink" href="#memory-and-control-flow" title="Link to this heading">#</a></h2>
+<p>Arranged blocks are mapped to source coordinates with the existing <code class="docutils literal notranslate"><span class="pre">IndexExpr</span></code>
+and <code class="docutils literal notranslate"><span class="pre">AccessMap</span></code> records. They support broadcast program domains, strided source
+arrays, nested layout levels and non-divisible tails. Masked-out coordinates
+are never used to index the source allocation. <code class="docutils literal notranslate"><span class="pre">Tensor(other=...)</span></code> controls
+the masked load value; use zero for sums/dots and negative infinity for a
+softmax/max input where that is the intended kernel semantics.</p>
+<p>The explicit pointer subset has these operand contracts:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">mem.data_ptr(tensor)</span></code> returns a checked element pointer.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">arith.add(pointer,</span> <span class="pre">offsets)</span></code> creates element-offset addresses.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">mem.load(pointer,</span> <span class="pre">mask?,</span> <span class="pre">other?)</span></code> loads only active addresses.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">mem.store(value,</span> <span class="pre">destination,</span> <span class="pre">mask?)</span></code> follows the frontend’s value-first
+order. <code class="docutils literal notranslate"><span class="pre">attrs[&quot;other&quot;]</span></code> supplies a load fill value when no third operand is
+given.</p></li>
+</ul>
+<p>Raw pointer operations currently require C-contiguous storage. Arranged tensor
+accesses use source coordinates and support NumPy strides, including negative
+strides. An active out-of-bounds lane raises <code class="docutils literal notranslate"><span class="pre">InterpretationError</span></code> containing
+the operation location and program ID; inactive lanes may have invalid addresses.</p>
+<p><code class="docutils literal notranslate"><span class="pre">scf.if</span></code> requires a scalar condition and executes only the selected region.
+<code class="docutils literal notranslate"><span class="pre">scf.for</span></code> obeys Python range bounds and steps, including negative steps and
+zero iterations. Region arguments and <code class="docutils literal notranslate"><span class="pre">scf.yield</span></code> carry values explicitly.</p>
+<p>The default arranged launch uses a flat program ID, as current emitters do.
+The lower-level API also accepts explicit one-to-three-dimensional grids for
+program-ID operations. Trace IDs always contain three coordinates; unused
+coordinates are zero. An explicit arranged grid must cover the same number of
+programs as its layout domain.</p>
+</section>
+<section id="scalar-dot-across-output-tiles">
+<h2>Scalar dot across output tiles<a class="headerlink" href="#scalar-dot-across-output-tiles" title="Link to this heading">#</a></h2>
+<p>The default Triton and CUDA pipelines can lower a two-dimensional dot into
+scalar SSA arithmetic and a K loop. The CPU interpreter executes those actual
+operations for every valid output lane, including multiple M/N output tiles.
+It does not replace the lowered program with a call to NumPy matmul.</p>
+<p>All scalar dot/matmul and transpose decompositions share a storage preflight,
+including untiled and single-program execution. The output must be a named
+array with independent, element-aligned storage. Potential aliasing with another
+input, partial-element byte strides and overlapping output elements (including
+overlapping zero-stride views) are rejected before writes. Reading output values
+inside the scalar program is also rejected, even if the same <code class="docutils literal notranslate"><span class="pre">out</span></code> binding is
+used as a matmul operand; shape, stride and offset metadata reads remain allowed.
+Normal independent untiled arrays and aligned positive/negative strides remain
+supported. This is a contract for scalar lane replay, not a restriction on every
+undecomposed vector operation.</p>
+<p>The multi-program contract is deliberately bounded:</p>
+<ul class="simple">
+<li><p>The two operands and output are rank-2 input bindings with arranged
+descriptors and one rank-2 value level. Their source dimensions describe
+<code class="docutils literal notranslate"><span class="pre">(M,</span> <span class="pre">K)</span> <span class="pre">&#64;</span> <span class="pre">(K,</span> <span class="pre">N)</span> <span class="pre">-&gt;</span> <span class="pre">(M,</span> <span class="pre">N)</span></code>.</p></li>
+<li><p>Each output program contains the complete K reduction. Masked K padding is
+zero, and operand coordinates must match the output rows, output columns,
+and the complete K coordinate range. Splitting K into independent programs
+without an accumulating loop is rejected.</p></li>
+<li><p>Every valid output element is written once. The output domain must cover the
+complete matrix, and masks must match the logical in-bounds lanes.</p></li>
+<li><p>The shared scalar storage preflight applies to every output program.
+Independent strided inputs and outputs are supported, including positive and
+negative output strides. The overlap check is conservative and may reject
+disjoint views of a shared allocation.</p></li>
+<li><p>There is one top-level decomposed output store. Other stores or atomic
+effects, including those inside nested regions, are rejected before any
+output write. Replaying such effects once per scalar lane would change the
+original program’s semantics.</p></li>
+</ul>
+<p>These contract failures identify an SSA operation location. Computed operands,
+additional layout levels, split-K accumulation and arbitrary matrix views are
+outside this multi-program implementation. Scalar transpose decomposition
+continues to require a single logical program.</p>
+<p>For example, save and execute the following as a Python file on CPU:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">ninetoothed.language</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">ntl</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">ninetoothed</span><span class="w"> </span><span class="kn">import</span> <span class="n">Tensor</span><span class="p">,</span> <span class="n">interpret</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">matrix_tiles</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">out</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">a</span><span class="o">.</span><span class="n">tile</span><span class="p">((</span><span class="mi">4</span><span class="p">,</span> <span class="mi">4</span><span class="p">)),</span> <span class="n">b</span><span class="o">.</span><span class="n">tile</span><span class="p">((</span><span class="mi">4</span><span class="p">,</span> <span class="mi">4</span><span class="p">)),</span> <span class="n">out</span><span class="o">.</span><span class="n">tile</span><span class="p">((</span><span class="mi">4</span><span class="p">,</span> <span class="mi">4</span><span class="p">))</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">matrix_dot</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">out</span><span class="p">):</span>
+    <span class="n">out</span> <span class="o">=</span> <span class="n">ntl</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">)</span>
+
+<span class="n">tensors</span> <span class="o">=</span> <span class="p">(</span>
+    <span class="n">Tensor</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">"a"</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="s2">"float32"</span><span class="p">,</span> <span class="n">other</span><span class="o">=</span><span class="mi">0</span><span class="p">),</span>
+    <span class="n">Tensor</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">"b"</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="s2">"float32"</span><span class="p">,</span> <span class="n">other</span><span class="o">=</span><span class="mi">0</span><span class="p">),</span>
+    <span class="n">Tensor</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">"out"</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="s2">"float32"</span><span class="p">),</span>
+<span class="p">)</span>
+<span class="n">kernel</span> <span class="o">=</span> <span class="n">interpret</span><span class="p">(</span><span class="n">matrix_tiles</span><span class="p">,</span> <span class="n">matrix_dot</span><span class="p">,</span> <span class="n">tensors</span><span class="p">,</span> <span class="n">backend</span><span class="o">=</span><span class="s2">"triton"</span><span class="p">)</span>
+<span class="n">a</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">21</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="mi">7</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span> <span class="o">/</span> <span class="mi">7</span>
+<span class="n">b</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">18</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">6</span><span class="p">)</span> <span class="o">/</span> <span class="mi">5</span>
+<span class="n">out</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">full</span><span class="p">((</span><span class="mi">7</span><span class="p">,</span> <span class="mi">6</span><span class="p">),</span> <span class="o">-</span><span class="mi">731</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
+<span class="n">kernel</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">out</span><span class="p">)</span>
+<span class="n">np</span><span class="o">.</span><span class="n">testing</span><span class="o">.</span><span class="n">assert_allclose</span><span class="p">(</span><span class="n">out</span><span class="p">,</span> <span class="n">a</span> <span class="o">@</span> <span class="n">b</span><span class="p">,</span> <span class="n">rtol</span><span class="o">=</span><span class="mf">1e-3</span><span class="p">,</span> <span class="n">atol</span><span class="o">=</span><span class="mf">1e-3</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>This example has four M/N output programs and a padded K tile of size four.
+<code class="docutils literal notranslate"><span class="pre">index.offset</span></code> operations produced by matmul decomposition explicitly use
+<code class="docutils literal notranslate"><span class="pre">coordinate_space=&quot;value&quot;</span></code>: row and column indices are local to the output
+tile. The CPU executor and source emitters then use the shared layout maps to
+resolve storage coordinates. Offsets without this attribute keep their
+existing source-coordinate meaning.</p>
+<p>CPU regression cases cover float32 and int32, non-square dimensions, M/N/K
+tails, strided inputs, independent strided outputs, trace consistency and
+rejection-before-write checks. The validated 4090 GPU dot case is scalar float32;
+it does not cover Tensor Core instructions, arbitrary layouts or split-K.
+New source-emission checks and CPU results do not constitute a GPU run.</p>
+</section>
+<section id="tracing-extension-and-pass-debugging">
+<h2>Tracing, extension and pass debugging<a class="headerlink" href="#tracing-extension-and-pass-debugging" title="Link to this heading">#</a></h2>
+<p><code class="docutils literal notranslate"><span class="pre">TraceEvent</span></code> records <code class="docutils literal notranslate"><span class="pre">program_id</span></code>, <code class="docutils literal notranslate"><span class="pre">location</span></code>, <code class="docutils literal notranslate"><span class="pre">opcode</span></code>, execution-before
+<code class="docutils literal notranslate"><span class="pre">inputs</span></code> snapshots, <code class="docutils literal notranslate"><span class="pre">results</span></code> snapshots, <code class="docutils literal notranslate"><span class="pre">mask</span></code>, loop <code class="docutils literal notranslate"><span class="pre">iteration</span></code>, and
+<code class="docutils literal notranslate"><span class="pre">watched</span></code> values. A snapshot stores shape, dtype and values. Memory destination
+and pointer snapshots store reference metadata instead of dereferencing arbitrary
+addresses. Lazy tensor references in results and watch lists likewise retain
+metadata; observing them never introduces an unmasked memory read. Numeric
+source snapshots are copied, so later mutations do not alter the recorded trace.</p>
+<p>The lower-level API accepts <code class="docutils literal notranslate"><span class="pre">program_ids</span></code>, <code class="docutils literal notranslate"><span class="pre">opcodes</span></code> and <code class="docutils literal notranslate"><span class="pre">watch</span></code> filters.
+<code class="docutils literal notranslate"><span class="pre">callback(event)</span></code> receives each selected event synchronously. <code class="docutils literal notranslate"><span class="pre">StepDebugger</span></code>
+offers terminal and deterministic scripted-command interfaces without a
+background thread. Pauses occur after an operation completes. Writes performed
+before a pause or quit remain in the output buffer.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">ninetoothed.interpreter.debugger</span><span class="w"> </span><span class="kn">import</span> <span class="n">StepDebugger</span>
+
+<span class="n">debugger</span> <span class="o">=</span> <span class="n">StepDebugger</span><span class="p">(</span>
+    <span class="n">commands</span><span class="o">=</span><span class="p">[</span><span class="s2">"watch %0"</span><span class="p">,</span> <span class="s2">"print %0"</span><span class="p">,</span> <span class="s2">"step"</span><span class="p">,</span> <span class="s2">"break mem.store"</span><span class="p">,</span> <span class="s2">"continue"</span><span class="p">],</span>
+    <span class="n">output</span><span class="o">=</span><span class="nb">print</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="n">kernel</span> <span class="o">=</span> <span class="n">interpret</span><span class="p">(</span><span class="n">arrangement</span><span class="p">,</span> <span class="n">application</span><span class="p">,</span> <span class="n">descriptors</span><span class="p">,</span> <span class="n">callback</span><span class="o">=</span><span class="n">debugger</span><span class="p">)</span>
+<span class="n">result</span> <span class="o">=</span> <span class="n">kernel</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">out</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">([</span><span class="n">event</span><span class="o">.</span><span class="n">location</span> <span class="k">for</span> <span class="n">event</span> <span class="ow">in</span> <span class="n">debugger</span><span class="o">.</span><span class="n">pauses</span><span class="p">])</span>
+</pre></div>
+</div>
+<p>Omit <code class="docutils literal notranslate"><span class="pre">commands</span></code> to read commands interactively. Use <code class="docutils literal notranslate"><span class="pre">step</span></code>/<code class="docutils literal notranslate"><span class="pre">s</span></code> to stop at
+the next completed operation, <code class="docutils literal notranslate"><span class="pre">continue</span></code>/<code class="docutils literal notranslate"><span class="pre">c</span></code> to run to the next breakpoint,
+<code class="docutils literal notranslate"><span class="pre">break</span> <span class="pre">LOCATION</span></code>/<code class="docutils literal notranslate"><span class="pre">b</span> <span class="pre">LOCATION</span></code> to add an exact location or prefix,
+<code class="docutils literal notranslate"><span class="pre">break</span> <span class="pre">OPCODE</span></code> to break on an operation type, <code class="docutils literal notranslate"><span class="pre">delete</span></code>/<code class="docutils literal notranslate"><span class="pre">d</span></code> to remove it,
+<code class="docutils literal notranslate"><span class="pre">watch</span> <span class="pre">NAME</span></code>/<code class="docutils literal notranslate"><span class="pre">w</span> <span class="pre">NAME</span></code> to track an SSA value, and <code class="docutils literal notranslate"><span class="pre">print</span> <span class="pre">NAME</span></code>/<code class="docutils literal notranslate"><span class="pre">p</span> <span class="pre">NAME</span></code> to
+show its latest observed snapshot. <code class="docutils literal notranslate"><span class="pre">quit</span></code>/<code class="docutils literal notranslate"><span class="pre">q</span></code> raises <code class="docutils literal notranslate"><span class="pre">DebuggerQuit</span></code>.
+An empty command steps; an exhausted scripted command stream continues.</p>
+<p><code class="docutils literal notranslate"><span class="pre">debugger.inspect(name)</span></code> returns the latest observed snapshot. The <code class="docutils literal notranslate"><span class="pre">values</span></code>
+cache resets for each program ID and scalar output lane; it does not claim that a previously observed
+region-local name remains in scope. Dynamic watch names are requested from the
+execution engine at each event. Avoid trace filters during full debugging if
+all intermediate definitions should remain observable.</p>
+<p>After installation, run the example from the repository root. It accepts
+<code class="docutils literal notranslate"><span class="pre">--debug</span></code> for scripted stepping and breakpoints, or <code class="docutils literal notranslate"><span class="pre">--interactive-debug</span></code>
+to read commands from the terminal. <code class="docutils literal notranslate"><span class="pre">-I</span></code> uses the installed package:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">python -I docs/cpu_interpreter_demo.py --debug</span>
+</pre></div>
+</div>
+<p>The demo checks the correct <code class="docutils literal notranslate"><span class="pre">x</span> <span class="pre">*</span> <span class="pre">2</span> <span class="pre">+</span> <span class="pre">1</span></code> result against NumPy, then deliberately
+changes the SSA constant <code class="docutils literal notranslate"><span class="pre">2</span></code> to <code class="docutils literal notranslate"><span class="pre">3</span></code>. <code class="docutils literal notranslate"><span class="pre">check_passes</span></code> identifies
+<code class="docutils literal notranslate"><span class="pre">injected_bad_constant</span></code> and the first different <code class="docutils literal notranslate"><span class="pre">arith.constant</span></code> operation.
+This is fault injection for teaching the debugger, not a historical compiler bug.
+Eleven inputs with tiles of four also demonstrate three program IDs and a
+masked final lane.</p>
+<p>Use a new directory to save both programs and replay the same difference in a
+separate process, without rerunning the frontend or the injected pass:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">python -I docs/cpu_interpreter_demo.py --debug --export /tmp/nine-demo</span>
+<span class="go">python -I /tmp/nine-demo/replay.py</span>
+</pre></div>
+</div>
+<p><code class="docutils literal notranslate"><span class="pre">check_passes</span></code> automatically creates <code class="docutils literal notranslate"><span class="pre">reference/</span></code>, <code class="docutils literal notranslate"><span class="pre">previous/</span></code> and
+<code class="docutils literal notranslate"><span class="pre">candidate/</span></code> bundles, <code class="docutils literal notranslate"><span class="pre">failure.json</span></code> and a generic top-level <code class="docutils literal notranslate"><span class="pre">replay.py</span></code>.
+The demo checks the correct result against NumPy before injecting the fault;
+the replay independently compares the saved SSA, without a hard-coded affine
+formula. All bundles preserve the original inputs, layouts, dtype and seed.
+Exit code zero means the recorded output/operation difference or execution
+exception was reproduced. A repaired candidate or a different failure makes
+the replay fail, including under <code class="docutils literal notranslate"><span class="pre">python</span> <span class="pre">-O</span></code>. The saved boundary does not
+claim to rerun or independently rediscover the Python pass.</p>
+<p>An extension can register a handler for an individual operation without changing
+the frontend or matching an entire application:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">result</span> <span class="o">=</span> <span class="n">interpret_program</span><span class="p">(</span>
+    <span class="n">program</span><span class="p">,</span> <span class="n">inputs</span><span class="p">,</span>
+    <span class="n">handlers</span><span class="o">=</span><span class="p">{</span><span class="s2">"math.my_op"</span><span class="p">:</span> <span class="k">lambda</span> <span class="n">operation</span><span class="p">,</span> <span class="n">operands</span><span class="p">:</span> <span class="n">operands</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="mi">2</span><span class="p">},</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+<p>Unregistered unsupported operations fail with <code class="docutils literal notranslate"><span class="pre">UnsupportedOperationError</span></code> and
+an operation location. Handlers return one NumPy result, or a tuple for multiple
+SSA results, and remain responsible for their operation’s semantics.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">ninetoothed.backends.core</span><span class="w"> </span><span class="kn">import</span> <span class="n">Target</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">ninetoothed.compiler.passes</span><span class="w"> </span><span class="kn">import</span> <span class="n">Context</span><span class="p">,</span> <span class="n">default_pipeline</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">ninetoothed.interpreter.debugger</span><span class="w"> </span><span class="kn">import</span> <span class="n">check_passes</span>
+
+<span class="n">context</span> <span class="o">=</span> <span class="n">Context</span><span class="p">(</span>
+    <span class="n">backend</span><span class="o">=</span><span class="n">Target</span><span class="o">.</span><span class="n">TRITON</span><span class="p">,</span> <span class="n">compiler_options</span><span class="o">=</span><span class="p">{},</span> <span class="n">kernel_metadata</span><span class="o">=</span><span class="p">{},</span>
+    <span class="n">tensors</span><span class="o">=</span><span class="n">kernel</span><span class="o">.</span><span class="n">tensors</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="n">pipeline</span> <span class="o">=</span> <span class="n">default_pipeline</span><span class="p">(</span><span class="n">Target</span><span class="o">.</span><span class="n">TRITON</span><span class="p">)</span>
+<span class="n">checks</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span>
+    <span class="p">(</span><span class="n">pass_</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">program</span><span class="p">,</span> <span class="n">pass_</span><span class="o">=</span><span class="n">pass_</span><span class="p">:</span> <span class="n">pass_</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">program</span><span class="p">,</span> <span class="n">context</span><span class="p">))</span>
+    <span class="k">for</span> <span class="n">pass_</span> <span class="ow">in</span> <span class="n">pipeline</span><span class="o">.</span><span class="n">passes</span>
+<span class="p">)</span>
+<span class="n">report</span> <span class="o">=</span> <span class="n">check_passes</span><span class="p">(</span>
+    <span class="n">kernel</span><span class="o">.</span><span class="n">frontend_program</span><span class="p">,</span> <span class="n">checks</span><span class="p">,</span> <span class="p">{</span><span class="s2">"x"</span><span class="p">:</span> <span class="n">x</span><span class="p">,</span> <span class="s2">"out"</span><span class="p">:</span> <span class="n">out</span><span class="p">},</span>
+    <span class="n">tensors</span><span class="o">=</span><span class="n">kernel</span><span class="o">.</span><span class="n">tensors</span><span class="p">,</span> <span class="n">symbols</span><span class="o">=</span><span class="n">kernel</span><span class="o">.</span><span class="n">meta</span><span class="p">,</span>
+    <span class="n">failure_dir</span><span class="o">=</span><span class="s2">"/tmp/nine-pass-failure"</span><span class="p">,</span> <span class="n">seed</span><span class="o">=</span><span class="mi">2026</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">report</span><span class="o">.</span><span class="n">first_bad_pass</span><span class="p">,</span> <span class="n">report</span><span class="o">.</span><span class="n">localization</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">report</span><span class="o">.</span><span class="n">reproducer</span><span class="p">,</span> <span class="n">report</span><span class="o">.</span><span class="n">export_error</span><span class="p">)</span>
+</pre></div>
+</div>
+<p><code class="docutils literal notranslate"><span class="pre">check_passes</span></code> first verifies that the original reference executes, then
+compares every intermediate program both to the original and to the preceding
+pass output using independent input copies. It stops at the first failing
+boundary. The original comparison detects cumulative drift; the adjacent
+comparison also catches differences hidden by cancellation against the original.
+Integer and
+boolean outputs require exact equality. Floating outputs default to
+<code class="docutils literal notranslate"><span class="pre">rtol=1e-3,</span> <span class="pre">atol=1e-3</span></code>. <code class="docutils literal notranslate"><span class="pre">ProgramComparison.first_operation</span></code> identifies the first
+different corresponding operation only when SSA structures and the complete
+trace event sequence align, including program ID, operation location, opcode,
+loop iteration and scalar lane. Input, result and effective memory-mask snapshots
+are compared; <code class="docutils literal notranslate"><span class="pre">OperationDifference.component</span></code> tells which snapshot differed.</p>
+<p><code class="docutils literal notranslate"><span class="pre">PassCheck.difference</span></code> retains the original-reference result.
+<code class="docutils literal notranslate"><span class="pre">adjacent_difference</span></code> adds the preceding-pass result, allowing an earlier
+correct restructuring without losing later operation localization.
+<code class="docutils literal notranslate"><span class="pre">localization.reference</span></code> explicitly names <code class="docutils literal notranslate"><span class="pre">original</span></code> or <code class="docutils literal notranslate"><span class="pre">previous</span></code>.
+<code class="docutils literal notranslate"><span class="pre">localization.basis</span></code> distinguishes four observation scopes:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">full_trace</span></code>: corresponding operations across the entire aligned trace.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">aligned_prefix</span></code>: a difference before the first unmatched execution event,
+for example a changed condition before the branches diverge. Static SSA
+structure must still align; no later events are paired by position.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">retained_boundary</span></code>: the earliest differing input/mask/result at an operation
+explicitly preserved by one pass. Input/output fingerprints, operation
+equality, one-to-one preserve relations, and the complete filtered event
+sequence must match. This can locate a changed value at an unchanged consumer
+after a split or merge. <code class="docutils literal notranslate"><span class="pre">reference_location</span></code> records the pre-pass location;
+<code class="docutils literal notranslate"><span class="pre">operation.location</span></code> records the candidate location.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">mapped_result</span></code>: the earliest differing result with an explicit value
+correspondence declared by the pass. The mapping can compare identical
+result types, a reference tile with a scalar lane, or the supported matmul
+input, product and accumulation checkpoints described below.</p></li>
+</ul>
+<p>These identify observed differences, not necessarily the unique faulty generated
+instruction. When no valid observation correspondence exists, <code class="docutils literal notranslate"><span class="pre">localization</span></code>
+is <code class="docutils literal notranslate"><span class="pre">None</span></code> and declared source candidates remain available. A split/merge
+origin alone never establishes equivalent intermediate values. Unmapped
+restructuring and changed event counts therefore do not acquire guessed exact
+locations.</p>
+</section>
+<section id="explicit-ssa-provenance">
+<h2>Explicit SSA provenance<a class="headerlink" href="#explicit-ssa-provenance" title="Link to this heading">#</a></h2>
+<p><code class="docutils literal notranslate"><span class="pre">ssa.Operation.origins</span></code> is an immutable tuple of original-SSA operation IDs;
+its default is empty. It is nonsemantic: it does not affect operation equality
+or <code class="docutils literal notranslate"><span class="pre">ssa.render</span></code>. JSON serialization preserves it separately from operation
+attributes. Origins refer to static locations in the seeded SSA, not Python
+source lines or a proven unique cause of a numerical error.</p>
+<p>The APIs are available from <code class="docutils literal notranslate"><span class="pre">ninetoothed.ir.provenance</span></code>:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">seed_origins(program)</span></code> assigns stable IDs and a source catalog on first
+use. Reapplying it preserves the existing history, including unknown origins.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">operation_locations(program)</span></code> returns static <code class="docutils literal notranslate"><span class="pre">(location,</span> <span class="pre">operation)</span></code>
+pairs, including nested regions, using the interpreter’s location convention.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">ProvenancePass(before,</span> <span class="pre">name)</span></code> tracks one explicit transformation.
+<code class="docutils literal notranslate"><span class="pre">derive(targets,</span> <span class="pre">sources,</span> <span class="pre">relation=&quot;replace&quot;,</span> <span class="pre">recursive=False)</span></code> declares
+replacement, split or merge relations. <code class="docutils literal notranslate"><span class="pre">recursive=True</span></code> includes generated
+region operations. <code class="docutils literal notranslate"><span class="pre">delete(*sources)</span></code> declares removal without successors,
+and <code class="docutils literal notranslate"><span class="pre">finish(after)</span></code> records the completed relation set.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">record_pass(before,</span> <span class="pre">after,</span> <span class="pre">name)</span></code> accepts a matching explicit pass record
+or records retained operation objects. It does not infer replacements from
+copied IDs, names, opcodes or structural similarity. Unknown replacements
+and removals remain unknown; a relation with partly unknown inputs does not
+present the known subset as a complete source range.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">source_candidates(program,</span> <span class="pre">locations=None)</span></code> returns <code class="docutils literal notranslate"><span class="pre">SourceCandidate</span></code>
+records with <code class="docutils literal notranslate"><span class="pre">origin_id</span></code>, <code class="docutils literal notranslate"><span class="pre">location</span></code>, <code class="docutils literal notranslate"><span class="pre">opcode</span></code> and <code class="docutils literal notranslate"><span class="pre">result_names</span></code>.
+Explicit locations select output operations; omitting them selects declared
+changes in the latest pass. These are declared source candidates, not a
+complete causal slice or a unique fault location.</p></li>
+</ul>
+<p><code class="docutils literal notranslate"><span class="pre">Pipeline.run</span></code> and <code class="docutils literal notranslate"><span class="pre">check_passes</span></code> seed and record pass provenance. The
+actual linalg decomposition declares the original dot/transpose and store as
+sources of its generated scalar instructions. Temporary allocation reserves
+names across the entire program, including nested regions. Unrelated or
+unmapped transformations do not acquire an invented source relation.</p>
+<p><code class="docutils literal notranslate"><span class="pre">ProgramComparison</span></code> exposes <code class="docutils literal notranslate"><span class="pre">equal</span></code>, <code class="docutils literal notranslate"><span class="pre">output_differences</span></code>,
+<code class="docutils literal notranslate"><span class="pre">first_operation</span></code>, <code class="docutils literal notranslate"><span class="pre">traces_aligned</span></code> and <code class="docutils literal notranslate"><span class="pre">source_candidates</span></code>.
+<code class="docutils literal notranslate"><span class="pre">PassCheck.source_candidates</span></code> also retains a declared transformation scope
+when a pass produces an interpretation error. A nonempty candidate tuple must
+not be reported as an exact Python line, value alignment or proof of causality.
+<code class="docutils literal notranslate"><span class="pre">first_bad_pass</span></code> identifies the first observed mismatch or unsupported/error
+stage in the supplied sequence, which is distinct from proving the underlying
+cause of a compiler defect.</p>
+<p>To inspect executable opcodes, walk the program blocks and nested regions.
+Provenance catalogs intentionally retain names of removed operations, so a
+substring search over the entire serialized SSA metadata is not a valid check
+that an opcode has been eliminated.</p>
+</section>
+<section id="declared-result-correspondence">
+<h2>Declared result correspondence<a class="headerlink" href="#declared-result-correspondence" title="Link to this heading">#</a></h2>
+<p>Operation origins alone do not establish result equality. A pass can separately
+declare an equality that the debugger should check:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">tracker</span> <span class="o">=</span> <span class="n">ProvenancePass</span><span class="p">(</span><span class="n">before</span><span class="p">,</span> <span class="s2">"split_scale"</span><span class="p">)</span>
+<span class="n">generated</span> <span class="o">=</span> <span class="n">tracker</span><span class="o">.</span><span class="n">derive</span><span class="p">(</span><span class="n">new_operations</span><span class="p">,</span> <span class="p">(</span><span class="n">old_operation</span><span class="p">,),</span> <span class="n">relation</span><span class="o">=</span><span class="s2">"split"</span><span class="p">)</span>
+<span class="n">tracker</span><span class="o">.</span><span class="n">map_result</span><span class="p">(</span><span class="n">old_operation</span><span class="p">,</span> <span class="n">generated</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
+<span class="n">after</span> <span class="o">=</span> <span class="n">tracker</span><span class="o">.</span><span class="n">finish</span><span class="p">(</span><span class="n">rewritten_program</span><span class="p">)</span>
+</pre></div>
+</div>
+<p><code class="docutils literal notranslate"><span class="pre">map_result</span></code> accepts <code class="docutils literal notranslate"><span class="pre">source_result</span></code> and <code class="docutils literal notranslate"><span class="pre">target_result</span></code> when a producer
+has several results. The default <code class="docutils literal notranslate"><span class="pre">projection=&quot;identity&quot;</span></code> requires matching
+SSA types. <code class="docutils literal notranslate"><span class="pre">projection=&quot;lane&quot;</span></code> compares a reference numeric tile with the
+candidate’s executed scalar lane. The actual linalg decomposition declares
+this mapping for the completed matmul K-loop result and transpose extract;
+partial accumulators are not compared with the final matrix result.
+The same pass additionally declares <code class="docutils literal notranslate"><span class="pre">matmul_lhs</span></code>, <code class="docutils literal notranslate"><span class="pre">matmul_rhs</span></code>,
+<code class="docutils literal notranslate"><span class="pre">matmul_term</span></code> and <code class="docutils literal notranslate"><span class="pre">matmul_prefix</span></code> checkpoints inside its scalar K loop.
+Their references come from the original matmul’s captured input tiles:
+<code class="docutils literal notranslate"><span class="pre">A[row,</span> <span class="pre">k]</span></code>, <code class="docutils literal notranslate"><span class="pre">B[k,</span> <span class="pre">column]</span></code>, their product, and the prefix accumulated from
+zero with the declared scalar casts. They never use a candidate intermediate
+as the reference. Every active lane must cover the original K domain exactly
+once in order; changed loop coverage yields a diagnostic and retains the
+completed-result comparison. These formulas do not assert equivalence for
+arbitrary reassociation, split-K or fused floating-point arithmetic.
+Mixed-dtype lowering remains available: where the original result and generated
+accumulator have different dtypes, this optional equality is not declared.
+Omitting an unrepresentable debug contract does not change the generated SSA.</p>
+<p>Mappings require recorded producer relations, matching SSA fingerprints and
+compatible enclosing control-flow headers. Every occurrence must align by
+program ID, iteration and scalar lane before that mapping reports a mismatch.
+One reference result may feed several explicitly mapped targets, but a target
+result cannot have conflicting mappings. A mapping is the pass author’s
+semantic contract, checked on the supplied inputs, not a proof for all inputs.
+Unknown, stale and unaligned mappings do not acquire guessed correspondences.</p>
+<p><code class="docutils literal notranslate"><span class="pre">ProgramComparison.mapped_operation</span></code> reports a failing mapped result.
+<code class="docutils literal notranslate"><span class="pre">localization</span></code> selects the earliest candidate execution event among valid
+full-trace, prefix, retained-consumer and mapped-result observations.
+Its <code class="docutils literal notranslate"><span class="pre">basis=&quot;mapped_result&quot;</span></code> names a producer where a declared equality
+fails; <code class="docutils literal notranslate"><span class="pre">projection</span></code> identifies the equality or input-derived checkpoint.
+It does not prove that this producer uniquely caused the error; for a
+split operation the mapping can name the group’s completed result, while an
+unmapped internal instruction remains unresolved. Output equality remains
+the pass success condition, so dead or cancelled internal changes do not by
+themselves turn a successful output comparison into a failed pass.</p>
+<p><code class="docutils literal notranslate"><span class="pre">dependency_slice</span></code> on both <code class="docutils literal notranslate"><span class="pre">ProgramComparison</span></code> and <code class="docutils literal notranslate"><span class="pre">PassCheck</span></code> follows
+executed SSA producers, loop-carried values, selected yields and control
+operands. Each event retains its trace index, program ID, iteration and lane.
+The slice is a value-dependency explanation, not a minimal reproducer or a set
+of independently faulty operations. Its <code class="docutils literal notranslate"><span class="pre">boundaries</span></code> explicitly identifies
+unresolved values, incomplete traces, unknown handler effects and memory
+ordering that cannot be established. <code class="docutils literal notranslate"><span class="pre">memory_dependencies</span></code> links each read
+to the last observed same-program write of the intersecting byte ranges.
+<code class="docutils literal notranslate"><span class="pre">mapping_issues</span></code> explains unavailable correspondences.</p>
+<p><code class="docutils literal notranslate"><span class="pre">TraceEvent.memory</span></code> records actual checked reads and writes with stable
+storage names and relative half-open byte intervals. It never contains process
+addresses. Snapshot/watch evaluation is excluded from this recording; scalar
+tensor extraction reads only its selected logical coordinates. Masks exclude
+inactive addresses before coordinate conversion, including large unsigned
+offsets. Positive, negative and zero strides are represented by actual bytes.
+<code class="docutils literal notranslate"><span class="pre">TraceEvent.sequence</span></code> detects missing or filtered events. Cross-program
+dependencies and overlapping write lanes remain explicit boundaries: serial
+CPU execution is not a GPU happens-before or race-freedom proof. No memory
+recorder is allocated when tracing and callbacks are both disabled.</p>
+<p>Mapping analysis indexes each trace once by producer location. Dependency
+analysis stops at the selected observation because later events cannot supply
+its inputs. Numeric contents, ordering, alignment checks and tolerances remain
+part of the diagnosis; an index never substitutes for these checks.</p>
+<p>Automatic failure bundles include these observations and dependencies. Replay
+checks them, including the pass-level selected location; legacy bundles without
+the additional fields replay with their original diagnostic semantics. New
+failure schema-2 bundles require <code class="docutils literal notranslate"><span class="pre">diagnostics_version=2</span></code> and their recorded
+memory/projection fields; removing those fields is an error. See the CPU tests in
+<code class="docutils literal notranslate"><span class="pre">tests/test_interpreter_value_mapping.py</span></code>,
+<code class="docutils literal notranslate"><span class="pre">tests/test_interpreter_memory_dependencies.py</span></code>,
+<code class="docutils literal notranslate"><span class="pre">tests/test_interpreter_matmul_checkpoints.py</span></code> and the dated acceptance reports for
+verified scope. These checks do not extend the existing GPU race/alias model.</p>
+</section>
+<section id="replay-bundles">
+<h2>Replay bundles<a class="headerlink" href="#replay-bundles" title="Link to this heading">#</a></h2>
+<p><code class="docutils literal notranslate"><span class="pre">compare_programs(...,</span> <span class="pre">failure_dir=PATH,</span> <span class="pre">seed=SEED)</span></code> and
+<code class="docutils literal notranslate"><span class="pre">check_passes(...,</span> <span class="pre">failure_dir=PATH,</span> <span class="pre">seed=SEED)</span></code> automatically export at the
+first failure. The directory must not exist; success writes nothing. With
+<code class="docutils literal notranslate"><span class="pre">failure_dir=None</span></code> (the default), neither API writes files. The seed is supplied
+by the caller and stored as metadata; replay uses the saved numeric inputs and
+does not attempt to infer or regenerate their random seed.</p>
+<p><code class="docutils literal notranslate"><span class="pre">failure.json</span></code> contains schema, failure type, named pass history, both
+comparison reports, localization scope, tolerances and environment versions.
+Each program bundle contains readable SSA, structured SSA, numeric input data,
+shape, dtype, strides, aliases, grid and symbols. The optional <code class="docutils literal notranslate"><span class="pre">previous/</span></code>
+bundle is the last program accepted before the failing pass. A generic replay
+uses an installed version with this API:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">python /tmp/nine-pass-failure/replay.py</span>
+</pre></div>
+</div>
+<p>The replay requires the same differing outputs, operation observations, trace
+alignment or execution exception. It is a reproducer for saved SSA, not an
+export of arbitrary executable Python pass code. A transform that raises or
+produces invalid SSA instead exports an explicitly non-replayable diagnostic
+snapshot. No pickled callables are written or loaded.</p>
+<p><code class="docutils literal notranslate"><span class="pre">reproducer</span></code> is the completed directory; <code class="docutils literal notranslate"><span class="pre">export_error</span></code> separately reports
+capture failures such as an existing directory or full disk. A partial export
+retains an <code class="docutils literal notranslate"><span class="pre">INCOMPLETE</span></code> marker and the replay refuses it. The original mismatch
+or exception is preserved; a capture error never converts failure into success.
+For direct comparison execution exceptions, these two fields are attached to
+the exception when capture is requested. Check <code class="docutils literal notranslate"><span class="pre">export_error</span></code> in automation.</p>
+<p><code class="docutils literal notranslate"><span class="pre">export_reproducer(directory,</span> <span class="pre">program,</span> <span class="pre">inputs,</span> <span class="pre">tensors=...,</span> <span class="pre">symbols=...,</span> <span class="pre">seed=...)</span></code>
+exports structured JSON, readable SSA, numeric NPZ inputs, shape/dtype/seed metadata,
+array strides and write permissions, and a replay script. Differential copies
+and loaded bundles preserve positive, negative and zero strides in independent
+storage. <code class="docutils literal notranslate"><span class="pre">load_reproducer</span></code> loads JSON and NumPy data with
+<code class="docutils literal notranslate"><span class="pre">allow_pickle=False</span></code>. Existing bundle files are never overwritten.
+The supplied case is preserved; automatic shape/operation minimization is not
+implemented. Multiple input names bound to the same array object retain that
+alias relationship in differential copies and loaded bundles. Distinct
+overlapping numeric views also preserve their shared storage, individual
+strides, dtypes and write permissions. Such cases use program-bundle schema 2:
+numeric byte buffers plus checked view offsets. Only bytes represented by
+the supplied views are copied; allocation gaps are zero-filled. Loading checks
+every accessible byte range before creating a view and rejects object dtypes.
+This preserves CPU view semantics without relaxing the scalar decomposition’s
+independent-output restriction or asserting GPU race freedom.</p>
+<p>Replay JSON preserves operation origins and the provenance catalog/history.
+Legacy schema-1 bundles without origins or provenance metadata remain readable;
+missing origins default to empty rather than inventing a transformation history.
+Ordinary independent-input bundles continue to use program-bundle schema 1.</p>
+</section>
+<section id="current-boundaries">
+<h2>Current boundaries<a class="headerlink" href="#current-boundaries" title="Link to this heading">#</a></h2>
+<p>The basic subset includes arithmetic, comparison, cast, selection, broadcasting,
+masked memory, sum/max/min reductions, structured control flow and program IDs.
+Direct <code class="docutils literal notranslate"><span class="pre">linalg.dot</span></code>/<code class="docutils literal notranslate"><span class="pre">linalg.matmul</span></code> and the exp/max/sum composition used for
+softmax are also implemented. Scalar matmul/transpose decompositions execute the
+actual SSA operations and region loops once per valid rank-2 output lane. This
+supports one output store in a single logical program and the bounded
+multi-program matmul contract described above. Scalar transpose remains limited
+to one program. The <code class="docutils literal notranslate"><span class="pre">TraceEvent.lane</span></code> field
+identifies the output coordinate; normal vector execution has <code class="docutils literal notranslate"><span class="pre">lane=None</span></code>.
+Inactive output lanes are never executed or written. This is a diagnostic CPU
+path, not a fast matrix multiplication implementation.</p>
+<p>Split-K scalar decomposition, computed matmul operands, extra value levels,
+overlapping storage and combinations with other output stores or atomic effects
+are not supported by the multi-program matmul path. Direct/undecomposed linalg
+operations retain their normal vector semantics. Atomics, indirect pointers,
+random-number operations, float8, jagged layouts and arbitrary external calls
+are not part of the validated interpreter subset. GPU warp/block scheduling,
+shared memory and race behavior are not simulated.</p>
+<p>The decomposition pass now derives a fixed or compound reduction extent through
+<code class="docutils literal notranslate"><span class="pre">shape.dim(lhs,</span> <span class="pre">-1)</span></code> from the arranged operand, instead of referring to an
+undefined fallback <code class="docutils literal notranslate"><span class="pre">k</span></code> symbol. The symbolic-K path is preserved. Invalid SSA
+from any pipeline still reports the original verification cause, with no
+fallback to the frontend program.</p>
+<p>CPU tests cannot establish agreement with A100 hardware or measure GPU speed.
+That requires the separate real-GPU differential run on matching kernels,
+inputs, layouts, dtypes, seeds and pass settings.</p>
+<p>Layout expressions represent positional call operands. Keyword arguments,
+including <code class="docutils literal notranslate"><span class="pre">**</span></code> expansion, are rejected during parsing rather than discarded.
+The interpreter’s integer-normalized <code class="docutils literal notranslate"><span class="pre">next_power_of_2</span></code> call and named padded
+shape bindings return zero for nonpositive extents and round positive extents
+upward. This agrees with the pinned Triton 3.1.0 integer utility for signed
+64-bit inputs; it does not specify physical GPU launch-block sizing.</p>
+</section>
+<section id="latest-validation-and-cpu-automation">
+<h2>Latest validation and CPU automation<a class="headerlink" href="#latest-validation-and-cpu-automation" title="Link to this heading">#</a></h2>
+<p>The current submission integrates upstream target architecture revision
+<code class="docutils literal notranslate"><span class="pre">22e74c3afe47e12ee29d7d0bcfaf1de8286f4560</span></code>. Its selected CPU suite passes
+799 tests with 15 actual GPU cases deselected in a NumPy-only environment.
+This includes platform profiles, target capabilities, memory/alias semantics,
+layout calls, expression semantics, and 29 extraction-geometry regressions.
+The default pipeline also checks <code class="docutils literal notranslate"><span class="pre">ssa.validate_target_capabilities</span></code>.</p>
+<p>Scalar matmul without user hooks or event filters can reuse the checked address map of an
+innermost extraction. Each internal tensor reference holds at most one map
+of at most 65536 logical elements. Array contents are read on every extraction;
+shape, stride, dtype, typed referenced symbols, extraction coordinates and actual compiled
+expression plans participate in the key. Shape proofs use the original symbol
+context, before address-coordinate overrides. Unproven integer operations,
+custom numeric objects and warning-sensitive paths retain ordinary evaluation.
+Callbacks, watches, custom handlers and event filters disable reuse.
+Ordinary trace collection with the built-in MemoryRecorder can reuse geometry.
+Only reads with the literal True mask share it; other masks and custom observer
+types retain ordinary evaluation. Numeric data and complete snapshots are still
+read afresh, and actual memory accesses are recorded on every operation.</p>
+<p>The initial geometry-cache revision measured 3.847–3.860 times the execution
+speed of its 90197b0 baseline on three selected small CPU matmuls, at a warm
+tracemalloc peak cost of 141–183 KB. The related-symbol follow-up measured another
+1.128–1.133 times the speed of the published c2c35ec baseline on the same
+three targets. All 33 timed conditions satisfy the predefined five-percent
+regression limit, and all 21 complete trace comparisons agree. The follow-up
+adds 168–2008 bytes of peak allocation; it does not reduce memory or process
+RSS. Different experiments’ speedup ratios must not be multiplied.</p>
+<p>On cache hits, typed relevant bindings and current compiled plans are still
+checked; integer interval construction occurs only on a miss. Trusted schemas
+retain expression identity keys. Only names referenced by shape/access
+expressions enter the binding key, while all mapping keys must be exact strings
+to preserve custom-key lookup effects. Removed bindings, custom numeric objects
+and recompiled plans remain covered. A preceding hit-path-only candidate failed
+its third-round 1.10-times target gate and remains rejected with all raw data.</p>
+<p>The current ordinary-tracing revision measures 2.380–2.388 times the CPU
+execution speed of a1ef123 on three traced matmul targets. All 42 timed
+conditions meet the five-percent regression limit, 21 complete trace pairs
+match, and warm/cold traced-target peaks meet the five-percent memory limit.
+The observed warm peak increases by 168–175 KB. Interactive callbacks and
+filtered debugging are outside this speedup claim. An inherited explanatory
+field in the as-run protocol contradicted the explicit trace targets; a
+separate prose erratum preserves the original file/hash and all numerical
+settings/results. This was a documentation correction during sampling, not
+a change to the measured source or acceptance thresholds.</p>
+<p>On the final geometry-cache computation source, a manual RTX 4090 D run passes
+all 15 existing actual GPU differential cases and three additional target-shape
+matmul checks with traced target-SSA execution. The latter compare emitted
+Triton GPU output, raw/target SSA and
+NumPy, preserve output guards and inputs, and confirm address-map reuse. Another
+137 geometry/layout/expression regressions pass with NumPy 1.26.4, Torch 2.6.0a0
+and Triton 3.1.0; these interpreter tests are not 137 GPU kernels. The run verifies
+203 frozen input files before and after execution. See the
+<a class="reference external" href="https://github.com/a962695448-rgb/ninetoothed/tree/df5c76f6ca2e71c053ebbb85731698db235de1a9/docs/validation/traced-geometry-20260918">fixed geometry evidence</a>
+for complete sources, limitations, initial failures and reproducible records.
+This establishes correctness for the listed cases, not a full repository GPU
+suite or GPU performance. The earlier 0706213 GPU evidence retains its own scope.</p>
+<p>The recorded A100 full suite of 835 passed and two multi-GPU skips belongs to
+older computation source <code class="docutils literal notranslate"><span class="pre">ed332733db28dbf16de06f166b16766760148958</span></code>. It was
+not rerun after integrating the new compiler/platform changes and must not be
+reported as hardware validation of the current combination. The current
+acceptance and compatibility reports distinguish these evidence scopes.</p>
+<p>The <code class="docutils literal notranslate"><span class="pre">CPU</span> <span class="pre">interpreter</span></code> workflow runs on ordinary GitHub-hosted Ubuntu runners
+for Python 3.10 and 3.12, including fork pull requests. Its checkout regression
+entry point rejects environments containing Torch or Triton, disables GPU
+visibility and third-party pytest plugin loading, and selects the documented
+interpreter/SSA test scope. It then builds the normal wheel and exercises the
+installed demo and standalone replay outside the checkout. JUnit results and
+dependency versions are retained as workflow artifacts.</p>
+<p>In a fresh environment without Torch or Triton, run from the repository root:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">python -m pip install -r requirements-cpu.txt</span>
+<span class="go">python scripts/run_cpu_tests.py --junitxml /tmp/nine-cpu-results.xml</span>
+</pre></div>
+</div>
+<p>These are CPU checks, not a replacement for the separate hardware differential
+suite. The wheel retains its existing Triton dependency metadata; the isolated
+installation uses the explicit override documented in <a class="reference internal" href="installation.html#cpu-wheel-install"><span class="std std-ref">CPU interpreter without GPU packages</span></a>.</p>
+</section>
+<section id="historical-validation-at-6ecce58">
+<h2>Historical validation at 6ecce58<a class="headerlink" href="#historical-validation-at-6ecce58" title="Link to this heading">#</a></h2>
+<p>The following records belong to an earlier implementation and are retained for
+traceability. They do not describe the current acceptance baseline above.</p>
+<p>That historical implementation was frozen in
+<code class="docutils literal notranslate"><span class="pre">6ecce58da28bb9709aa35fc6c25c1f361aff736f</span></code>. Its selected NumPy CPU suite passed
+307 tests, with 15 GPU cases deselected, in 32.68 seconds (exit 0). That
+environment contains neither Torch nor Triton, so this run does not cover the
+Torch adapter, real GPU execution or the entire repository suite.</p>
+<p>Earlier selected runs remain separate: <code class="docutils literal notranslate"><span class="pre">f35fb51</span></code> reported 1 failed, 294 passed
+and 15 deselected in 35.42 seconds because a metadata-string assertion matched
+an opcode retained in provenance; <code class="docutils literal notranslate"><span class="pre">56f091e</span></code> then passed 295 tests with 15
+deselected in 34.18 seconds. New single-program storage regressions first
+reported 8 failed and 4 passed; the corrected related combination passed 137.
+These development and frozen-run counts are not added together.</p>
+<p>A separate RTX 4090 run at the same computation commit passed 15 Triton
+GPU cases (nine programs, ten categories) and one scalar float32 CUDA dot
+probe. The CUDA case compares NumPy, frontend CPU, lowered SSA CPU and
+actual GPU output, with unchanged inputs and guards. It is one backend
+correctness probe, not a performance benchmark or a new independent program
+beyond the Triton matrix. At that historical checkpoint, newer A100, full-repository and multi-device
+runs were outside its evidence. Earlier A100 results did not validate those
+runtime, pass, emitter or provenance changes; the later matching A100 evidence
+is summarized in the current validation section above.</p>
+<p>Two earlier Sphinx attempts failed on missing matplotlib and then tkinter.
+The closeout defers Tk imports to the interactive visualization entry point;
+static documentation images use a headless backend. Build status and original
+logs are recorded separately from CPU and GPU validation in the acceptance
+notes and the interpreter_optimization_20260906 evidence directory.</p>
+</section>
+</section>
+
+
+                </article>
+              
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="build.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title">Ahead-of-Time Kernel Building</p>
+      </div>
+    </a>
+    <a class="right-next"
+       href="python_api.html"
+       title="next page">
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">Python API</p>
+      </div>
+      <i class="fa-solid fa-angle-right"></i>
+    </a>
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <dialog id="pst-secondary-sidebar-modal"></dialog>
+                <div id="pst-secondary-sidebar" class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+<div
+    id="pst-page-navigation-heading-2"
+    class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> On this page
+  </div>
+  <nav id="pst-page-toc-nav" class="page-toc" aria-labelledby="pst-page-navigation-heading-2">
+    <ul class="pst-show_toc_level nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#quick-start">Quick start</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#frontend-versus-backend-ssa">Frontend versus backend SSA</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#memory-and-control-flow">Memory and control flow</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#scalar-dot-across-output-tiles">Scalar dot across output tiles</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#tracing-extension-and-pass-debugging">Tracing, extension and pass debugging</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#explicit-ssa-provenance">Explicit SSA provenance</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#declared-result-correspondence">Declared result correspondence</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#replay-bundles">Replay bundles</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#current-boundaries">Current boundaries</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#latest-validation-and-cpu-automation">Latest validation and CPU automation</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#historical-validation-at-6ecce58">Historical validation at 6ecce58</a></li>
+</ul>
+  </nav></div>
+
+  <div class="sidebar-secondary-item">
+
+  <div class="tocsection sourcelink">
+    <a href="_sources/cpu_interpreter.rst.txt">
+      <i class="fa-solid fa-file-lines"></i> Show Source
+    </a>
+  </div>
+</div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+          </footer>
+        
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script defer src="_static/scripts/bootstrap.js?digest=a95f357e85573c9b56d5"></script>
+<script defer src="_static/scripts/pydata-sphinx-theme.js?digest=a95f357e85573c9b56d5"></script>
+
+  <footer class="bd-footer">
+<div class="bd-footer__inner bd-page-width">
+  
+    <div class="footer-items__start">
+      
+        <div class="footer-item">
+
+  <p class="copyright">
+    
+      © Copyright 2024, NineToothed Contributors.
+      <br/>
+    
+  </p>
+</div>
+      
+        <div class="footer-item">
+
+  <p class="sphinx-version">
+    Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 8.1.3.
+    <br/>
+  </p>
+</div>
+      
+    </div>
+  
+  
+  
+    <div class="footer-items__end">
+      
+        <div class="footer-item">
+<p class="theme-version">
+  <!-- # L10n: Setting the PST URL as an argument as this does not need to be localized -->
+  Built with the <a href="https://pydata-sphinx-theme.readthedocs.io/en/stable/index.html">PyData Sphinx Theme</a> 0.19.0.
+</p></div>
+      
+    </div>
+  
+</div>
+
+  </footer>
+  </body>
+</html>
