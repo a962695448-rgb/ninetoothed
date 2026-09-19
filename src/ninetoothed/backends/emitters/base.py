@@ -48,6 +48,7 @@ class EmitterTarget(ABC):
     vector_value_semantics: bool = False
     tir_value_semantics: bool = False
     native_block_matmul: bool = False
+    signed_division_rounds_to_zero: bool = False
     max_vector_numel: int | None = None
 
     def symbol(self, name: str) -> str:
@@ -90,6 +91,11 @@ class EmitterTarget(ABC):
         return operation.results[0].type
 
     def coerce_binary_args(self, operation, args, context):
+        del operation, context
+
+        return args
+
+    def coerce_dot_args(self, operation, args, context):
         del operation, context
 
         return args

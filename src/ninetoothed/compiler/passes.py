@@ -8,23 +8,28 @@ Pass execution is intentionally organized like a compiler pipeline:
 
 * hardware-independent passes canonicalize, analyze, and attach generic
   schedule intent to SSA;
-* backend-specific passes, registered from ``ninetoothed.backends``, select
+* language-specific passes, registered from ``ninetoothed.backends``, select
   schedules that are consumed by target emitters and launch planning.
+* platform passes validate capabilities and apply concrete target constraints.
 
 The pass registry is the public control point for default pipelines, custom
 pipelines, and deterministic target schedule selection.
 """
 
 from collections.abc import Callable, Sequence
-from dataclasses import dataclass, field
+from dataclasses import dataclass, field, replace
 from typing import Any, Mapping
 
 from ninetoothed.backends.core import Target, normalize_target
 from ninetoothed.compiler.layout import LayoutTransfer, analyze_layout_transfer
 from ninetoothed.compiler.reductions import analyze_reductions
 from ninetoothed.ir import ssa
+from ninetoothed.ir.provenance import ProvenancePass, record_pass, seed_origins
+from ninetoothed.targets import TargetContext, resolve_target_context
 
 HARDWARE_INDEPENDENT = "hardware_independent"
+LANGUAGE_SPECIFIC = "language_specific"
+PLATFORM_SPECIFIC = "platform_specific"
 BACKEND_SPECIFIC = "backend_specific"
 
 
@@ -48,6 +53,17 @@ class Context:
     tensors: tuple[Any, ...] = ()
     pass_options: Mapping[str, Mapping[str, Any]] = field(default_factory=dict)
     pipeline_spec: PipelineSpec | None = None
+    target: TargetContext | None = None
+
+    def __post_init__(self) -> None:
+        if self.target is None:
+            object.__setattr__(self, "target", resolve_target_context(self.backend))
+
+    @property
+    def resolved_target(self) -> TargetContext:
+        assert self.target is not None
+
+        return self.target
 
 
 @dataclass(frozen=True, kw_only=True)
@@ -141,9 +157,14 @@ class Registry:
             raw_doc = (probe.__doc__ or "").strip().splitlines()
             doc = raw_doc[0].strip() if raw_doc else ""
 
+        normalized_category = category or probe.category
+
+        if normalized_category == BACKEND_SPECIFIC:
+            normalized_category = LANGUAGE_SPECIFIC
+
         self._descriptors[pass_name] = Descriptor(
             name=pass_name,
-            category=category or probe.category,
+            category=normalized_category,
             phase=phase or probe.phase,
             factory=factory,
             supported_backends=backends,
@@ -170,6 +191,9 @@ class Registry:
         backend: Target | str | None = None,
     ) -> tuple[Descriptor, ...]:
         result = tuple(self._descriptors.values())
+
+        if category == BACKEND_SPECIFIC:
+            category = LANGUAGE_SPECIFIC
 
         if category is not None:
             result = tuple(
@@ -209,11 +233,12 @@ class Pipeline:
         self.spec = spec
 
     def run(self, program: ssa.Program, context: Context) -> ssa.Program:
-        current = ssa.verify_program(program)
+        current = seed_origins(ssa.verify_program(program))
         current = _with_metadata(current, pipeline_selection=self._pipeline_metadata())
 
         for pass_ in self.passes:
-            current = pass_.run(current, context)
+            before = current
+            current = record_pass(before, pass_.run(before, context), pass_.name)
             ssa.verify_program(current)
             current = _with_metadata(
                 current,
@@ -235,12 +260,18 @@ class Pipeline:
                 for descriptor in self.descriptors
                 if descriptor.category == HARDWARE_INDEPENDENT
             ),
-            BACKEND_SPECIFIC: tuple(
+            LANGUAGE_SPECIFIC: tuple(
                 descriptor.name
                 for descriptor in self.descriptors
-                if descriptor.category == BACKEND_SPECIFIC
+                if descriptor.category == LANGUAGE_SPECIFIC
+            ),
+            PLATFORM_SPECIFIC: tuple(
+                descriptor.name
+                for descriptor in self.descriptors
+                if descriptor.category == PLATFORM_SPECIFIC
             ),
         }
+        categories[BACKEND_SPECIFIC] = categories[LANGUAGE_SPECIFIC]
 
         return {
             "mode": self.spec.mode,
@@ -310,6 +341,7 @@ class DecomposeLinalg(Pass):
     phase = "canonicalization"
 
     def run(self, program: ssa.Program, context: Context) -> ssa.Program:
+        program = seed_origins(program)
         optimization = dict(program.metadata.get("optimization", {}))
 
         if optimization.get("preserve_linalg"):
@@ -321,18 +353,23 @@ class DecomposeLinalg(Pass):
             )
 
         value_types = _program_value_types(program)
+        provenance = ProvenancePass(program, self.name)
+        existing_names = set(value_types)
         blocks = tuple(
-            _decompose_linalg_block(block, value_types) for block in program.blocks
+            _decompose_linalg_block(block, value_types, provenance, existing_names)
+            for block in program.blocks
         )
 
-        return _replace_program(
-            program,
-            blocks=blocks,
-            metadata=dict(program.metadata)
-            | {
-                "linalg_decomposed": True,
-                "coarse_operator_nodes": False,
-            },
+        return provenance.finish(
+            _replace_program(
+                program,
+                blocks=blocks,
+                metadata=dict(program.metadata)
+                | {
+                    "linalg_decomposed": True,
+                    "coarse_operator_nodes": False,
+                },
+            )
         )
 
 
@@ -376,10 +413,10 @@ class SelectSchedule(Pass):
 
 
 class OptimizeSchedule(Pass):
-    """Contract for backend-specific schedule optimization passes."""
+    """Contract for language-specific schedule optimization passes."""
 
     name = "ssa.optimize_schedule"
-    category = BACKEND_SPECIFIC
+    category = LANGUAGE_SPECIFIC
     phase = "optimization"
 
     def run(self, program: ssa.Program, context: Context) -> ssa.Program:
@@ -510,6 +547,24 @@ class OptimizeSchedule(Pass):
         raise NotImplementedError
 
 
+class ValidateTargetCapabilities(Pass):
+    """Reject IR capabilities explicitly unsupported by a concrete target."""
+
+    name = "ssa.validate_target_capabilities"
+    category = PLATFORM_SPECIFIC
+    phase = "target_legality"
+
+    def run(self, program: ssa.Program, context: Context) -> ssa.Program:
+        required = _required_capabilities(program)
+        report = context.resolved_target.validate_capabilities(required)
+
+        return _with_metadata(
+            program,
+            required_capabilities=required,
+            target_capabilities=report,
+        )
+
+
 def create_default_registry() -> Registry:
     registry = Registry()
     registry.register(Canonicalize, tags=("generic", "required"))
@@ -517,6 +572,10 @@ def create_default_registry() -> Registry:
     registry.register(AnalyzeEffects, tags=("generic", "analysis", "required"))
     registry.register(SelectSchedule, tags=("schedule",))
     _register_backend_passes(registry)
+    registry.register(
+        ValidateTargetCapabilities,
+        tags=("target", "capability", "legality", "required"),
+    )
 
     return registry
 
@@ -589,6 +648,9 @@ def lower_for_target(
     program: ssa.Program,
     *,
     backend: Target | str | None,
+    platform: str | None = None,
+    compute_arch: str | None = None,
+    target_context: TargetContext | None = None,
     compiler_options: Mapping[str, Any] | None = None,
     kernel_metadata: Mapping[str, Any] | None = None,
     tensors: tuple[Any, ...] = (),
@@ -602,6 +664,18 @@ def lower_for_target(
 ) -> ssa.Program:
     """Run an SSA pass pipeline for a backend."""
     backend_name = normalize_target(backend)
+    target_context = target_context or resolve_target_context(
+        backend_name,
+        platform=platform,
+        compute_arch=compute_arch,
+    )
+
+    if target_context.backend != backend_name:
+        raise ValueError(
+            f"Target context backend `{target_context.backend.value}` does not match "
+            f"pass backend `{backend_name.value}`."
+        )
+
     registry = _default_registry(pass_registry)
     compiler_options = dict(compiler_options or {})
     kernel_metadata = dict(kernel_metadata or {})
@@ -614,17 +688,23 @@ def lower_for_target(
     if isinstance(pass_pipeline, Pipeline):
         context = Context(
             backend=backend_name,
+            target=target_context,
             compiler_options=compiler_options,
             kernel_metadata=kernel_metadata,
             tensors=tensors,
             pass_options=explicit_pass_options,
         )
 
-        lowered = pass_pipeline.run(program, context)
+        lowered = _ensure_target_capabilities(
+            pass_pipeline.run(program, context), context
+        )
 
         return _with_metadata(
             lowered,
             target_backend=backend_name.value,
+            target_platform=target_context.platform.name,
+            target_compute_arch=target_context.compute_arch,
+            target=target_context.as_metadata(),
             lowering_stage="scheduled-ssa",
         )
 
@@ -658,6 +738,7 @@ def lower_for_target(
     )
     context = Context(
         backend=backend_name,
+        target=target_context,
         compiler_options=compiler_options,
         kernel_metadata=kernel_metadata,
         tensors=tensors,
@@ -668,13 +749,35 @@ def lower_for_target(
     if pipeline is None or merged_pass_options != default_pass_options:
         pipeline = build(spec, backend=backend_name, registry=registry)
 
-    lowered = pipeline.run(program, context)
+    lowered = _ensure_target_capabilities(pipeline.run(program, context), context)
 
     return _with_metadata(
         lowered,
         target_backend=backend_name.value,
+        target_platform=target_context.platform.name,
+        target_compute_arch=target_context.compute_arch,
+        target=target_context.as_metadata(),
         lowering_stage="scheduled-ssa",
     )
+
+
+def validate_for_target(
+    program: ssa.Program,
+    *,
+    backend: Target | str,
+    target_context: TargetContext,
+    compiler_options: Mapping[str, Any],
+    kernel_metadata: Mapping[str, Any],
+) -> ssa.Program:
+    """Revalidate final SSA at a backend boundary without rerunning optimizations."""
+    context = Context(
+        backend=normalize_target(backend),
+        target=target_context,
+        compiler_options=compiler_options,
+        kernel_metadata=kernel_metadata,
+    )
+
+    return _ensure_target_capabilities(program, context)
 
 
 def _normalize_pass_factory(
@@ -697,6 +800,12 @@ def _normalize_pipeline_spec(
         return default_spec(backend, registry=registry)
 
     if isinstance(spec, PipelineSpec):
+        spec = PipelineSpec(
+            passes=_ensure_target_capability_pass(spec.passes),
+            mode=spec.mode,
+            pass_options=spec.pass_options,
+            reason=spec.reason,
+        )
         _validate_passes(spec.passes, backend, registry)
 
         return spec
@@ -708,7 +817,7 @@ def _normalize_pipeline_spec(
             passes = _default_pass_names(backend)
 
         normalized = PipelineSpec(
-            passes=tuple(str(name) for name in passes),
+            passes=_ensure_target_capability_pass(tuple(str(name) for name in passes)),
             mode=str(spec.get("mode", "custom")),
             pass_options=spec.get("pass_options", {}),
             reason=spec.get("reason"),
@@ -718,7 +827,7 @@ def _normalize_pipeline_spec(
         return normalized
 
     normalized = PipelineSpec(
-        passes=tuple(str(name) for name in spec),
+        passes=_ensure_target_capability_pass(tuple(str(name) for name in spec)),
         mode="custom",
         reason="explicit custom pass sequence",
     )
@@ -748,11 +857,73 @@ def _default_pass_names(backend: Target) -> tuple[str, ...]:
         "ssa.select_schedule",
         _backend_optimize_pass_name(backend),
         "ssa.decompose_linalg",
+        "ssa.validate_target_capabilities",
     )
 
 
 def _backend_optimize_pass_name(backend: Target) -> str:
     return f"ssa.{backend.value}.optimize_schedule"
+
+
+def _ensure_target_capability_pass(passes: tuple[str, ...]) -> tuple[str, ...]:
+    name = ValidateTargetCapabilities.name
+
+    return tuple(pass_name for pass_name in passes if pass_name != name) + (name,)
+
+
+def _ensure_target_capabilities(
+    program: ssa.Program,
+    context: Context,
+) -> ssa.Program:
+    validated = ValidateTargetCapabilities().run(program, context)
+    ssa.verify_program(validated)
+    pass_trace = tuple(validated.metadata.get("pass_trace", ()))
+
+    if not pass_trace or pass_trace[-1] != ValidateTargetCapabilities.name:
+        pass_trace += (ValidateTargetCapabilities.name,)
+
+    return _with_metadata(
+        validated,
+        pass_trace=pass_trace,
+    )
+
+
+def _required_capabilities(program: ssa.Program) -> tuple[str, ...]:
+    required = set(_capability_values(program.metadata.get("required_capabilities")))
+
+    for type_ in _program_value_types(program).values():
+        dtype = str(type_.dtype or "").lower()
+
+        if dtype.startswith("float8") or dtype.startswith("fp8"):
+            required.add("dtype.fp8")
+
+    def visit_block(block: ssa.Block) -> None:
+        for operation in block.operations:
+            required.update(
+                _capability_values(operation.attrs.get("required_capabilities"))
+            )
+
+            if operation.opcode in {"arith.pow", "math.pow"}:
+                required.add("math.pow")
+
+            if operation.opcode == "reduce.min":
+                required.add("reduction.min")
+
+            for region in operation.regions:
+                visit_block(region)
+
+    for block in program.blocks:
+        visit_block(block)
+    return tuple(sorted(required))
+
+
+def _capability_values(value: Any) -> tuple[str, ...]:
+    if value is None:
+        return ()
+
+    if isinstance(value, str):
+        return (value,)
+    return tuple(str(item) for item in value)
 
 
 def _deduplicate_candidates(
@@ -953,6 +1124,8 @@ def _map_operation(operation: ssa.Operation, fn) -> ssa.Operation:
 def _decompose_linalg_block(
     block: ssa.Block,
     parent_value_types: Mapping[str, ssa.Type],
+    provenance: ProvenancePass,
+    existing_names: set[str],
 ) -> ssa.Block:
     value_types = dict(parent_value_types)
     value_types.update({arg.name: arg.type for arg in block.args})
@@ -960,9 +1133,6 @@ def _decompose_linalg_block(
     for operation in block.operations:
         value_types.update({result.name: result.type for result in operation.results})
 
-    existing_names = {
-        value.name for operation in block.operations for value in operation.results
-    } | {arg.name for arg in block.args}
     temp_index = _next_temp_index(existing_names)
     transposes = {
         operation.results[0].name: operation
@@ -1034,36 +1204,45 @@ def _decompose_linalg_block(
                 ),
             )
             operations.extend(
-                (
-                    ssa.Operation(
-                        opcode="index.offset",
-                        operands=(output,),
-                        results=(col,),
-                        attrs={"dim": 0, "decomposition": "transpose"},
+                provenance.derive(
+                    (
+                        ssa.Operation(
+                            opcode="index.offset",
+                            operands=(output,),
+                            results=(col,),
+                            attrs={"dim": 0, "decomposition": "transpose"},
+                        ),
+                        ssa.Operation(
+                            opcode="index.offset",
+                            operands=(output,),
+                            results=(row,),
+                            attrs={"dim": 1, "decomposition": "transpose"},
+                        ),
+                        ssa.Operation(
+                            opcode="tensor.extract",
+                            operands=(source, row.name, col.name),
+                            results=(value,),
+                            attrs={"decomposition": "transpose", "source": True},
+                        ),
+                        ssa.Operation(
+                            opcode="mem.store",
+                            operands=(value.name, output),
+                            attrs=dict(operation.attrs)
+                            | {
+                                "target": operation.attrs.get("target", output),
+                                "decomposition": "transpose",
+                            },
+                        ),
                     ),
-                    ssa.Operation(
-                        opcode="index.offset",
-                        operands=(output,),
-                        results=(row,),
-                        attrs={"dim": 1, "decomposition": "transpose"},
-                    ),
-                    ssa.Operation(
-                        opcode="tensor.extract",
-                        operands=(source, row.name, col.name),
-                        results=(value,),
-                        attrs={"decomposition": "transpose", "source": True},
-                    ),
-                    ssa.Operation(
-                        opcode="mem.store",
-                        operands=(value.name, output),
-                        attrs=dict(operation.attrs)
-                        | {
-                            "target": operation.attrs.get("target", output),
-                            "decomposition": "transpose",
-                        },
-                    ),
+                    (transpose, operation),
+                    relation="split",
                 )
             )
+            # The generated extract is one scalar lane of the original tile.
+
+            if transpose.results[0].type.kind == "tensor":
+                provenance.map_result(transpose, operations[-2], projection="lane")
+
             continue
 
         if (
@@ -1073,29 +1252,55 @@ def _decompose_linalg_block(
         ):
             matmul = matmuls[operation.operands[0]]
             operations.extend(
-                _decompose_matmul_store(
-                    matmul,
-                    operation,
-                    value_types,
-                    existing_names,
-                    temp_index,
-                )[0]
+                provenance.derive(
+                    _decompose_matmul_store(
+                        matmul,
+                        operation,
+                        value_types,
+                        existing_names,
+                        temp_index,
+                    )[0],
+                    (matmul, operation),
+                    relation="split",
+                    recursive=True,
+                )
             )
+            # Complete outputs use lane equality. Inner checkpoints instead use
+            # independent formulas over the original matmul's captured inputs.
+
+            if (
+                matmul.results[0].type.kind == "tensor"
+                and matmul.results[0].type.dtype == operations[-2].results[0].type.dtype
+            ):
+                provenance.map_result(matmul, operations[-2], projection="lane")
+
+                for target, projection in zip(
+                    operations[-2].regions[0].operations[:4],
+                    ("matmul_lhs", "matmul_rhs", "matmul_term", "matmul_prefix"),
+                ):
+                    provenance.map_result(matmul, target, projection=projection)
+
             temp_index = _next_temp_index(existing_names)
             continue
 
         regions = tuple(
-            _decompose_linalg_block(region, value_types) for region in operation.regions
+            _decompose_linalg_block(region, value_types, provenance, existing_names)
+            for region in operation.regions
         )
-        operations.append(
-            ssa.Operation(
-                opcode=operation.opcode,
-                operands=operation.operands,
-                results=operation.results,
-                attrs=operation.attrs,
-                regions=regions,
+
+        if all(
+            mapped is original for mapped, original in zip(regions, operation.regions)
+        ):
+            operations.append(operation)
+        else:
+            operations.extend(
+                provenance.derive((replace(operation, regions=regions),), (operation,))
             )
-        )
+
+    if len(operations) == len(block.operations) and all(
+        mapped is original for mapped, original in zip(operations, block.operations)
+    ):
+        return block
     return ssa.Block(name=block.name, args=block.args, operations=tuple(operations))
 
 
@@ -1132,9 +1337,30 @@ def _decompose_matmul_store(
     product, temp_index = _fresh_value(existing_names, temp_index, scalar_type)
     acc_next, temp_index = _fresh_value(existing_names, temp_index, scalar_type)
     acc_result, temp_index = _fresh_value(existing_names, temp_index, scalar_type)
+    # Fixed/compound K extents are not SSA symbols. Obtain the real arranged
+    # operand extent instead of introducing an undefined fallback name `k`.
+    lhs_type = value_types.get(lhs)
+    k_extent = None if lhs_type is None else _shape_dim(lhs_type.shape, -1)
+    bound_operations = ()
+    k_operand = k
+
+    if k_extent is not None and not str(k_extent).isidentifier():
+        bound, temp_index = _fresh_value(
+            existing_names, temp_index, ssa.Type(kind="index", dtype="int64")
+        )
+        bound_operations = (
+            ssa.Operation(
+                opcode="shape.dim",
+                operands=(lhs,),
+                results=(bound,),
+                attrs={"dim": -1},
+            ),
+        )
+        k_operand = bound.name
+
     loop = ssa.Operation(
         opcode="scf.for",
-        operands=(zero.name, k, one.name, acc_init.name),
+        operands=(zero.name, k_operand, one.name, acc_init.name),
         results=(acc_result,),
         attrs={
             "induction": kk.name,
@@ -1148,7 +1374,7 @@ def _decompose_matmul_store(
             "decomposition": "matmul",
             "m": m,
             "n": n,
-            "k": k,
+            "k": str(k_extent) if k_extent is not None else k,
         },
         regions=(
             ssa.Block(
@@ -1191,13 +1417,21 @@ def _decompose_matmul_store(
                 opcode="index.offset",
                 operands=(output,),
                 results=(row,),
-                attrs={"dim": 0, "decomposition": "matmul"},
+                attrs={
+                    "dim": 0,
+                    "decomposition": "matmul",
+                    "coordinate_space": "value",
+                },
             ),
             ssa.Operation(
                 opcode="index.offset",
                 operands=(output,),
                 results=(col,),
-                attrs={"dim": 1, "decomposition": "matmul"},
+                attrs={
+                    "dim": 1,
+                    "decomposition": "matmul",
+                    "coordinate_space": "value",
+                },
             ),
             ssa.Operation(
                 opcode="arith.constant",
@@ -1214,6 +1448,7 @@ def _decompose_matmul_store(
                 results=(acc_init,),
                 attrs={"value": 0.0, "decomposition": "matmul"},
             ),
+            *bound_operations,
             loop,
             ssa.Operation(
                 opcode="mem.store",
@@ -1222,6 +1457,7 @@ def _decompose_matmul_store(
                 | {
                     "target": store.attrs.get("target", output),
                     "decomposition": "matmul",
+                    "matmul_operands": (lhs, rhs),
                 },
             ),
         ),
