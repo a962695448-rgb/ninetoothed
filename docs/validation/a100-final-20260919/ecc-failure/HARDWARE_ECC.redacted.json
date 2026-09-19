@@ -1,0 +1,22 @@
+{
+  "ecc": {
+    "command": [
+      "nvidia-smi",
+      "-q",
+      "-d",
+      "ECC,PAGE_RETIREMENT,ROW_REMAPPER"
+    ],
+    "returncode": 0,
+    "stdout": "\n==============NVSMI LOG==============\n\nTimestamp                                 : Sat Sep 19 10:40:09 2026\nDriver Version                            : 550.127.05\nCUDA Version                              : 12.4\n\nAttached GPUs                             : 1\nGPU 00000000:00:08.0\n    ECC Mode\n        Current                           : Enabled\n        Pending                           : Enabled\n    ECC Errors\n        Volatile\n            SRAM Correctable              : 0\n            SRAM Uncorrectable Parity     : 0\n            SRAM Uncorrectable SEC-DED    : 0\n            DRAM Correctable              : 4\n            DRAM Uncorrectable            : 24\n        Aggregate\n            SRAM Correctable              : 0\n            SRAM Uncorrectable Parity     : 0\n            SRAM Uncorrectable SEC-DED    : 0\n            DRAM Correctable              : 195936\n            DRAM Uncorrectable            : 429311\n            SRAM Threshold Exceeded       : No\n        Aggregate Uncorrectable SRAM Sources\n            SRAM L2                       : 0\n            SRAM SM                       : 0\n            SRAM Microcontroller          : 0\n            SRAM PCIE                     : 0\n            SRAM Other                    : 0\n    Retired Pages\n        Single Bit ECC                    : N/A\n        Double Bit ECC                    : N/A\n        Pending Page Blacklist            : N/A\n    Remapped Rows\n        Correctable Error                 : 0\n        Uncorrectable Error               : 8\n        Pending                           : No\n        Remapping Failure Occurred        : Yes\n        Bank Remap Availability Histogram\n            Max                           : 639 bank(s)\n            High                          : 0 bank(s)\n            Partial                       : 0 bank(s)\n            Low                           : 0 bank(s)\n            None                          : 1 bank(s)\n\n",
+    "stderr": ""
+  },
+  "kernel": {
+    "command": [
+      "dmesg",
+      "--ctime"
+    ],
+    "returncode": 0,
+    "stdout": "[Sat Sep 19 10:11:09 2026] systemd[1]: systemd 249.11-0ubuntu3.11 running in system mode (+PAM +AUDIT +SELINUX +APPARMOR +IMA +SMACK +SECCOMP +GCRYPT +GNUTLS +OPENSSL +ACL +BLKID +CURL +ELFUTILS +FIDO2 +IDN2 -IDN +IPTC +KMOD +LIBCRYPTSETUP +LIBFDISK +PCRE2 -PWQUALITY -P11KIT -QRENCODE +BZIP2 +LZ4 +XZ +ZLIB +ZSTD -XKBCOMMON +UTMP +SYSVINIT default-hierarchy=unified)\n[Sat Sep 19 10:11:11 2026] NVRM: loading NVIDIA UNIX x86_64 Kernel Module  550.127.05  Tue Oct  8 03:22:07 UTC 2024\n[Sat Sep 19 10:37:02 2026] NVRM: GPU at PCI:0000:00:08: GPU-[redacted]\n[Sat Sep 19 10:37:02 2026] NVRM: GPU Board Serial Number: [redacted]\n[Sat Sep 19 10:37:02 2026] NVRM: Xid (PCI:0000:00:08): 48, pid='<unknown>', name=<unknown>, An uncorrectable double bit error (DBE) has been detected on GPU in the framebuffer at physAddr 0x1d8d4dd80 partition 5, subpartition 1.\n[Sat Sep 19 10:37:02 2026] NVRM: Xid (PCI:0000:00:08): 64, pid='<unknown>', name=<unknown>, Row Remapper Error: (0x00000001d8d4dd80) - All reserved rows for bank are remapped\n[Sat Sep 19 10:37:02 2026] NVRM: Xid (PCI:0000:00:08): 94, pid='<unknown>', name=<unknown>, Contained: SM (0x1). RST: No, D-RST: No\n[Sat Sep 19 10:37:02 2026] NVRM: Xid (PCI:0000:00:08): 94, pid='<unknown>', name=<unknown>, Ch 0000000b\n[Sat Sep 19 10:37:03 2026] NVRM: Xid (PCI:0000:00:08): 94, pid='<unknown>', name=<unknown>, Ch 0000000c\n[Sat Sep 19 10:37:03 2026] NVRM: Xid (PCI:0000:00:08): 94, pid='<unknown>', name=<unknown>, Ch 0000000d\n[Sat Sep 19 10:37:03 2026] NVRM: Xid (PCI:0000:00:08): 94, pid='<unknown>', name=<unknown>, Ch 0000000e\n[Sat Sep 19 10:37:03 2026] NVRM: Xid (PCI:0000:00:08): 94, pid='<unknown>', name=<unknown>, Ch 0000000f\n[Sat Sep 19 10:37:03 2026] NVRM: Xid (PCI:0000:00:08): 94, pid='<unknown>', name=<unknown>, Ch 00000010\n[Sat Sep 19 10:37:03 2026] NVRM: Xid (PCI:0000:00:08): 94, pid='<unknown>', name=<unknown>, Ch 00000011\n[Sat Sep 19 10:37:03 2026] NVRM: Xid (PCI:0000:00:08): 94, pid='<unknown>', name=<unknown>, Ch 00000012",
+    "stderr": ""
+  }
+}

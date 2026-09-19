@@ -1,0 +1,10 @@
+{
+  "source_commit": "a86bea9d32a43e122322acd52c0168b19682ffa2",
+  "source_blobs_verified": 203,
+  "frozen_files": 209,
+  "package_bytes": 508236,
+  "package_sha256": "312aae21404ffb586dfcd0284e9302e334bbfb0fcdc3625927820de23c186415",
+  "syntax_check": "PASS",
+  "zip_roundtrip_sha_check": "PASS",
+  "a100_execution": "NOT_RUN_NO_AVAILABLE_A100"
+}

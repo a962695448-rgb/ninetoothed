@@ -1,0 +1,6 @@
+{
+  "initial_failure": "64-bit driver libcuda.so.1 exists, linker name libcuda.so missing; only i386 linker name available",
+  "repair": "task-local libcuda.so and libcuda.so.1 symlinks to existing 64-bit driver; use TRITON_LIBCUDA_PATH and LD_LIBRARY_PATH",
+  "source_changes": false,
+  "initial_full_suite": "interrupted after confirmed environmental linker failure; retained as failed attempt"
+}

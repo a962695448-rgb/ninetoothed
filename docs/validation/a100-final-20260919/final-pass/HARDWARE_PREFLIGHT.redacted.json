@@ -1,0 +1,12 @@
+{
+  "status": "PASS",
+  "memory_bytes": 32212254720,
+  "patterns": [
+    165,
+    90
+  ],
+  "seconds": 0.7123172739999859,
+  "before": "NVIDIA A100-SXM4-40GB, GPU-[redacted], 0, 0\n",
+  "after": "NVIDIA A100-SXM4-40GB, GPU-[redacted], 0, 0\n",
+  "scope": "30 GiB two-pattern GPU memory smoke check, not comprehensive hardware certification"
+}

@@ -1,0 +1,17 @@
+[
+  {
+    "published": "ecc-failure/HARDWARE_ECC.redacted.json",
+    "original_sha256": "5f3b4f25a6b9d00144ea31624946548b54f5581b84bd117aa55b4f5dbf0eb37c",
+    "omitted": "GPU UUID and board serial only; original stored locally"
+  },
+  {
+    "published": "final-pass/HARDWARE_PREFLIGHT.redacted.json",
+    "original_sha256": "1999c487d5c5776ae8c95e5e6a280e0cdfab432c7401d448b6d4eb54b9971441",
+    "omitted": "GPU UUID and board serial only; original stored locally"
+  },
+  {
+    "published": "final-pass/HARDWARE_AFTER.txt",
+    "original_sha256": "7bc8fc8ad8418941244af1cacbe2304283c4621d4976b04a22df534ec8415977",
+    "omitted": "GPU UUID and board serial only; original stored locally"
+  }
+]

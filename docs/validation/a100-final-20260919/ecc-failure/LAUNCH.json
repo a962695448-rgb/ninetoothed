@@ -1,0 +1,7 @@
+{
+  "pid": 3051,
+  "started_utc": "2026-09-19T02:19:37.670021+00:00",
+  "input_files": 209,
+  "environment_repair": "task-local 64-bit libcuda linker names; original driver unchanged",
+  "source_commit": "a86bea9d32a43e122322acd52c0168b19682ffa2"
+}

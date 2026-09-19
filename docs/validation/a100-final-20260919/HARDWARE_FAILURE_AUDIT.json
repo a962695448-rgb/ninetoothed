@@ -1,0 +1,21 @@
+{
+  "status": "INCOMPLETE_HARDWARE_FAILURE",
+  "source_commit": "a86bea9d32a43e122322acd52c0168b19682ffa2",
+  "formal_gpu": "PASS 15/15",
+  "traced_targets": "PASS 3/3",
+  "full_suite": {
+    "collected": 1208,
+    "passed": 111,
+    "skipped_multi_gpu": 2,
+    "failed_call": 1,
+    "setup_errors": 1094
+  },
+  "all_failures_contain_uncorrectable_ecc": true,
+  "frozen_files_verified": 209,
+  "action": "Tests stopped; raw evidence recovered and verified; awaiting platform migration to a healthy A100",
+  "xids": [
+    48,
+    64,
+    94
+  ]
+}

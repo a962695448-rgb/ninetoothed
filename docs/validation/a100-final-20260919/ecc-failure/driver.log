@@ -1,0 +1,4 @@
+gpu-differential 0 timeout False
+traced-targets 0 timeout False
+full-suite 1 timeout False
+{"status": "FAIL", "files": 11, "bytes": 7324136, "sha256": "6e427b1d0b8d791c078c7578da0ed5078864e316282ccbbf7a09977163bc1e82", "gzip_bytes": 202495, "gzip_sha256": "1900cb445d5188a5ba32f8dcf1b672e62e2549e5b4376c25063d397fccb8ffb3", "base64_characters": 269996, "parts": [{"name": "A100_EXPORT_PART_00.txt", "characters": 269996, "sha256": "4591d85185273df7c8ebb979b619688fd3ee3bdbcd1cb38b5f2b582143d222ea"}]}

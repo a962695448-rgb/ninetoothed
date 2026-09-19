@@ -1,0 +1,16 @@
+{
+  "status": "PASS",
+  "files": 11,
+  "bytes": 1711669,
+  "sha256": "eb8adb6afedcc7447b782708eb01b987514523524090eb2c889785a6089dd486",
+  "gzip_bytes": 139147,
+  "gzip_sha256": "c83be1bfb0f9f5fc2d5ff5e951f769ea8220d85577c35dbe18bd9bca5125da6b",
+  "base64_characters": 185532,
+  "parts": [
+    {
+      "name": "A100_EXPORT_PART_00.txt",
+      "characters": 185532,
+      "sha256": "f5198b288362f41ef4a4e9e65df3e0b5fc30b3fc2c773691fe27c777292d7851"
+    }
+  ]
+}

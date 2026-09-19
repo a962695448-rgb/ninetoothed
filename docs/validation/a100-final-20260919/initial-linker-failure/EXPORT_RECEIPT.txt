@@ -1,0 +1,16 @@
+{
+  "status": "FAIL",
+  "files": 10,
+  "bytes": 868669,
+  "sha256": "e980fe11cce3a11d0e29b672233f3a076a2ea7753c9512941d177da4122890fc",
+  "gzip_bytes": 60375,
+  "gzip_sha256": "8e82e3b30e96d1ee6ada46c5c887c947147c7e7d130d77f5273657f961067286",
+  "base64_characters": 80500,
+  "parts": [
+    {
+      "name": "A100_EXPORT_PART_00.txt",
+      "characters": 80500,
+      "sha256": "0d6a1ff26d5770daafbc8fbb2b1e53c764ee98699043dd9dbbb6912bff42a154"
+    }
+  ]
+}

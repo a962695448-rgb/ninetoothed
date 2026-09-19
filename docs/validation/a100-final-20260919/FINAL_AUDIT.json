@@ -1,0 +1,23 @@
+{
+  "status": "AUDIT_PASS",
+  "source_commit": "a86bea9d32a43e122322acd52c0168b19682ffa2",
+  "device": "NVIDIA A100-SXM4-40GB",
+  "collected": 1208,
+  "counts": {
+    "passed": 1206,
+    "skipped": 2
+  },
+  "skips": [
+    {
+      "nodeid": "tests/test_aot.py::test_add[True-45327-dtype0-bf16-cuda]",
+      "reason": "('/root/a100-final-20260919-migrated/source/tests/test_aot.py', 52, 'Skipped: multi-device testing requires at least 2 devices')"
+    },
+    {
+      "nodeid": "tests/test_built_artifact_reload.py::test_triton_aot_handle_is_reusable_across_cuda_contexts",
+      "reason": "('/root/a100-final-20260919-migrated/source/tests/test_built_artifact_reload.py', 74, 'Skipped: Triton multi-context testing requires at least 2 CUDA devices')"
+    }
+  ],
+  "formal_gpu_cases": 15,
+  "traced_targets": 3,
+  "frozen_files": 209
+}
