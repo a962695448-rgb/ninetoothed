@@ -1008,11 +1008,18 @@ and Triton 3.1.0; these interpreter tests are not 137 GPU kernels. The run verif
 for complete sources, limitations, initial failures and reproducible records.
 This establishes correctness for the listed cases, not a full repository GPU
 suite or GPU performance. The earlier 0706213 GPU evidence retains its own scope.</p>
-<p>The recorded A100 full suite of 835 passed and two multi-GPU skips belongs to
-older computation source <code class="docutils literal notranslate"><span class="pre">ed332733db28dbf16de06f166b16766760148958</span></code>. It was
-not rerun after integrating the new compiler/platform changes and must not be
-reported as hardware validation of the current combination. The current
-acceptance and compatibility reports distinguish these evidence scopes.</p>
+<p>The final computation source <code class="docutils literal notranslate"><span class="pre">a86bea9</span></code> has now passed the full repository
+A100-SXM4-40GB suite: 1206 passed and two multi-GPU skips in 1431.71 seconds.
+All 1208 collected test IDs match the per-phase outcomes and JUnit results;
+209 frozen input files remain unchanged. The separate 15 actual GPU differential
+cases and three traced target matmuls pass as well. The 15 cases overlap the
+full suite and are not added to its count. This is correctness evidence, not a
+GPU speedup measurement. A missing driver linker name and an uncorrectable ECC
+failure on the first physical GPU are preserved as separate failed attempts;
+the successful full run followed migration to another A100 with zero
+uncorrectable ECC counters. See the <a class="reference external" href="https://github.com/a962695448-rgb/ninetoothed/tree/6ea3cb3c7b9724a45625d07e33c48540ed6c8fd2/docs/validation/a100-final-20260919">final A100 evidence</a>.</p>
+<p>The historical A100 suite of 835 passed and two multi-GPU skips still belongs
+to <code class="docutils literal notranslate"><span class="pre">ed332733db28dbf16de06f166b16766760148958</span></code> and is not added to the new run.</p>
 <p>The <code class="docutils literal notranslate"><span class="pre">CPU</span> <span class="pre">interpreter</span></code> workflow runs on ordinary GitHub-hosted Ubuntu runners
 for Python 3.10 and 3.12, including fork pull requests. Its checkout regression
 entry point rejects environments containing Torch or Triton, disables GPU
