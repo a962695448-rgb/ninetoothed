@@ -1,0 +1,20 @@
+{
+  "base": "22e74c3afe47e12ee29d7d0bcfaf1de8286f4560",
+  "prior_feature": "3011b3fc5a9b086feae59525ac81ba3781e7640e",
+  "upstream": "7ffdab8a9ae5a1da03ec2e7359a2199a4475a142",
+  "merged_tree": "01becd0e737d49b2661ccda55c087e4588a2819c",
+  "merged_commit": "8c0c9bbc796ade27fb84fdb62b2fdeb40e666936",
+  "method": "git merge-tree --write-tree --merge-base=<base> <prior_feature> <upstream>",
+  "conflicts": 0,
+  "changed_files": 8,
+  "frozen_files": 205,
+  "cpu": "799 passed, 15 deselected in 28.84s",
+  "targeted": "96 passed, 1 deselected, 1 warning in 2.39s",
+  "new_upstream_alias_tests": 40,
+  "targeted_deselected": "test_cuda_tensor_is_rejected_by_cpu_interpreter; needs CUDA hardware",
+  "targeted_warning": "Torch sparse invariant checks warning; rejection assertion passed",
+  "style": "Ruff check, Ruff format --check (171 files), contribution style and diff --check passed",
+  "sphinx": "Strict -W build passed after pointing at current source and making Torch dependency available",
+  "fresh_gpu_validation": false,
+  "source_hashes_unchanged_during_tests": true
+}

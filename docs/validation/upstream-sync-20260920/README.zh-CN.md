@@ -1,0 +1,11 @@
+# 上游整数dtype别名同步验证
+
+将官方#218合入当前功能分支，基线、双父提交和受测树见SUMMARY.json。Git三方合并无冲突；compiler/passes.py保留项目的ProvenancePass/record_pass/seed_origins，并接受上游normalize_dtype调用。其余7项更新与上游一致。
+
+本轮NumPy-only回归799通过/15实际GPU用例排除；Torch CPU相关回归96通过/1实际CUDA输入拒绝用例排除，包含上游新增40项别名测试。两套测试有重叠，不相加为独立测试总数。唯一警告为Torch稀疏张量默认不做invariant检查的提示，对应拒绝测试通过。没有放宽断言或改容差。
+
+复现：独立NumPy环境运行source/scripts/run_cpu_tests.py；Torch CPU环境设置PYTHONPATH为source/src和source，运行pytest tests/test_dtype_aliases.py tests/test_interpreter_torch.py tests/test_interpreter_default_pipeline.py tests/test_interpreter_dtype_cache.py -k 'not test_cuda_tensor_is_rejected_by_cpu_interpreter'。实际环境版本与JUnit、日志一并提供。
+
+Ruff、format、贡献风格和Git空白检查通过。Sphinx初次误用了旧安装路径且缺Torch依赖，保留该环境失败日志；修正PYTHONPATH并提供隔离Torch依赖后，-W严格构建通过。
+
+本次没有重新运行GPU。9月19日A100的1206通过/2多卡条件跳过仍对应a86bea9，不能当作本次合并后组合的新实机成绩。源码205份SHA在测试前后不变；源码通过固定merge commit可恢复，merge.diff记录完整增量。JUnit仅隐去主机名，原始SHA见REDACTIONS。

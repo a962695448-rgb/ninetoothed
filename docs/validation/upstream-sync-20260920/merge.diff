@@ -1,0 +1,433 @@
+diff --git a/src/ninetoothed/backends/emitters/expressions.py b/src/ninetoothed/backends/emitters/expressions.py
+index 2ea5504..da9f027 100644
+--- a/src/ninetoothed/backends/emitters/expressions.py
++++ b/src/ninetoothed/backends/emitters/expressions.py
+@@ -3,6 +3,8 @@
+ import re
+ from collections.abc import Mapping
+ 
++from ninetoothed.dtype import normalize_dtype as _normalize_dtype
++
+ 
+ def default_strides(shape: tuple[str, ...]) -> tuple[str, ...]:
+     strides: list[str] = []
+@@ -212,21 +214,7 @@ def symbols_in_text(value: str) -> tuple[str, ...]:
+ 
+ 
+ def normalize_dtype(dtype: str | None) -> str:
+-    if dtype is not None:
+-        dtype = dtype.strip().strip("'\"")
+-
+-        if "." in dtype:
+-            dtype = dtype.split(".")[-1]
+-
+-    mapping = {
+-        "fp16": "float16",
+-        "fp32": "float32",
+-        "fp64": "float64",
+-        "bf16": "bfloat16",
+-        "float": "float32",
+-    }
+-
+-    return mapping.get(dtype or "float32", dtype or "float32")
++    return _normalize_dtype(dtype) or "float32"
+ 
+ 
+ __all__ = [
+diff --git a/src/ninetoothed/backends/materializers/cuda.py b/src/ninetoothed/backends/materializers/cuda.py
+index 5f4c09c..9eb19f2 100644
+--- a/src/ninetoothed/backends/materializers/cuda.py
++++ b/src/ninetoothed/backends/materializers/cuda.py
+@@ -17,6 +17,7 @@ from ninetoothed.compiler.cache import (
+     write_manifest,
+     write_source,
+ )
++from ninetoothed.dtype import normalize_dtype
+ 
+ 
+ class CudaMaterializer(Materializer):
+@@ -130,13 +131,7 @@ def _cuda_wrapper(function, abi, tensor_specs):
+ 
+ 
+ def _cuda_scalar(value, dtype):
+-    dtype = str(dtype).split(".")[-1]
+-    dtype = {
+-        "fp16": "float16",
+-        "fp32": "float32",
+-        "fp64": "float64",
+-        "bf16": "bfloat16",
+-    }.get(dtype, dtype)
++    dtype = normalize_dtype(str(dtype))
+ 
+     if dtype in {"float16", "bfloat16", "float8_e4m3fn", "float8_e5m2"}:
+         import torch
+diff --git a/src/ninetoothed/backends/materializers/triton.py b/src/ninetoothed/backends/materializers/triton.py
+index 3e06c65..754d491 100644
+--- a/src/ninetoothed/backends/materializers/triton.py
++++ b/src/ninetoothed/backends/materializers/triton.py
+@@ -30,6 +30,7 @@ from ninetoothed.compiler.layout_runtime import (
+     memory_spans_overlap,
+     tensor_memory_span,
+ )
++from ninetoothed.dtype import normalize_dtype
+ from ninetoothed.targets import runtime_device_types
+ 
+ _TRITON_AOT_LAUNCHER_SCHEMA = 1
+@@ -1187,15 +1188,11 @@ def _compile_signature(compilation) -> str:
+ 
+ 
+ def _triton_dtype(dtype) -> str:
+-    name = str(dtype).split(".")[-1]
++    name = normalize_dtype(str(dtype))
+     aliases = {
+-        "fp16": "fp16",
+         "float16": "fp16",
+-        "bf16": "bf16",
+         "bfloat16": "bf16",
+-        "fp32": "fp32",
+         "float32": "fp32",
+-        "fp64": "fp64",
+         "float64": "fp64",
+         "bool": "i1",
+     }
+@@ -1212,16 +1209,12 @@ def _triton_dtype(dtype) -> str:
+ 
+ 
+ def _triton_scalar_dtype(dtype) -> str:
+-    name = str(dtype).split(".")[-1]
++    name = normalize_dtype(str(dtype))
+ 
+     if name in {
+-        "fp16",
+         "float16",
+-        "bf16",
+         "bfloat16",
+-        "fp32",
+         "float32",
+-        "fp64",
+         "float64",
+     }:
+         return "fp64"
+@@ -1436,13 +1429,7 @@ def _aot_wrapper(
+ 
+ 
+ def _triton_aot_scalar(value, dtype):
+-    name = str(dtype).split(".")[-1]
+-    name = {
+-        "fp16": "float16",
+-        "fp32": "float32",
+-        "fp64": "float64",
+-        "bf16": "bfloat16",
+-    }.get(name, name)
++    name = normalize_dtype(str(dtype))
+ 
+     if hasattr(value, "item"):
+         value = value.item()
+@@ -1472,13 +1459,7 @@ def _triton_aot_ctype(binding, specs):
+         return ctypes.c_void_p
+ 
+     if binding.kind == "scalar":
+-        name = str(specs[binding.source].dtype).split(".")[-1]
+-        name = {
+-            "fp16": "float16",
+-            "fp32": "float32",
+-            "fp64": "float64",
+-            "bf16": "bfloat16",
+-        }.get(name, name)
++        name = normalize_dtype(str(specs[binding.source].dtype))
+ 
+         if name in {"float16", "bfloat16", "float32", "float64"}:
+             return ctypes.c_double
+diff --git a/src/ninetoothed/compiler/passes.py b/src/ninetoothed/compiler/passes.py
+index de772cf..ea8d388 100644
+--- a/src/ninetoothed/compiler/passes.py
++++ b/src/ninetoothed/compiler/passes.py
+@@ -23,6 +23,7 @@ from typing import Any, Mapping
+ from ninetoothed.backends.core import Target, normalize_target
+ from ninetoothed.compiler.layout import LayoutTransfer, analyze_layout_transfer
+ from ninetoothed.compiler.reductions import analyze_reductions
++from ninetoothed.dtype import normalize_dtype
+ from ninetoothed.ir import ssa
+ from ninetoothed.ir.provenance import ProvenancePass, record_pass, seed_origins
+ from ninetoothed.targets import TargetContext, resolve_target_context
+@@ -1051,14 +1052,7 @@ def _linalg_input_dtypes(program: ssa.Program) -> tuple[str, ...]:
+                     dtype = value_types.get(operand, ssa.Type(kind="unknown")).dtype
+ 
+                     if dtype is not None:
+-                        dtypes.append(
+-                            {
+-                                "fp16": "float16",
+-                                "fp32": "float32",
+-                                "fp64": "float64",
+-                                "bf16": "bfloat16",
+-                            }.get(dtype, dtype)
+-                        )
++                        dtypes.append(normalize_dtype(dtype))
+ 
+             for region in operation.regions:
+                 visit_block(region)
+diff --git a/src/ninetoothed/compiler/runtime.py b/src/ninetoothed/compiler/runtime.py
+index 28cef0a..f64d371 100644
+--- a/src/ninetoothed/compiler/runtime.py
++++ b/src/ninetoothed/compiler/runtime.py
+@@ -20,6 +20,7 @@ from ninetoothed.compiler.cache import (
+     write_manifest,
+     write_source,
+ )
++from ninetoothed.dtype import normalize_dtype
+ from ninetoothed.ir import LaunchABI, LaunchBinding, ir_to_dict
+ from ninetoothed.targets import (
+     runtime_device_types,
+@@ -1294,14 +1295,7 @@ def _validate_dtype_contract(spec, value) -> None:
+ 
+ 
+ def _canonical_dtype(dtype) -> str:
+-    name = str(dtype).split(".")[-1]
+-
+-    return {
+-        "fp16": "float16",
+-        "fp32": "float32",
+-        "fp64": "float64",
+-        "bf16": "bfloat16",
+-    }.get(name, name)
++    return normalize_dtype(str(dtype))
+ 
+ 
+ def _bound_values(abi, public, *, scalar_mode, specs=None, cuda_scalar=None):
+diff --git a/src/ninetoothed/dtype.py b/src/ninetoothed/dtype.py
+index 9b65375..90f2345 100644
+--- a/src/ninetoothed/dtype.py
++++ b/src/ninetoothed/dtype.py
+@@ -12,3 +12,28 @@ float16 = "fp16"
+ bfloat16 = "bf16"
+ float32 = "fp32"
+ float64 = "fp64"
++
++
++def normalize_dtype(dtype: str | None) -> str | None:
++    """Resolve public dtype aliases to backend-neutral type names."""
++    if dtype is None:
++        return None
++
++    name = dtype.strip().strip("'\"").rsplit(".", 1)[-1]
++    aliases = {
++        "i8": "int8",
++        "i16": "int16",
++        "i32": "int32",
++        "i64": "int64",
++        "u8": "uint8",
++        "u16": "uint16",
++        "u32": "uint32",
++        "u64": "uint64",
++        "fp16": "float16",
++        "bf16": "bfloat16",
++        "fp32": "float32",
++        "fp64": "float64",
++        "float": "float32",
++    }
++
++    return aliases.get(name, name)
+diff --git a/src/ninetoothed/frontend/types.py b/src/ninetoothed/frontend/types.py
+index 49d6074..2676dc0 100644
+--- a/src/ninetoothed/frontend/types.py
++++ b/src/ninetoothed/frontend/types.py
+@@ -3,6 +3,7 @@
+ import ast
+ from typing import Any
+ 
++from ninetoothed.dtype import normalize_dtype
+ from ninetoothed.frontend.errors import LoweringError
+ from ninetoothed.ir import ssa
+ 
+@@ -348,17 +349,8 @@ def _math_result_type(name: str, operands: tuple[ssa.Value, ...]) -> ssa.Type:
+ 
+ 
+ def _promote_dtype(lhs: str | None, rhs: str | None) -> str | None:
+-    normalized = {
+-        "fp16": "float16",
+-        "fp32": "float32",
+-        "fp64": "float64",
+-        "bf16": "bfloat16",
+-        "float": "float32",
+-    }
+-    lhs = None if lhs is None else lhs.rsplit(".", 1)[-1]
+-    rhs = None if rhs is None else rhs.rsplit(".", 1)[-1]
+-    lhs = normalized.get(lhs or "", lhs)
+-    rhs = normalized.get(rhs or "", rhs)
++    lhs = normalize_dtype(lhs)
++    rhs = normalize_dtype(rhs)
+ 
+     if lhs is None:
+         return rhs
+@@ -394,17 +386,10 @@ def _promote_dtype(lhs: str | None, rhs: str | None) -> str | None:
+ 
+ 
+ def _cast_type(type_: ssa.Type, dtype: str) -> ssa.Type:
+-    normalized = dtype.rsplit(".", 1)[-1]
++    normalized = normalize_dtype(dtype)
+ 
+     if normalized == "dtype":
+-        normalized = type_.dtype
+-
+-    normalized = {
+-        "fp16": "float16",
+-        "fp32": "float32",
+-        "fp64": "float64",
+-        "bf16": "bfloat16",
+-    }.get(normalized, normalized)
++        normalized = normalize_dtype(type_.dtype)
+ 
+     return ssa.Type(
+         kind=type_.kind,
+diff --git a/tests/test_dtype_aliases.py b/tests/test_dtype_aliases.py
+new file mode 100644
+index 0000000..ee32bc8
+--- /dev/null
++++ b/tests/test_dtype_aliases.py
+@@ -0,0 +1,146 @@
++import ctypes
++from types import SimpleNamespace
++
++import pytest
++import torch
++
++import ninetoothed
++from ninetoothed.backends import emit as emit_kernel
++from ninetoothed.backends.materializers import cuda as cuda_materializer
++from ninetoothed.backends.materializers import triton as triton_materializer
++from ninetoothed.compiler.runtime import _validate_dtype_contract
++from ninetoothed.frontend.python import from_source
++from ninetoothed.ir import Kernel, TensorSpec
++
++_INTEGER_DTYPES = (
++    (ninetoothed.int8, "int8", ctypes.c_int8, -(2**7)),
++    (ninetoothed.int16, "int16", ctypes.c_int16, -(2**15)),
++    (ninetoothed.int32, "int32", ctypes.c_int32, -(2**31)),
++    (ninetoothed.int64, "int64", ctypes.c_int64, -(2**63) + 1),
++    (ninetoothed.uint8, "uint8", ctypes.c_uint8, 2**8 - 1),
++    (ninetoothed.uint16, "uint16", ctypes.c_uint16, 2**16 - 1),
++    (ninetoothed.uint32, "uint32", ctypes.c_uint32, 2**32 - 1),
++    (ninetoothed.uint64, "uint64", ctypes.c_uint64, 2**64 - 1),
++)
++
++
++def _kernel(source, tensors):
++    program = from_source(source, tensors, kind="integer_alias_application")
++    assert program is not None
++
++    return Kernel(
++        kernel_name="integer_alias_application",
++        source=source,
++        source_language="ninetoothed-python",
++        entrypoint="integer_alias_application",
++        tensors=tensors,
++        ssa=program,
++    )
++
++
++@pytest.mark.parametrize("alias,dtype,ctype,value", _INTEGER_DTYPES)
++@pytest.mark.parametrize("expression", ("(x + divisor) / divisor", "divisor + x"))
++def test_float_tensor_arithmetic_accepts_public_integer_scalars(
++    alias, dtype, ctype, value, expression
++):
++    del ctype, value
++
++    source = (
++        f"def integer_alias_application(x, divisor, out):\n    out = {expression}\n"
++    )
++    kernels = []
++
++    for scalar_dtype in (alias, dtype):
++        kernels.append(
++            _kernel(
++                source,
++                (
++                    TensorSpec(ndim=1, shape=("n",), dtype="float32", name="x"),
++                    TensorSpec(ndim=0, dtype=scalar_dtype, name="divisor"),
++                    TensorSpec(ndim=1, shape=("n",), dtype="float32", name="out"),
++                ),
++            )
++        )
++
++    arithmetic = [
++        operation
++        for operation in kernels[0].ssa.blocks[0].operations
++        if operation.opcode.startswith("arith.")
++    ]
++    assert arithmetic
++    assert all(operation.results[0].type.dtype == "float32" for operation in arithmetic)
++
++    for backend in ("triton", "cuda", "tilelang"):
++        alias_source, canonical_source = (
++            emit_kernel(kernel, backend).primary_source for kernel in kernels
++        )
++        assert alias_source == canonical_source
++
++
++@pytest.mark.parametrize("alias,dtype,ctype,value", _INTEGER_DTYPES)
++def test_integer_casts_accept_public_aliases(alias, dtype, ctype, value):
++    del ctype, value
++
++    kernel = _kernel(
++        f"def integer_alias_application(x, out):\n    out = x.to({alias!r})\n",
++        (
++            TensorSpec(ndim=1, shape=("n",), dtype="float32", name="x"),
++            TensorSpec(ndim=1, shape=("n",), dtype=alias, name="out"),
++        ),
++    )
++    cast = next(
++        operation
++        for operation in kernel.ssa.blocks[0].operations
++        if operation.opcode == "tensor.cast"
++    )
++    assert cast.results[0].type.dtype == dtype
++    expected = {
++        "triton": f"tl.{dtype}",
++        "cuda": f"static_cast<{dtype}_t>",
++        "tilelang": f'T.Cast("{dtype}"',
++    }
++
++    for backend, fragment in expected.items():
++        assert fragment in emit_kernel(kernel, backend).primary_source
++
++
++@pytest.mark.parametrize("alias,dtype,ctype,value", _INTEGER_DTYPES)
++def test_triton_aot_integer_arguments_preserve_width_and_signedness(
++    alias, dtype, ctype, value
++):
++    del dtype
++
++    tensors = (
++        TensorSpec(ndim=1, shape=("n",), dtype=alias, name="x"),
++        TensorSpec(ndim=0, dtype=alias, name="scalar"),
++    )
++    scalar_binding = SimpleNamespace(kind="scalar", source="scalar")
++    compilation = SimpleNamespace(
++        kernel=SimpleNamespace(tensors=tensors),
++        launch_plan=SimpleNamespace(tuning_candidates=()),
++        launch_abi=SimpleNamespace(
++            kernel_args=(SimpleNamespace(kind="tensor", source="x"), scalar_binding)
++        ),
++        artifact=SimpleNamespace(metadata={"program_mode": {"scalar": True}}),
++    )
++    assert triton_materializer._compile_signature(compilation) == f"*{alias},{alias},1"
++    packed = triton_materializer._triton_aot_scalar(value, alias)
++    argument_type = triton_materializer._triton_aot_ctype(
++        scalar_binding, {tensor.name: tensor for tensor in tensors}
++    )
++    assert type(packed) is argument_type is ctype
++    assert packed.value == value
++    cuda_packed = cuda_materializer._cuda_scalar(value, alias)
++    assert type(cuda_packed) is ctype
++    assert cuda_packed.value == value
++
++
++@pytest.mark.parametrize("alias,dtype,ctype,value", _INTEGER_DTYPES)
++def test_runtime_accepts_matching_integer_dtype_aliases(alias, dtype, ctype, value):
++    del ctype, value
++
++    spec = TensorSpec(ndim=1, shape=(1,), dtype=alias, name="x")
++    _validate_dtype_contract(spec, torch.empty(1, dtype=getattr(torch, dtype)))
++
++    with pytest.raises(TypeError, match=f"expected {dtype}"):
++        _validate_dtype_contract(spec, torch.empty(1, dtype=torch.float32))

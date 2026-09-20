@@ -1,0 +1,12 @@
+[
+  {
+    "file": "cpu.xml",
+    "original_sha256": "9447ffd6a0e14bcd51d01f803af886f98fa08522e3ded4fd79e6caac7cbd03ff",
+    "redaction": "Only JUnit hostname replaced"
+  },
+  {
+    "file": "targeted.xml",
+    "original_sha256": "9893dc0726eb69dbccbd71db04af30e28582c7e1896846518e606d5486b36dbe",
+    "redaction": "Only JUnit hostname replaced"
+  }
+]
