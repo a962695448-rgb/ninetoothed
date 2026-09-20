@@ -1,0 +1,14 @@
+{
+  "base_commit": "f44ca6214da5a0525c937d6d1dd1ca98388a14cb",
+  "candidate_commit": "150f5268977174164db383a75254f541aad14ffa",
+  "candidate_tree": "7a95334acefe305eb567b539beba033e4736aa1d",
+  "changes": [
+    "src/ninetoothed/interpreter/runtime.py",
+    "tests/test_interpreter_cast_literals.py"
+  ],
+  "reason": "Frontend keeps quoted dtype literal spelling in tensor.cast attrs; decode literals after resolving dynamic dtype references",
+  "initial_regression": "28 failed, 2 passed",
+  "fixed_regression": "30 passed",
+  "cpu_suite": "829 passed, 15 deselected in 27.44s",
+  "scope": "Last correctness validation; no performance optimization"
+}

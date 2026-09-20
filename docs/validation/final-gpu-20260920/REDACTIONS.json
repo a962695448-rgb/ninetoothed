@@ -1,0 +1,22 @@
+[
+  {
+    "file": "HARDWARE_PREFLIGHT.json",
+    "original_sha256": "fcc7cb49c5f9257c65cff77a68360bf51344d5064a7c04c4f230d42b7394e794",
+    "redaction": "GPU UUID only"
+  },
+  {
+    "file": "HARDWARE_AFTER.txt",
+    "original_sha256": "3fdf64adb300e216655d9dd6776d4ec126ef65861ab1c527891791ea1e5a3635",
+    "redaction": "GPU UUID only"
+  },
+  {
+    "file": "cast-after.xml",
+    "original_sha256": "6b2c61f6c78e8281d2b6c964c7f947be1acec5c874eb9f2aa8a60ba4853649c4",
+    "redaction": "JUnit hostname only"
+  },
+  {
+    "file": "cpu-fixed.xml",
+    "original_sha256": "fd66aa51543604c94c876969138a372bd1c12566e2cb42a9f2d53b5c1b89bae9",
+    "redaction": "JUnit hostname only"
+  }
+]

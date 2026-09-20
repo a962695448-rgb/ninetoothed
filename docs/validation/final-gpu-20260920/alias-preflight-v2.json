@@ -1,0 +1,1031 @@
+{
+  "status": "FAIL",
+  "cpu_only": true,
+  "records": [
+    {
+      "name": "alias_i8_scalar_triton_jit",
+      "alias": "i8",
+      "dtype": "int8",
+      "kind": "scalar",
+      "backend": "triton",
+      "mode": "jit",
+      "source_sha256": "5c0e342c2a1e959393b5e2ac1530c97e4d6a615373775bab1d182a4717f5e931",
+      "values": [
+        {
+          "value": 3,
+          "status": "CPU_ONLY"
+        },
+        {
+          "value": -127,
+          "status": "CPU_ONLY"
+        }
+      ],
+      "status": "CPU_ONLY"
+    },
+    {
+      "name": "alias_i8_scalar_triton_aot",
+      "alias": "i8",
+      "dtype": "int8",
+      "kind": "scalar",
+      "backend": "triton",
+      "mode": "aot",
+      "source_sha256": "10c2babc7abaad52d19d96ed3b42cfeeae020d46b4d3aa6f89c1f928f632ce0e",
+      "values": [
+        {
+          "value": 3,
+          "status": "CPU_ONLY"
+        },
+        {
+          "value": -127,
+          "status": "CPU_ONLY"
+        }
+      ],
+      "status": "CPU_ONLY"
+    },
+    {
+      "name": "alias_i8_scalar_cuda_jit",
+      "alias": "i8",
+      "dtype": "int8",
+      "kind": "scalar",
+      "backend": "cuda",
+      "mode": "jit",
+      "source_sha256": "e9dc7c8ca36b875728ffb507121f1c49455fed61fea0edf115258e400cb7f1b7",
+      "values": [
+        {
+          "value": 3,
+          "status": "CPU_ONLY"
+        },
+        {
+          "value": -127,
+          "status": "CPU_ONLY"
+        }
+      ],
+      "status": "CPU_ONLY"
+    },
+    {
+      "name": "alias_i8_scalar_cuda_aot",
+      "alias": "i8",
+      "dtype": "int8",
+      "kind": "scalar",
+      "backend": "cuda",
+      "mode": "aot",
+      "source_sha256": "d23a6614cea0deb51c27d9ee0dde0ceac102b15666bf2d347b35c56bde0d3aa1",
+      "values": [
+        {
+          "value": 3,
+          "status": "CPU_ONLY"
+        },
+        {
+          "value": -127,
+          "status": "CPU_ONLY"
+        }
+      ],
+      "status": "CPU_ONLY"
+    },
+    {
+      "name": "alias_i8_cast_triton_jit",
+      "alias": "i8",
+      "dtype": "int8",
+      "kind": "cast",
+      "backend": "triton",
+      "mode": "jit",
+      "source_sha256": "1d01dfef520ce8c79d7c2b3a5e514525a7c331d1baaea28a43bdf69e6b60337b",
+      "values": [],
+      "status": "FAIL",
+      "error": "Traceback (most recent call last):\n  File \"/Users/apple/Projects/infinitensor-2026/final-gpu-20260920/source/src/ninetoothed/interpreter/expressions.py\", line 218, in numpy_dtype\n    result = _numpy_dtype_from_name(name)\n             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/Users/apple/Projects/infinitensor-2026/final-gpu-20260920/source/src/ninetoothed/interpreter/expressions.py\", line 246, in _numpy_dtype_from_name\n    result = np.dtype(names.get(name, name))\n             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nTypeError: data type \"'i8'\" not understood\n\nThe above exception was the direct cause of the following exception:\n\nTraceback (most recent call last):\n  File \"/Users/apple/Projects/infinitensor-2026/final-gpu-20260920/source/src/ninetoothed/interpreter/runtime.py\", line 652, in block\n    values = self.operation(op, env, location)\n             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/Users/apple/Projects/infinitensor-2026/final-gpu-20260920/source/src/ninetoothed/interpreter/runtime.py\", line 1045, in operation\n    return np.asarray(materialize(args[0])).astype(numpy_dtype(dtype))\n                                                   ^^^^^^^^^^^^^^^^^^\n  File \"/Users/apple/Projects/infinitensor-2026/final-gpu-20260920/source/src/ninetoothed/interpreter/expressions.py\", line 220, in numpy_dtype\n    raise ValueError(f\"Unsupported interpreter dtype `{dtype}`.\") from exc\nValueError: Unsupported interpreter dtype `'i8'`.\n\nThe above exception was the direct cause of the following exception:\n\nTraceback (most recent call last):\n  File \"/Users/apple/Projects/infinitensor-2026/final-gpu-20260920/tools/verify_alias_gpu.py\", line 131, in <module>\n    raw(**values)\n  File \"/Users/apple/Projects/infinitensor-2026/final-gpu-20260920/source/src/ninetoothed/interpreter/__init__.py\", line 72, in __call__\n    return interpret_program(\n           ^^^^^^^^^^^^^^^^^^\n  File \"/Users/apple/Projects/infinitensor-2026/final-gpu-20260920/source/src/ninetoothed/interpreter/runtime.py\", line 1356, in interpret_program\n    result = execution.run()\n             ^^^^^^^^^^^^^^^\n  File \"/Users/apple/Projects/infinitensor-2026/final-gpu-20260920/source/src/ninetoothed/interpreter/runtime.py\", line 596, in run\n    self.block(self.program.blocks[0], env, \"entry\")\n  File \"/Users/apple/Projects/infinitensor-2026/final-gpu-20260920/source/src/ninetoothed/interpreter/runtime.py\", line 686, in block\n    raise InterpretationError(\nninetoothed.interpreter.runtime.InterpretationError: Operation entry:0:tensor.cast at program (0, 0, 0): Unsupported interpreter dtype `'i8'`..\n"
+    },
+    {
+      "name": "alias_i8_cast_triton_aot",
+      "alias": "i8",
+      "dtype": "int8",
+      "kind": "cast",
+      "backend": "triton",
+      "mode": "aot",
+      "source_sha256": "f6551732e3c522fbc5ba9043c4d8b9be2539bc0c4308c1ba72d0adfce56f5b5f",
+      "values": [],
+      "status": "FAIL",
+      "error": "Traceback (most recent call last):\n  File \"/Users/apple/Projects/infinitensor-2026/final-gpu-20260920/source/src/ninetoothed/interpreter/expressions.py\", line 218, in numpy_dtype\n    result = _numpy_dtype_from_name(name)\n             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/Users/apple/Projects/infinitensor-2026/final-gpu-20260920/source/src/ninetoothed/interpreter/expressions.py\", line 246, in _numpy_dtype_from_name\n    result = np.dtype(names.get(name, name))\n             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nTypeError: data type \"'i8'\" not understood\n\nThe above exception was the direct cause of the following exception:\n\nTraceback (most recent call last):\n  File \"/Users/apple/Projects/infinitensor-2026/final-gpu-20260920/source/src/ninetoothed/interpreter/runtime.py\", line 652, in block\n    values = self.operation(op, env, location)\n             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/Users/apple/Projects/infinitensor-2026/final-gpu-20260920/source/src/ninetoothed/interpreter/runtime.py\", line 1045, in operation\n    return np.asarray(materialize(args[0])).astype(numpy_dtype(dtype))\n                                                   ^^^^^^^^^^^^^^^^^^\n  File \"/Users/apple/Projects/infinitensor-2026/final-gpu-20260920/source/src/ninetoothed/interpreter/expressions.py\", line 220, in numpy_dtype\n    raise ValueError(f\"Unsupported interpreter dtype `{dtype}`.\") from exc\nValueError: Unsupported interpreter dtype `'i8'`.\n\nThe above exception was the direct cause of the following exception:\n\nTraceback (most recent call last):\n  File \"/Users/apple/Projects/infinitensor-2026/final-gpu-20260920/tools/verify_alias_gpu.py\", line 131, in <module>\n    raw(**values)\n  File \"/Users/apple/Projects/infinitensor-2026/final-gpu-20260920/source/src/ninetoothed/interpreter/__init__.py\", line 72, in __call__\n    return interpret_program(\n           ^^^^^^^^^^^^^^^^^^\n  File \"/Users/apple/Projects/infinitensor-2026/final-gpu-20260920/source/src/ninetoothed/interpreter/runtime.py\", line 1356, in interpret_program\n    result = execution.run()\n             ^^^^^^^^^^^^^^^\n  File \"/Users/apple/Projects/infinitensor-2026/final-gpu-20260920/source/src/ninetoothed/interpreter/runtime.py\", line 596, in run\n    self.block(self.program.blocks[0], env, \"entry\")\n  File \"/Users/apple/Projects/infinitensor-2026/final-gpu-20260920/source/src/ninetoothed/interpreter/runtime.py\", line 686, in block\n    raise InterpretationError(\nninetoothed.interpreter.runtime.InterpretationError: Operation entry:0:tensor.cast at program (0, 0, 0): Unsupported interpreter dtype `'i8'`..\n"
+    },
+    {
+      "name": "alias_i8_cast_cuda_jit",
+      "alias": "i8",
+      "dtype": "int8",
+      "kind": "cast",
+      "backend": "cuda",
+      "mode": "jit",
+      "source_sha256": "ac9c80665bf20fdf59f1ae5f22aed5da02afc9e026740f4600b6b4b7399cf7b8",
+      "values": [],
+      "status": "FAIL",
+      "error": "Traceback (most recent call last):\n  File \"/Users/apple/Projects/infinitensor-2026/final-gpu-20260920/source/src/ninetoothed/interpreter/expressions.py\", line 218, in numpy_dtype\n    result = _numpy_dtype_from_name(name)\n             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/Users/apple/Projects/infinitensor-2026/final-gpu-20260920/source/src/ninetoothed/interpreter/expressions.py\", line 246, in _numpy_dtype_from_name\n    result = np.dtype(names.get(name, name))\n             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nTypeError: data type \"'i8'\" not understood\n\nThe above exception was the direct cause of the following exception:\n\nTraceback (most recent call last):\n  File \"/Users/apple/Projects/infinitensor-2026/final-gpu-20260920/source/src/ninetoothed/interpreter/runtime.py\", line 652, in block\n    values = self.operation(op, env, location)\n             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/Users/apple/Projects/infinitensor-2026/final-gpu-20260920/source/src/ninetoothed/interpreter/runtime.py\", line 1045, in operation\n    return np.asarray(materialize(args[0])).astype(numpy_dtype(dtype))\n                                                   ^^^^^^^^^^^^^^^^^^\n  File \"/Users/apple/Projects/infinitensor-2026/final-gpu-20260920/source/src/ninetoothed/interpreter/expressions.py\", line 220, in numpy_dtype\n    raise ValueError(f\"Unsupported interpreter dtype `{dtype}`.\") from exc\nValueError: Unsupported interpreter dtype `'i8'`.\n\nThe above exception was the direct cause of the following exception:\n\nTraceback (most recent call last):\n  File \"/Users/apple/Projects/infinitensor-2026/final-gpu-20260920/tools/verify_alias_gpu.py\", line 131, in <module>\n    raw(**values)\n  File \"/Users/apple/Projects/infinitensor-2026/final-gpu-20260920/source/src/ninetoothed/interpreter/__init__.py\", line 72, in __call__\n    return interpret_program(\n           ^^^^^^^^^^^^^^^^^^\n  File \"/Users/apple/Projects/infinitensor-2026/final-gpu-20260920/source/src/ninetoothed/interpreter/runtime.py\", line 1356, in interpret_program\n    result = execution.run()\n             ^^^^^^^^^^^^^^^\n  File \"/Users/apple/Projects/infinitensor-2026/final-gpu-20260920/source/src/ninetoothed/interpreter/runtime.py\", line 596, in run\n    self.block(self.program.blocks[0], env, \"entry\")\n  File \"/Users/apple/Projects/infinitensor-2026/final-gpu-20260920/source/src/ninetoothed/interpreter/runtime.py\", line 686, in block\n    raise InterpretationError(\nninetoothed.interpreter.runtime.InterpretationError: Operation entry:0:tensor.cast at program (0, 0, 0): Unsupported interpreter dtype `'i8'`..\n"
+    },
+    {
+      "name": "alias_i8_cast_cuda_aot",
+      "alias": "i8",
+      "dtype": "int8",
+      "kind": "cast",
+      "backend": "cuda",
+      "mode": "aot",
+      "source_sha256": "1b3409ca4467e43769c6c6920236db57f09e3e800c7fdf173ee0b7d866a1ca53",
+      "values": [],
+      "status": "FAIL",
+      "error": "Traceback (most recent call last):\n  File \"/Users/apple/Projects/infinitensor-2026/final-gpu-20260920/source/src/ninetoothed/interpreter/expressions.py\", line 218, in numpy_dtype\n    result = _numpy_dtype_from_name(name)\n             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/Users/apple/Projects/infinitensor-2026/final-gpu-20260920/source/src/ninetoothed/interpreter/expressions.py\", line 246, in _numpy_dtype_from_name\n    result = np.dtype(names.get(name, name))\n             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nTypeError: data type \"'i8'\" not understood\n\nThe above exception was the direct cause of the following exception:\n\nTraceback (most recent call last):\n  File \"/Users/apple/Projects/infinitensor-2026/final-gpu-20260920/source/src/ninetoothed/interpreter/runtime.py\", line 652, in block\n    values = self.operation(op, env, location)\n             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/Users/apple/Projects/infinitensor-2026/final-gpu-20260920/source/src/ninetoothed/interpreter/runtime.py\", line 1045, in operation\n    return np.asarray(materialize(args[0])).astype(numpy_dtype(dtype))\n                                                   ^^^^^^^^^^^^^^^^^^\n  File \"/Users/apple/Projects/infinitensor-2026/final-gpu-20260920/source/src/ninetoothed/interpreter/expressions.py\", line 220, in numpy_dtype\n    raise ValueError(f\"Unsupported interpreter dtype `{dtype}`.\") from exc\nValueError: Unsupported interpreter dtype `'i8'`.\n\nThe above exception was the direct cause of the following exception:\n\nTraceback (most recent call last):\n  File \"/Users/apple/Projects/infinitensor-2026/final-gpu-20260920/tools/verify_alias_gpu.py\", line 131, in <module>\n    raw(**values)\n  File \"/Users/apple/Projects/infinitensor-2026/final-gpu-20260920/source/src/ninetoothed/interpreter/__init__.py\", line 72, in __call__\n    return interpret_program(\n           ^^^^^^^^^^^^^^^^^^\n  File \"/Users/apple/Projects/infinitensor-2026/final-gpu-20260920/source/src/ninetoothed/interpreter/runtime.py\", line 1356, in interpret_program\n    result = execution.run()\n             ^^^^^^^^^^^^^^^\n  File \"/Users/apple/Projects/infinitensor-2026/final-gpu-20260920/source/src/ninetoothed/interpreter/runtime.py\", line 596, in run\n    self.block(self.program.blocks[0], env, \"entry\")\n  File \"/Users/apple/Projects/infinitensor-2026/final-gpu-20260920/source/src/ninetoothed/interpreter/runtime.py\", line 686, in block\n    raise InterpretationError(\nninetoothed.interpreter.runtime.InterpretationError: Operation entry:0:tensor.cast at program (0, 0, 0): Unsupported interpreter dtype `'i8'`..\n"
+    },
+    {
+      "name": "alias_i16_scalar_triton_jit",
+      "alias": "i16",
+      "dtype": "int16",
+      "kind": "scalar",
+      "backend": "triton",
+      "mode": "jit",
+      "source_sha256": "479c22dc30fb1221272dae47d78a6a0f679c277ccef14b15c06d4b9f50575728",
+      "values": [
+        {
+          "value": 3,
+          "status": "CPU_ONLY"
+        },
+        {
+          "value": -32767,
+          "status": "CPU_ONLY"
+        }
+      ],
+      "status": "CPU_ONLY"
+    },
+    {
+      "name": "alias_i16_scalar_triton_aot",
+      "alias": "i16",
+      "dtype": "int16",
+      "kind": "scalar",
+      "backend": "triton",
+      "mode": "aot",
+      "source_sha256": "2a0570fc7ecd97bb559f8cbd3481cfd6efafff5beab4ae4f9577c795ffd38755",
+      "values": [
+        {
+          "value": 3,
+          "status": "CPU_ONLY"
+        },
+        {
+          "value": -32767,
+          "status": "CPU_ONLY"
+        }
+      ],
+      "status": "CPU_ONLY"
+    },
+    {
+      "name": "alias_i16_scalar_cuda_jit",
+      "alias": "i16",
+      "dtype": "int16",
+      "kind": "scalar",
+      "backend": "cuda",
+      "mode": "jit",
+      "source_sha256": "df2735aa5b872590b362ffbd817b4b2765c38cc3bb2b6eb51d1deedd818950f1",
+      "values": [
+        {
+          "value": 3,
+          "status": "CPU_ONLY"
+        },
+        {
+          "value": -32767,
+          "status": "CPU_ONLY"
+        }
+      ],
+      "status": "CPU_ONLY"
+    },
+    {
+      "name": "alias_i16_scalar_cuda_aot",
+      "alias": "i16",
+      "dtype": "int16",
+      "kind": "scalar",
+      "backend": "cuda",
+      "mode": "aot",
+      "source_sha256": "9a50c49fde6defe507c7b54227904f1dc67bc9138f4a5a8107b33fdff134a2c7",
+      "values": [
+        {
+          "value": 3,
+          "status": "CPU_ONLY"
+        },
+        {
+          "value": -32767,
+          "status": "CPU_ONLY"
+        }
+      ],
+      "status": "CPU_ONLY"
+    },
+    {
+      "name": "alias_i16_cast_triton_jit",
+      "alias": "i16",
+      "dtype": "int16",
+      "kind": "cast",
+      "backend": "triton",
+      "mode": "jit",
+      "source_sha256": "0140d594468ee55ab438570185e1d4e68f21fb56158ae7cd01a60bb157834aee",
+      "values": [],
+      "status": "FAIL",
+      "error": "Traceback (most recent call last):\n  File \"/Users/apple/Projects/infinitensor-2026/final-gpu-20260920/source/src/ninetoothed/interpreter/expressions.py\", line 218, in numpy_dtype\n    result = _numpy_dtype_from_name(name)\n             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/Users/apple/Projects/infinitensor-2026/final-gpu-20260920/source/src/ninetoothed/interpreter/expressions.py\", line 246, in _numpy_dtype_from_name\n    result = np.dtype(names.get(name, name))\n             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nTypeError: data type \"'i16'\" not understood\n\nThe above exception was the direct cause of the following exception:\n\nTraceback (most recent call last):\n  File \"/Users/apple/Projects/infinitensor-2026/final-gpu-20260920/source/src/ninetoothed/interpreter/runtime.py\", line 652, in block\n    values = self.operation(op, env, location)\n             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/Users/apple/Projects/infinitensor-2026/final-gpu-20260920/source/src/ninetoothed/interpreter/runtime.py\", line 1045, in operation\n    return np.asarray(materialize(args[0])).astype(numpy_dtype(dtype))\n                                                   ^^^^^^^^^^^^^^^^^^\n  File \"/Users/apple/Projects/infinitensor-2026/final-gpu-20260920/source/src/ninetoothed/interpreter/expressions.py\", line 220, in numpy_dtype\n    raise ValueError(f\"Unsupported interpreter dtype `{dtype}`.\") from exc\nValueError: Unsupported interpreter dtype `'i16'`.\n\nThe above exception was the direct cause of the following exception:\n\nTraceback (most recent call last):\n  File \"/Users/apple/Projects/infinitensor-2026/final-gpu-20260920/tools/verify_alias_gpu.py\", line 131, in <module>\n    raw(**values)\n  File \"/Users/apple/Projects/infinitensor-2026/final-gpu-20260920/source/src/ninetoothed/interpreter/__init__.py\", line 72, in __call__\n    return interpret_program(\n           ^^^^^^^^^^^^^^^^^^\n  File \"/Users/apple/Projects/infinitensor-2026/final-gpu-20260920/source/src/ninetoothed/interpreter/runtime.py\", line 1356, in interpret_program\n    result = execution.run()\n             ^^^^^^^^^^^^^^^\n  File \"/Users/apple/Projects/infinitensor-2026/final-gpu-20260920/source/src/ninetoothed/interpreter/runtime.py\", line 596, in run\n    self.block(self.program.blocks[0], env, \"entry\")\n  File \"/Users/apple/Projects/infinitensor-2026/final-gpu-20260920/source/src/ninetoothed/interpreter/runtime.py\", line 686, in block\n    raise InterpretationError(\nninetoothed.interpreter.runtime.InterpretationError: Operation entry:0:tensor.cast at program (0, 0, 0): Unsupported interpreter dtype `'i16'`..\n"
+    },
+    {
+      "name": "alias_i16_cast_triton_aot",
+      "alias": "i16",
+      "dtype": "int16",
+      "kind": "cast",
+      "backend": "triton",
+      "mode": "aot",
+      "source_sha256": "6fd1e315d56fe0ae0a6b620f0596613b26daeada305ad1baa3b4ef2e4eb6386c",
+      "values": [],
+      "status": "FAIL",
+      "error": "Traceback (most recent call last):\n  File \"/Users/apple/Projects/infinitensor-2026/final-gpu-20260920/source/src/ninetoothed/interpreter/expressions.py\", line 218, in numpy_dtype\n    result = _numpy_dtype_from_name(name)\n             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/Users/apple/Projects/infinitensor-2026/final-gpu-20260920/source/src/ninetoothed/interpreter/expressions.py\", line 246, in _numpy_dtype_from_name\n    result = np.dtype(names.get(name, name))\n             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nTypeError: data type \"'i16'\" not understood\n\nThe above exception was the direct cause of the following exception:\n\nTraceback (most recent call last):\n  File \"/Users/apple/Projects/infinitensor-2026/final-gpu-20260920/source/src/ninetoothed/interpreter/runtime.py\", line 652, in block\n    values = self.operation(op, env, location)\n             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/Users/apple/Projects/infinitensor-2026/final-gpu-20260920/source/src/ninetoothed/interpreter/runtime.py\", line 1045, in operation\n    return np.asarray(materialize(args[0])).astype(numpy_dtype(dtype))\n                                                   ^^^^^^^^^^^^^^^^^^\n  File \"/Users/apple/Projects/infinitensor-2026/final-gpu-20260920/source/src/ninetoothed/interpreter/expressions.py\", line 220, in numpy_dtype\n    raise ValueError(f\"Unsupported interpreter dtype `{dtype}`.\") from exc\nValueError: Unsupported interpreter dtype `'i16'`.\n\nThe above exception was the direct cause of the following exception:\n\nTraceback (most recent call last):\n  File \"/Users/apple/Projects/infinitensor-2026/final-gpu-20260920/tools/verify_alias_gpu.py\", line 131, in <module>\n    raw(**values)\n  File \"/Users/apple/Projects/infinitensor-2026/final-gpu-20260920/source/src/ninetoothed/interpreter/__init__.py\", line 72, in __call__\n    return interpret_program(\n           ^^^^^^^^^^^^^^^^^^\n  File \"/Users/apple/Projects/infinitensor-2026/final-gpu-20260920/source/src/ninetoothed/interpreter/runtime.py\", line 1356, in interpret_program\n    result = execution.run()\n             ^^^^^^^^^^^^^^^\n  File \"/Users/apple/Projects/infinitensor-2026/final-gpu-20260920/source/src/ninetoothed/interpreter/runtime.py\", line 596, in run\n    self.block(self.program.blocks[0], env, \"entry\")\n  File \"/Users/apple/Projects/infinitensor-2026/final-gpu-20260920/source/src/ninetoothed/interpreter/runtime.py\", line 686, in block\n    raise InterpretationError(\nninetoothed.interpreter.runtime.InterpretationError: Operation entry:0:tensor.cast at program (0, 0, 0): Unsupported interpreter dtype `'i16'`..\n"
+    },
+    {
+      "name": "alias_i16_cast_cuda_jit",
+      "alias": "i16",
+      "dtype": "int16",
+      "kind": "cast",
+      "backend": "cuda",
+      "mode": "jit",
+      "source_sha256": "fd6b1dc37cc629f27d88f9761c3d3f0bb1c7b65890a04eca16955c8b89ce83e6",
+      "values": [],
+      "status": "FAIL",
+      "error": "Traceback (most recent call last):\n  File \"/Users/apple/Projects/infinitensor-2026/final-gpu-20260920/source/src/ninetoothed/interpreter/expressions.py\", line 218, in numpy_dtype\n    result = _numpy_dtype_from_name(name)\n             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/Users/apple/Projects/infinitensor-2026/final-gpu-20260920/source/src/ninetoothed/interpreter/expressions.py\", line 246, in _numpy_dtype_from_name\n    result = np.dtype(names.get(name, name))\n             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nTypeError: data type \"'i16'\" not understood\n\nThe above exception was the direct cause of the following exception:\n\nTraceback (most recent call last):\n  File \"/Users/apple/Projects/infinitensor-2026/final-gpu-20260920/source/src/ninetoothed/interpreter/runtime.py\", line 652, in block\n    values = self.operation(op, env, location)\n             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/Users/apple/Projects/infinitensor-2026/final-gpu-20260920/source/src/ninetoothed/interpreter/runtime.py\", line 1045, in operation\n    return np.asarray(materialize(args[0])).astype(numpy_dtype(dtype))\n                                                   ^^^^^^^^^^^^^^^^^^\n  File \"/Users/apple/Projects/infinitensor-2026/final-gpu-20260920/source/src/ninetoothed/interpreter/expressions.py\", line 220, in numpy_dtype\n    raise ValueError(f\"Unsupported interpreter dtype `{dtype}`.\") from exc\nValueError: Unsupported interpreter dtype `'i16'`.\n\nThe above exception was the direct cause of the following exception:\n\nTraceback (most recent call last):\n  File \"/Users/apple/Projects/infinitensor-2026/final-gpu-20260920/tools/verify_alias_gpu.py\", line 131, in <module>\n    raw(**values)\n  File \"/Users/apple/Projects/infinitensor-2026/final-gpu-20260920/source/src/ninetoothed/interpreter/__init__.py\", line 72, in __call__\n    return interpret_program(\n           ^^^^^^^^^^^^^^^^^^\n  File \"/Users/apple/Projects/infinitensor-2026/final-gpu-20260920/source/src/ninetoothed/interpreter/runtime.py\", line 1356, in interpret_program\n    result = execution.run()\n             ^^^^^^^^^^^^^^^\n  File \"/Users/apple/Projects/infinitensor-2026/final-gpu-20260920/source/src/ninetoothed/interpreter/runtime.py\", line 596, in run\n    self.block(self.program.blocks[0], env, \"entry\")\n  File \"/Users/apple/Projects/infinitensor-2026/final-gpu-20260920/source/src/ninetoothed/interpreter/runtime.py\", line 686, in block\n    raise InterpretationError(\nninetoothed.interpreter.runtime.InterpretationError: Operation entry:0:tensor.cast at program (0, 0, 0): Unsupported interpreter dtype `'i16'`..\n"
+    },
+    {
+      "name": "alias_i16_cast_cuda_aot",
+      "alias": "i16",
+      "dtype": "int16",
+      "kind": "cast",
+      "backend": "cuda",
+      "mode": "aot",
+      "source_sha256": "4b75914c42f72f1cf6ca0f2f9809106f36dff10164a544cb106f69fc4ab86924",
+      "values": [],
+      "status": "FAIL",
+      "error": "Traceback (most recent call last):\n  File \"/Users/apple/Projects/infinitensor-2026/final-gpu-20260920/source/src/ninetoothed/interpreter/expressions.py\", line 218, in numpy_dtype\n    result = _numpy_dtype_from_name(name)\n             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/Users/apple/Projects/infinitensor-2026/final-gpu-20260920/source/src/ninetoothed/interpreter/expressions.py\", line 246, in _numpy_dtype_from_name\n    result = np.dtype(names.get(name, name))\n             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nTypeError: data type \"'i16'\" not understood\n\nThe above exception was the direct cause of the following exception:\n\nTraceback (most recent call last):\n  File \"/Users/apple/Projects/infinitensor-2026/final-gpu-20260920/source/src/ninetoothed/interpreter/runtime.py\", line 652, in block\n    values = self.operation(op, env, location)\n             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/Users/apple/Projects/infinitensor-2026/final-gpu-20260920/source/src/ninetoothed/interpreter/runtime.py\", line 1045, in operation\n    return np.asarray(materialize(args[0])).astype(numpy_dtype(dtype))\n                                                   ^^^^^^^^^^^^^^^^^^\n  File \"/Users/apple/Projects/infinitensor-2026/final-gpu-20260920/source/src/ninetoothed/interpreter/expressions.py\", line 220, in numpy_dtype\n    raise ValueError(f\"Unsupported interpreter dtype `{dtype}`.\") from exc\nValueError: Unsupported interpreter dtype `'i16'`.\n\nThe above exception was the direct cause of the following exception:\n\nTraceback (most recent call last):\n  File \"/Users/apple/Projects/infinitensor-2026/final-gpu-20260920/tools/verify_alias_gpu.py\", line 131, in <module>\n    raw(**values)\n  File \"/Users/apple/Projects/infinitensor-2026/final-gpu-20260920/source/src/ninetoothed/interpreter/__init__.py\", line 72, in __call__\n    return interpret_program(\n           ^^^^^^^^^^^^^^^^^^\n  File \"/Users/apple/Projects/infinitensor-2026/final-gpu-20260920/source/src/ninetoothed/interpreter/runtime.py\", line 1356, in interpret_program\n    result = execution.run()\n             ^^^^^^^^^^^^^^^\n  File \"/Users/apple/Projects/infinitensor-2026/final-gpu-20260920/source/src/ninetoothed/interpreter/runtime.py\", line 596, in run\n    self.block(self.program.blocks[0], env, \"entry\")\n  File \"/Users/apple/Projects/infinitensor-2026/final-gpu-20260920/source/src/ninetoothed/interpreter/runtime.py\", line 686, in block\n    raise InterpretationError(\nninetoothed.interpreter.runtime.InterpretationError: Operation entry:0:tensor.cast at program (0, 0, 0): Unsupported interpreter dtype `'i16'`..\n"
+    },
+    {
+      "name": "alias_i32_scalar_triton_jit",
+      "alias": "i32",
+      "dtype": "int32",
+      "kind": "scalar",
+      "backend": "triton",
+      "mode": "jit",
+      "source_sha256": "a5f54c072563a37f30433ee49bcae1fe96e6417364e942deac9527f113a73f3a",
+      "values": [
+        {
+          "value": 3,
+          "status": "CPU_ONLY"
+        },
+        {
+          "value": -2147483647,
+          "status": "CPU_ONLY"
+        }
+      ],
+      "status": "CPU_ONLY"
+    },
+    {
+      "name": "alias_i32_scalar_triton_aot",
+      "alias": "i32",
+      "dtype": "int32",
+      "kind": "scalar",
+      "backend": "triton",
+      "mode": "aot",
+      "source_sha256": "b0479c3af76a2d19b893638e47da373d00416489e69da5add41cfb044b55c15f",
+      "values": [
+        {
+          "value": 3,
+          "status": "CPU_ONLY"
+        },
+        {
+          "value": -2147483647,
+          "status": "CPU_ONLY"
+        }
+      ],
+      "status": "CPU_ONLY"
+    },
+    {
+      "name": "alias_i32_scalar_cuda_jit",
+      "alias": "i32",
+      "dtype": "int32",
+      "kind": "scalar",
+      "backend": "cuda",
+      "mode": "jit",
+      "source_sha256": "581fdc877670ce858e1baa254031299dea895c928e925055b54aa331eedd8e01",
+      "values": [
+        {
+          "value": 3,
+          "status": "CPU_ONLY"
+        },
+        {
+          "value": -2147483647,
+          "status": "CPU_ONLY"
+        }
+      ],
+      "status": "CPU_ONLY"
+    },
+    {
+      "name": "alias_i32_scalar_cuda_aot",
+      "alias": "i32",
+      "dtype": "int32",
+      "kind": "scalar",
+      "backend": "cuda",
+      "mode": "aot",
+      "source_sha256": "07256f4cc5007dcc4ab550ac35ae493c9068929cf3f88f18cc0ea41e2397fe31",
+      "values": [
+        {
+          "value": 3,
+          "status": "CPU_ONLY"
+        },
+        {
+          "value": -2147483647,
+          "status": "CPU_ONLY"
+        }
+      ],
+      "status": "CPU_ONLY"
+    },
+    {
+      "name": "alias_i32_cast_triton_jit",
+      "alias": "i32",
+      "dtype": "int32",
+      "kind": "cast",
+      "backend": "triton",
+      "mode": "jit",
+      "source_sha256": "0c006db3f508f75a41a0a14be3cdaff3ee7a0179266cbd01604f991a45e84853",
+      "values": [],
+      "status": "FAIL",
+      "error": "Traceback (most recent call last):\n  File \"/Users/apple/Projects/infinitensor-2026/final-gpu-20260920/source/src/ninetoothed/interpreter/expressions.py\", line 218, in numpy_dtype\n    result = _numpy_dtype_from_name(name)\n             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/Users/apple/Projects/infinitensor-2026/final-gpu-20260920/source/src/ninetoothed/interpreter/expressions.py\", line 246, in _numpy_dtype_from_name\n    result = np.dtype(names.get(name, name))\n             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nTypeError: data type \"'i32'\" not understood\n\nThe above exception was the direct cause of the following exception:\n\nTraceback (most recent call last):\n  File \"/Users/apple/Projects/infinitensor-2026/final-gpu-20260920/source/src/ninetoothed/interpreter/runtime.py\", line 652, in block\n    values = self.operation(op, env, location)\n             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/Users/apple/Projects/infinitensor-2026/final-gpu-20260920/source/src/ninetoothed/interpreter/runtime.py\", line 1045, in operation\n    return np.asarray(materialize(args[0])).astype(numpy_dtype(dtype))\n                                                   ^^^^^^^^^^^^^^^^^^\n  File \"/Users/apple/Projects/infinitensor-2026/final-gpu-20260920/source/src/ninetoothed/interpreter/expressions.py\", line 220, in numpy_dtype\n    raise ValueError(f\"Unsupported interpreter dtype `{dtype}`.\") from exc\nValueError: Unsupported interpreter dtype `'i32'`.\n\nThe above exception was the direct cause of the following exception:\n\nTraceback (most recent call last):\n  File \"/Users/apple/Projects/infinitensor-2026/final-gpu-20260920/tools/verify_alias_gpu.py\", line 131, in <module>\n    raw(**values)\n  File \"/Users/apple/Projects/infinitensor-2026/final-gpu-20260920/source/src/ninetoothed/interpreter/__init__.py\", line 72, in __call__\n    return interpret_program(\n           ^^^^^^^^^^^^^^^^^^\n  File \"/Users/apple/Projects/infinitensor-2026/final-gpu-20260920/source/src/ninetoothed/interpreter/runtime.py\", line 1356, in interpret_program\n    result = execution.run()\n             ^^^^^^^^^^^^^^^\n  File \"/Users/apple/Projects/infinitensor-2026/final-gpu-20260920/source/src/ninetoothed/interpreter/runtime.py\", line 596, in run\n    self.block(self.program.blocks[0], env, \"entry\")\n  File \"/Users/apple/Projects/infinitensor-2026/final-gpu-20260920/source/src/ninetoothed/interpreter/runtime.py\", line 686, in block\n    raise InterpretationError(\nninetoothed.interpreter.runtime.InterpretationError: Operation entry:0:tensor.cast at program (0, 0, 0): Unsupported interpreter dtype `'i32'`..\n"
+    },
+    {
+      "name": "alias_i32_cast_triton_aot",
+      "alias": "i32",
+      "dtype": "int32",
+      "kind": "cast",
+      "backend": "triton",
+      "mode": "aot",
+      "source_sha256": "1367d5b1f14083cb5e6dd82c7b4ed210bbcde3e9d38d42d9688a736306ba7738",
+      "values": [],
+      "status": "FAIL",
+      "error": "Traceback (most recent call last):\n  File \"/Users/apple/Projects/infinitensor-2026/final-gpu-20260920/source/src/ninetoothed/interpreter/expressions.py\", line 218, in numpy_dtype\n    result = _numpy_dtype_from_name(name)\n             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/Users/apple/Projects/infinitensor-2026/final-gpu-20260920/source/src/ninetoothed/interpreter/expressions.py\", line 246, in _numpy_dtype_from_name\n    result = np.dtype(names.get(name, name))\n             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nTypeError: data type \"'i32'\" not understood\n\nThe above exception was the direct cause of the following exception:\n\nTraceback (most recent call last):\n  File \"/Users/apple/Projects/infinitensor-2026/final-gpu-20260920/source/src/ninetoothed/interpreter/runtime.py\", line 652, in block\n    values = self.operation(op, env, location)\n             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/Users/apple/Projects/infinitensor-2026/final-gpu-20260920/source/src/ninetoothed/interpreter/runtime.py\", line 1045, in operation\n    return np.asarray(materialize(args[0])).astype(numpy_dtype(dtype))\n                                                   ^^^^^^^^^^^^^^^^^^\n  File \"/Users/apple/Projects/infinitensor-2026/final-gpu-20260920/source/src/ninetoothed/interpreter/expressions.py\", line 220, in numpy_dtype\n    raise ValueError(f\"Unsupported interpreter dtype `{dtype}`.\") from exc\nValueError: Unsupported interpreter dtype `'i32'`.\n\nThe above exception was the direct cause of the following exception:\n\nTraceback (most recent call last):\n  File \"/Users/apple/Projects/infinitensor-2026/final-gpu-20260920/tools/verify_alias_gpu.py\", line 131, in <module>\n    raw(**values)\n  File \"/Users/apple/Projects/infinitensor-2026/final-gpu-20260920/source/src/ninetoothed/interpreter/__init__.py\", line 72, in __call__\n    return interpret_program(\n           ^^^^^^^^^^^^^^^^^^\n  File \"/Users/apple/Projects/infinitensor-2026/final-gpu-20260920/source/src/ninetoothed/interpreter/runtime.py\", line 1356, in interpret_program\n    result = execution.run()\n             ^^^^^^^^^^^^^^^\n  File \"/Users/apple/Projects/infinitensor-2026/final-gpu-20260920/source/src/ninetoothed/interpreter/runtime.py\", line 596, in run\n    self.block(self.program.blocks[0], env, \"entry\")\n  File \"/Users/apple/Projects/infinitensor-2026/final-gpu-20260920/source/src/ninetoothed/interpreter/runtime.py\", line 686, in block\n    raise InterpretationError(\nninetoothed.interpreter.runtime.InterpretationError: Operation entry:0:tensor.cast at program (0, 0, 0): Unsupported interpreter dtype `'i32'`..\n"
+    },
+    {
+      "name": "alias_i32_cast_cuda_jit",
+      "alias": "i32",
+      "dtype": "int32",
+      "kind": "cast",
+      "backend": "cuda",
+      "mode": "jit",
+      "source_sha256": "ab5aa78308f7f5d3153b861de49458d2e40554be64d56c2ee1b1cfa6e6a8e016",
+      "values": [],
+      "status": "FAIL",
+      "error": "Traceback (most recent call last):\n  File \"/Users/apple/Projects/infinitensor-2026/final-gpu-20260920/source/src/ninetoothed/interpreter/expressions.py\", line 218, in numpy_dtype\n    result = _numpy_dtype_from_name(name)\n             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/Users/apple/Projects/infinitensor-2026/final-gpu-20260920/source/src/ninetoothed/interpreter/expressions.py\", line 246, in _numpy_dtype_from_name\n    result = np.dtype(names.get(name, name))\n             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nTypeError: data type \"'i32'\" not understood\n\nThe above exception was the direct cause of the following exception:\n\nTraceback (most recent call last):\n  File \"/Users/apple/Projects/infinitensor-2026/final-gpu-20260920/source/src/ninetoothed/interpreter/runtime.py\", line 652, in block\n    values = self.operation(op, env, location)\n             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/Users/apple/Projects/infinitensor-2026/final-gpu-20260920/source/src/ninetoothed/interpreter/runtime.py\", line 1045, in operation\n    return np.asarray(materialize(args[0])).astype(numpy_dtype(dtype))\n                                                   ^^^^^^^^^^^^^^^^^^\n  File \"/Users/apple/Projects/infinitensor-2026/final-gpu-20260920/source/src/ninetoothed/interpreter/expressions.py\", line 220, in numpy_dtype\n    raise ValueError(f\"Unsupported interpreter dtype `{dtype}`.\") from exc\nValueError: Unsupported interpreter dtype `'i32'`.\n\nThe above exception was the direct cause of the following exception:\n\nTraceback (most recent call last):\n  File \"/Users/apple/Projects/infinitensor-2026/final-gpu-20260920/tools/verify_alias_gpu.py\", line 131, in <module>\n    raw(**values)\n  File \"/Users/apple/Projects/infinitensor-2026/final-gpu-20260920/source/src/ninetoothed/interpreter/__init__.py\", line 72, in __call__\n    return interpret_program(\n           ^^^^^^^^^^^^^^^^^^\n  File \"/Users/apple/Projects/infinitensor-2026/final-gpu-20260920/source/src/ninetoothed/interpreter/runtime.py\", line 1356, in interpret_program\n    result = execution.run()\n             ^^^^^^^^^^^^^^^\n  File \"/Users/apple/Projects/infinitensor-2026/final-gpu-20260920/source/src/ninetoothed/interpreter/runtime.py\", line 596, in run\n    self.block(self.program.blocks[0], env, \"entry\")\n  File \"/Users/apple/Projects/infinitensor-2026/final-gpu-20260920/source/src/ninetoothed/interpreter/runtime.py\", line 686, in block\n    raise InterpretationError(\nninetoothed.interpreter.runtime.InterpretationError: Operation entry:0:tensor.cast at program (0, 0, 0): Unsupported interpreter dtype `'i32'`..\n"
+    },
+    {
+      "name": "alias_i32_cast_cuda_aot",
+      "alias": "i32",
+      "dtype": "int32",
+      "kind": "cast",
+      "backend": "cuda",
+      "mode": "aot",
+      "source_sha256": "e129dfe980846ba0ca80c26bfef12f93890da058e1fbfac423b530eaea46466d",
+      "values": [],
+      "status": "FAIL",
+      "error": "Traceback (most recent call last):\n  File \"/Users/apple/Projects/infinitensor-2026/final-gpu-20260920/source/src/ninetoothed/interpreter/expressions.py\", line 218, in numpy_dtype\n    result = _numpy_dtype_from_name(name)\n             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/Users/apple/Projects/infinitensor-2026/final-gpu-20260920/source/src/ninetoothed/interpreter/expressions.py\", line 246, in _numpy_dtype_from_name\n    result = np.dtype(names.get(name, name))\n             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nTypeError: data type \"'i32'\" not understood\n\nThe above exception was the direct cause of the following exception:\n\nTraceback (most recent call last):\n  File \"/Users/apple/Projects/infinitensor-2026/final-gpu-20260920/source/src/ninetoothed/interpreter/runtime.py\", line 652, in block\n    values = self.operation(op, env, location)\n             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/Users/apple/Projects/infinitensor-2026/final-gpu-20260920/source/src/ninetoothed/interpreter/runtime.py\", line 1045, in operation\n    return np.asarray(materialize(args[0])).astype(numpy_dtype(dtype))\n                                                   ^^^^^^^^^^^^^^^^^^\n  File \"/Users/apple/Projects/infinitensor-2026/final-gpu-20260920/source/src/ninetoothed/interpreter/expressions.py\", line 220, in numpy_dtype\n    raise ValueError(f\"Unsupported interpreter dtype `{dtype}`.\") from exc\nValueError: Unsupported interpreter dtype `'i32'`.\n\nThe above exception was the direct cause of the following exception:\n\nTraceback (most recent call last):\n  File \"/Users/apple/Projects/infinitensor-2026/final-gpu-20260920/tools/verify_alias_gpu.py\", line 131, in <module>\n    raw(**values)\n  File \"/Users/apple/Projects/infinitensor-2026/final-gpu-20260920/source/src/ninetoothed/interpreter/__init__.py\", line 72, in __call__\n    return interpret_program(\n           ^^^^^^^^^^^^^^^^^^\n  File \"/Users/apple/Projects/infinitensor-2026/final-gpu-20260920/source/src/ninetoothed/interpreter/runtime.py\", line 1356, in interpret_program\n    result = execution.run()\n             ^^^^^^^^^^^^^^^\n  File \"/Users/apple/Projects/infinitensor-2026/final-gpu-20260920/source/src/ninetoothed/interpreter/runtime.py\", line 596, in run\n    self.block(self.program.blocks[0], env, \"entry\")\n  File \"/Users/apple/Projects/infinitensor-2026/final-gpu-20260920/source/src/ninetoothed/interpreter/runtime.py\", line 686, in block\n    raise InterpretationError(\nninetoothed.interpreter.runtime.InterpretationError: Operation entry:0:tensor.cast at program (0, 0, 0): Unsupported interpreter dtype `'i32'`..\n"
+    },
+    {
+      "name": "alias_i64_scalar_triton_jit",
+      "alias": "i64",
+      "dtype": "int64",
+      "kind": "scalar",
+      "backend": "triton",
+      "mode": "jit",
+      "source_sha256": "a73a9c1d2ed57f157f1c8012c44edbd0c2334242654902e1ef6cb624956b0800",
+      "values": [
+        {
+          "value": 3,
+          "status": "CPU_ONLY"
+        },
+        {
+          "value": -9223372036854775807,
+          "status": "CPU_ONLY"
+        }
+      ],
+      "status": "CPU_ONLY"
+    },
+    {
+      "name": "alias_i64_scalar_triton_aot",
+      "alias": "i64",
+      "dtype": "int64",
+      "kind": "scalar",
+      "backend": "triton",
+      "mode": "aot",
+      "source_sha256": "642900c265b0d7e2b0aedb8fd400edd3ea0bfabd2df13c4b90dd47de78e73f3d",
+      "values": [
+        {
+          "value": 3,
+          "status": "CPU_ONLY"
+        },
+        {
+          "value": -9223372036854775807,
+          "status": "CPU_ONLY"
+        }
+      ],
+      "status": "CPU_ONLY"
+    },
+    {
+      "name": "alias_i64_scalar_cuda_jit",
+      "alias": "i64",
+      "dtype": "int64",
+      "kind": "scalar",
+      "backend": "cuda",
+      "mode": "jit",
+      "source_sha256": "25f5a4668a503949e3f50d11f274277d2650554a2b1d71c106839eecd150ce8c",
+      "values": [
+        {
+          "value": 3,
+          "status": "CPU_ONLY"
+        },
+        {
+          "value": -9223372036854775807,
+          "status": "CPU_ONLY"
+        }
+      ],
+      "status": "CPU_ONLY"
+    },
+    {
+      "name": "alias_i64_scalar_cuda_aot",
+      "alias": "i64",
+      "dtype": "int64",
+      "kind": "scalar",
+      "backend": "cuda",
+      "mode": "aot",
+      "source_sha256": "4d3649276a86f4b4b10b145a7dbef6f107b7425c819d9e0b43139a1aaaad92bf",
+      "values": [
+        {
+          "value": 3,
+          "status": "CPU_ONLY"
+        },
+        {
+          "value": -9223372036854775807,
+          "status": "CPU_ONLY"
+        }
+      ],
+      "status": "CPU_ONLY"
+    },
+    {
+      "name": "alias_i64_cast_triton_jit",
+      "alias": "i64",
+      "dtype": "int64",
+      "kind": "cast",
+      "backend": "triton",
+      "mode": "jit",
+      "source_sha256": "f441d562fe969f4121b8bd708341eba43a13931e69dc1382350793bc20e797d4",
+      "values": [],
+      "status": "FAIL",
+      "error": "Traceback (most recent call last):\n  File \"/Users/apple/Projects/infinitensor-2026/final-gpu-20260920/source/src/ninetoothed/interpreter/expressions.py\", line 218, in numpy_dtype\n    result = _numpy_dtype_from_name(name)\n             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/Users/apple/Projects/infinitensor-2026/final-gpu-20260920/source/src/ninetoothed/interpreter/expressions.py\", line 246, in _numpy_dtype_from_name\n    result = np.dtype(names.get(name, name))\n             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nTypeError: data type \"'i64'\" not understood\n\nThe above exception was the direct cause of the following exception:\n\nTraceback (most recent call last):\n  File \"/Users/apple/Projects/infinitensor-2026/final-gpu-20260920/source/src/ninetoothed/interpreter/runtime.py\", line 652, in block\n    values = self.operation(op, env, location)\n             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/Users/apple/Projects/infinitensor-2026/final-gpu-20260920/source/src/ninetoothed/interpreter/runtime.py\", line 1045, in operation\n    return np.asarray(materialize(args[0])).astype(numpy_dtype(dtype))\n                                                   ^^^^^^^^^^^^^^^^^^\n  File \"/Users/apple/Projects/infinitensor-2026/final-gpu-20260920/source/src/ninetoothed/interpreter/expressions.py\", line 220, in numpy_dtype\n    raise ValueError(f\"Unsupported interpreter dtype `{dtype}`.\") from exc\nValueError: Unsupported interpreter dtype `'i64'`.\n\nThe above exception was the direct cause of the following exception:\n\nTraceback (most recent call last):\n  File \"/Users/apple/Projects/infinitensor-2026/final-gpu-20260920/tools/verify_alias_gpu.py\", line 131, in <module>\n    raw(**values)\n  File \"/Users/apple/Projects/infinitensor-2026/final-gpu-20260920/source/src/ninetoothed/interpreter/__init__.py\", line 72, in __call__\n    return interpret_program(\n           ^^^^^^^^^^^^^^^^^^\n  File \"/Users/apple/Projects/infinitensor-2026/final-gpu-20260920/source/src/ninetoothed/interpreter/runtime.py\", line 1356, in interpret_program\n    result = execution.run()\n             ^^^^^^^^^^^^^^^\n  File \"/Users/apple/Projects/infinitensor-2026/final-gpu-20260920/source/src/ninetoothed/interpreter/runtime.py\", line 596, in run\n    self.block(self.program.blocks[0], env, \"entry\")\n  File \"/Users/apple/Projects/infinitensor-2026/final-gpu-20260920/source/src/ninetoothed/interpreter/runtime.py\", line 686, in block\n    raise InterpretationError(\nninetoothed.interpreter.runtime.InterpretationError: Operation entry:0:tensor.cast at program (0, 0, 0): Unsupported interpreter dtype `'i64'`..\n"
+    },
+    {
+      "name": "alias_i64_cast_triton_aot",
+      "alias": "i64",
+      "dtype": "int64",
+      "kind": "cast",
+      "backend": "triton",
+      "mode": "aot",
+      "source_sha256": "049ff482bff3b5f09718dce5045978521d48508f1363acefd00d9fd8bcd747ec",
+      "values": [],
+      "status": "FAIL",
+      "error": "Traceback (most recent call last):\n  File \"/Users/apple/Projects/infinitensor-2026/final-gpu-20260920/source/src/ninetoothed/interpreter/expressions.py\", line 218, in numpy_dtype\n    result = _numpy_dtype_from_name(name)\n             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/Users/apple/Projects/infinitensor-2026/final-gpu-20260920/source/src/ninetoothed/interpreter/expressions.py\", line 246, in _numpy_dtype_from_name\n    result = np.dtype(names.get(name, name))\n             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nTypeError: data type \"'i64'\" not understood\n\nThe above exception was the direct cause of the following exception:\n\nTraceback (most recent call last):\n  File \"/Users/apple/Projects/infinitensor-2026/final-gpu-20260920/source/src/ninetoothed/interpreter/runtime.py\", line 652, in block\n    values = self.operation(op, env, location)\n             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/Users/apple/Projects/infinitensor-2026/final-gpu-20260920/source/src/ninetoothed/interpreter/runtime.py\", line 1045, in operation\n    return np.asarray(materialize(args[0])).astype(numpy_dtype(dtype))\n                                                   ^^^^^^^^^^^^^^^^^^\n  File \"/Users/apple/Projects/infinitensor-2026/final-gpu-20260920/source/src/ninetoothed/interpreter/expressions.py\", line 220, in numpy_dtype\n    raise ValueError(f\"Unsupported interpreter dtype `{dtype}`.\") from exc\nValueError: Unsupported interpreter dtype `'i64'`.\n\nThe above exception was the direct cause of the following exception:\n\nTraceback (most recent call last):\n  File \"/Users/apple/Projects/infinitensor-2026/final-gpu-20260920/tools/verify_alias_gpu.py\", line 131, in <module>\n    raw(**values)\n  File \"/Users/apple/Projects/infinitensor-2026/final-gpu-20260920/source/src/ninetoothed/interpreter/__init__.py\", line 72, in __call__\n    return interpret_program(\n           ^^^^^^^^^^^^^^^^^^\n  File \"/Users/apple/Projects/infinitensor-2026/final-gpu-20260920/source/src/ninetoothed/interpreter/runtime.py\", line 1356, in interpret_program\n    result = execution.run()\n             ^^^^^^^^^^^^^^^\n  File \"/Users/apple/Projects/infinitensor-2026/final-gpu-20260920/source/src/ninetoothed/interpreter/runtime.py\", line 596, in run\n    self.block(self.program.blocks[0], env, \"entry\")\n  File \"/Users/apple/Projects/infinitensor-2026/final-gpu-20260920/source/src/ninetoothed/interpreter/runtime.py\", line 686, in block\n    raise InterpretationError(\nninetoothed.interpreter.runtime.InterpretationError: Operation entry:0:tensor.cast at program (0, 0, 0): Unsupported interpreter dtype `'i64'`..\n"
+    },
+    {
+      "name": "alias_i64_cast_cuda_jit",
+      "alias": "i64",
+      "dtype": "int64",
+      "kind": "cast",
+      "backend": "cuda",
+      "mode": "jit",
+      "source_sha256": "71c30bb2663b41cc17e044f9d7bbd86f6fa54f303c5d3e04cd28564d77211372",
+      "values": [],
+      "status": "FAIL",
+      "error": "Traceback (most recent call last):\n  File \"/Users/apple/Projects/infinitensor-2026/final-gpu-20260920/source/src/ninetoothed/interpreter/expressions.py\", line 218, in numpy_dtype\n    result = _numpy_dtype_from_name(name)\n             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/Users/apple/Projects/infinitensor-2026/final-gpu-20260920/source/src/ninetoothed/interpreter/expressions.py\", line 246, in _numpy_dtype_from_name\n    result = np.dtype(names.get(name, name))\n             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nTypeError: data type \"'i64'\" not understood\n\nThe above exception was the direct cause of the following exception:\n\nTraceback (most recent call last):\n  File \"/Users/apple/Projects/infinitensor-2026/final-gpu-20260920/source/src/ninetoothed/interpreter/runtime.py\", line 652, in block\n    values = self.operation(op, env, location)\n             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/Users/apple/Projects/infinitensor-2026/final-gpu-20260920/source/src/ninetoothed/interpreter/runtime.py\", line 1045, in operation\n    return np.asarray(materialize(args[0])).astype(numpy_dtype(dtype))\n                                                   ^^^^^^^^^^^^^^^^^^\n  File \"/Users/apple/Projects/infinitensor-2026/final-gpu-20260920/source/src/ninetoothed/interpreter/expressions.py\", line 220, in numpy_dtype\n    raise ValueError(f\"Unsupported interpreter dtype `{dtype}`.\") from exc\nValueError: Unsupported interpreter dtype `'i64'`.\n\nThe above exception was the direct cause of the following exception:\n\nTraceback (most recent call last):\n  File \"/Users/apple/Projects/infinitensor-2026/final-gpu-20260920/tools/verify_alias_gpu.py\", line 131, in <module>\n    raw(**values)\n  File \"/Users/apple/Projects/infinitensor-2026/final-gpu-20260920/source/src/ninetoothed/interpreter/__init__.py\", line 72, in __call__\n    return interpret_program(\n           ^^^^^^^^^^^^^^^^^^\n  File \"/Users/apple/Projects/infinitensor-2026/final-gpu-20260920/source/src/ninetoothed/interpreter/runtime.py\", line 1356, in interpret_program\n    result = execution.run()\n             ^^^^^^^^^^^^^^^\n  File \"/Users/apple/Projects/infinitensor-2026/final-gpu-20260920/source/src/ninetoothed/interpreter/runtime.py\", line 596, in run\n    self.block(self.program.blocks[0], env, \"entry\")\n  File \"/Users/apple/Projects/infinitensor-2026/final-gpu-20260920/source/src/ninetoothed/interpreter/runtime.py\", line 686, in block\n    raise InterpretationError(\nninetoothed.interpreter.runtime.InterpretationError: Operation entry:0:tensor.cast at program (0, 0, 0): Unsupported interpreter dtype `'i64'`..\n"
+    },
+    {
+      "name": "alias_i64_cast_cuda_aot",
+      "alias": "i64",
+      "dtype": "int64",
+      "kind": "cast",
+      "backend": "cuda",
+      "mode": "aot",
+      "source_sha256": "e581332b2bcfe0045eb753497b8ebbafb17ca9f32611f4efca6bc0f9306fc371",
+      "values": [],
+      "status": "FAIL",
+      "error": "Traceback (most recent call last):\n  File \"/Users/apple/Projects/infinitensor-2026/final-gpu-20260920/source/src/ninetoothed/interpreter/expressions.py\", line 218, in numpy_dtype\n    result = _numpy_dtype_from_name(name)\n             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/Users/apple/Projects/infinitensor-2026/final-gpu-20260920/source/src/ninetoothed/interpreter/expressions.py\", line 246, in _numpy_dtype_from_name\n    result = np.dtype(names.get(name, name))\n             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nTypeError: data type \"'i64'\" not understood\n\nThe above exception was the direct cause of the following exception:\n\nTraceback (most recent call last):\n  File \"/Users/apple/Projects/infinitensor-2026/final-gpu-20260920/source/src/ninetoothed/interpreter/runtime.py\", line 652, in block\n    values = self.operation(op, env, location)\n             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/Users/apple/Projects/infinitensor-2026/final-gpu-20260920/source/src/ninetoothed/interpreter/runtime.py\", line 1045, in operation\n    return np.asarray(materialize(args[0])).astype(numpy_dtype(dtype))\n                                                   ^^^^^^^^^^^^^^^^^^\n  File \"/Users/apple/Projects/infinitensor-2026/final-gpu-20260920/source/src/ninetoothed/interpreter/expressions.py\", line 220, in numpy_dtype\n    raise ValueError(f\"Unsupported interpreter dtype `{dtype}`.\") from exc\nValueError: Unsupported interpreter dtype `'i64'`.\n\nThe above exception was the direct cause of the following exception:\n\nTraceback (most recent call last):\n  File \"/Users/apple/Projects/infinitensor-2026/final-gpu-20260920/tools/verify_alias_gpu.py\", line 131, in <module>\n    raw(**values)\n  File \"/Users/apple/Projects/infinitensor-2026/final-gpu-20260920/source/src/ninetoothed/interpreter/__init__.py\", line 72, in __call__\n    return interpret_program(\n           ^^^^^^^^^^^^^^^^^^\n  File \"/Users/apple/Projects/infinitensor-2026/final-gpu-20260920/source/src/ninetoothed/interpreter/runtime.py\", line 1356, in interpret_program\n    result = execution.run()\n             ^^^^^^^^^^^^^^^\n  File \"/Users/apple/Projects/infinitensor-2026/final-gpu-20260920/source/src/ninetoothed/interpreter/runtime.py\", line 596, in run\n    self.block(self.program.blocks[0], env, \"entry\")\n  File \"/Users/apple/Projects/infinitensor-2026/final-gpu-20260920/source/src/ninetoothed/interpreter/runtime.py\", line 686, in block\n    raise InterpretationError(\nninetoothed.interpreter.runtime.InterpretationError: Operation entry:0:tensor.cast at program (0, 0, 0): Unsupported interpreter dtype `'i64'`..\n"
+    },
+    {
+      "name": "alias_u8_scalar_triton_jit",
+      "alias": "u8",
+      "dtype": "uint8",
+      "kind": "scalar",
+      "backend": "triton",
+      "mode": "jit",
+      "source_sha256": "2eff043e14bc56fd0d46123bb8f6f4d85108ffb0369ef38aaf7c2881a05289c0",
+      "values": [
+        {
+          "value": 3,
+          "status": "CPU_ONLY"
+        },
+        {
+          "value": 255,
+          "status": "CPU_ONLY"
+        }
+      ],
+      "status": "CPU_ONLY"
+    },
+    {
+      "name": "alias_u8_scalar_triton_aot",
+      "alias": "u8",
+      "dtype": "uint8",
+      "kind": "scalar",
+      "backend": "triton",
+      "mode": "aot",
+      "source_sha256": "bb39a3889e71870f587069e145cc3a38be2df68c20341534edf271abd8bff7ca",
+      "values": [
+        {
+          "value": 3,
+          "status": "CPU_ONLY"
+        },
+        {
+          "value": 255,
+          "status": "CPU_ONLY"
+        }
+      ],
+      "status": "CPU_ONLY"
+    },
+    {
+      "name": "alias_u8_scalar_cuda_jit",
+      "alias": "u8",
+      "dtype": "uint8",
+      "kind": "scalar",
+      "backend": "cuda",
+      "mode": "jit",
+      "source_sha256": "81a1a484be08fbae4e7bf942721311df4b9b4172bace0036b8443cbf14e31f69",
+      "values": [
+        {
+          "value": 3,
+          "status": "CPU_ONLY"
+        },
+        {
+          "value": 255,
+          "status": "CPU_ONLY"
+        }
+      ],
+      "status": "CPU_ONLY"
+    },
+    {
+      "name": "alias_u8_scalar_cuda_aot",
+      "alias": "u8",
+      "dtype": "uint8",
+      "kind": "scalar",
+      "backend": "cuda",
+      "mode": "aot",
+      "source_sha256": "b34f4ae91f461f4914a711fd55f1c550d9a7d7a8009ec673cd2343bab26ae155",
+      "values": [
+        {
+          "value": 3,
+          "status": "CPU_ONLY"
+        },
+        {
+          "value": 255,
+          "status": "CPU_ONLY"
+        }
+      ],
+      "status": "CPU_ONLY"
+    },
+    {
+      "name": "alias_u8_cast_triton_jit",
+      "alias": "u8",
+      "dtype": "uint8",
+      "kind": "cast",
+      "backend": "triton",
+      "mode": "jit",
+      "source_sha256": "d215b192c5b9cd45a6893a8ee8a5e8cfa03eb0c2fe28e70d73be7bc8708eaafb",
+      "values": [],
+      "status": "FAIL",
+      "error": "Traceback (most recent call last):\n  File \"/Users/apple/Projects/infinitensor-2026/final-gpu-20260920/source/src/ninetoothed/interpreter/expressions.py\", line 218, in numpy_dtype\n    result = _numpy_dtype_from_name(name)\n             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/Users/apple/Projects/infinitensor-2026/final-gpu-20260920/source/src/ninetoothed/interpreter/expressions.py\", line 246, in _numpy_dtype_from_name\n    result = np.dtype(names.get(name, name))\n             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nTypeError: data type \"'u8'\" not understood\n\nThe above exception was the direct cause of the following exception:\n\nTraceback (most recent call last):\n  File \"/Users/apple/Projects/infinitensor-2026/final-gpu-20260920/source/src/ninetoothed/interpreter/runtime.py\", line 652, in block\n    values = self.operation(op, env, location)\n             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/Users/apple/Projects/infinitensor-2026/final-gpu-20260920/source/src/ninetoothed/interpreter/runtime.py\", line 1045, in operation\n    return np.asarray(materialize(args[0])).astype(numpy_dtype(dtype))\n                                                   ^^^^^^^^^^^^^^^^^^\n  File \"/Users/apple/Projects/infinitensor-2026/final-gpu-20260920/source/src/ninetoothed/interpreter/expressions.py\", line 220, in numpy_dtype\n    raise ValueError(f\"Unsupported interpreter dtype `{dtype}`.\") from exc\nValueError: Unsupported interpreter dtype `'u8'`.\n\nThe above exception was the direct cause of the following exception:\n\nTraceback (most recent call last):\n  File \"/Users/apple/Projects/infinitensor-2026/final-gpu-20260920/tools/verify_alias_gpu.py\", line 131, in <module>\n    raw(**values)\n  File \"/Users/apple/Projects/infinitensor-2026/final-gpu-20260920/source/src/ninetoothed/interpreter/__init__.py\", line 72, in __call__\n    return interpret_program(\n           ^^^^^^^^^^^^^^^^^^\n  File \"/Users/apple/Projects/infinitensor-2026/final-gpu-20260920/source/src/ninetoothed/interpreter/runtime.py\", line 1356, in interpret_program\n    result = execution.run()\n             ^^^^^^^^^^^^^^^\n  File \"/Users/apple/Projects/infinitensor-2026/final-gpu-20260920/source/src/ninetoothed/interpreter/runtime.py\", line 596, in run\n    self.block(self.program.blocks[0], env, \"entry\")\n  File \"/Users/apple/Projects/infinitensor-2026/final-gpu-20260920/source/src/ninetoothed/interpreter/runtime.py\", line 686, in block\n    raise InterpretationError(\nninetoothed.interpreter.runtime.InterpretationError: Operation entry:0:tensor.cast at program (0, 0, 0): Unsupported interpreter dtype `'u8'`..\n"
+    },
+    {
+      "name": "alias_u8_cast_triton_aot",
+      "alias": "u8",
+      "dtype": "uint8",
+      "kind": "cast",
+      "backend": "triton",
+      "mode": "aot",
+      "source_sha256": "3652d2ad89a54d89973116dc25c3af2089ee9be414c767a6ea4e258b69b7f2a6",
+      "values": [],
+      "status": "FAIL",
+      "error": "Traceback (most recent call last):\n  File \"/Users/apple/Projects/infinitensor-2026/final-gpu-20260920/source/src/ninetoothed/interpreter/expressions.py\", line 218, in numpy_dtype\n    result = _numpy_dtype_from_name(name)\n             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/Users/apple/Projects/infinitensor-2026/final-gpu-20260920/source/src/ninetoothed/interpreter/expressions.py\", line 246, in _numpy_dtype_from_name\n    result = np.dtype(names.get(name, name))\n             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nTypeError: data type \"'u8'\" not understood\n\nThe above exception was the direct cause of the following exception:\n\nTraceback (most recent call last):\n  File \"/Users/apple/Projects/infinitensor-2026/final-gpu-20260920/source/src/ninetoothed/interpreter/runtime.py\", line 652, in block\n    values = self.operation(op, env, location)\n             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/Users/apple/Projects/infinitensor-2026/final-gpu-20260920/source/src/ninetoothed/interpreter/runtime.py\", line 1045, in operation\n    return np.asarray(materialize(args[0])).astype(numpy_dtype(dtype))\n                                                   ^^^^^^^^^^^^^^^^^^\n  File \"/Users/apple/Projects/infinitensor-2026/final-gpu-20260920/source/src/ninetoothed/interpreter/expressions.py\", line 220, in numpy_dtype\n    raise ValueError(f\"Unsupported interpreter dtype `{dtype}`.\") from exc\nValueError: Unsupported interpreter dtype `'u8'`.\n\nThe above exception was the direct cause of the following exception:\n\nTraceback (most recent call last):\n  File \"/Users/apple/Projects/infinitensor-2026/final-gpu-20260920/tools/verify_alias_gpu.py\", line 131, in <module>\n    raw(**values)\n  File \"/Users/apple/Projects/infinitensor-2026/final-gpu-20260920/source/src/ninetoothed/interpreter/__init__.py\", line 72, in __call__\n    return interpret_program(\n           ^^^^^^^^^^^^^^^^^^\n  File \"/Users/apple/Projects/infinitensor-2026/final-gpu-20260920/source/src/ninetoothed/interpreter/runtime.py\", line 1356, in interpret_program\n    result = execution.run()\n             ^^^^^^^^^^^^^^^\n  File \"/Users/apple/Projects/infinitensor-2026/final-gpu-20260920/source/src/ninetoothed/interpreter/runtime.py\", line 596, in run\n    self.block(self.program.blocks[0], env, \"entry\")\n  File \"/Users/apple/Projects/infinitensor-2026/final-gpu-20260920/source/src/ninetoothed/interpreter/runtime.py\", line 686, in block\n    raise InterpretationError(\nninetoothed.interpreter.runtime.InterpretationError: Operation entry:0:tensor.cast at program (0, 0, 0): Unsupported interpreter dtype `'u8'`..\n"
+    },
+    {
+      "name": "alias_u8_cast_cuda_jit",
+      "alias": "u8",
+      "dtype": "uint8",
+      "kind": "cast",
+      "backend": "cuda",
+      "mode": "jit",
+      "source_sha256": "4eacf86a27036e146f7137d9520130b49761bd2397dc298ac66d3ded3d16f703",
+      "values": [],
+      "status": "FAIL",
+      "error": "Traceback (most recent call last):\n  File \"/Users/apple/Projects/infinitensor-2026/final-gpu-20260920/source/src/ninetoothed/interpreter/expressions.py\", line 218, in numpy_dtype\n    result = _numpy_dtype_from_name(name)\n             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/Users/apple/Projects/infinitensor-2026/final-gpu-20260920/source/src/ninetoothed/interpreter/expressions.py\", line 246, in _numpy_dtype_from_name\n    result = np.dtype(names.get(name, name))\n             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nTypeError: data type \"'u8'\" not understood\n\nThe above exception was the direct cause of the following exception:\n\nTraceback (most recent call last):\n  File \"/Users/apple/Projects/infinitensor-2026/final-gpu-20260920/source/src/ninetoothed/interpreter/runtime.py\", line 652, in block\n    values = self.operation(op, env, location)\n             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/Users/apple/Projects/infinitensor-2026/final-gpu-20260920/source/src/ninetoothed/interpreter/runtime.py\", line 1045, in operation\n    return np.asarray(materialize(args[0])).astype(numpy_dtype(dtype))\n                                                   ^^^^^^^^^^^^^^^^^^\n  File \"/Users/apple/Projects/infinitensor-2026/final-gpu-20260920/source/src/ninetoothed/interpreter/expressions.py\", line 220, in numpy_dtype\n    raise ValueError(f\"Unsupported interpreter dtype `{dtype}`.\") from exc\nValueError: Unsupported interpreter dtype `'u8'`.\n\nThe above exception was the direct cause of the following exception:\n\nTraceback (most recent call last):\n  File \"/Users/apple/Projects/infinitensor-2026/final-gpu-20260920/tools/verify_alias_gpu.py\", line 131, in <module>\n    raw(**values)\n  File \"/Users/apple/Projects/infinitensor-2026/final-gpu-20260920/source/src/ninetoothed/interpreter/__init__.py\", line 72, in __call__\n    return interpret_program(\n           ^^^^^^^^^^^^^^^^^^\n  File \"/Users/apple/Projects/infinitensor-2026/final-gpu-20260920/source/src/ninetoothed/interpreter/runtime.py\", line 1356, in interpret_program\n    result = execution.run()\n             ^^^^^^^^^^^^^^^\n  File \"/Users/apple/Projects/infinitensor-2026/final-gpu-20260920/source/src/ninetoothed/interpreter/runtime.py\", line 596, in run\n    self.block(self.program.blocks[0], env, \"entry\")\n  File \"/Users/apple/Projects/infinitensor-2026/final-gpu-20260920/source/src/ninetoothed/interpreter/runtime.py\", line 686, in block\n    raise InterpretationError(\nninetoothed.interpreter.runtime.InterpretationError: Operation entry:0:tensor.cast at program (0, 0, 0): Unsupported interpreter dtype `'u8'`..\n"
+    },
+    {
+      "name": "alias_u8_cast_cuda_aot",
+      "alias": "u8",
+      "dtype": "uint8",
+      "kind": "cast",
+      "backend": "cuda",
+      "mode": "aot",
+      "source_sha256": "22fb017e770970ef5fc6d134577020617e995dc6c1e47fb01fc2f752be20562b",
+      "values": [],
+      "status": "FAIL",
+      "error": "Traceback (most recent call last):\n  File \"/Users/apple/Projects/infinitensor-2026/final-gpu-20260920/source/src/ninetoothed/interpreter/expressions.py\", line 218, in numpy_dtype\n    result = _numpy_dtype_from_name(name)\n             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/Users/apple/Projects/infinitensor-2026/final-gpu-20260920/source/src/ninetoothed/interpreter/expressions.py\", line 246, in _numpy_dtype_from_name\n    result = np.dtype(names.get(name, name))\n             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nTypeError: data type \"'u8'\" not understood\n\nThe above exception was the direct cause of the following exception:\n\nTraceback (most recent call last):\n  File \"/Users/apple/Projects/infinitensor-2026/final-gpu-20260920/source/src/ninetoothed/interpreter/runtime.py\", line 652, in block\n    values = self.operation(op, env, location)\n             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/Users/apple/Projects/infinitensor-2026/final-gpu-20260920/source/src/ninetoothed/interpreter/runtime.py\", line 1045, in operation\n    return np.asarray(materialize(args[0])).astype(numpy_dtype(dtype))\n                                                   ^^^^^^^^^^^^^^^^^^\n  File \"/Users/apple/Projects/infinitensor-2026/final-gpu-20260920/source/src/ninetoothed/interpreter/expressions.py\", line 220, in numpy_dtype\n    raise ValueError(f\"Unsupported interpreter dtype `{dtype}`.\") from exc\nValueError: Unsupported interpreter dtype `'u8'`.\n\nThe above exception was the direct cause of the following exception:\n\nTraceback (most recent call last):\n  File \"/Users/apple/Projects/infinitensor-2026/final-gpu-20260920/tools/verify_alias_gpu.py\", line 131, in <module>\n    raw(**values)\n  File \"/Users/apple/Projects/infinitensor-2026/final-gpu-20260920/source/src/ninetoothed/interpreter/__init__.py\", line 72, in __call__\n    return interpret_program(\n           ^^^^^^^^^^^^^^^^^^\n  File \"/Users/apple/Projects/infinitensor-2026/final-gpu-20260920/source/src/ninetoothed/interpreter/runtime.py\", line 1356, in interpret_program\n    result = execution.run()\n             ^^^^^^^^^^^^^^^\n  File \"/Users/apple/Projects/infinitensor-2026/final-gpu-20260920/source/src/ninetoothed/interpreter/runtime.py\", line 596, in run\n    self.block(self.program.blocks[0], env, \"entry\")\n  File \"/Users/apple/Projects/infinitensor-2026/final-gpu-20260920/source/src/ninetoothed/interpreter/runtime.py\", line 686, in block\n    raise InterpretationError(\nninetoothed.interpreter.runtime.InterpretationError: Operation entry:0:tensor.cast at program (0, 0, 0): Unsupported interpreter dtype `'u8'`..\n"
+    },
+    {
+      "name": "alias_u16_scalar_triton_jit",
+      "alias": "u16",
+      "dtype": "uint16",
+      "kind": "scalar",
+      "backend": "triton",
+      "mode": "jit",
+      "source_sha256": "e06adb09b853a27ae281b482573d57b8f46ee9f0008462ab6403949db70a128e",
+      "values": [
+        {
+          "value": 3,
+          "status": "CPU_ONLY"
+        },
+        {
+          "value": 65535,
+          "status": "CPU_ONLY"
+        }
+      ],
+      "status": "CPU_ONLY"
+    },
+    {
+      "name": "alias_u16_scalar_triton_aot",
+      "alias": "u16",
+      "dtype": "uint16",
+      "kind": "scalar",
+      "backend": "triton",
+      "mode": "aot",
+      "source_sha256": "c394869c31e4224dfacc5fd2c85d73b77e369b5d48f3a0f827862745d21e7aae",
+      "values": [
+        {
+          "value": 3,
+          "status": "CPU_ONLY"
+        },
+        {
+          "value": 65535,
+          "status": "CPU_ONLY"
+        }
+      ],
+      "status": "CPU_ONLY"
+    },
+    {
+      "name": "alias_u16_scalar_cuda_jit",
+      "alias": "u16",
+      "dtype": "uint16",
+      "kind": "scalar",
+      "backend": "cuda",
+      "mode": "jit",
+      "source_sha256": "ec74c93c20e0761bcef9d96842fef4161b66ebbc10fdd4a95c855d8acece0b0d",
+      "values": [
+        {
+          "value": 3,
+          "status": "CPU_ONLY"
+        },
+        {
+          "value": 65535,
+          "status": "CPU_ONLY"
+        }
+      ],
+      "status": "CPU_ONLY"
+    },
+    {
+      "name": "alias_u16_scalar_cuda_aot",
+      "alias": "u16",
+      "dtype": "uint16",
+      "kind": "scalar",
+      "backend": "cuda",
+      "mode": "aot",
+      "source_sha256": "a6d84575c3dc0d9e6f4bc25856a9543b78f89851a851f4ed2dc51ae73acc475f",
+      "values": [
+        {
+          "value": 3,
+          "status": "CPU_ONLY"
+        },
+        {
+          "value": 65535,
+          "status": "CPU_ONLY"
+        }
+      ],
+      "status": "CPU_ONLY"
+    },
+    {
+      "name": "alias_u16_cast_triton_jit",
+      "alias": "u16",
+      "dtype": "uint16",
+      "kind": "cast",
+      "backend": "triton",
+      "mode": "jit",
+      "source_sha256": "a9fdcf37732cc4ee8da1237cf320a9d07c1fe50d8ac7e64ea9562753d9af6472",
+      "values": [],
+      "status": "FAIL",
+      "error": "Traceback (most recent call last):\n  File \"/Users/apple/Projects/infinitensor-2026/final-gpu-20260920/source/src/ninetoothed/interpreter/expressions.py\", line 218, in numpy_dtype\n    result = _numpy_dtype_from_name(name)\n             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/Users/apple/Projects/infinitensor-2026/final-gpu-20260920/source/src/ninetoothed/interpreter/expressions.py\", line 246, in _numpy_dtype_from_name\n    result = np.dtype(names.get(name, name))\n             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nTypeError: data type \"'u16'\" not understood\n\nThe above exception was the direct cause of the following exception:\n\nTraceback (most recent call last):\n  File \"/Users/apple/Projects/infinitensor-2026/final-gpu-20260920/source/src/ninetoothed/interpreter/runtime.py\", line 652, in block\n    values = self.operation(op, env, location)\n             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/Users/apple/Projects/infinitensor-2026/final-gpu-20260920/source/src/ninetoothed/interpreter/runtime.py\", line 1045, in operation\n    return np.asarray(materialize(args[0])).astype(numpy_dtype(dtype))\n                                                   ^^^^^^^^^^^^^^^^^^\n  File \"/Users/apple/Projects/infinitensor-2026/final-gpu-20260920/source/src/ninetoothed/interpreter/expressions.py\", line 220, in numpy_dtype\n    raise ValueError(f\"Unsupported interpreter dtype `{dtype}`.\") from exc\nValueError: Unsupported interpreter dtype `'u16'`.\n\nThe above exception was the direct cause of the following exception:\n\nTraceback (most recent call last):\n  File \"/Users/apple/Projects/infinitensor-2026/final-gpu-20260920/tools/verify_alias_gpu.py\", line 131, in <module>\n    raw(**values)\n  File \"/Users/apple/Projects/infinitensor-2026/final-gpu-20260920/source/src/ninetoothed/interpreter/__init__.py\", line 72, in __call__\n    return interpret_program(\n           ^^^^^^^^^^^^^^^^^^\n  File \"/Users/apple/Projects/infinitensor-2026/final-gpu-20260920/source/src/ninetoothed/interpreter/runtime.py\", line 1356, in interpret_program\n    result = execution.run()\n             ^^^^^^^^^^^^^^^\n  File \"/Users/apple/Projects/infinitensor-2026/final-gpu-20260920/source/src/ninetoothed/interpreter/runtime.py\", line 596, in run\n    self.block(self.program.blocks[0], env, \"entry\")\n  File \"/Users/apple/Projects/infinitensor-2026/final-gpu-20260920/source/src/ninetoothed/interpreter/runtime.py\", line 686, in block\n    raise InterpretationError(\nninetoothed.interpreter.runtime.InterpretationError: Operation entry:0:tensor.cast at program (0, 0, 0): Unsupported interpreter dtype `'u16'`..\n"
+    },
+    {
+      "name": "alias_u16_cast_triton_aot",
+      "alias": "u16",
+      "dtype": "uint16",
+      "kind": "cast",
+      "backend": "triton",
+      "mode": "aot",
+      "source_sha256": "60cfce2d58f9c93e88afe3fb1bbdf30fc72739dddc2dc2526ce2d9e6fb6a39e6",
+      "values": [],
+      "status": "FAIL",
+      "error": "Traceback (most recent call last):\n  File \"/Users/apple/Projects/infinitensor-2026/final-gpu-20260920/source/src/ninetoothed/interpreter/expressions.py\", line 218, in numpy_dtype\n    result = _numpy_dtype_from_name(name)\n             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/Users/apple/Projects/infinitensor-2026/final-gpu-20260920/source/src/ninetoothed/interpreter/expressions.py\", line 246, in _numpy_dtype_from_name\n    result = np.dtype(names.get(name, name))\n             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nTypeError: data type \"'u16'\" not understood\n\nThe above exception was the direct cause of the following exception:\n\nTraceback (most recent call last):\n  File \"/Users/apple/Projects/infinitensor-2026/final-gpu-20260920/source/src/ninetoothed/interpreter/runtime.py\", line 652, in block\n    values = self.operation(op, env, location)\n             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/Users/apple/Projects/infinitensor-2026/final-gpu-20260920/source/src/ninetoothed/interpreter/runtime.py\", line 1045, in operation\n    return np.asarray(materialize(args[0])).astype(numpy_dtype(dtype))\n                                                   ^^^^^^^^^^^^^^^^^^\n  File \"/Users/apple/Projects/infinitensor-2026/final-gpu-20260920/source/src/ninetoothed/interpreter/expressions.py\", line 220, in numpy_dtype\n    raise ValueError(f\"Unsupported interpreter dtype `{dtype}`.\") from exc\nValueError: Unsupported interpreter dtype `'u16'`.\n\nThe above exception was the direct cause of the following exception:\n\nTraceback (most recent call last):\n  File \"/Users/apple/Projects/infinitensor-2026/final-gpu-20260920/tools/verify_alias_gpu.py\", line 131, in <module>\n    raw(**values)\n  File \"/Users/apple/Projects/infinitensor-2026/final-gpu-20260920/source/src/ninetoothed/interpreter/__init__.py\", line 72, in __call__\n    return interpret_program(\n           ^^^^^^^^^^^^^^^^^^\n  File \"/Users/apple/Projects/infinitensor-2026/final-gpu-20260920/source/src/ninetoothed/interpreter/runtime.py\", line 1356, in interpret_program\n    result = execution.run()\n             ^^^^^^^^^^^^^^^\n  File \"/Users/apple/Projects/infinitensor-2026/final-gpu-20260920/source/src/ninetoothed/interpreter/runtime.py\", line 596, in run\n    self.block(self.program.blocks[0], env, \"entry\")\n  File \"/Users/apple/Projects/infinitensor-2026/final-gpu-20260920/source/src/ninetoothed/interpreter/runtime.py\", line 686, in block\n    raise InterpretationError(\nninetoothed.interpreter.runtime.InterpretationError: Operation entry:0:tensor.cast at program (0, 0, 0): Unsupported interpreter dtype `'u16'`..\n"
+    },
+    {
+      "name": "alias_u16_cast_cuda_jit",
+      "alias": "u16",
+      "dtype": "uint16",
+      "kind": "cast",
+      "backend": "cuda",
+      "mode": "jit",
+      "source_sha256": "2661ab85c5daa0f633616cdb29c3bb76bde04d88a7c7f91448b638d893489695",
+      "values": [],
+      "status": "FAIL",
+      "error": "Traceback (most recent call last):\n  File \"/Users/apple/Projects/infinitensor-2026/final-gpu-20260920/source/src/ninetoothed/interpreter/expressions.py\", line 218, in numpy_dtype\n    result = _numpy_dtype_from_name(name)\n             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/Users/apple/Projects/infinitensor-2026/final-gpu-20260920/source/src/ninetoothed/interpreter/expressions.py\", line 246, in _numpy_dtype_from_name\n    result = np.dtype(names.get(name, name))\n             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nTypeError: data type \"'u16'\" not understood\n\nThe above exception was the direct cause of the following exception:\n\nTraceback (most recent call last):\n  File \"/Users/apple/Projects/infinitensor-2026/final-gpu-20260920/source/src/ninetoothed/interpreter/runtime.py\", line 652, in block\n    values = self.operation(op, env, location)\n             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/Users/apple/Projects/infinitensor-2026/final-gpu-20260920/source/src/ninetoothed/interpreter/runtime.py\", line 1045, in operation\n    return np.asarray(materialize(args[0])).astype(numpy_dtype(dtype))\n                                                   ^^^^^^^^^^^^^^^^^^\n  File \"/Users/apple/Projects/infinitensor-2026/final-gpu-20260920/source/src/ninetoothed/interpreter/expressions.py\", line 220, in numpy_dtype\n    raise ValueError(f\"Unsupported interpreter dtype `{dtype}`.\") from exc\nValueError: Unsupported interpreter dtype `'u16'`.\n\nThe above exception was the direct cause of the following exception:\n\nTraceback (most recent call last):\n  File \"/Users/apple/Projects/infinitensor-2026/final-gpu-20260920/tools/verify_alias_gpu.py\", line 131, in <module>\n    raw(**values)\n  File \"/Users/apple/Projects/infinitensor-2026/final-gpu-20260920/source/src/ninetoothed/interpreter/__init__.py\", line 72, in __call__\n    return interpret_program(\n           ^^^^^^^^^^^^^^^^^^\n  File \"/Users/apple/Projects/infinitensor-2026/final-gpu-20260920/source/src/ninetoothed/interpreter/runtime.py\", line 1356, in interpret_program\n    result = execution.run()\n             ^^^^^^^^^^^^^^^\n  File \"/Users/apple/Projects/infinitensor-2026/final-gpu-20260920/source/src/ninetoothed/interpreter/runtime.py\", line 596, in run\n    self.block(self.program.blocks[0], env, \"entry\")\n  File \"/Users/apple/Projects/infinitensor-2026/final-gpu-20260920/source/src/ninetoothed/interpreter/runtime.py\", line 686, in block\n    raise InterpretationError(\nninetoothed.interpreter.runtime.InterpretationError: Operation entry:0:tensor.cast at program (0, 0, 0): Unsupported interpreter dtype `'u16'`..\n"
+    },
+    {
+      "name": "alias_u16_cast_cuda_aot",
+      "alias": "u16",
+      "dtype": "uint16",
+      "kind": "cast",
+      "backend": "cuda",
+      "mode": "aot",
+      "source_sha256": "1492954bab17564f1a829c5517ca19f389ce386fcc6179357fd52e922e729ea6",
+      "values": [],
+      "status": "FAIL",
+      "error": "Traceback (most recent call last):\n  File \"/Users/apple/Projects/infinitensor-2026/final-gpu-20260920/source/src/ninetoothed/interpreter/expressions.py\", line 218, in numpy_dtype\n    result = _numpy_dtype_from_name(name)\n             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/Users/apple/Projects/infinitensor-2026/final-gpu-20260920/source/src/ninetoothed/interpreter/expressions.py\", line 246, in _numpy_dtype_from_name\n    result = np.dtype(names.get(name, name))\n             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nTypeError: data type \"'u16'\" not understood\n\nThe above exception was the direct cause of the following exception:\n\nTraceback (most recent call last):\n  File \"/Users/apple/Projects/infinitensor-2026/final-gpu-20260920/source/src/ninetoothed/interpreter/runtime.py\", line 652, in block\n    values = self.operation(op, env, location)\n             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/Users/apple/Projects/infinitensor-2026/final-gpu-20260920/source/src/ninetoothed/interpreter/runtime.py\", line 1045, in operation\n    return np.asarray(materialize(args[0])).astype(numpy_dtype(dtype))\n                                                   ^^^^^^^^^^^^^^^^^^\n  File \"/Users/apple/Projects/infinitensor-2026/final-gpu-20260920/source/src/ninetoothed/interpreter/expressions.py\", line 220, in numpy_dtype\n    raise ValueError(f\"Unsupported interpreter dtype `{dtype}`.\") from exc\nValueError: Unsupported interpreter dtype `'u16'`.\n\nThe above exception was the direct cause of the following exception:\n\nTraceback (most recent call last):\n  File \"/Users/apple/Projects/infinitensor-2026/final-gpu-20260920/tools/verify_alias_gpu.py\", line 131, in <module>\n    raw(**values)\n  File \"/Users/apple/Projects/infinitensor-2026/final-gpu-20260920/source/src/ninetoothed/interpreter/__init__.py\", line 72, in __call__\n    return interpret_program(\n           ^^^^^^^^^^^^^^^^^^\n  File \"/Users/apple/Projects/infinitensor-2026/final-gpu-20260920/source/src/ninetoothed/interpreter/runtime.py\", line 1356, in interpret_program\n    result = execution.run()\n             ^^^^^^^^^^^^^^^\n  File \"/Users/apple/Projects/infinitensor-2026/final-gpu-20260920/source/src/ninetoothed/interpreter/runtime.py\", line 596, in run\n    self.block(self.program.blocks[0], env, \"entry\")\n  File \"/Users/apple/Projects/infinitensor-2026/final-gpu-20260920/source/src/ninetoothed/interpreter/runtime.py\", line 686, in block\n    raise InterpretationError(\nninetoothed.interpreter.runtime.InterpretationError: Operation entry:0:tensor.cast at program (0, 0, 0): Unsupported interpreter dtype `'u16'`..\n"
+    },
+    {
+      "name": "alias_u32_scalar_triton_jit",
+      "alias": "u32",
+      "dtype": "uint32",
+      "kind": "scalar",
+      "backend": "triton",
+      "mode": "jit",
+      "source_sha256": "0939a668fea7d1fae1eed4d222e18cd2b3deeb64ab3eadbbec760c114d494516",
+      "values": [
+        {
+          "value": 3,
+          "status": "CPU_ONLY"
+        },
+        {
+          "value": 4294967295,
+          "status": "CPU_ONLY"
+        }
+      ],
+      "status": "CPU_ONLY"
+    },
+    {
+      "name": "alias_u32_scalar_triton_aot",
+      "alias": "u32",
+      "dtype": "uint32",
+      "kind": "scalar",
+      "backend": "triton",
+      "mode": "aot",
+      "source_sha256": "7067bb388cbea7eae4611c279fe8be81ae83130dd9c9ece8d372bb4f45009c3e",
+      "values": [
+        {
+          "value": 3,
+          "status": "CPU_ONLY"
+        },
+        {
+          "value": 4294967295,
+          "status": "CPU_ONLY"
+        }
+      ],
+      "status": "CPU_ONLY"
+    },
+    {
+      "name": "alias_u32_scalar_cuda_jit",
+      "alias": "u32",
+      "dtype": "uint32",
+      "kind": "scalar",
+      "backend": "cuda",
+      "mode": "jit",
+      "source_sha256": "b9113a6367130046b94c23fde2b202049a8f44cf5e8a4b2bea4053e322327f43",
+      "values": [
+        {
+          "value": 3,
+          "status": "CPU_ONLY"
+        },
+        {
+          "value": 4294967295,
+          "status": "CPU_ONLY"
+        }
+      ],
+      "status": "CPU_ONLY"
+    },
+    {
+      "name": "alias_u32_scalar_cuda_aot",
+      "alias": "u32",
+      "dtype": "uint32",
+      "kind": "scalar",
+      "backend": "cuda",
+      "mode": "aot",
+      "source_sha256": "a3880f1aaf4f8a3d76d350f455bdaff418830e569aaa45c88365c3350803427f",
+      "values": [
+        {
+          "value": 3,
+          "status": "CPU_ONLY"
+        },
+        {
+          "value": 4294967295,
+          "status": "CPU_ONLY"
+        }
+      ],
+      "status": "CPU_ONLY"
+    },
+    {
+      "name": "alias_u32_cast_triton_jit",
+      "alias": "u32",
+      "dtype": "uint32",
+      "kind": "cast",
+      "backend": "triton",
+      "mode": "jit",
+      "source_sha256": "609277b095fdd2fc5afd4d203dca87d933bc8c5942985a4f51ec05b1e78958f0",
+      "values": [],
+      "status": "FAIL",
+      "error": "Traceback (most recent call last):\n  File \"/Users/apple/Projects/infinitensor-2026/final-gpu-20260920/source/src/ninetoothed/interpreter/expressions.py\", line 218, in numpy_dtype\n    result = _numpy_dtype_from_name(name)\n             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/Users/apple/Projects/infinitensor-2026/final-gpu-20260920/source/src/ninetoothed/interpreter/expressions.py\", line 246, in _numpy_dtype_from_name\n    result = np.dtype(names.get(name, name))\n             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nTypeError: data type \"'u32'\" not understood\n\nThe above exception was the direct cause of the following exception:\n\nTraceback (most recent call last):\n  File \"/Users/apple/Projects/infinitensor-2026/final-gpu-20260920/source/src/ninetoothed/interpreter/runtime.py\", line 652, in block\n    values = self.operation(op, env, location)\n             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/Users/apple/Projects/infinitensor-2026/final-gpu-20260920/source/src/ninetoothed/interpreter/runtime.py\", line 1045, in operation\n    return np.asarray(materialize(args[0])).astype(numpy_dtype(dtype))\n                                                   ^^^^^^^^^^^^^^^^^^\n  File \"/Users/apple/Projects/infinitensor-2026/final-gpu-20260920/source/src/ninetoothed/interpreter/expressions.py\", line 220, in numpy_dtype\n    raise ValueError(f\"Unsupported interpreter dtype `{dtype}`.\") from exc\nValueError: Unsupported interpreter dtype `'u32'`.\n\nThe above exception was the direct cause of the following exception:\n\nTraceback (most recent call last):\n  File \"/Users/apple/Projects/infinitensor-2026/final-gpu-20260920/tools/verify_alias_gpu.py\", line 131, in <module>\n    raw(**values)\n  File \"/Users/apple/Projects/infinitensor-2026/final-gpu-20260920/source/src/ninetoothed/interpreter/__init__.py\", line 72, in __call__\n    return interpret_program(\n           ^^^^^^^^^^^^^^^^^^\n  File \"/Users/apple/Projects/infinitensor-2026/final-gpu-20260920/source/src/ninetoothed/interpreter/runtime.py\", line 1356, in interpret_program\n    result = execution.run()\n             ^^^^^^^^^^^^^^^\n  File \"/Users/apple/Projects/infinitensor-2026/final-gpu-20260920/source/src/ninetoothed/interpreter/runtime.py\", line 596, in run\n    self.block(self.program.blocks[0], env, \"entry\")\n  File \"/Users/apple/Projects/infinitensor-2026/final-gpu-20260920/source/src/ninetoothed/interpreter/runtime.py\", line 686, in block\n    raise InterpretationError(\nninetoothed.interpreter.runtime.InterpretationError: Operation entry:0:tensor.cast at program (0, 0, 0): Unsupported interpreter dtype `'u32'`..\n"
+    },
+    {
+      "name": "alias_u32_cast_triton_aot",
+      "alias": "u32",
+      "dtype": "uint32",
+      "kind": "cast",
+      "backend": "triton",
+      "mode": "aot",
+      "source_sha256": "4b1d3f6e702467850a7aaf53257f27ebffbbc49478fdbfe6c51ec68728190bfb",
+      "values": [],
+      "status": "FAIL",
+      "error": "Traceback (most recent call last):\n  File \"/Users/apple/Projects/infinitensor-2026/final-gpu-20260920/source/src/ninetoothed/interpreter/expressions.py\", line 218, in numpy_dtype\n    result = _numpy_dtype_from_name(name)\n             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/Users/apple/Projects/infinitensor-2026/final-gpu-20260920/source/src/ninetoothed/interpreter/expressions.py\", line 246, in _numpy_dtype_from_name\n    result = np.dtype(names.get(name, name))\n             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nTypeError: data type \"'u32'\" not understood\n\nThe above exception was the direct cause of the following exception:\n\nTraceback (most recent call last):\n  File \"/Users/apple/Projects/infinitensor-2026/final-gpu-20260920/source/src/ninetoothed/interpreter/runtime.py\", line 652, in block\n    values = self.operation(op, env, location)\n             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/Users/apple/Projects/infinitensor-2026/final-gpu-20260920/source/src/ninetoothed/interpreter/runtime.py\", line 1045, in operation\n    return np.asarray(materialize(args[0])).astype(numpy_dtype(dtype))\n                                                   ^^^^^^^^^^^^^^^^^^\n  File \"/Users/apple/Projects/infinitensor-2026/final-gpu-20260920/source/src/ninetoothed/interpreter/expressions.py\", line 220, in numpy_dtype\n    raise ValueError(f\"Unsupported interpreter dtype `{dtype}`.\") from exc\nValueError: Unsupported interpreter dtype `'u32'`.\n\nThe above exception was the direct cause of the following exception:\n\nTraceback (most recent call last):\n  File \"/Users/apple/Projects/infinitensor-2026/final-gpu-20260920/tools/verify_alias_gpu.py\", line 131, in <module>\n    raw(**values)\n  File \"/Users/apple/Projects/infinitensor-2026/final-gpu-20260920/source/src/ninetoothed/interpreter/__init__.py\", line 72, in __call__\n    return interpret_program(\n           ^^^^^^^^^^^^^^^^^^\n  File \"/Users/apple/Projects/infinitensor-2026/final-gpu-20260920/source/src/ninetoothed/interpreter/runtime.py\", line 1356, in interpret_program\n    result = execution.run()\n             ^^^^^^^^^^^^^^^\n  File \"/Users/apple/Projects/infinitensor-2026/final-gpu-20260920/source/src/ninetoothed/interpreter/runtime.py\", line 596, in run\n    self.block(self.program.blocks[0], env, \"entry\")\n  File \"/Users/apple/Projects/infinitensor-2026/final-gpu-20260920/source/src/ninetoothed/interpreter/runtime.py\", line 686, in block\n    raise InterpretationError(\nninetoothed.interpreter.runtime.InterpretationError: Operation entry:0:tensor.cast at program (0, 0, 0): Unsupported interpreter dtype `'u32'`..\n"
+    },
+    {
+      "name": "alias_u32_cast_cuda_jit",
+      "alias": "u32",
+      "dtype": "uint32",
+      "kind": "cast",
+      "backend": "cuda",
+      "mode": "jit",
+      "source_sha256": "a5a27880d2bb529a021c859aaed48ceb6a7678e6cb4dd2b997d85563441f63fd",
+      "values": [],
+      "status": "FAIL",
+      "error": "Traceback (most recent call last):\n  File \"/Users/apple/Projects/infinitensor-2026/final-gpu-20260920/source/src/ninetoothed/interpreter/expressions.py\", line 218, in numpy_dtype\n    result = _numpy_dtype_from_name(name)\n             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/Users/apple/Projects/infinitensor-2026/final-gpu-20260920/source/src/ninetoothed/interpreter/expressions.py\", line 246, in _numpy_dtype_from_name\n    result = np.dtype(names.get(name, name))\n             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nTypeError: data type \"'u32'\" not understood\n\nThe above exception was the direct cause of the following exception:\n\nTraceback (most recent call last):\n  File \"/Users/apple/Projects/infinitensor-2026/final-gpu-20260920/source/src/ninetoothed/interpreter/runtime.py\", line 652, in block\n    values = self.operation(op, env, location)\n             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/Users/apple/Projects/infinitensor-2026/final-gpu-20260920/source/src/ninetoothed/interpreter/runtime.py\", line 1045, in operation\n    return np.asarray(materialize(args[0])).astype(numpy_dtype(dtype))\n                                                   ^^^^^^^^^^^^^^^^^^\n  File \"/Users/apple/Projects/infinitensor-2026/final-gpu-20260920/source/src/ninetoothed/interpreter/expressions.py\", line 220, in numpy_dtype\n    raise ValueError(f\"Unsupported interpreter dtype `{dtype}`.\") from exc\nValueError: Unsupported interpreter dtype `'u32'`.\n\nThe above exception was the direct cause of the following exception:\n\nTraceback (most recent call last):\n  File \"/Users/apple/Projects/infinitensor-2026/final-gpu-20260920/tools/verify_alias_gpu.py\", line 131, in <module>\n    raw(**values)\n  File \"/Users/apple/Projects/infinitensor-2026/final-gpu-20260920/source/src/ninetoothed/interpreter/__init__.py\", line 72, in __call__\n    return interpret_program(\n           ^^^^^^^^^^^^^^^^^^\n  File \"/Users/apple/Projects/infinitensor-2026/final-gpu-20260920/source/src/ninetoothed/interpreter/runtime.py\", line 1356, in interpret_program\n    result = execution.run()\n             ^^^^^^^^^^^^^^^\n  File \"/Users/apple/Projects/infinitensor-2026/final-gpu-20260920/source/src/ninetoothed/interpreter/runtime.py\", line 596, in run\n    self.block(self.program.blocks[0], env, \"entry\")\n  File \"/Users/apple/Projects/infinitensor-2026/final-gpu-20260920/source/src/ninetoothed/interpreter/runtime.py\", line 686, in block\n    raise InterpretationError(\nninetoothed.interpreter.runtime.InterpretationError: Operation entry:0:tensor.cast at program (0, 0, 0): Unsupported interpreter dtype `'u32'`..\n"
+    },
+    {
+      "name": "alias_u32_cast_cuda_aot",
+      "alias": "u32",
+      "dtype": "uint32",
+      "kind": "cast",
+      "backend": "cuda",
+      "mode": "aot",
+      "source_sha256": "868279cf5581f73029c1a2f21fd3e18c29fce23fef85d8b73727401cb662b659",
+      "values": [],
+      "status": "FAIL",
+      "error": "Traceback (most recent call last):\n  File \"/Users/apple/Projects/infinitensor-2026/final-gpu-20260920/source/src/ninetoothed/interpreter/expressions.py\", line 218, in numpy_dtype\n    result = _numpy_dtype_from_name(name)\n             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/Users/apple/Projects/infinitensor-2026/final-gpu-20260920/source/src/ninetoothed/interpreter/expressions.py\", line 246, in _numpy_dtype_from_name\n    result = np.dtype(names.get(name, name))\n             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nTypeError: data type \"'u32'\" not understood\n\nThe above exception was the direct cause of the following exception:\n\nTraceback (most recent call last):\n  File \"/Users/apple/Projects/infinitensor-2026/final-gpu-20260920/source/src/ninetoothed/interpreter/runtime.py\", line 652, in block\n    values = self.operation(op, env, location)\n             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/Users/apple/Projects/infinitensor-2026/final-gpu-20260920/source/src/ninetoothed/interpreter/runtime.py\", line 1045, in operation\n    return np.asarray(materialize(args[0])).astype(numpy_dtype(dtype))\n                                                   ^^^^^^^^^^^^^^^^^^\n  File \"/Users/apple/Projects/infinitensor-2026/final-gpu-20260920/source/src/ninetoothed/interpreter/expressions.py\", line 220, in numpy_dtype\n    raise ValueError(f\"Unsupported interpreter dtype `{dtype}`.\") from exc\nValueError: Unsupported interpreter dtype `'u32'`.\n\nThe above exception was the direct cause of the following exception:\n\nTraceback (most recent call last):\n  File \"/Users/apple/Projects/infinitensor-2026/final-gpu-20260920/tools/verify_alias_gpu.py\", line 131, in <module>\n    raw(**values)\n  File \"/Users/apple/Projects/infinitensor-2026/final-gpu-20260920/source/src/ninetoothed/interpreter/__init__.py\", line 72, in __call__\n    return interpret_program(\n           ^^^^^^^^^^^^^^^^^^\n  File \"/Users/apple/Projects/infinitensor-2026/final-gpu-20260920/source/src/ninetoothed/interpreter/runtime.py\", line 1356, in interpret_program\n    result = execution.run()\n             ^^^^^^^^^^^^^^^\n  File \"/Users/apple/Projects/infinitensor-2026/final-gpu-20260920/source/src/ninetoothed/interpreter/runtime.py\", line 596, in run\n    self.block(self.program.blocks[0], env, \"entry\")\n  File \"/Users/apple/Projects/infinitensor-2026/final-gpu-20260920/source/src/ninetoothed/interpreter/runtime.py\", line 686, in block\n    raise InterpretationError(\nninetoothed.interpreter.runtime.InterpretationError: Operation entry:0:tensor.cast at program (0, 0, 0): Unsupported interpreter dtype `'u32'`..\n"
+    },
+    {
+      "name": "alias_u64_scalar_triton_jit",
+      "alias": "u64",
+      "dtype": "uint64",
+      "kind": "scalar",
+      "backend": "triton",
+      "mode": "jit",
+      "source_sha256": "46c5762f03a8780e01579436cc410d6ad72fe418332ceb9ea8c7136ec13c48ff",
+      "values": [
+        {
+          "value": 3,
+          "status": "CPU_ONLY"
+        },
+        {
+          "value": 18446744073709551615,
+          "status": "CPU_ONLY"
+        }
+      ],
+      "status": "CPU_ONLY"
+    },
+    {
+      "name": "alias_u64_scalar_triton_aot",
+      "alias": "u64",
+      "dtype": "uint64",
+      "kind": "scalar",
+      "backend": "triton",
+      "mode": "aot",
+      "source_sha256": "5573e4b7f128625e683fb3dfcf3be7f501f87b7117ad83ffdf9d71713a3fcc93",
+      "values": [
+        {
+          "value": 3,
+          "status": "CPU_ONLY"
+        },
+        {
+          "value": 18446744073709551615,
+          "status": "CPU_ONLY"
+        }
+      ],
+      "status": "CPU_ONLY"
+    },
+    {
+      "name": "alias_u64_scalar_cuda_jit",
+      "alias": "u64",
+      "dtype": "uint64",
+      "kind": "scalar",
+      "backend": "cuda",
+      "mode": "jit",
+      "source_sha256": "03caa0668ff723babf3f9ea0610bf1b2b338588733595fec889080481d4ca1bb",
+      "values": [
+        {
+          "value": 3,
+          "status": "CPU_ONLY"
+        },
+        {
+          "value": 18446744073709551615,
+          "status": "CPU_ONLY"
+        }
+      ],
+      "status": "CPU_ONLY"
+    },
+    {
+      "name": "alias_u64_scalar_cuda_aot",
+      "alias": "u64",
+      "dtype": "uint64",
+      "kind": "scalar",
+      "backend": "cuda",
+      "mode": "aot",
+      "source_sha256": "9b0adf2cc53acee3ce4c6b2d9c8d9b11500e1f767bc46d9376fa1e66745f0eaa",
+      "values": [
+        {
+          "value": 3,
+          "status": "CPU_ONLY"
+        },
+        {
+          "value": 18446744073709551615,
+          "status": "CPU_ONLY"
+        }
+      ],
+      "status": "CPU_ONLY"
+    },
+    {
+      "name": "alias_u64_cast_triton_jit",
+      "alias": "u64",
+      "dtype": "uint64",
+      "kind": "cast",
+      "backend": "triton",
+      "mode": "jit",
+      "source_sha256": "70933f01d2dfc13ea6c7e5738b16c4a6b5e63d6299d0240b73e7bb5007194989",
+      "values": [],
+      "status": "FAIL",
+      "error": "Traceback (most recent call last):\n  File \"/Users/apple/Projects/infinitensor-2026/final-gpu-20260920/source/src/ninetoothed/interpreter/expressions.py\", line 218, in numpy_dtype\n    result = _numpy_dtype_from_name(name)\n             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/Users/apple/Projects/infinitensor-2026/final-gpu-20260920/source/src/ninetoothed/interpreter/expressions.py\", line 246, in _numpy_dtype_from_name\n    result = np.dtype(names.get(name, name))\n             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nTypeError: data type \"'u64'\" not understood\n\nThe above exception was the direct cause of the following exception:\n\nTraceback (most recent call last):\n  File \"/Users/apple/Projects/infinitensor-2026/final-gpu-20260920/source/src/ninetoothed/interpreter/runtime.py\", line 652, in block\n    values = self.operation(op, env, location)\n             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/Users/apple/Projects/infinitensor-2026/final-gpu-20260920/source/src/ninetoothed/interpreter/runtime.py\", line 1045, in operation\n    return np.asarray(materialize(args[0])).astype(numpy_dtype(dtype))\n                                                   ^^^^^^^^^^^^^^^^^^\n  File \"/Users/apple/Projects/infinitensor-2026/final-gpu-20260920/source/src/ninetoothed/interpreter/expressions.py\", line 220, in numpy_dtype\n    raise ValueError(f\"Unsupported interpreter dtype `{dtype}`.\") from exc\nValueError: Unsupported interpreter dtype `'u64'`.\n\nThe above exception was the direct cause of the following exception:\n\nTraceback (most recent call last):\n  File \"/Users/apple/Projects/infinitensor-2026/final-gpu-20260920/tools/verify_alias_gpu.py\", line 131, in <module>\n    raw(**values)\n  File \"/Users/apple/Projects/infinitensor-2026/final-gpu-20260920/source/src/ninetoothed/interpreter/__init__.py\", line 72, in __call__\n    return interpret_program(\n           ^^^^^^^^^^^^^^^^^^\n  File \"/Users/apple/Projects/infinitensor-2026/final-gpu-20260920/source/src/ninetoothed/interpreter/runtime.py\", line 1356, in interpret_program\n    result = execution.run()\n             ^^^^^^^^^^^^^^^\n  File \"/Users/apple/Projects/infinitensor-2026/final-gpu-20260920/source/src/ninetoothed/interpreter/runtime.py\", line 596, in run\n    self.block(self.program.blocks[0], env, \"entry\")\n  File \"/Users/apple/Projects/infinitensor-2026/final-gpu-20260920/source/src/ninetoothed/interpreter/runtime.py\", line 686, in block\n    raise InterpretationError(\nninetoothed.interpreter.runtime.InterpretationError: Operation entry:0:tensor.cast at program (0, 0, 0): Unsupported interpreter dtype `'u64'`..\n"
+    },
+    {
+      "name": "alias_u64_cast_triton_aot",
+      "alias": "u64",
+      "dtype": "uint64",
+      "kind": "cast",
+      "backend": "triton",
+      "mode": "aot",
+      "source_sha256": "97eec5197d0d4b02d176e4addacbc3d0f3b7a8d2742f73d635107d4a6463097a",
+      "values": [],
+      "status": "FAIL",
+      "error": "Traceback (most recent call last):\n  File \"/Users/apple/Projects/infinitensor-2026/final-gpu-20260920/source/src/ninetoothed/interpreter/expressions.py\", line 218, in numpy_dtype\n    result = _numpy_dtype_from_name(name)\n             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/Users/apple/Projects/infinitensor-2026/final-gpu-20260920/source/src/ninetoothed/interpreter/expressions.py\", line 246, in _numpy_dtype_from_name\n    result = np.dtype(names.get(name, name))\n             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nTypeError: data type \"'u64'\" not understood\n\nThe above exception was the direct cause of the following exception:\n\nTraceback (most recent call last):\n  File \"/Users/apple/Projects/infinitensor-2026/final-gpu-20260920/source/src/ninetoothed/interpreter/runtime.py\", line 652, in block\n    values = self.operation(op, env, location)\n             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/Users/apple/Projects/infinitensor-2026/final-gpu-20260920/source/src/ninetoothed/interpreter/runtime.py\", line 1045, in operation\n    return np.asarray(materialize(args[0])).astype(numpy_dtype(dtype))\n                                                   ^^^^^^^^^^^^^^^^^^\n  File \"/Users/apple/Projects/infinitensor-2026/final-gpu-20260920/source/src/ninetoothed/interpreter/expressions.py\", line 220, in numpy_dtype\n    raise ValueError(f\"Unsupported interpreter dtype `{dtype}`.\") from exc\nValueError: Unsupported interpreter dtype `'u64'`.\n\nThe above exception was the direct cause of the following exception:\n\nTraceback (most recent call last):\n  File \"/Users/apple/Projects/infinitensor-2026/final-gpu-20260920/tools/verify_alias_gpu.py\", line 131, in <module>\n    raw(**values)\n  File \"/Users/apple/Projects/infinitensor-2026/final-gpu-20260920/source/src/ninetoothed/interpreter/__init__.py\", line 72, in __call__\n    return interpret_program(\n           ^^^^^^^^^^^^^^^^^^\n  File \"/Users/apple/Projects/infinitensor-2026/final-gpu-20260920/source/src/ninetoothed/interpreter/runtime.py\", line 1356, in interpret_program\n    result = execution.run()\n             ^^^^^^^^^^^^^^^\n  File \"/Users/apple/Projects/infinitensor-2026/final-gpu-20260920/source/src/ninetoothed/interpreter/runtime.py\", line 596, in run\n    self.block(self.program.blocks[0], env, \"entry\")\n  File \"/Users/apple/Projects/infinitensor-2026/final-gpu-20260920/source/src/ninetoothed/interpreter/runtime.py\", line 686, in block\n    raise InterpretationError(\nninetoothed.interpreter.runtime.InterpretationError: Operation entry:0:tensor.cast at program (0, 0, 0): Unsupported interpreter dtype `'u64'`..\n"
+    },
+    {
+      "name": "alias_u64_cast_cuda_jit",
+      "alias": "u64",
+      "dtype": "uint64",
+      "kind": "cast",
+      "backend": "cuda",
+      "mode": "jit",
+      "source_sha256": "fc767cb2825b54996ef98e976f1d47d20c4f50c988af720245768008ba0ad8ab",
+      "values": [],
+      "status": "FAIL",
+      "error": "Traceback (most recent call last):\n  File \"/Users/apple/Projects/infinitensor-2026/final-gpu-20260920/source/src/ninetoothed/interpreter/expressions.py\", line 218, in numpy_dtype\n    result = _numpy_dtype_from_name(name)\n             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/Users/apple/Projects/infinitensor-2026/final-gpu-20260920/source/src/ninetoothed/interpreter/expressions.py\", line 246, in _numpy_dtype_from_name\n    result = np.dtype(names.get(name, name))\n             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nTypeError: data type \"'u64'\" not understood\n\nThe above exception was the direct cause of the following exception:\n\nTraceback (most recent call last):\n  File \"/Users/apple/Projects/infinitensor-2026/final-gpu-20260920/source/src/ninetoothed/interpreter/runtime.py\", line 652, in block\n    values = self.operation(op, env, location)\n             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/Users/apple/Projects/infinitensor-2026/final-gpu-20260920/source/src/ninetoothed/interpreter/runtime.py\", line 1045, in operation\n    return np.asarray(materialize(args[0])).astype(numpy_dtype(dtype))\n                                                   ^^^^^^^^^^^^^^^^^^\n  File \"/Users/apple/Projects/infinitensor-2026/final-gpu-20260920/source/src/ninetoothed/interpreter/expressions.py\", line 220, in numpy_dtype\n    raise ValueError(f\"Unsupported interpreter dtype `{dtype}`.\") from exc\nValueError: Unsupported interpreter dtype `'u64'`.\n\nThe above exception was the direct cause of the following exception:\n\nTraceback (most recent call last):\n  File \"/Users/apple/Projects/infinitensor-2026/final-gpu-20260920/tools/verify_alias_gpu.py\", line 131, in <module>\n    raw(**values)\n  File \"/Users/apple/Projects/infinitensor-2026/final-gpu-20260920/source/src/ninetoothed/interpreter/__init__.py\", line 72, in __call__\n    return interpret_program(\n           ^^^^^^^^^^^^^^^^^^\n  File \"/Users/apple/Projects/infinitensor-2026/final-gpu-20260920/source/src/ninetoothed/interpreter/runtime.py\", line 1356, in interpret_program\n    result = execution.run()\n             ^^^^^^^^^^^^^^^\n  File \"/Users/apple/Projects/infinitensor-2026/final-gpu-20260920/source/src/ninetoothed/interpreter/runtime.py\", line 596, in run\n    self.block(self.program.blocks[0], env, \"entry\")\n  File \"/Users/apple/Projects/infinitensor-2026/final-gpu-20260920/source/src/ninetoothed/interpreter/runtime.py\", line 686, in block\n    raise InterpretationError(\nninetoothed.interpreter.runtime.InterpretationError: Operation entry:0:tensor.cast at program (0, 0, 0): Unsupported interpreter dtype `'u64'`..\n"
+    },
+    {
+      "name": "alias_u64_cast_cuda_aot",
+      "alias": "u64",
+      "dtype": "uint64",
+      "kind": "cast",
+      "backend": "cuda",
+      "mode": "aot",
+      "source_sha256": "5fc5009de488157cb16472c264f116304a70d3595402f18343aba50fe695657c",
+      "values": [],
+      "status": "FAIL",
+      "error": "Traceback (most recent call last):\n  File \"/Users/apple/Projects/infinitensor-2026/final-gpu-20260920/source/src/ninetoothed/interpreter/expressions.py\", line 218, in numpy_dtype\n    result = _numpy_dtype_from_name(name)\n             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/Users/apple/Projects/infinitensor-2026/final-gpu-20260920/source/src/ninetoothed/interpreter/expressions.py\", line 246, in _numpy_dtype_from_name\n    result = np.dtype(names.get(name, name))\n             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nTypeError: data type \"'u64'\" not understood\n\nThe above exception was the direct cause of the following exception:\n\nTraceback (most recent call last):\n  File \"/Users/apple/Projects/infinitensor-2026/final-gpu-20260920/source/src/ninetoothed/interpreter/runtime.py\", line 652, in block\n    values = self.operation(op, env, location)\n             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/Users/apple/Projects/infinitensor-2026/final-gpu-20260920/source/src/ninetoothed/interpreter/runtime.py\", line 1045, in operation\n    return np.asarray(materialize(args[0])).astype(numpy_dtype(dtype))\n                                                   ^^^^^^^^^^^^^^^^^^\n  File \"/Users/apple/Projects/infinitensor-2026/final-gpu-20260920/source/src/ninetoothed/interpreter/expressions.py\", line 220, in numpy_dtype\n    raise ValueError(f\"Unsupported interpreter dtype `{dtype}`.\") from exc\nValueError: Unsupported interpreter dtype `'u64'`.\n\nThe above exception was the direct cause of the following exception:\n\nTraceback (most recent call last):\n  File \"/Users/apple/Projects/infinitensor-2026/final-gpu-20260920/tools/verify_alias_gpu.py\", line 131, in <module>\n    raw(**values)\n  File \"/Users/apple/Projects/infinitensor-2026/final-gpu-20260920/source/src/ninetoothed/interpreter/__init__.py\", line 72, in __call__\n    return interpret_program(\n           ^^^^^^^^^^^^^^^^^^\n  File \"/Users/apple/Projects/infinitensor-2026/final-gpu-20260920/source/src/ninetoothed/interpreter/runtime.py\", line 1356, in interpret_program\n    result = execution.run()\n             ^^^^^^^^^^^^^^^\n  File \"/Users/apple/Projects/infinitensor-2026/final-gpu-20260920/source/src/ninetoothed/interpreter/runtime.py\", line 596, in run\n    self.block(self.program.blocks[0], env, \"entry\")\n  File \"/Users/apple/Projects/infinitensor-2026/final-gpu-20260920/source/src/ninetoothed/interpreter/runtime.py\", line 686, in block\n    raise InterpretationError(\nninetoothed.interpreter.runtime.InterpretationError: Operation entry:0:tensor.cast at program (0, 0, 0): Unsupported interpreter dtype `'u64'`..\n"
+    }
+  ],
+  "scope": "8 integer aliases, Triton/CUDA, JIT/AOT, scalar ABI and explicit casts; 257-element masked tails, input preservation and output guards."
+}

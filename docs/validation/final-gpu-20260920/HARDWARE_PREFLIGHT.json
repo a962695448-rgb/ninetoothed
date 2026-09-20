@@ -1,0 +1,13 @@
+{
+  "status": "PASS",
+  "bytes_checked": 64424509440,
+  "patterns": [
+    165,
+    90
+  ],
+  "seconds": 0.8206865200000095,
+  "before": "NVIDIA A100-SXM4-80GB, GPU-[redacted], 0, 0\n",
+  "after": "NVIDIA A100-SXM4-80GB, GPU-[redacted], 0, 0\n",
+  "row_remapper": "\n==============NVSMI LOG==============\n\nTimestamp                                 : Sun Sep 20 15:58:38 2026\nDriver Version                            : 550.127.05\nCUDA Version                              : 12.4\n\nAttached GPUs                             : 1\nGPU 00000000:00:08.0\n    Remapped Rows\n        Correctable Error                 : 1\n        Uncorrectable Error               : 0\n        Pending                           : No\n        Remapping Failure Occurred        : No\n        Bank Remap Availability Histogram\n            Max                           : 640 bank(s)\n            High                          : 0 bank(s)\n            Partial                       : 0 bank(s)\n            Low                           : 0 bank(s)\n            None                          : 0 bank(s)\n\n",
+  "scope": "Two-pattern memory smoke check, not comprehensive hardware certification"
+}
